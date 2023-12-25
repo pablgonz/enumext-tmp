@@ -1,0 +1,124 @@
+
+
+\__enumext_before_args_exec_v:
+\__enumext_before_keys_exec_v:
+\__enumext_after_stop_list_v:
+\__enumext_after_args_exec_v:
+
+
+
+
+
+% #1:level; #2: before|after
+\cs_set_protected:Npn \_@@_tmp:w #1
+  {
+    \cs_new_protected:cn { @@_#2_args_exec_#1: }
+      {
+        \tl_use:c { l_@@_#2_starred_key_#1_tl }
+      }
+    \cs_new_protected:cn { @@_#2_key_exec_#1: }
+      {
+        \tl_use:c { l_@@_#2_no_starred_key_#1_tl }
+      }
+    \cs_new_protected:cn { @@_#2_stop_list_#1: }
+      {
+        \tl_use:c { l_@@_#2_stop_list_#1_tl }
+      }
+    \cs_new_protected:cn { @@_#2_args_exec_#1: }
+      {
+        \tl_use:c { l_@@_#2_list_args_#1_tl }
+      }
+  }
+
+
+
+
+\cs_new_protected:Nn \__enumext_before_args_exec_v:
+{
+716
+\tl_use:N \l__enumext_before_starred_key_v_tl
+717
+}
+
+
+
+        \bool_lazy_and:nnTF
+          { \str_if_eq_p:nn {#1} { v } }
+          { \bool_if_p:c { l_@@_show_info_length_#1_bool } }
+          { \msg_term:nnnn { enumext } { list-lengths-not-nested } { v } { keyans } }
+          {
+            \msg_term:nnne { enumext } { list-lengths } { #1 } { \l_@@_level_int }
+          }
+
+
+
+
+
+
+
+
+\documentclass{article}
+\usepackage{xparse}
+
+\ExplSyntaxOn
+
+\NewDocumentCommand{\checkTF}{+m +m m m }
+  {
+    \stringchecker_if_string_in:nnTF { #1 } { #2 } { #3 } { #4 }
+  }
+
+\prg_new_protected_conditional:Nnn \stringchecker_if_string_in:nn { T, F, TF }
+  {
+    \__stringchecker_check:nN { #2 } #1 \q_nil
+  }
+
+\cs_new_protected:Nn \__stringchecker_check:nN
+  {
+    \quark_if_nil:NTF #2
+      {
+        \prg_return_true:
+      }
+      {
+        \str_if_in:nnTF { #1 } { #2 }
+          {
+            \__stringchecker_check:nN { #1 }
+          }
+          {
+            \__stringchecker_stop:w
+          }
+      }
+  }
+\cs_new:Npn \__stringchecker_stop:w #1 \q_nil
+  {
+    \prg_return_false:
+  }
+
+\tl_set:Nn \l_tmpa_tl { Un largo texto con ~
+~
+~
+,~ resume*~, espacios y muchas cosas más, resume}
+
+\tl_remove_all:Nn \l_tmpa_tl { resume }
+\tl_show:N \l_tmpa_tl
+\ExplSyntaxOff
+
+\begin{document}
+
+\checkTF{resume*}{Un largo texto con
+
+
+resume*
+
+
+
+espacios y muchas cosas más}{TRUE}{FALSE}
+
+\checkTF{asdf}{hgfdsa}{TRUE}{FALSE}
+
+\checkTF{asdf}{asdghj}{TRUE}{FALSE}
+
+\checkTF{}{asdghj}{TRUE}{FALSE}
+
+\checkTF{a}{}{TRUE}{FALSE}
+
+\end{document}

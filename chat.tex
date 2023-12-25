@@ -1,0 +1,125 @@
+\documentclass{report}
+\usepackage{xparse}
+\usepackage{hyperref}
+
+\ExplSyntaxOn
+
+\newcounter{enumXi}
+\refstepcounter{enumXi}
+
+% estas variable ya existen
+\tl_new:N \l__enumext_counter_i_tl
+\tl_set:Nn \l__enumext_counter_i_tl { enumXi } % enumXii enumXiii enumXiv
+
+% Estas las debo crear
+\tl_const:Nn \c__enumext_counter_style_tl
+  { { arabic } { roman } { Roman } { alph } { Alph } }
+\tl_new:N \l__enumext_the_counter_i_tl
+\tl_set:Nn \l__enumext_the_counter_i_tl { \theenumXi }
+\tl_new:N \l__enumext_counter_style_for_ref_i_tl
+\tl_new:N \l__enumext_ref_key_arg_tl
+\tl_new:N \l__enumext_ref_aux_tl
+% Version 2:
+
+\cs_new_protected:Nn \__enumext_set_label_ref:n
+  {
+    \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
+    % [POR NIVEL] Ahora \l__enumext_ref_aux_tl será enumXi (el contador por nivel)
+    \tl_set_eq:Nc \l__enumext_ref_aux_tl { l__enumext_counter_i_tl }
+    % Reemplazamos \arabic* => \arabic{enumXi}
+    \tl_map_inline:Nn \c__enumext_counter_style_tl
+      { \regex_replace_once:nnN { \c{##1}\* } { \c{##1}\cB{\u{l_tmpa_tl}\cE} } \l__enumext_ref_key_arg_tl }
+    % [POR NIVEL] Ahora \l__enumext_ref_aux_tl será \theenumXi
+    \tl_set_eq:Nc \l__enumext_ref_aux_tl { l__enumext_the_counter_i_tl }
+    % [POR NIVEL] Y finalmente renovamos el comando para ref=my-label-ref
+    \tl_put_right:cx { l__enumext_counter_style_for_ref_i_tl }
+     {
+       \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_aux_tl }{ \exp_not:V \l__enumext_ref_key_arg_tl }
+     }
+   \tl_if_empty:cF { l__enumext_counter_style_for_ref_i_tl }
+     {
+        \tl_show:c { l__enumext_counter_style_for_ref_i_tl }
+     }
+  \renewcommand { \theenumXi }{ \l__enumext_ref_key_arg_tl }
+  }
+
+%https://tex.stackexchange.com/questions/584509/testing-for-foo-vs-foo
+
+\ExplSyntaxOff
+
+\begin{document}
+
+\ExplSyntaxOn
+
+%\refstepcounter{foo}
+
+\__enumext_set_label_ref:n { Hola-\emph{(\Roman*)}}
+%\erw_format:n {foo}
+
+\theenumXi
+\par
+
+%\__enumext_set_label_ref:n {\emph{\arabic*)}}
+%\erw_format:n {foo}
+
+\ExplSyntaxOff
+
+\end{document}
+
+
+
+
+
+
+
+
+\documentclass[full]{l3doc}
+\usepackage{kantlipsum}
+\begin{document}
+
+Deseo obtener algo así al ejecutar la clave "before"
+\begin{verbatim}
+ref= \renewcommand{\theenumXi}{A-\emph{\Roman{enumXi}}}
+
+\renewcommand{#1}{#2}
+#1= Es el contador por nivel (lo conozco y lo puedo detectar)
+#2=LO QUE SEA ....Debería reemplazar \arabic* => función para reemplazar = \arabic{enumXi} por nivel
+
+
+#1= LO QUE SEA
+\cs_new_protected:Npn \enumext_label_ref:n #1
+  {
+   % Si nivel1 = \theenumXi
+   % Si nivel2 = \theenumXii
+   % Si nivel3 = \theenumXii
+   % Si niveln = \theenumX \__enumext_level: _tl
+   % Así que sería
+   % \tl_use:c { theenumX \__enumext_level: _tl }
+   % Ahora el argumento #1 seŕia algo del tipo
+   \tl_map_inline:Nn \g__enumext_counter_styles_tl
+      {
+         %\tl_replace_all:Nne #1 { ##1* } { \exp_not:N ##1 {#2} }
+      \tl_replace_all:Nne #1 { ##1* } { \exp_not:N ##1 { \tl_use:c { l__enumext_counter_ \__enumext_level:} } }
+      }
+  # retorna
+   \renewcommand{ \tl_use:c { theenumX \__enumext_level: } }{#1}
+  }
+\cs_generate_variant:Nn \enumext_label_ref:n { c, v }
+
+
+\ExplSyntaxOn
+\tl_show:c { l__enumext_counter_i_tl }
+\ExplSyntaxOff
+
+
+\end{verbatim}
+
+  \begin{enumerate}[listparindent=1.5em, labelsep=2em, itemindent=1.5em]
+    \item \kant[1-2]
+    \item \kant[3-4]
+  \end{enumerate}
+\end{document}
+
+$ cat -n $(kpsewhich l3doc.cls) | grep '\\listparindent'
+   510	  { \__codedoc_oldlist:nn {#1} { #2 \dim_zero:N \listparindent } }
+```

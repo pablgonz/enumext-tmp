@@ -1,0 +1,3542 @@
+%%
+%% This is file `enumext.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% enumext.dtx  (with options: `package')
+%% Copyright (C) 2023 by Pablo González L <pablgonz@educarchile.cl>
+%%
+%% This work may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License, either version 1.3c of this license or (at
+%% your option) any later version. The latest version of this license is in
+%%
+%%  https://www.latex-project.org/lppl.txt
+%%
+%% and version 1.3c or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%%
+%% This work is "maintained" (as per the LPPL maintenance status)
+%% by Pablo González L.
+%%
+%% This work consists of the files enumext.dtx and enumext.sty.
+%%
+\NeedsTeXFormat{LaTeX2e}[2023-11-01]
+\IfPackageLoadedTF { multicol } { }
+  {
+    \RequirePackage{ multicol }[2023-03-30]
+  }
+\ProvidesExplPackage
+  {enumext}
+  {2023-12-15}
+  {0.9999}
+  {Enumerate exercise sheets}
+%% Variable for levels and nesting off all environments.
+\int_new:N  \l__enumext_level_int
+\int_new:N  \l__enumext_level_h_int
+\int_new:N  \l__enumext_keyans_level_int
+\int_new:N  \l__enumext_keyans_level_h_int
+\int_new:N  \l__enumext_keyans_pic_level_int
+\bool_new:N \l__enumext_starred_bool
+\bool_new:N \l__enumext_standar_bool
+\bool_new:N \l__enumext_keyans_env_bool
+%% Variable for counters
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \tl_new:c { l__enumext_counter_#1_tl }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
+%% Variables used by |resume| and |item-sym*| key implementation.
+\bool_new:N \l__enumext_resume_bool
+\int_new:N  \g__enumext_resume_int
+\bool_new:N \l__enumext_resume_vii_bool
+\int_new:N  \g__enumext_resume_vii_int
+\tl_new:N   \g__enumext_item_symbol_tl
+%% Variables used by |label|, |ref| and |widest| keys.
+\dim_new:N \l__enumext_current_widest_dim
+\tl_new:N  \g__enumext_counter_styles_tl
+\tl_new:N  \g__enumext_widest_label_tl
+\box_new:N \l__enumext_label_width_by_box
+%% Add \l__enumext_leftmargin_tmp_X_bool, \l__enumext_leftmargin_tmp_X_dim,
+%% \l__enumext_leftmargin_X_dim, \l__enumext_itemindent_X_dim used by the
+%% function \enumext_calc_hspace:NNNNNNNNNNNN and |list-indent| key.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \bool_new:c { l__enumext_leftmargin_tmp_#1_bool }
+    \dim_new:c  { l__enumext_leftmargin_tmp_#1_dim }
+    \dim_new:c  { l__enumext_leftmargin_#1_dim     }
+    \dim_new:c  { l__enumext_itemindent_#1_dim     }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
+%% Variables used by |columns| key in |enumext| and |keyans|.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \skip_new:c  { l__enumext_multicols_above_#1_skip }
+    \skip_new:c  { l__enumext_multicols_below_#1_skip }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, v } { \__enumext_tmp:n {#1} }
+%% Variables used by |miniright|, |mini-env|, |mini-sep| and |\miniright|.
+\int_new:N  \g__enumext_minipage_stat_int
+\skip_new:N \l__enumext_minipage_left_skip
+\skip_new:N \l__enumext_minipage_right_skip
+\skip_new:N \l__enumext_minipage_after_skip
+\skip_new:N \g__enumext_minipage_right_skip
+\skip_new:N \g__enumext_minipage_after_skip
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \dim_new:c  { l__enumext_minipage_left_#1_dim    }
+    \bool_new:c { l__enumext_minipage_active_#1_bool }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, v, vii, viii } { \__enumext_tmp:n {#1} }
+%% Internal variables used by |wrap-label|, |start|, |align|, |above| and |below| keys.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \bool_new:c { l__enumext_wrap_label_#1_bool     }
+    \bool_new:c { l__enumext_wrap_label_opt_#1_bool }
+    \int_new:c  { l__enumext_start_#1_int           }
+    \tl_new:c   { l__enumext_fake_item_indent_#1_tl }
+    \tl_new:c   { l__enumext_label_fill_left_#1_tl  }
+    \tl_new:c   { l__enumext_label_fill_right_#1_tl }
+    \bool_new:c { l__enumext_vspace_a_star_#1_bool  }
+    \bool_new:c { l__enumext_vspace_b_star_#1_bool  }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, v, vii, viii } { \__enumext_tmp:n {#1} }
+%% Variables used by |save-ans| key.
+\bool_new:N \l__enumext_stored_bool
+\tl_new:N   \l__enumext_stored_name_tl
+\tl_new:N   \g__enumext_stored_name_tl
+\tl_new:N   \l__enumext_stored_anskey_tl
+\int_new:N  \l__enumext_stored_columns_join_int
+\tl_new:N   \l__enumext_stored_keyans_tl
+\tl_new:N   \l__enumext_keyans_tmpa_tl
+%% Variables used by |\setenumext|.
+\tl_new:N  \l__enumext_setkey_tmpa_tl
+\tl_new:N  \l__enumext_setkey_tmpb_tl
+\int_new:N \l__enumext_setkey_tmpa_int
+\seq_new:N \l__enumext_setkey_tmpa_seq
+\seq_new:N \l__enumext_setkey_tmpb_seq
+%% Variables used by |key=val| in |enumext|, |enumext*| and |\printkeyans| .
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \tl_new:c { l__enumext_stored_opt_#1_tl             }
+    \tl_new:c { l__enumext_keyans_print_#1_tl           }
+    \bool_new:c { l__enumext_stored_columns_#1_bool     }
+    \int_new:c { l__enumext_stored_columns_#1_int       }
+    \bool_new:c { l__enumext_stored_columns_sep_#1_bool }
+    \dim_new:c { l__enumext_stored_columns_sep_#1_dim   }
+    \bool_new:c { l__enumext_stored_upper_level_#1_bool }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {#1} }
+%% Variables used by |show-ans|, |show-pos|, |mark-ans|, |mark-ref| and |\anskey|.
+\bool_new:N \l__enumext_keyans_show_ans_bool
+\bool_new:N \l__enumext_keyans_show_pos_bool
+\tl_new:N   \l__enumext_keyans_mark_ref_tl
+\tl_new:N   \l__enumext_keyans_mark_ans_tl
+\str_new:N  \l__enumext_keyans_mark_pos_str
+%% Variables used by |\anspic| and |keyanspic|.
+\seq_new:N  \l__enumext_keyans_pic_body_seq
+\dim_new:N  \l__enumext_keyans_pic_width_dim
+\int_new:N  \l__enumext_keyans_pic_above_int
+\int_new:N  \l__enumext_keyans_pic_below_int
+\skip_new:N \l__enumext_keyans_pic_above_skip
+%% Variables used by |check-ans| key.
+\bool_new:N \l__enumext_keyans_check_bool
+\bool_new:N \g__enumext_keyans_check_show_bool
+\tl_new:N   \g__enumext_keyans_check_item_tl
+\int_new:N  \l__enumext_compare_items_ans_int
+\int_new:N  \g__enumext_count_item_ans_int
+\int_new:N  \g__enumext_count_item_all_int
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \int_new:c { g__enumext_count_tmpa_#1_int }
+    \int_new:c { g__enumext_count_item_#1_int }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {#1} }
+%% Variables used for hyperref detection.
+\bool_new:N \l__enumext_hyperref_bool
+\bool_new:N \l__enumext_footnotes_key_bool
+%% Variables used by |store-ref| key (internal label and ref).
+\tl_new:N \l__enumext_newlabel_arg_one_tl
+\tl_new:N \l__enumext_newlabel_arg_two_tl
+\tl_new:N \l__enumext_keyans_make_label_ref_tl
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \tl_new:c { l__enumext_label_copy_#1_tl }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
+%% Variables used by |footnote|.
+\int_new:N \g__enumext_footnote_int
+\seq_new:N \g__enumext_footnote_arg_seq
+\seq_new:N \g__enumext_footnote_int_seq
+%% Variables used by |ref| key.
+\tl_const:Nn \c__enumext_counter_style_tl
+  { { arabic } { roman } { Roman } { alph } { Alph } }
+\tl_new:N \l__enumext_ref_key_arg_tl
+\tl_new:N \l__enumext_ref_aux_tl
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \tl_new:c  { l__enumext_counter_style_for_ref_#1_tl }
+    \tl_new:c  { l__enumext_the_counter_#1_tl }
+    \tl_set:ce { l__enumext_the_counter_#1_tl } { \exp_not:c { theenumX#1 } }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
+%% Variables used by |enumext*| and |keyans*| environments.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \bool_new:c { l__enumext_item_starred_#1_bool    }
+    \int_new:c  { l__enumext_item_column_pos_#1_int  }
+    \int_new:c  { g__enumext_item_count_all_#1_int   }
+    \int_new:c  { l__enumext_joined_item_#1_int      }
+    \int_new:c  { l__enumext_joined_item_aux_#1_int  }
+    \int_new:c  { l__enumext_tmpa_#1_int             }
+    \box_new:c  { l__enumext_item_text_#1_box        }
+    \dim_new:c  { l__enumext_joined_width_#1_dim     }
+    \dim_new:c  { l__enumext_item_width_#1_dim       }
+    \tl_new:c   { g__enumext_item_symbol_aux_#1_tl   }
+    \str_new:c  { l__enumext_align_label_#1_str      }
+    \bool_new:c { g__enumext_minipage_active_#1_bool }
+    \tl_new:c   { g__enumext_miniright_code_#1_tl    }
+    \bool_new:c { g__enumext_minipage_center_#1_bool }
+    \dim_new:c  { g__enumext_minipage_right_#1_dim   }
+    \skip_new:c { g__enumext_minipage_right_#1_skip  }
+  }
+\clist_map_inline:nn { vii, viii } { \__enumext_tmp:n {#1} }
+\clist_const:Nn \c__enumext_all_envs_clist
+  {
+    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv},
+    {keyans}{v}, {enumext*}{vii}, {keyans*}{viii}
+  }
+%% A internal "hooks" functions used for copying and execute code.
+\cs_new_protected:Npn \__enumext_at_begin_document:n #1
+  {
+    \hook_gput_code:nnn {begindocument} {enumext} { #1 }
+  }
+\cs_new_protected:Npn \__enumext_after_star_env:nn #1 #2
+  {
+    \hook_gput_code:nnn {env/#1/after} {enumext} { #2 }
+  }
+\cs_generate_variant:Nn \__enumext_after_star_env:nn { nV }
+\cs_new_protected:Npn \__enumext_after_env:n #1
+  {
+    \hook_gput_code:nnn {env/enumext/after} {enumext} { #1 }
+    \hook_gput_code:nnn {env/enumext*/after} {enumext} { #1 }
+  }
+%% Function to check current level.
+\cs_new:Nn \__enumext_level:
+  {
+    \int_to_roman:n { \l__enumext_level_int }
+  }
+%% Function to check current level on starred and keyans environments.
+\cs_new:Npn \__enumext_level_set:n #1
+  {
+    \cs_set_eq:cN { \__enumext_level_#1: } \__enumext_level:
+    \cs_set:Nn \__enumext_level: { #1 }
+  }
+\cs_new:Npn \__enumext_level_end:n #1
+  {
+    \cs_set_eq:Nc \__enumext_level: { __enumext_level_#1: }
+  }
+%% Function to check current environment for |enumext| and |enumext*|.
+\cs_new_protected:Nn \__enumext_current_env:
+  {
+    \str_case:en { \@currenvir }
+      {
+        {enumext}
+          {
+            \typeout{working-on-enumext}
+            % %\bool_set_true:N \l__enumext_standar_bool
+            % \bool_set_false:N \l__enumext_starred_bool
+          }
+        {enumext*}
+          {
+            \typeout{working-on-enumext*}
+            %%\bool_set_true:N \l__enumext_starred_bool
+          }
+        {keyans}
+          {
+            \typeout{working-on-keyans}
+            \bool_set_true:N \l__enumext_keyans_env_bool
+          }
+        {keyans*}
+          {
+            \typeout{working-on-keyans*}
+            \bool_set_true:N \l__enumext_keyans_env_bool
+          }
+      }
+  }
+%% Function to check integer variables used by |start| and |widest| keys.
+\prg_new_protected_conditional:Npnn \__enumext_if_is_int:n #1 { T, F, TF }
+  {
+    \regex_match:nnTF { ^[\+\-]?[\d]+$ } {#1} % $
+      { \prg_return_true: }
+      { \prg_return_false: }
+  }
+%% Function to show list lengths used by |show-length| key.
+\cs_new:Npn \__enumext_msg_skip_show:nnn #1 #2 #3
+  {
+    * ~ #2
+    \prg_replicate:nn { 14 - \str_count:n {#2} } { ~ }
+      = ~ \use:c { #1_use:c } { l__enumext_#2_#3_#1 } \\
+  }
+%% Copy list tools.
+\__enumext_at_begin_document:n
+  {
+    \cs_new_eq:NN \__enumext_start_list:nn \list
+    \cs_new_eq:NN \__enumext_stop_list: \endlist
+    \cs_new_eq:NN \__enumext_item_std:w \item
+  }
+%% Copy minipage tools.
+\__enumext_at_begin_document:n
+  {
+    \cs_new_eq:NN \__enumext_minipage:w \minipage
+    \cs_new_eq:NN \__enumext_endminipage: \endminipage
+  }
+%% Detection off |hyperref| package with |hyperfootnotes=true|.
+\hook_gput_code:nnn { begindocument } { enumext } { \__enumext_after_hyperref: }
+\hook_gset_rule:nnnn { begindocument } { enumext } { after } { hyperref }
+\cs_new_protected:Nn \__enumext_after_hyperref:
+  {
+    \IfPackageLoadedTF { hyperref }
+      {
+        \bool_set_true:N \l__enumext_hyperref_bool
+        \legacy_if:nT { Hy@hyperfootnotes }
+          {
+            \typeout{hyperfootnotes=true}
+            \bool_set_true:N \l__enumext_footnotes_key_bool
+          }
+      }
+      {  }
+%% Detection off |footnotehyper| package.
+   \bool_if:NT \l__enumext_footnotes_key_bool
+     {
+       \IfPackageLoadedTF { footnotehyper }
+         {
+           \typeout{OK ~ hyperref ~ and ~ footnotehyper}
+         }
+         {
+           \typeout{No ~ footnotehyper ~ load}
+           \typeout{Load ~ and  ~ use  ~ \string\makesavenoteenv{enumext*}}
+           \bool_set_false:N \l__enumext_footnotes_key_bool
+         }
+     }
+    \bool_if:NTF \l__enumext_hyperref_bool
+      {
+        \cs_new_eq:NN \__enumext_hypertarget:nn \hypertarget
+        \cs_new_eq:NN \__enumext_phantomsection: \phantomsection
+      }
+      {
+        \cs_new_eq:NN \__enumext_hypertarget:nn \use_none:nn
+        \cs_new_eq:NN \__enumext_phantomsection: \prg_do_nothing:
+      }
+  }
+%% Write internal |label| in |.aux| file for |store-ref| key.
+\cs_new_protected:Npn \__enumext_newlabel_write:nn #1 #2
+  {
+    \protected@write \@auxout { }
+      {
+        \token_to_str:N \newlabel {#1}
+          {
+            {#2}
+            \bool_if:NT \l__enumext_hyperref_bool
+              { { \thepage } {#2} {#1} }
+            { }
+          }
+      }
+    \__enumext_hypertarget:nn {#1} { }
+    \__enumext_phantomsection:
+  }
+%% Definition of counters.
+\cs_new_protected:Npn \__enumext_define_counters:Nn #1 #2
+  {
+    \cs_if_exist:cTF { c@ #2 }
+      { \msg_fatal:nnn { enumext } { counters }{ #2 } }
+      {
+        \tl_set:Nn #1 { #2 }
+        \newcounter { #2 }
+      }
+  }
+\__enumext_define_counters:Nn \l__enumext_counter_i_tl    { enumXi    }
+\__enumext_define_counters:Nn \l__enumext_counter_ii_tl   { enumXii   }
+\__enumext_define_counters:Nn \l__enumext_counter_iii_tl  { enumXiii  }
+\__enumext_define_counters:Nn \l__enumext_counter_iv_tl   { enumXiv   }
+\__enumext_define_counters:Nn \l__enumext_counter_v_tl    { enumXv    }
+\__enumext_define_counters:Nn \l__enumext_counter_vi_tl   { enumXvi   }
+\__enumext_define_counters:Nn \l__enumext_counter_vii_tl  { enumXvii  }
+\__enumext_define_counters:Nn \l__enumext_counter_viii_tl { enumXviii }
+%% Register of counters style.
+\cs_new_protected:Npn \__enumext_register_counter_style:Nn #1 #2
+  {
+    \tl_const:cn { c__enumext_widest_ \cs_to_str:N #1 _tl } {#2}
+    \tl_gput_right:Nn \g__enumext_counter_styles_tl {#1}
+  }
+\__enumext_register_counter_style:Nn \arabic { 0 }
+\__enumext_register_counter_style:Nn \Alph   { M }
+\__enumext_register_counter_style:Nn \alph   { m }
+\__enumext_register_counter_style:Nn \Roman  { VIII }
+\__enumext_register_counter_style:Nn \roman  { viii }
+%% Set default label width using a box width.
+\cs_new_protected:Npn \__enumext_label_width_by_box:Nn #1#2
+  {
+    \hbox_set:Nn \l__enumext_label_width_by_box {#2}
+    \dim_set:Nn #1 { \box_wd:N \l__enumext_label_width_by_box }
+  }
+\cs_generate_variant:Nn \__enumext_label_width_by_box:Nn { cv }
+%% Function to suport |*| in |label| key.
+\cs_new_protected:Npn \__enumext_label_style:Nnn #1 #2 #3
+  {
+    \tl_clear_new:N #1
+    \tl_put_right:Ne #1 { \tl_trim_spaces:n {#3} }
+    \tl_gset_eq:NN \g__enumext_widest_label_tl #1
+    \tl_map_inline:Nn \g__enumext_counter_styles_tl
+      {
+        \tl_replace_all:Nne #1 { ##1* } { \exp_not:N ##1 {#2} }
+        \tl_greplace_all:Nne \g__enumext_widest_label_tl { ##1* }
+          { \tl_use:c { c__enumext_widest_ \cs_to_str:N ##1 _tl } }
+      }
+    \__enumext_label_width_by_box:Nn \l__enumext_current_widest_dim
+      { \tl_use:N \g__enumext_widest_label_tl }
+    \tl_set_eq:cN { the #2 } #1
+  }
+\cs_generate_variant:Nn \__enumext_label_style:Nnn { cvn }
+%% Add |font|, |labelsep|, |labelwidth| and |wrap-label| keys.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        font        .tl_set:c   = { l__enumext_label_font_style_#2_tl },
+        font        .value_required:n = true,
+        labelsep    .dim_set:c  = { l__enumext_labelsep_#2_dim },
+        labelsep    .initial:n  = {0.3333em},
+        labelsep    .value_required:n = true,
+        labelwidth  .dim_set:c  = { l__enumext_labelwidth_#2_dim },
+        labelwidth  .value_required:n = true,
+        wrap-label  .cs_set_protected:cp = { __enumext_wrapper_label_#2:n } ##1,
+        wrap-label  .initial:n  = {##1},
+        wrap-label  .value_required:n = true,
+        wrap-label* .code:n = {
+                                \bool_set_true:c { l__enumext_wrap_label_opt_#2_bool }
+                                \keys_set:nn { enumext / #1 } { wrap-label = {##1} }
+                              },
+        wrap-label* .value_required:n = true,
+      }
+  }
+\clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
+%% Add |aling| key for |enumext| and |keyans|.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        align .choice:,
+        align / left   .code:n =
+                         {
+                           \tl_clear:c { l__enumext_label_fill_left_#2_tl  }
+                           \tl_set:cn  { l__enumext_label_fill_right_#2_tl } { \hfill }
+                         },
+        align / right  .code:n =
+                         {
+                           \tl_set:cn  { l__enumext_label_fill_left_#2_tl  } { \hfill }
+                           \tl_clear:c { l__enumext_label_fill_right_#2_tl }
+                         },
+        align / center .code:n =
+                         {
+                           \tl_set:cn { l__enumext_label_fill_left_#2_tl  } { \hfill }
+                           \tl_set:cn { l__enumext_label_fill_right_#2_tl } { \hfill }
+                          },
+        align .initial:n  = left,
+        align .value_required:n  = true,
+      }
+  }
+\clist_map_inline:nn
+  {
+    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {keyans}{v}
+  }
+  { \__enumext_tmp:nn #1 }
+%% Add |aling| key for enummext* and keyans*.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        align .choice:,
+        align / left   .code:n = \str_set:cn { l__enumext_align_label_#2_str } { l },
+        align / right  .code:n = \str_set:cn { l__enumext_align_label_#2_str } { r },
+        align / center .code:n = \str_set:cn { l__enumext_align_label_#2_str } { c },
+        align .initial:n = left,
+        align .value_required:n = true,
+      }
+  }
+\clist_map_inline:nn { {enumext*}{vii}, {keyans*}{viii} } { \__enumext_tmp:nn #1 }
+%% Regex for replace * for |ref| key.
+\cs_new_protected:Nn \__enumext_regex_label_ref_key:
+  {
+    \tl_map_inline:Nn \c__enumext_counter_style_tl
+      {
+        \regex_replace_once:nnN { \c{##1}\* }
+          { \c{##1}\cB{\u{l__enumext_ref_aux_tl}\cE} } \l__enumext_ref_key_arg_tl
+      }
+  }
+%% Internal function used by |ref| key in enumext environment.
+\cs_new_protected:Npn \__enumext_set_label_ref:n #1
+  {
+    \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
+    \tl_set_eq:Nc \l__enumext_ref_aux_tl { l__enumext_counter_ \__enumext_level: _tl }
+    \__enumext_regex_label_ref_key:
+    \tl_set_eq:Nc \l__enumext_ref_aux_tl { l__enumext_the_counter_ \__enumext_level: _tl }
+    \tl_put_right:ce { l__enumext_counter_style_for_ref_ \__enumext_level: _tl }
+      {
+        \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_aux_tl }
+          { \exp_not:V \l__enumext_ref_key_arg_tl }
+      }
+  }
+%% Activate |ref| key in second arg of list for enumext environment.
+\cs_new_protected:Nn \__enumext_use_key_ref:
+  {
+    \tl_if_empty:cF { l__enumext_counter_style_for_ref_ \__enumext_level: _tl }
+      {
+        \tl_use:c { l__enumext_counter_style_for_ref_ \__enumext_level: _tl }
+      }
+  }
+%% Internal function used by |ref| key in enumext* and keyans* environment.
+\cs_new_protected:Npn \__enumext_set_label_ref_h:n #1
+  {
+    \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
+    \int_compare:nNnTF { \l__enumext_level_h_int } = { 1 }
+      {
+        \tl_set_eq:NN \l__enumext_ref_aux_tl \l__enumext_counter_vii_tl
+        \__enumext_regex_label_ref_key:
+        \tl_set_eq:NN \l__enumext_ref_aux_tl \l__enumext_the_counter_vii_tl
+        \tl_put_right:Ne \l__enumext_counter_style_for_ref_vii_tl
+          {
+            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_aux_tl }
+              { \exp_not:V \l__enumext_ref_key_arg_tl }
+          }
+      }
+      {
+        \tl_set_eq:NN \l__enumext_ref_aux_tl \l__enumext_counter_viii_tl
+        \__enumext_regex_label_ref_key:
+        \tl_set_eq:NN \l__enumext_ref_aux_tl \l__enumext_the_counter_viii_tl
+        \tl_put_right:Ne \l__enumext_counter_style_for_ref_vii_tl
+          {
+            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_aux_tl }
+              { \exp_not:V \l__enumext_ref_key_arg_tl }
+          }
+      }
+  }
+%% Activate |ref| key in second arg of list for starred* environments.
+\cs_new_protected:Nn \__enumext_use_key_ref_h:
+  {
+    \int_compare:nNnTF { \l__enumext_level_h_int } = { 1 }
+      {
+        \tl_if_empty:NF \l__enumext_counter_style_for_ref_vii_tl
+          {
+            \tl_use:N \l__enumext_counter_style_for_ref_vii_tl
+          }
+      }
+      {
+        \tl_if_empty:NF \l__enumext_counter_style_for_ref_viii_tl
+          {
+            \tl_use:N \l__enumext_counter_style_for_ref_viii_tl
+          }
+      }
+  }
+%% Define and set |label| and |ref| keys for |enumext|.
+\cs_set_protected:Npn \__enumext_tmp:nnn #1 #2 #3
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        label .code:n    = {
+                             \__enumext_label_style:cvn { l__enumext_label_#2_tl }
+                               { l__enumext_counter_#2_tl } {##1}
+                             \dim_set_eq:cN  { l__enumext_labelwidth_#2_dim }
+                               \l__enumext_current_widest_dim
+                           },
+        label .initial:n = #3,
+        label .value_required:n = true,
+        ref   .code:n    = \__enumext_set_label_ref:n {##1},
+        ref   .value_required:n = true,
+      }
+  }
+\__enumext_tmp:nnn { level-1 } {   i } { \arabic*.}
+\__enumext_tmp:nnn { level-2 } {  ii } { (\alph*) }
+\__enumext_tmp:nnn { level-3 } { iii } { \roman*. }
+\__enumext_tmp:nnn { level-4 } {  iv } { \Alph*.  }
+%% Define and set |label| and |ref| keys for starred environments.
+\cs_set_protected:Npn \__enumext_tmp:nnn #1 #2 #3
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        label .code:n    = {
+                             \__enumext_label_style:cvn { l__enumext_label_#2_tl }
+                               { l__enumext_counter_#2_tl } {##1}
+                             \dim_set_eq:cN  { l__enumext_labelwidth_#2_dim }
+                               \l__enumext_current_widest_dim
+                           },
+        label .initial:n = #3,
+        label .value_required:n = true,
+        ref   .code:n    = \__enumext_set_label_ref_h:n {##1},
+        ref   .value_required:n = true,
+      }
+  }
+\__enumext_tmp:nnn { enumext* } {  vii } { \arabic*.}
+\__enumext_tmp:nnn { keyans*  } { viii } { (\Alph*) }
+%% Define and set |label| key for |keyans| and |keyanspic|.
+\keys_define:nn { enumext / keyans }
+  {
+    label .code:n    = {
+                         \__enumext_label_style:cvn { l__enumext_label_v_tl }
+                           { l__enumext_counter_v_tl } {#1}
+                         \dim_set_eq:cN  { l__enumext_labelwidth_v_dim }
+                           \l__enumext_current_widest_dim
+                         \__enumext_label_style:cvn { l__enumext_label_vi_tl }
+                            { l__enumext_counter_vi_tl } {#1}
+                         \dim_set_eq:cN  { l__enumext_labelwidth_v_dim }
+                            \l__enumext_current_widest_dim
+                       },
+    label .initial:n = (\Alph*),
+    label .value_required:n = true,
+  }
+%% Internal function for |start| key.
+%% #1 \l_enumext_label_X_tl
+%% #2 \l_enumext_start_X_int
+%% #3 integer or string
+\cs_new_protected:Npn \__enumext_start_from:NNn #1 #2 #3
+  {
+    \__enumext_if_is_int:nTF { #3 }
+       {
+         \int_set:Nn #2 {#3}
+       }
+       {
+         \regex_match:nVT { \c{Alph} | \c{alph} } {#1}
+           { \int_set:Nn #2 { \int_from_alph:n {#3} } }
+         \regex_match:nVT { \c{Roman} | \c{roman} } {#1}
+           { \int_set:Nn #2  { \int_from_roman:n {#3} } }
+       }
+  }
+\cs_generate_variant:Nn \__enumext_start_from:NNn { ccn }
+%% Internal function for |widest| key.
+%% #1 The counter associated with the environment level
+%% #2 \l_enumext_label_X_tl
+%% #3 \l_enumext_labelwidth_X_tl
+%% #4 integer or string
+\cs_new_protected:Npn \__enumext_widest_from:nNNn #1 #2 #3 #4
+  {
+    \__enumext_if_is_int:nTF {#4}
+      {
+        \setcounter{enumX#1} { #4 }
+      }
+      {
+        \regex_match:nVT { \c{Alph} | \c{alph} } {#2}
+          { \setcounter{enumX#1} { \int_from_alph:n {#4} } }
+        \regex_match:nVT { \c{Roman} | \c{roman} } {#2}
+          { \setcounter{enumX#1} { \int_from_roman:n {#4} } }
+      }
+     \__enumext_label_width_by_box:cv
+       { l__enumext_labelwidth_#1_dim } { l__enumext_label_#1_tl }
+  }
+\cs_generate_variant:Nn \__enumext_widest_from:nNNn { nccn }
+%% Add |start| and |widest| key.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        start  .code:n    = {
+                              \__enumext_start_from:ccn
+                                { l__enumext_label_#2_tl }
+                                { l__enumext_start_#2_int } {##1}
+                             },
+        start  .initial:n = 1,
+        widest .code:n    = {
+                              \__enumext_widest_from:nccn {#2}
+                                { l__enumext_label_#2_tl }
+                                { l__enumext_labelwidth_#2_dim } {##1}
+                            },
+        widest .value_required:n = true,
+        start  .value_required:n = true,
+      }
+  }
+\clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
+%% Add |topsep|, |partopsep|, |parsep|, |noitemsep| and |nosep| keys.
+\cs_set_protected:Npn \__enumext_tmp:nnnnnn #1 #2 #3 #4 #5 #6
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        topsep    .skip_set:c = { l__enumext_topsep_#2_skip },
+        topsep    .initial:n  = {#3},
+        topsep    .value_required:n = true,
+        partopsep .skip_set:c = { l__enumext_partopsep_#2_skip },
+        partopsep .initial:n  = {#4},
+        partopsep .value_required:n = true,
+        parsep    .skip_set:c = { l__enumext_parsep_#2_skip },
+        parsep    .initial:n  = {#5},
+        parsep    .value_required:n = true,
+        itemsep   .skip_set:c = { l__enumext_itemsep_#2_skip },
+        itemsep   .initial:n  = {#6},
+        itemsep   .value_required:n = true,
+        noitemsep .meta:n     = { itemsep = 0pt, parsep = 0pt },
+        noitemsep .value_forbidden:n = true,
+        nosep     .meta:n     = {
+                                  itemsep = 0pt, parsep= 0pt,
+                                  topsep = 0pt, partopsep = 0pt,
+                                },
+        nosep     .value_forbidden:n = true,
+      }
+  }
+\__enumext_tmp:nnnnnn { level-1 } { i } { 8.0pt plus 2.0pt minus 4.0pt }
+  { 2.0pt plus 1.0pt minus 1.0pt } { 4.0pt plus 2.0pt minus 1.0pt }
+  { 4.0pt plus 2.0pt minus 1.0pt }
+\__enumext_tmp:nnnnnn { level-2 } { ii } { 4.0pt plus 2.0pt minus 1.0pt }
+  { 2.0pt plus 1.0pt minus 1.0pt } { 2.0pt plus 1.0pt minus 1.0pt }
+  { 2.0pt plus 1.0pt minus 1.0pt }
+\__enumext_tmp:nnnnnn { level-3 } { iii } { 2.0pt plus 1.0pt minus 1.0pt }
+  { 1.0pt minus 1.0pt }{ 0pt }{ 2.0pt plus 1.0pt minus 1.0pt }
+\__enumext_tmp:nnnnnn { level-4 } { iv } { 2.0pt plus 1.0pt minus 1.0pt }
+  { 1.0pt minus 1.0pt }{ 0pt }{ 2.0pt plus 1.0pt minus 1.0pt }
+\__enumext_tmp:nnnnnn { keyans  } { v }{ 4.0pt plus 2.0pt minus 1.0pt }
+  { 2.0pt plus 1.0pt minus 1.0pt }{ 2.0pt plus 1.0pt minus 1.0pt }
+  { 2.0pt plus 1.0pt minus 1.0pt }
+\__enumext_tmp:nnnnnn { enumext* } { vii } { 8.0pt plus 2.0pt minus 4.0pt }
+  { 2.0pt plus 1.0pt minus 1.0pt } { 4.0pt plus 2.0pt minus 1.0pt }
+  { 4.0pt plus 2.0pt minus 1.0pt }
+\__enumext_tmp:nnnnnn { keyans* } { viii } { 4.0pt plus 2.0pt minus 1.0pt }
+  { 2.0pt plus 1.0pt minus 1.0pt } { 2.0pt plus 1.0pt minus 1.0pt }
+  { 2.0pt plus 1.0pt minus 1.0pt }
+%% Add |itemindent|, |rightmargin|, |listparindent|, |list-offset| and |list-indent| keys.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        itemindent    .dim_set:c = { l__enumext_fake_item_indent_#2_dim },
+        itemindent    .value_required:n = true,
+        rightmargin   .dim_set:c = { l__enumext_rightmargin_#2_dim },
+        rightmargin   .value_required:n = true,
+        listparindent .dim_set:c = { l__enumext_listparindent_#2_dim },
+        listparindent .value_required:n = true,
+        list-offset   .dim_set:c = { l__enumext_listoffset_#2_dim },
+        list-offset   .value_required:n = true,
+        list-indent   .code:n    =
+                        \bool_set_true:c { l__enumext_leftmargin_tmp_#2_bool }
+                        \dim_set:cn { l__enumext_leftmargin_tmp_#2_dim } {##1},
+        list-indent   .value_required:n = true,
+      }
+  }
+\clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
+%% Set |list-indent| key for |enumext*| and |keyans*| environments.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \keys_define:nn { enumext / #1 } { list-indent .initial:n  = 0pt, }
+  }
+\clist_map_inline:nn { enumext*, keyans* } { \__enumext_tmp:n {#1} }
+%% Internal functions for |itemindent| key.
+\cs_set_protected:Nn \__enumext_fake_item:
+  {
+    \dim_compare:nNnT
+      { \dim_use:c { l__enumext_fake_item_indent_ \__enumext_level: _dim } }
+      >
+      { \c_zero_dim }
+      {
+        \tl_set:ce { l__enumext_fake_item_indent_ \__enumext_level: _tl }
+          {
+            \exp_not:N \mode_leave_vertical:
+            \exp_not:n { \skip_horizontal:n }
+              { \dim_use:c { l__enumext_fake_item_indent_ \__enumext_level: _dim } }
+            \ignorespaces
+          }
+      }
+   }
+\cs_set_protected:Nn \__enumext_keyans_fake_item:
+  {
+    \dim_compare:nNnT
+      { \l__enumext_fake_item_indent_v_dim } > { \c_zero_dim }
+      {
+        \tl_set:Ne \l__enumext_fake_item_indent_v_tl
+          {
+            \exp_not:N \mode_leave_vertical:
+            \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_v_dim
+          }
+      }
+   }
+\cs_set_protected:Nn \__enumext_fake_item_vii:
+  {
+    \dim_compare:nNnT
+      { \l__enumext_fake_item_indent_vii_dim } > { \c_zero_dim }
+      {
+        \tl_set:Ne \l__enumext_fake_item_indent_vii_tl
+          {
+            \exp_not:N \mode_leave_vertical:
+            \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_vii_dim
+          }
+      }
+   }
+\cs_set_protected:Nn \__enumext_fake_item_viii:
+  {
+    \dim_compare:nNnT
+      { \l__enumext_fake_item_indent_viii_dim } > { \c_zero_dim }
+      {
+        \tl_set:Ne \l__enumext_fake_item_indent_viii_tl
+          {
+            \exp_not:N \mode_leave_vertical:
+            \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_viii_dim
+          }
+      }
+   }
+%% Add |show-length| key.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        show-length .bool_set:c = { l__enumext_show_info_length_#2_bool },
+        show-length .initial:n  = false,
+      }
+  }
+\clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
+%% Add |before|, |before*|, |after| and |first| keys.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        before  .tl_set:c   = { l__enumext_before_no_starred_key_#2_tl },
+        before  .value_required:n = true,
+        before* .tl_set:c   = { l__enumext_before_starred_key_#2_tl },
+        before* .value_required:n = true,
+        after   .tl_set:c   = { l__enumext_after_stop_list_#2_tl },
+        after   .value_required:n = true,
+        first   .tl_set:c   = { l__enumext_after_list_args_#2_tl },
+        first   .value_required:n = true,
+      }
+  }
+\clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
+%% Function for |before|, |before*|, |after| and |first| keys in |enumext|.
+\cs_new_protected:Nn \__enumext_before_args_exec:
+  {
+    \tl_use:c { l__enumext_before_starred_key_ \__enumext_level: _tl }
+  }
+\cs_new_protected:Nn \__enumext_before_keys_exec:
+  {
+    \tl_use:c { l__enumext_before_no_starred_key_ \__enumext_level: _tl }
+  }
+\cs_new_protected:Nn \__enumext_after_stop_list:
+  {
+    \tl_use:c { l__enumext_after_stop_list_ \__enumext_level: _tl }
+  }
+\cs_new_protected:Nn \__enumext_after_args_exec:
+  {
+    \tl_use:c { l__enumext_after_list_args_ \__enumext_level: _tl }
+  }
+%% Function for |before|, |before*|, |after| and |first| keys in |keyans|.
+\cs_new_protected:Nn \__enumext_before_args_exec_v:
+  {
+    \tl_use:N \l__enumext_before_starred_key_v_tl
+  }
+\cs_new_protected:Nn \__enumext_before_keys_exec_v:
+  {
+    \tl_use:N \l__enumext_before_no_starred_key_v_tl
+  }
+\cs_new_protected:Nn \__enumext_after_stop_list_v:
+  {
+    \tl_use:N \l__enumext_after_stop_list_v_tl
+  }
+\cs_new_protected:Nn \__enumext_after_args_exec_v:
+  {
+    \tl_use:N \l__enumext_after_list_args_v_tl
+  }
+%% Function for |before|, |before*|, |after| and |first| keys in |enumext*| and |keyans*|.
+\cs_new_protected:Nn \__enumext_before_args_exec_vii:
+  {
+    \tl_use:N \l__enumext_before_starred_key_vii_tl
+  }
+\cs_new_protected:Nn \__enumext_before_args_exec_viii:
+  {
+    \tl_use:N \l__enumext_before_starred_key_viii_tl
+  }
+\cs_new_protected:Nn \__enumext_before_keys_exec_vii:
+  {
+    \tl_use:N \l__enumext_before_no_starred_key_vii_tl
+  }
+\cs_new_protected:Nn \__enumext_before_keys_exec_viii:
+  {
+    \tl_use:N \l__enumext_before_no_starred_key_viii_tl
+  }
+\cs_new_protected:Nn \__enumext_after_stop_list_vii:
+  {
+    \tl_use:N \l__enumext_after_stop_list_vii_tl
+  }
+\cs_new_protected:Nn \__enumext_after_stop_list_viii:
+  {
+    \tl_use:N \l__enumext_after_stop_list_viii_tl
+  }
+\cs_new_protected:Nn \__enumext_after_args_exec_vii:
+  {
+    \tl_use:N \l__enumext_after_list_args_vii_tl
+  }
+\cs_new_protected:Nn \__enumext_after_args_exec_viii:
+  {
+    \tl_use:N \l__enumext_after_list_args_viii_tl
+  }
+%% Add |mini-env|, |mini-sep|, |columns-sep| and |columns| keys.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        mini-env    .dim_set:c  = { l__enumext_minipage_right_#2_dim },
+        mini-env    .value_required:n = true,
+        mini-sep    .dim_set:c  = { l__enumext_minipage_hsep_#2_dim },
+        mini-sep    .initial:n  = 0.3333em,
+        mini-sep    .value_required:n = true,
+        columns-sep .dim_set:c  = { l__enumext_columns_sep_#2_dim },
+        columns-sep .value_required:n = true,
+        columns     .int_set:c  = { l__enumext_columns_#2_int },
+        columns     .initial:n  = 1,
+        columns     .value_required:n = true,
+      }
+  }
+\clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
+%% Set |columns=2|, add |miniright| and |miniright*| keys for starred environments.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        columns    .initial:n = 2,
+        miniright  .tl_gset:c = { g__enumext_miniright_code_#2_tl },
+        miniright  .value_required:n = true,
+        miniright* .code:n    = {
+                                  \bool_gset_true:c { g__enumext_minipage_center_#2_bool }
+                                  \keys_set:nn { enumext / #1 } { miniright = {##1} }
+                                },
+        miniright  .value_required:n = true,
+      }
+  }
+\clist_map_inline:nn { {enumext*}{vii}, {keyans*}{viii} } { \__enumext_tmp:nn #1 }
+ %
+%% Adjustment of vertical spacing for |multicols| in |enumext|.
+\cs_new_protected:Nn \__enumext_multi_set_vskip:
+  {
+    \skip_set:cn { l__enumext_multicols_above_ \__enumext_level: _skip }
+      {
+         \skip_use:c { l__enumext_topsep_ \__enumext_level: _skip }
+      }
+    \skip_set:cn { l__enumext_multicols_below_ \__enumext_level: _skip }
+      {
+         \skip_use:c { l__enumext_topsep_ \__enumext_level: _skip }
+      }
+    \__enumext_add_pre_parsep:
+   }
+%% Detect |\parsep| from previus level and adjust |\l_@@_multicols_above_X_skip| for |multicols| in |enumext|.
+\cs_new_protected:Nn \__enumext_add_pre_parsep:
+  {
+    \int_case:nn { \l__enumext_level_int }
+      {
+        { 2 }{
+               \skip_if_eq:nnF { \l__enumext_parsep_i_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l__enumext_multicols_above_ii_skip { \l__enumext_parsep_i_skip }
+                 }
+             }
+        { 3 }{
+               \skip_if_eq:nnF { \l__enumext_parsep_ii_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l__enumext_multicols_above_iii_skip { \l__enumext_parsep_ii_skip }
+                 }
+             }
+        { 4 }{
+               \skip_if_eq:nnF { \l__enumext_parsep_iii_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l__enumext_multicols_above_iv_skip { \l__enumext_parsep_iii_skip }
+                 }
+             }
+      }
+  }
+%% Add vertical spacing for |multicols| in |enumext|.
+\cs_new_protected:Nn \__enumext_multi_addvspace:
+  {
+    \__enumext_multi_set_vskip:
+    \mode_if_vertical:T
+      {
+        \skip_add:cn { l__enumext_multicols_above_ \__enumext_level: _skip }
+          {
+            \skip_use:c { l__enumext_partopsep_ \__enumext_level: _skip }
+          }
+        \skip_add:cn { l__enumext_multicols_below_ \__enumext_level: _skip }
+          {
+            \skip_use:c { l__enumext_partopsep_ \__enumext_level: _skip }
+          }
+      }
+    \par\nopagebreak
+    \addvspace{ \skip_use:c { l__enumext_multicols_above_ \__enumext_level: _skip } }
+  }
+%% Adjustment of vertical spacing for |multicols| in |keyans|.
+\cs_new_protected:Nn \__enumext_keyans_multi_set_vskip:
+  {
+    \skip_set:Nn \l__enumext_multicols_above_v_skip
+      {
+        \l__enumext_topsep_v_skip
+      }
+    \skip_set:Nn \l__enumext_multicols_below_v_skip
+      {
+         \l__enumext_topsep_v_skip
+      }
+  }
+\cs_new_protected:Nn \__enumext_keyans_multi_addvspace:
+  {
+    \__enumext_keyans_multi_set_vskip:
+    \mode_if_vertical:T
+      {
+        \skip_add:Nn \l__enumext_multicols_above_v_skip
+          {
+            \skip_use:N \l__enumext_partopsep_v_skip
+          }
+        \skip_add:Nn \l__enumext_multicols_below_v_skip
+          {
+            \skip_use:N \l__enumext_partopsep_v_skip
+          }
+      }
+    \par\nopagebreak
+    \addvspace{ \l__enumext_multicols_above_v_skip }
+  }
+%% Function for define custom (internal) minipage environment.
+\DeclareDocumentEnvironment{__enumext_mini_env*}{ m }
+  {
+     \__enumext_minipage:w [ t ] { #1 }
+       \legacy_if_gset_false:n { @minipage }
+       \vspace { 0pt }
+  }
+  { \__enumext_endminipage: }
+%% Adjustment of vertical spacing for |minipage| in |enumext|.
+\cs_new_protected:Nn \__enumext_mini_set_vskip:
+  {
+    \int_compare:nNnTF
+      { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } > { 1 }
+      {
+        \skip_if_eq:nnTF
+          { \skip_use:c { l__enumext_topsep_ \__enumext_level: _skip } } { \c_zero_skip }
+          {
+            \skip_set:Nn \l__enumext_minipage_left_skip
+              {
+                -0.150\box_dp:N \strutbox
+              }
+            \skip_set:Nn \l__enumext_minipage_right_skip
+              {
+                0.695\box_dp:N \strutbox
+              }
+            \skip_set:Nn \l__enumext_minipage_after_skip
+              {
+                \box_dp:N \strutbox
+              }
+            \__enumext_zero_parsep:
+          }
+          {
+            \skip_set:Nn \l__enumext_minipage_left_skip
+              {
+                + \skip_use:c { l__enumext_topsep_ \__enumext_level: _skip }
+              }
+            \skip_set:Nn \l__enumext_minipage_right_skip
+              {
+                0.695\box_dp:N \strutbox
+              }
+            \skip_set:Nn \l__enumext_minipage_after_skip
+              {
+                1.85\box_dp:N \strutbox
+                + \skip_use:c { l__enumext_topsep_ \__enumext_level: _skip }
+              }
+          }
+      }
+      {
+        \skip_if_eq:nnTF
+          { \skip_use:c { l__enumext_topsep_ \__enumext_level: _skip } } { \c_zero_skip }
+          {
+            \skip_set:Nn \l__enumext_minipage_left_skip
+              {
+                0.5\box_dp:N \strutbox
+                - \skip_use:c { l__enumext_partopsep_ \__enumext_level: _skip }
+              }
+            \skip_set:Nn \l__enumext_minipage_right_skip
+              {
+                \skip_use:c { l__enumext_partopsep_ \__enumext_level: _skip }
+              }
+            \skip_set:Nn \l__enumext_minipage_after_skip
+              {
+                1.6\box_dp:N \strutbox
+              }
+          }
+          {
+            \skip_set:Nn \l__enumext_minipage_left_skip
+              {
+                0.5875\box_dp:N \strutbox
+                - \skip_use:c { l__enumext_partopsep_ \__enumext_level: _skip }
+              }
+            \skip_set:Nn \l__enumext_minipage_right_skip
+              {
+                + \skip_use:c { l__enumext_topsep_ \__enumext_level: _skip }
+                + \skip_use:c { l__enumext_partopsep_ \__enumext_level: _skip }
+              }
+            \skip_set:Nn \l__enumext_minipage_after_skip
+              {
+                0.325\box_dp:N \strutbox
+                + \skip_use:c { l__enumext_topsep_ \__enumext_level: _skip }
+              }
+          }
+      }
+  }
+%% Detect |\parsep| from previus level and adjust |\l_@@_minipage_after_skip| for |mini-env| in |enumext|.
+\cs_new_protected:Nn \__enumext_zero_parsep:
+  {
+    \int_case:nn { \l__enumext_level_int }
+      {
+        { 2 }{
+               \skip_if_eq:nnF { \l__enumext_parsep_i_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l__enumext_minipage_after_skip { 2.15\box_dp:N \strutbox }
+                 }
+             }
+        { 3 }{
+               \skip_if_eq:nnF { \l__enumext_parsep_ii_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l__enumext_minipage_after_skip { 2.15\box_dp:N \strutbox }
+                 }
+             }
+        { 4 }{
+               \skip_if_eq:nnF { \l__enumext_parsep_iii_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l__enumext_minipage_after_skip { 2.15\box_dp:N \strutbox }
+                 }
+             }
+      }
+  }
+%% Aplly \addvspace in horizontal and vertical mode for enumext environment.
+\cs_new_protected:Nn \__enumext_mini_addvspace:
+  {
+    \__enumext_mini_set_vskip:
+    \mode_if_vertical:T
+      {
+        \skip_add:Nn \l__enumext_minipage_left_skip
+          {
+            \skip_use:c { l__enumext_partopsep_ \__enumext_level: _skip }
+          }
+        \skip_add:Nn \l__enumext_minipage_after_skip
+          {
+            \skip_use:c { l__enumext_partopsep_ \__enumext_level: _skip }
+          }
+      }
+    \par\nopagebreak
+    \addvspace { \l__enumext_minipage_left_skip }
+  }
+%% Adjustment of vertical spacing for |minipage| in |keyans|.
+\cs_new_protected:Nn \__enumext_keyans_mini_set_vskip:
+  {
+    \skip_zero_new:N \l__enumext_minipage_after_skip
+    \skip_zero_new:N \l__enumext_minipage_left_skip
+    \skip_zero_new:N \l__enumext_minipage_right_skip
+    \int_compare:nNnTF { \l__enumext_columns_v_int } > { 1 }
+      {
+        \skip_if_eq:nnTF { \l__enumext_topsep_v_skip } { \c_zero_skip }
+          {
+            \skip_set:Nn \l__enumext_minipage_left_skip { -0.25\box_dp:N \strutbox }
+            \skip_set:Nn \l__enumext_minipage_right_skip { 0.705\box_dp:N \strutbox }
+            \skip_set:Nn \l__enumext_minipage_after_skip { \box_dp:N \strutbox }
+            \skip_if_eq:nnF { \l__enumext_parsep_i_skip } { \c_zero_skip }
+              {
+                \skip_add:Nn \l__enumext_minipage_after_skip { 2.15\box_dp:N \strutbox }
+              }
+          }
+          {
+            \skip_set:Nn \l__enumext_minipage_left_skip
+              {
+                \skip_use:N \l__enumext_topsep_v_skip
+              }
+            \skip_set:Nn \l__enumext_minipage_right_skip
+              {
+                0.705\box_dp:N \strutbox
+              }
+            \skip_set:Nn \l__enumext_minipage_after_skip
+              {
+                1.85\box_dp:N \strutbox + \l__enumext_topsep_v_skip
+              }
+          }
+      }
+      {
+        \skip_if_eq:nnTF { \l__enumext_topsep_v_skip } { \c_zero_skip }
+          {
+            \skip_set:Nn \l__enumext_minipage_left_skip
+              {
+                0.5\box_dp:N \strutbox
+                + \l__enumext_partopsep_v_skip
+              }
+            \skip_set:Nn \l__enumext_minipage_right_skip
+              {
+                + \l__enumext_partopsep_v_skip
+              }
+            \skip_set:Nn \l__enumext_minipage_after_skip { 1.6\box_dp:N \strutbox }
+          }
+          {
+            \skip_set:Nn \l__enumext_minipage_left_skip
+              {
+                0.5875\box_dp:N \strutbox - \l__enumext_partopsep_v_skip
+              }
+            \skip_set:Nn \l__enumext_minipage_right_skip
+              {
+                \l__enumext_topsep_v_skip + \l__enumext_partopsep_v_skip
+              }
+            \skip_set:Nn \l__enumext_minipage_after_skip
+              {
+                0.325\box_dp:N \strutbox + \l__enumext_topsep_v_skip
+              }
+          }
+      }
+  }
+%% Aplly \addvspace in horizontal and vertical mode for |keyans| environment.
+\cs_new_protected:Nn \__enumext_keyans_mini_addvspace:
+  {
+    \__enumext_keyans_mini_set_vskip:
+    \mode_if_vertical:T
+      {
+        \skip_add:Nn \l__enumext_minipage_left_skip
+          {
+            \l__enumext_partopsep_v_skip
+          }
+        \skip_add:Nn \l__enumext_minipage_after_skip
+          {
+            \l__enumext_partopsep_v_skip
+          }
+      }
+    \par\nopagebreak
+    \addvspace { \l__enumext_minipage_left_skip }
+  }
+%% Adjustment of vertical spacing for |minipage| in |enumext*| and |keyans*|.
+\cs_new_protected:Nn \__enumext_mini_set_vskip_vii:
+  {
+    \skip_zero_new:N \l__enumext_minipage_left_skip
+    \skip_gzero_new:N \g__enumext_minipage_right_skip
+    \skip_gzero_new:N \g__enumext_minipage_after_skip
+    \skip_if_eq:nnTF { \l__enumext_topsep_vii_skip } { \c_zero_skip }
+      {
+        \skip_set:Nn \l__enumext_minipage_left_skip { 0.5\box_dp:N \strutbox }
+        \skip_gset:Nn \g__enumext_minipage_right_skip { 0.325\box_dp:N \strutbox }
+      }
+      {
+        \skip_set:Nn \l__enumext_minipage_left_skip { 0.5875\box_dp:N \strutbox }
+        \skip_gset:Nn \g__enumext_minipage_right_skip
+          {
+            %0.325\box_dp:N \strutbox +
+            \l__enumext_topsep_vii_skip
+          }
+        \skip_gset:Nn \g__enumext_minipage_after_skip
+          {
+            0.325\box_dp:N \strutbox + \l__enumext_topsep_vii_skip
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_mini_set_vskip_viii:
+  {
+    \skip_zero_new:N \l__enumext_minipage_after_skip
+    \skip_zero_new:N \l__enumext_minipage_left_skip
+    \skip_zero_new:N \l__enumext_minipage_right_skip
+    \skip_if_eq:nnTF { \l__enumext_topsep_viii_skip } { \c_zero_skip }
+      {
+        \skip_set:Nn \l__enumext_minipage_left_skip
+           {
+              0.5\box_dp:N \strutbox
+           }
+         \skip_set:Nn \l__enumext_minipage_right_skip
+            {
+              + \l__enumext_partopsep_viii_skip
+            }
+        \skip_set:Nn \l__enumext_minipage_after_skip { 1.6\box_dp:N \strutbox }
+      }
+      {
+        \skip_set:Nn \l__enumext_minipage_left_skip
+          {
+            0.5875\box_dp:N \strutbox
+          }
+        \skip_set:Nn \l__enumext_minipage_right_skip
+          {
+            \l__enumext_topsep_viii_skip
+          }
+        \skip_set:Nn \l__enumext_minipage_after_skip
+          {
+             0.325\box_dp:N \strutbox + \l__enumext_topsep_viii_skip
+          }
+       }
+  }
+%% Aplly \addvspace above minipage for |enumext*| and |keyans*| environments.
+\cs_new_protected:Nn \__enumext_mini_addvspace_vii:
+  {
+    \__enumext_mini_set_vskip_vii:
+    \par\nopagebreak
+    \addvspace { \l__enumext_minipage_left_skip }
+  }
+\cs_new_protected:Nn \__enumext_mini_addvspace_viii:
+  {
+    \__enumext_mini_set_vskip_viii:
+    \par\nopagebreak
+    \addvspace { \l__enumext_minipage_left_skip }
+  }
+%% Definition of |\miniright| command.
+\NewDocumentCommand \miniright { s }
+  {
+    \int_compare:nNnT { \l__enumext_keyans_pic_level_int } = { 1 }
+      {
+        \msg_error:nnn { enumext } { wrong-miniright-place }
+      }
+    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
+      {
+        \msg_error:nnn { enumext } { wrong-miniright-place }
+      }
+    \int_compare:nNnTF { \l__enumext_keyans_level_int } = { 1 }
+      {
+        \__enumext_keyans_mini_right_cmd:n {#1}
+      }
+      { \__enumext_mini_right_cmd:n {#1} }
+  }
+%% Internal function for |\miniright| command in enumext.
+\cs_new_protected:Npn \__enumext_mini_right_cmd:n #1
+  {
+    \dim_compare:nNnTF
+      { \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } } > { \c_zero_dim }
+      {
+        \__enumext_multicols_stop:
+        \end{__enumext_mini_env*}
+        \hfill
+        \begin{__enumext_mini_env*}
+          { \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } }
+          \par\addvspace { \l__enumext_minipage_right_skip }
+          \bool_if:nF {#1}
+            {
+              \centering
+            }
+          \int_gzero:N \g__enumext_minipage_stat_int
+      }
+      { \msg_error:nnn { enumext } { wrong-miniright-use } }
+  }
+%% Internal function for |\miniright| command in keyans.
+\cs_new_protected:Npn \__enumext_keyans_mini_right_cmd:n #1
+  {
+    \dim_compare:nNnTF { \l__enumext_minipage_right_v_dim } > { \c_zero_dim }
+      {
+        \__enumext_keyans_multicols_stop:
+        \end{__enumext_mini_env*}
+        \hfill
+        \begin{__enumext_mini_env*}{ \l__enumext_minipage_right_v_dim }
+          \par\addvspace { \l__enumext_minipage_right_skip }
+          \bool_if:nF {#1}
+            {
+              \centering
+            }
+          \int_gzero:N \g__enumext_minipage_stat_int
+      }
+      { \msg_error:nnn { enumext } { wrong-miniright-use } }
+  }
+%% Add |above| and |below| keys.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        above  .skip_set:c = { l__enumext_vspace_above_#2_skip },
+        above  .value_required:n = true,
+        above* .code:n     = \bool_set_true:c { l__enumext_vspace_a_star_#2_bool }
+                             \keys_set:nn { enumext / #1 } { above = {##1} },
+        above* .value_required:n = true,
+        below  .skip_set:c = { l__enumext_vspace_below_#2_skip },
+        below  .value_required:n = true,
+        below* .code:n     = \bool_set_true:c { l__enumext_vspace_b_star_#2_bool }
+                             \keys_set:nn { enumext / #1 } { below = {##1} },
+        below* .value_required:n = true,
+      }
+  }
+\clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
+%% Function for |above|, |above*|, |below| and |below*| keys in |enumext|.
+\cs_new_protected:Nn \__enumext_vspace_above:
+  {
+    \skip_if_eq:nnF
+      { \skip_use:c { l__enumext_vspace_above_ \__enumext_level: _skip } } { \c_zero_skip }
+      {
+        \bool_if:cTF { l__enumext_vspace_a_star_ \__enumext_level: _bool }
+          {
+            \vspace*{ \skip_use:c { l__enumext_vspace_above_ \__enumext_level: _skip } }
+          }
+          {
+            \vspace { \skip_use:c { l__enumext_vspace_above_ \__enumext_level: _skip } }
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_vspace_below:
+  {
+    \skip_if_eq:nnF
+      { \skip_use:c { l__enumext_vspace_below_ \__enumext_level: _skip } } { \c_zero_skip }
+      {
+        \bool_if:cTF { l__enumext_vspace_b_star_ \__enumext_level: _bool }
+          {
+            \vspace*{ \skip_use:c { l__enumext_vspace_below_ \__enumext_level: _skip } }
+          }
+          {
+            \vspace { \skip_use:c { l__enumext_vspace_below_ \__enumext_level: _skip } }
+          }
+      }
+  }
+%% Function for |above|, |above*|, |below| and |below*| keys in |keyans|.
+\cs_new_protected:Nn \__enumext_vspace_above_v:
+  {
+    \skip_if_eq:nnF { \l__enumext_vspace_above_v_skip } { \c_zero_skip }
+      {
+        \bool_if:NTF \l__enumext_vspace_a_star_v_bool
+          {
+            \vspace*{ \l__enumext_vspace_above_v_skip }
+          }
+          { \vspace { \l__enumext_vspace_above_v_skip } }
+      }
+  }
+\cs_new_protected:Nn \__enumext_vspace_below_v:
+  {
+    \skip_if_eq:nnF { \l__enumext_vspace_below_v_skip } { \c_zero_skip }
+      {
+        \bool_if:NTF \l__enumext_vspace_b_star_v_bool
+          {
+            \vspace*{ \l__enumext_vspace_below_v_skip }
+          }
+          { \vspace { \l__enumext_vspace_below_v_skip } }
+      }
+  }
+%% Function for |above|, |above*|, |below| and |below*| keys in |enumext*| and |keyans*|.
+\cs_new_protected:Nn \__enumext_vspace_above_vii:
+  {
+    \skip_if_eq:nnF { \l__enumext_vspace_above_vii_skip } { \c_zero_skip }
+      {
+        \bool_if:NTF \l__enumext_vspace_a_star_vii_bool
+          {
+            \vspace*{ \l__enumext_vspace_above_vii_skip }
+          }
+          { \vspace { \l__enumext_vspace_above_vii_skip } }
+      }
+  }
+\cs_new_protected:Nn \__enumext_vspace_above_viii:
+  {
+    \skip_if_eq:nnF { \l__enumext_vspace_above_viii_skip } { \c_zero_skip }
+      {
+        \bool_if:NTF \l__enumext_vspace_a_star_viii_bool
+          {
+            \vspace*{ \l__enumext_vspace_above_viii_skip }
+          }
+          { \vspace { \l__enumext_vspace_above_viii_skip } }
+      }
+  }
+\cs_new_protected:Nn \__enumext_vspace_below_vii:
+  {
+    \skip_if_eq:nnF { \l__enumext_vspace_below_vii_skip } { \c_zero_skip }
+      {
+        \bool_if:NTF \l__enumext_vspace_b_star_vii_bool
+          {
+            \vspace*{ \l__enumext_vspace_below_vii_skip }
+          }
+          { \vspace { \l__enumext_vspace_below_vii_skip } }
+      }
+  }
+\cs_new_protected:Nn \__enumext_vspace_below_viii:
+  {
+    \skip_if_eq:nnF { \l__enumext_vspace_below_viii_skip } { \c_zero_skip }
+      {
+        \bool_if:NTF \l__enumext_vspace_b_star_viii_bool
+          {
+            \vspace*{ \l__enumext_vspace_below_viii_skip }
+          }
+          { \vspace { \l__enumext_vspace_below_viii_skip } }
+      }
+  }
+%% Add |save-ans|, |resume| and |resume*| keys only on first level of |enumext|.
+\keys_define:nn { enumext / level-1 }
+  {
+    save-ans .code:n = \__enumext_current_env:
+                       \__enumext_keyans_storing_set:n {#1},
+    save-ans .value_required:n = true,
+    resume   .code:n = \__enumext_resume_counter:,
+    resume   .value_forbidden:n = true,
+    resume*  .code:n = \__enumext_resume_counter_star:,
+    resume*  .value_forbidden:n = true,
+  }
+%% Add |resume| and |save-ans| keys only on first level of |enumext*|.
+\keys_define:nn { enumext / enumext* }
+  {
+    save-ans .code:n = \__enumext_current_env:
+                       \__enumext_keyans_storing_set:n {#1},
+    save-ans .value_required:n = true,
+    resume   .code:n = \__enumext_resume_counter_vii:,
+    resume   .value_forbidden:n = true,
+  }
+%% Function to activate ALL storing (and check) used by |save-ans| key.
+\cs_new_protected:Npn \__enumext_keyans_storing_set:n #1
+  {
+    \tl_set:Ne \l__enumext_stored_name_tl {#1}
+    \bool_set_true:N \l__enumext_stored_bool
+    \int_if_exist:cF { g__enumext_resume_#1_int }
+      {
+        \int_new:c { g__enumext_resume_#1_int }
+      }
+    \bool_if:NT \l__enumext_keyans_check_bool
+      {
+        \__enumext_keyans_make_int:n {#1}
+      }
+  }
+%% Internal function used by |resume| key.
+\cs_new_protected:Nn \__enumext_resume_counter:
+  {
+    \bool_if:NT \l__enumext_stored_bool
+      {
+        \int_gset:Nn \g__enumext_resume_int
+          {
+            \int_use:c { g__enumext_resume_ \l__enumext_stored_name_tl _int }
+          }
+      }
+    \bool_set_true:N \l__enumext_resume_bool
+  }
+\cs_new_protected:Nn \__enumext_resume_counter_vii:
+  {
+    \bool_if:NT \l__enumext_stored_bool
+      {
+        \int_gset:Nn \g__enumext_resume_int
+          {
+            \int_use:c { g__enumext_resume_ \l__enumext_stored_name_tl _int }
+          }
+      }
+    \bool_set_true:N \l__enumext_resume_vii_bool
+  }
+%% Add |check-ans| and |no-ans| keys.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        check-ans .bool_set:N = \l__enumext_keyans_check_bool,
+        check-ans .initial:n  = false,
+        no-ans    .bool_set:c = { l__enumext_use_anskey_#2_bool },
+        no-ans    .initial:n  = false,
+      }
+  }
+\clist_map_inline:nn
+  {
+    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
+  }
+  { \__enumext_tmp:nn #1 }
+%% Creation of integer variables for the internal check-answer mechanism.
+\cs_new_protected:Npn \__enumext_keyans_make_int:n #1
+  {
+    \int_if_exist:cF { g__enumext_count_#1_item_ans_int }
+      { \int_new:c { g__enumext_count_#1_item_ans_int } }
+    \int_if_exist:cF { g__enumext_count_#1_i_int }
+      { \int_new:c { g__enumext_count_#1_i_int } }
+    \int_if_exist:cF { g__enumext_count_#1_ii_int }
+      { \int_new:c { g__enumext_count_#1_ii_int } }
+    \int_if_exist:cF { g__enumext_count_#1_iii_int }
+      { \int_new:c { g__enumext_count_#1_iii_int } }
+    \int_if_exist:cF { g__enumext_count_#1_iv_int }
+      { \int_new:c { g__enumext_count_#1_iv_int } }
+    \int_if_exist:cF { g__enumext_count_#1_vii_int }
+      { \int_new:c { g__enumext_count_#1_vii_int } }
+    \int_gset_eq:Nc \g__enumext_count_item_all_int { g__enumext_count_#1_i_int        }
+    \int_gset_eq:Nc \g__enumext_count_item_ii_int  { g__enumext_count_#1_ii_int       }
+    \int_gset_eq:Nc \g__enumext_count_item_iii_int { g__enumext_count_#1_iii_int      }
+    \int_gset_eq:Nc \g__enumext_count_item_iv_int  { g__enumext_count_#1_iv_int       }
+    \int_gset_eq:Nc \g__enumext_count_item_vii_int { g__enumext_count_#1_vii_int      }
+    \int_gset_eq:Nc \g__enumext_count_item_ans_int { g__enumext_count_#1_item_ans_int }
+  }
+%% Funtion to count |\item| for internal checking answer mechanism in |enumext|.
+\cs_new_protected:Nn \__enumext_keyans_anskey_count_item:
+  {
+    \bool_if:NT \l__enumext_keyans_check_bool
+      {
+        \bool_if:cTF { l__enumext_use_anskey_ \__enumext_level: _bool }
+          {
+            \int_gadd:cn { g__enumext_count_item_ \__enumext_level: _int }
+              { \int_use:c { g__enumext_count_tmpa_ \__enumext_level: _int } + 1 }
+          }
+          { \int_gincr:c { g__enumext_count_item_ \__enumext_level: _int } }
+      }
+  }
+%% Funtion to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+\cs_new_protected:Nn \__enumext_keyans_check_active:
+  {
+    \int_set:Nn \l__enumext_compare_items_ans_int
+      {
+         \g__enumext_count_item_all_int - \g__enumext_count_item_ii_int
+       - \g__enumext_count_item_iii_int - \g__enumext_count_item_iv_int
+      }
+    \int_compare:nNnTF
+      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_ans_int }
+      {
+        \msg_term:nnV { enumext } { items-same-answer }
+          \g__enumext_stored_name_tl
+      }
+      {
+        \msg_warning:nnV { enumext } { item-different-answer }
+          \g__enumext_stored_name_tl
+      }
+    \int_gzero:N \g__enumext_count_tmpa_i_int
+    \int_gzero:N \g__enumext_count_tmpa_ii_int
+    \int_gzero:N \g__enumext_count_tmpa_iii_int
+    \int_gzero:N \g__enumext_count_tmpa_iv_int
+    \int_gzero:N \g__enumext_count_tmpa_vii_int
+  }
+%% Execute |check-ans| key out of |enumext|.
+\__enumext_after_env:n
+  {
+    \bool_if:NT \g__enumext_keyans_check_show_bool
+      {
+        \int_compare:nNnT { \l__enumext_level_int } = { 0 }
+          {
+            \__enumext_keyans_check_active:
+          }
+      }
+    \bool_gset_false:N \g__enumext_keyans_check_show_bool
+    \tl_gclear:N \g__enumext_stored_name_tl
+  }
+%% Add keys associated with storage on first level of |enumext| and |enumext*|.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        wrap-ans   .cs_set_protected:Np = \__enumext_keyans_anskey_wrapper:n ##1,
+        wrap-ans   .initial:n  = \fbox{##1},
+        wrap-ans   .value_required:n = true,
+        mark-ans   .code:n     = \tl_set:Nn \l__enumext_keyans_mark_ans_tl {##1},
+        mark-ans   .initial:n  = \textasteriskcentered,
+        mark-ans   .value_required:n = true,
+        mark-pos   .choice:,
+        mark-pos  / left   .code:n = \str_set:Nn \l__enumext_keyans_mark_pos_str { l },
+        mark-pos  / right  .code:n = \str_set:Nn \l__enumext_keyans_mark_pos_str { r },
+        mark-pos   .initial:n      = right,
+        mark-pos   .value_required:n = true,
+        show-ans   .code:n     = \bool_set_true:N  \l__enumext_keyans_show_ans_bool
+                                 \bool_set_false:N \l__enumext_keyans_show_pos_bool,
+        show-ans   .value_forbidden:n = true,
+        show-pos   .code:n     = \bool_set_true:N \l__enumext_keyans_show_pos_bool
+                                 \bool_set_false:N  \l__enumext_keyans_show_ans_bool,
+        show-pos   .value_forbidden:n = true,
+        mark-ref   .code:n     = \tl_set:Nn \l__enumext_keyans_mark_ref_tl {##1},
+        mark-ref   .initial:n  = \textasteriskcentered,
+        mark-ref   .value_required:n = true,
+        store-ref  .bool_set:N = \l__enumext_store_ref_key_bool,
+        store-ref  .initial:n  = false,
+      }
+  }
+\clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
+%% Add keys |mark-pos| and |show-ans| for |keyans| and |keyans*|.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        mark-pos .choice:,
+        mark-pos / left  .code:n    = \str_set:Nn \l__enumext_keyans_mark_pos_str { l },
+        mark-pos / right .code:n    = \str_set:Nn \l__enumext_keyans_mark_pos_str { r },
+        mark-pos         .initial:n = right,
+        mark-pos .value_required:n  = true,
+        show-ans .code:n   = \bool_set_true:N  \l__enumext_keyans_show_ans_bool
+                             \bool_set_false:N \l__enumext_keyans_show_pos_bool,
+        show-ans .value_forbidden:n = true,
+        show-pos .code:n   = \bool_set_true:N  \l__enumext_keyans_show_pos_bool
+                             \bool_set_false:N \l__enumext_keyans_show_ans_bool,
+        show-pos .value_forbidden:n = true,
+      }
+  }
+\clist_map_inline:nn { keyans, keyans* } { \__enumext_tmp:n {#1} }
+%% Add keys |columns-sep*| and |columns*| for |\printkeyans|.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        columns*     .code:n = \bool_set_true:c { l__enumext_stored_columns_#2_bool }
+                               \int_set:cn { l__enumext_stored_columns_#2_int } {##1}
+                               \tl_put_right:ce { l__enumext_stored_opt_#2_tl }
+                                 {
+                                    columns = \exp_not:v { l__enumext_stored_columns_#2_int },
+                                 },,
+        columns*     .value_required:n  = true,
+        columns-sep* .code:n = \bool_set_true:c { l__enumext_stored_columns_sep_#2_bool }
+                               \dim_set:cn { l__enumext_stored_columns_sep_#2_dim } {##1}
+                               \tl_put_right:ce { l__enumext_stored_opt_#2_tl }
+                                 {
+                                    columns-sep = \exp_not:v { l__enumext_stored_columns_sep_#2_dim },
+                                 },
+        columns-sep* .value_required:n  = true,
+      }
+  }
+\clist_map_inline:nn
+  {
+    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
+  }
+  { \__enumext_tmp:nn #1 }
+%% Function for store content to prop list.
+\cs_new_protected:Npn \__enumext_keyans_addto_prop:n #1
+  {
+    \prop_if_exist:cF { g_keyans_ \l__enumext_stored_name_tl _prop }
+      { \prop_new:c { g_keyans_ \l__enumext_stored_name_tl _prop } }
+    \prop_gput:cen { g_keyans_ \l__enumext_stored_name_tl _prop }
+      {
+        \int_eval:n { \prop_count:c { g_keyans_ \l__enumext_stored_name_tl _prop } +1 }
+      } { #1 }
+  }
+\cs_generate_variant:Nn \__enumext_keyans_addto_prop:n { V }
+%% Function for store content to sequence.
+\cs_new_protected:Npn \__enumext_keyans_addto_seq:n #1
+  {
+    \seq_if_exist:cF { g_keyans_ \l__enumext_stored_name_tl _seq }
+      { \seq_new:c { g_keyans_ \l__enumext_stored_name_tl _seq } }
+    \seq_gput_right:cn { g_keyans_ \l__enumext_stored_name_tl _seq } { #1 }
+  }
+\cs_generate_variant:Nn \__enumext_keyans_addto_seq:n { v, V }
+%% Function for memorize level execution of |\anskey| on |enumext|.
+\cs_new_protected:Nn \__enumext_store_level_open:
+  {
+    \tl_if_empty:cTF { l__enumext_stored_opt_ \__enumext_level: _tl }
+      {
+        \__enumext_keyans_addto_seq:n
+          {
+            \item \begin{enumext}
+          }
+      }
+      {
+        \tl_put_left:cn { l__enumext_stored_opt_ \__enumext_level: _tl }
+          {
+            \item \begin{enumext} [
+          }
+        \tl_put_right:cn { l__enumext_stored_opt_ \__enumext_level: _tl }
+          {
+            ]
+          }
+        \__enumext_keyans_addto_seq:v { l__enumext_stored_opt_ \__enumext_level: _tl }
+      }
+  }
+\cs_new_protected:Nn \__enumext_store_level_close:
+  {
+    \__enumext_keyans_addto_seq:n { \end{enumext} }
+  }
+%% Function for memorize level execution of |\anskey| on |enumext*|.
+\cs_new_protected:Nn \__enumext_store_level_open_vii:
+  {
+    \tl_if_empty:NTF \l__enumext_stored_opt_vii_tl
+      {
+        \__enumext_keyans_addto_seq:n
+          {
+            \item \mode_leave_vertical:
+              \vspace { -\skip_eval:n { \baselineskip + \parsep } }
+              \begin{enumext*}[before={\setlength{\topsep}{0pt}},]
+          }
+      }
+      {
+        \tl_put_left:Nn \l__enumext_stored_opt_vii_tl
+          {
+            \item \mode_leave_vertical:
+              \vspace { -\skip_eval:n { \baselineskip + \parsep } }
+              \begin{enumext*}[before={\setlength{\topsep}{0pt}},
+          }
+        \tl_put_right:Nn \l__enumext_stored_opt_vii_tl
+          {
+            ]
+          }
+        \__enumext_keyans_addto_seq:V \l__enumext_stored_opt_vii_tl
+      }
+  }
+\cs_new_protected:Nn \__enumext_store_level_close_vii:
+  {
+    \__enumext_keyans_addto_seq:n { \end{enumext*} }
+  }
+%% Function for put content in box on left margin.
+\cs_new_protected:Nn \__enumext_keyans_print_box:NN
+  {
+    \mode_leave_vertical:
+    \skip_horizontal:n { -\dim_use:N #2 }
+    \makebox[0pt][ r ]
+      {
+        \makebox[ \dim_use:N #1 ][ \l__enumext_keyans_mark_pos_str ]
+          {
+            \tl_use:N \l__enumext_keyans_mark_ans_tl
+          }
+      }
+    \skip_horizontal:n { \dim_use:N #2 }
+  }
+\cs_generate_variant:Nn \__enumext_keyans_print_box:NN { cc }
+%% Add |key=val| for |\anskey|.
+\keys_define:nn { enumext / anskey }
+  {
+    item-sym* .tl_set:N   = \l__enumext_stored_item_symbol_tl,
+    item-sym* .value_required:n = true,
+    item-pos* .dim_set:N  = \l__enumext_stored_item_symbol_sep_dim,
+    item-pos* .value_required:n = true,
+    store-brk .bool_set:N = \l__enumext_stored_columns_break_bool,
+    store-brk .default:n  = true,
+    store-brk .value_forbidden:n = true,
+  }
+%% Define the user command |\anskey|.
+%% #1: (number); #2: * starred; #3: key-val; #4: argument
+\NewDocumentCommand \anskey { d() s o +m }
+  {
+    \bool_if:NF \l__enumext_stored_bool
+      {
+        \msg_error:nnnn { enumext } { anskey-wrong-place }{ anskey }{ enumext }
+      }
+    \int_compare:nNnT { \l__enumext_keyans_level_int } = { 1 }
+      {
+        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans }
+      }
+    \int_compare:nNnT { \l__enumext_keyans_pic_level_int } = { 1 }
+      {
+        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
+      }
+    \bool_if:NT \l__enumext_keyans_check_bool
+      {
+        \int_gincr:N \g__enumext_count_item_ans_int
+      }
+    \group_begin:
+      \__enumext_stored_anskey_code:nnnn {#1} {#2} {#3} {#4}
+    \group_end:
+  }
+%% Internal function of |\anskey|.
+\cs_new_protected:Npn \__enumext_stored_anskey_code:nnnn #1 #2 #3 #4
+  {
+    \__enumext_keyans_addto_prop:n {#4}
+    \bool_if:NT \l__enumext_store_ref_key_bool
+      {
+        \__enumext_stored_make_label_ref:
+      }
+    \__enumext_anskey_show_left:n { #4 }
+    \tl_clear:N \l__enumext_stored_anskey_tl
+    \tl_if_novalue:nF {#3}
+      {
+        \keys_set:nn { enumext / anskey } {#3}
+      }
+    \bool_lazy_and:nnT
+      { \l__enumext_stored_columns_break_bool }
+      { !\l__enumext_starred_bool }
+      {
+        \tl_put_left:Nn \l__enumext_stored_anskey_tl { \columnbreak }
+      }
+    \tl_put_right:Nn \l__enumext_stored_anskey_tl { \item }
+    \tl_if_novalue:nF {#1}
+      {
+        \int_set:Nn \l__enumext_stored_columns_join_int {#1}
+        \bool_if:NT \l__enumext_starred_bool
+          {
+            \tl_put_right:Ne \l__enumext_stored_anskey_tl
+              {
+                ( \exp_not:V \l__enumext_stored_columns_join_int )
+              }
+          }
+      }
+    \bool_if:nTF {#2}
+      {
+        \tl_put_right:Nn \l__enumext_stored_anskey_tl { * }
+        \tl_if_empty:NF \l__enumext_stored_item_symbol_tl
+          {
+            \tl_put_right:Ne \l__enumext_stored_anskey_tl
+              {
+                [ \exp_not:V \l__enumext_stored_item_symbol_tl ]
+              }
+          }
+        \dim_compare:nT
+          {
+            \l__enumext_stored_item_symbol_sep_dim != \c_zero_dim
+          }
+          {
+            \tl_put_right:Ne \l__enumext_stored_anskey_tl
+              {
+                [ \exp_not:V \l__enumext_stored_item_symbol_sep_dim ]
+              }
+          }
+        \tl_put_right:Nn \l__enumext_stored_anskey_tl {#4}
+      }
+      {
+        \tl_put_right:Nn \l__enumext_stored_anskey_tl {#4}
+      }
+    \bool_lazy_and:nnT
+      { \l__enumext_store_ref_key_bool }
+      { \l__enumext_hyperref_bool }
+      {
+        \tl_put_right:Ne \l__enumext_stored_anskey_tl
+          {
+            \hfill \exp_not:N \hyperlink { \exp_not:V \l__enumext_newlabel_arg_one_tl }
+                 { \exp_not:V \l__enumext_keyans_mark_ref_tl }
+          }
+      }
+    \__enumext_keyans_addto_seq:V \l__enumext_stored_anskey_tl
+  }
+%% Internal label and ref function for |\anskey|.
+\cs_new_protected:Nn \__enumext_stored_make_label_ref:
+  {
+    \cs_set_protected:Npn \__enumext_tmp:n ##1
+      {
+        \tl_set_eq:cc { l__enumext_label_copy_##1_tl } { l__enumext_label_##1_tl }
+        \tl_reverse:c { l__enumext_label_copy_##1_tl }
+        \tl_remove_once:cn { l__enumext_label_copy_##1_tl } { . }
+        \tl_reverse:c { l__enumext_label_copy_##1_tl }
+      }
+    \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {##1} }
+    \cs_set:Npn \__enumext_tmp:n ##1
+      { . \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
+    \bool_lazy_all:nT
+      {
+        %{ \l__enumext_starred_bool }
+        { \g__enumext_starred_bool }
+        { \int_compare_p:nNn { \l__enumext_level_int } = { \c_zero_int } }
+      }
+      {
+       \typeout{ONLY-ENUMEXT***}
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          { \tl_use:N \l__enumext_label_copy_vii_tl }
+      }
+    \bool_lazy_all:nT
+      {
+        { \l__enumext_standar_bool }
+        { \g__enumext_starred_bool }
+        %{ \l__enumext_starred_bool }
+        { \int_compare_p:nNn { \l__enumext_level_int } > { \c_zero_int } }
+      }
+      {
+        \typeout{ENUMEXT-NESTED-IN-ENUMEXT***}
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          {
+            \tl_use:N \l__enumext_label_copy_vii_tl
+            \int_step_function:nnN { 1 } { \l__enumext_level_int } \__enumext_tmp:n
+          }
+      }
+   % Only enumext
+    \bool_lazy_all:nT
+      {
+        { \l__enumext_standar_bool }
+        { \int_compare_p:nNn { \l__enumext_level_int } > { \c_zero_int } }
+        { \int_compare_p:nNn { \l__enumext_level_h_int } = { \c_zero_int } }
+        { \bool_not_p:n { \l__enumext_starred_bool } }
+      }
+      {
+        \typeout{ONLY-ENUMEXT}
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          {
+            \tl_use:N \l__enumext_label_copy_i_tl
+            \int_step_function:nnN { 2 } { \l__enumext_level_int } \__enumext_tmp:n
+          }
+      }
+    \cs_set:Npn \__enumext_tmp:n ##1
+      { \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
+    \bool_lazy_all:nT
+      {
+        { \l__enumext_standar_bool }
+        { \int_compare_p:nNn { \l__enumext_level_int } > { \c_zero_int } }
+        { \bool_not_p:n { \g__enumext_starred_bool } }
+        { \int_compare_p:nNn { \l__enumext_level_h_int } > { \c_zero_int } }
+      }
+      {
+        \typeout{ZZZZZZZZZZZZZENUMEXT}
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          {
+            \int_step_function:nnN { 1 } { \l__enumext_level_int } \__enumext_tmp:n
+            . \tl_use:N \l__enumext_label_copy_vii_tl
+          }
+      }
+
+    %\bool_if:NTF \l__enumext_starred_bool
+      %{
+        %\tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          %{ \tl_use:N \l__enumext_label_copy_vii_tl }
+      %}
+     % {
+     %   \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+     %     {
+     %       \tl_use:N \l__enumext_label_copy_i_tl
+     %       \int_step_function:nnN { 2 } { \l__enumext_level_int } \__enumext_tmp:n
+     %     }
+     % }
+    \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
+      {
+        \l__enumext_stored_name_tl \c_colon_str
+        \int_eval:n { \prop_count:c { g_keyans_ \l__enumext_stored_name_tl _prop } }
+      }
+    \tl_put_right:Ne \l__enumext_keyans_make_label_ref_tl
+      {
+        \__enumext_newlabel_write:nn
+          { \exp_not:V \l__enumext_newlabel_arg_one_tl }
+          { \l__enumext_newlabel_arg_two_tl }
+      }
+    \l__enumext_keyans_make_label_ref_tl
+  }
+%% Internal |wrap-ans| implementation for |\anskey|.
+\cs_new_protected:Npn \__enumext_anskey_show_wrap_ans:n #1
+  {
+    \par
+    \bool_if:NT \l__enumext_starred_bool
+      {
+       \cs_set:Nn \__enumext_level: { vii }
+      }
+    \__enumext_keyans_print_box:cc
+      { l__enumext_labelwidth_ \__enumext_level: _dim }
+      { l__enumext_labelsep_ \__enumext_level: _dim }
+    \__enumext_keyans_anskey_wrapper:n { #1 }
+  }
+%% Internal |show-ans| and |show-pos| implementation for |\anskey|.
+\cs_new_protected:Npn \__enumext_anskey_show_left:n #1
+  {
+    \bool_if:NT \l__enumext_keyans_show_ans_bool
+      {
+        \__enumext_anskey_show_wrap_ans:n { #1 }
+      }
+    \bool_if:NT \l__enumext_keyans_show_pos_bool
+      {
+        \tl_set:Ne \l__enumext_keyans_mark_ans_tl
+          {
+            \group_begin:
+            \exp_not:N \normalfont
+            \exp_not:N \footnotesize [ \int_eval:n
+              {
+                \prop_count:c { g_keyans_ \l__enumext_stored_name_tl _prop }
+              }
+              ]
+            \group_end:
+          }
+        \__enumext_anskey_show_wrap_ans:n { #1 }
+      }
+  }
+%% Function for storing in prop list for |keyans| and |keyanspic|.
+\cs_new_protected:Npn \__enumext_keyans_env_addto_prop:n #1
+  {
+    \tl_clear:N \l__enumext_stored_keyans_tl
+    \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
+      {
+        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \l__enumext_label_vi_tl }
+      }
+      {
+        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \l__enumext_label_v_tl }
+      }
+    \tl_if_novalue:nF { #1 }
+      {
+        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \c_space_tl #1 }
+      }
+    \__enumext_keyans_addto_prop:V \l__enumext_stored_keyans_tl
+  }
+%% Internal label and ref function for |keyans| and |keyanspic|.
+\cs_new_protected:Nn \__enumext_keyans_env_make_label_ref:
+  {
+    \cs_set_protected:Npn \__enumext_tmp:n ##1
+      {
+        \tl_set_eq:cc { l__enumext_label_copy_##1_tl } { l__enumext_label_##1_tl }
+        \tl_reverse:c { l__enumext_label_copy_##1_tl }
+        \tl_remove_once:cn { l__enumext_label_copy_##1_tl } { . }
+        \tl_reverse:c { l__enumext_label_copy_##1_tl }
+      }
+    \clist_map_inline:nn { i, v, vi, vii, viii } { \__enumext_tmp:n {##1} }
+    \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
+      {
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_vi_tl }
+      }
+      {
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_v_tl }
+      }
+    \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
+      {
+        \l__enumext_stored_name_tl \c_colon_str
+        \int_eval:n { \prop_count:c { g_keyans_ \l__enumext_stored_name_tl _prop } }
+      }
+    \tl_put_right:Ne \l__enumext_keyans_make_label_ref_tl
+      {
+        \__enumext_newlabel_write:nn
+          { \exp_not:V \l__enumext_newlabel_arg_one_tl }
+          { \l__enumext_newlabel_arg_two_tl }
+      }
+    \bool_if:NT \l__enumext_store_ref_key_bool
+      {
+        \l__enumext_keyans_make_label_ref_tl
+      }
+  }
+%% Function for storing in sequence for |keyans| and |keyanspic|.
+\cs_new_protected:Npn \__enumext_keyans_env_addto_seq:n #1
+  {
+    \tl_clear:N \l__enumext_stored_keyans_tl
+    \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
+      {
+        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \item \l__enumext_label_vi_tl }
+      }
+      {
+        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \item \l__enumext_label_v_tl }
+      }
+    \tl_if_novalue:nF { #1 }
+      {
+        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \c_space_tl #1 }
+      }
+    \bool_lazy_and:nnT
+      { \l__enumext_store_ref_key_bool }
+      { \l__enumext_hyperref_bool }
+      {
+        \tl_put_right:Ne \l__enumext_stored_keyans_tl
+          {
+            \hfill \exp_not:N \hyperlink
+              {
+                \exp_not:V \l__enumext_newlabel_arg_one_tl
+              }
+              { \exp_not:V \l__enumext_keyans_mark_ref_tl }
+          }
+      }
+    \__enumext_keyans_addto_seq:V \l__enumext_stored_keyans_tl
+    \tl_gset:NV \g__enumext_keyans_check_item_tl \l__enumext_stored_keyans_tl
+    \bool_if:NT \l__enumext_keyans_check_bool
+      {
+        \int_gincr:N \g__enumext_count_item_ans_int
+      }
+  }
+%% Function for check starred command in |keyans| and |keyanspic|.
+\cs_new_protected:Npn \__enumext_keyans_check_starred:nn #1 #2
+  {
+    \tl_if_empty:NTF \g__enumext_keyans_check_item_tl
+      {
+        \msg_warning:nnnn { enumext } { missing-starred }{ #1 }{ #2 }
+      }
+      { \tl_gclear:N \g__enumext_keyans_check_item_tl }
+  }
+%% Function for |show-ans| and |show-pos| for |keyans| and |keyanspic|.
+\cs_new_protected:Npn \__enumext_keyans_env_show_left:n #1
+  {
+    \bool_if:NT \l__enumext_keyans_show_ans_bool
+      {
+        \tl_put_left:Nn \l__enumext_label_v_tl
+          {
+            \__enumext_keyans_print_box:NN
+              \l__enumext_labelwidth_i_dim
+              \l__enumext_labelsep_i_dim
+          }
+        \tl_if_novalue:nF { #1 }
+          { \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] } }
+      }
+    \bool_if:NT \l__enumext_keyans_show_pos_bool
+      {
+        \tl_set:Ne \l__enumext_keyans_mark_ans_tl
+          {
+            \group_begin:
+            \exp_not:N \normalfont
+            \exp_not:N \footnotesize [ \int_eval:n
+              {
+                \prop_count:c { g_keyans_ \l__enumext_stored_name_tl _prop }
+                + \l__enumext_keyans_level_int
+              }
+              ]
+            \group_end:
+          }
+        \tl_put_left:Nn \l__enumext_label_v_tl
+          {
+            \__enumext_keyans_print_box:NN
+              \l__enumext_labelwidth_i_dim
+              \l__enumext_labelsep_i_dim
+          }
+        \tl_if_novalue:nF { #1 }
+          { \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] } }
+      }
+  }
+%% Add |item-sym*| and |item*-sep| keys.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        item-sym* .tl_set:c  = { l__enumext_item_symbol_#2_tl },
+        item-sym* .value_required:n = true,
+        item-sym* .initial:n  = {$\star$},
+        item-pos* .dim_set:c  = { l__enumext_item_symbol_sep_#2_dim },
+        item-pos* .value_required:n = true,
+      }
+  }
+\clist_map_inline:nn
+  {
+    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
+  }
+  { \__enumext_tmp:nn #1 }
+%% Redefining \footnote.
+\cs_new_protected:Nn \__enumext_footnotetext:nn
+  {
+    \footnotetext[#1]{#2}
+  }
+\cs_new_protected:Nn \__enumext_renew_footnote:
+  {
+    \seq_gclear:N \g__enumext_footnote_arg_seq
+    \seq_gclear:N \g__enumext_footnote_int_seq
+    \RenewDocumentCommand \footnote { o +m }
+      {
+        \IfNoValueTF {##1}
+          {
+            \stepcounter{footnote}
+            \int_gset_eq:Nc \g__enumext_footnote_int { c@footnote }
+          }
+          {
+            \int_gset:Nn \g__enumext_footnote_int { ##1 }
+          }
+        \footnotemark [ \g__enumext_footnote_int ]
+        \seq_gput_right:Nn \g__enumext_footnote_arg_seq { ##2 }
+        \seq_gput_right:NV \g__enumext_footnote_int_seq \g__enumext_footnote_int
+     }
+  }
+\cs_new_protected:Nn \__enumext_print_footnote:
+  {
+    \seq_if_empty:NF \g__enumext_footnote_int_seq
+      {
+        \seq_map_pairwise_function:NNN
+          \g__enumext_footnote_int_seq
+          \g__enumext_footnote_arg_seq
+          \__enumext_footnotetext:nn
+      }
+  }
+%% Internal function for |\item| whit check-answer mechanism in |enumext|.
+\cs_new_protected:Npn \__enumext_default_item:n #1
+  {
+    \tl_if_novalue:nTF {#1}
+      {
+        \bool_if:NT \l__enumext_keyans_check_bool
+          {
+            \int_gincr:c { g__enumext_count_item_all_int }
+            \int_gincr:c { g__enumext_count_tmpa_ \__enumext_level: _int }
+          }
+        \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
+        \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
+      }
+      {
+        \bool_set_eq:cc
+          { l__enumext_wrap_label_ \__enumext_level: _bool }
+          { l__enumext_wrap_label_opt_ \__enumext_level: _bool }
+        \__enumext_item_std:w [#1] \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
+      }
+  }
+%% Internal function for |\item*[symb][sep]| whit check-answer mechanism in |enumext|.
+\cs_new_protected:Npn \__enumext_starred_item:nn #1 #2
+  {
+    \tl_if_novalue:nF {#1}
+      {
+        \tl_set:cn { l__enumext_item_symbol_ \__enumext_level: _tl } {#1}
+      }
+    \tl_gset_eq:Nc \g__enumext_item_symbol_tl { l__enumext_item_symbol_ \__enumext_level: _tl }
+    \tl_if_novalue:nTF {#2}
+      {
+        \dim_set_eq:cc
+          { l__enumext_item_symbol_sep_ \__enumext_level: _dim }
+          { l__enumext_labelsep_ \__enumext_level: _dim }
+      }
+      {
+        \dim_set:cn { l__enumext_item_symbol_sep_ \__enumext_level: _dim } {#2}
+      }
+    \bool_if:NT \l__enumext_keyans_check_bool
+      {
+        \int_gincr:c { g__enumext_count_item_all_int }
+        \int_gincr:c { g__enumext_count_tmpa_ \__enumext_level: _int }
+      }
+    \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
+    \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
+  }
+%% Redefinition of |\item| for internal check-answer mechanism and \item* in |enumext|.
+\cs_new_protected:Nn \__enumext_redefine_item:
+  {
+    \RenewDocumentCommand \item { s o o }
+      {
+       \IfBooleanTF{##1}
+         {
+           \__enumext_starred_item:nn {##2} {##3}
+         }
+         { \__enumext_default_item:n {##2} }
+      }
+  }
+\cs_new_protected:Npn \__enumext_keyans_default_item:n #1
+  {
+    \tl_if_novalue:nTF { #1 }
+      {
+        \bool_set_true:N \l__enumext_wrap_label_v_bool
+        \__enumext_item_std:w \tl_use:N \l__enumext_fake_item_indent_v_tl
+      }
+      {
+        \bool_set_eq:NN \l__enumext_wrap_label_v_bool \l__enumext_wrap_label_opt_v_bool
+        \__enumext_item_std:w [#1] \tl_use:N \l__enumext_fake_item_indent_v_tl
+      }
+  }
+\cs_new_protected:Npn \__enumext_keyans_starred_item:n #1
+  {
+    \tl_set_eq:NN \l__enumext_keyans_tmpa_tl \l__enumext_label_v_tl
+    \__enumext_keyans_env_show_left:n { #1 }
+    \bool_set_true:N \l__enumext_wrap_label_v_bool
+    \__enumext_item_std:w \tl_use:N \l__enumext_fake_item_indent_v_tl
+    \tl_set_eq:NN \l__enumext_label_v_tl \l__enumext_keyans_tmpa_tl
+    \__enumext_keyans_env_addto_prop:n { #1 }
+    \__enumext_keyans_env_make_label_ref:
+    \__enumext_keyans_env_addto_seq:n { #1 }
+  }
+%% Redefine |\item| for |keyans|.
+\cs_new_protected:Nn \__enumext_keyans_redefine_item:
+  {
+    \RenewDocumentCommand \item { s o }
+      {
+        \IfBooleanTF{##1}
+          {
+            \peek_remove_spaces:n
+              {
+                \__enumext_keyans_starred_item:n {##2}
+              }
+          }
+          {
+            \__enumext_keyans_default_item:n {##2}
+          }
+      }
+  }
+%% Function for |\item*[][]| in |\makelabel| for enumext.
+\cs_new_protected:Nn \__enumext_item_starred:
+  {
+    \tl_if_empty:cF { l__enumext_item_symbol_ \__enumext_level: _tl }
+      {
+        \mode_leave_vertical:
+        \skip_horizontal:n { -\dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
+        \makebox[ 0pt ][ r ]{ \tl_use:N \g__enumext_item_symbol_tl }
+        \skip_horizontal:n { \dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
+      }
+  }
+%% Redefinition of |\makelabel| for |\item| and |\item*[][]| in enumext.
+\cs_new_protected:Nn \__enumext_make_label:
+  {
+    \RenewDocumentCommand \makelabel { m }
+      {
+        \tl_use:c { l__enumext_label_fill_left_ \__enumext_level: _tl }
+        \tl_use:c { l__enumext_label_font_style_ \__enumext_level: _tl }
+        \bool_if:cTF { l__enumext_wrap_label_ \__enumext_level: _bool }
+          {
+            \__enumext_item_starred:
+            \use:c { __enumext_wrapper_label_ \__enumext_level: :n } { ##1 }
+          }
+          { ##1 }
+        \tl_use:c { l__enumext_label_fill_right_ \__enumext_level: _tl }
+        \tl_gclear:N \g__enumext_item_symbol_tl
+      }
+  }
+\cs_new_protected:Nn \__enumext_keyans_make_label:
+  {
+    \RenewDocumentCommand \makelabel { m }
+      {
+        \tl_use:N \l__enumext_label_fill_left_v_tl
+        \tl_use:N \l__enumext_label_font_style_v_tl
+        \bool_if:NTF \l__enumext_wrap_label_v_bool
+          {
+            \__enumext_wrapper_label_v:n { ##1 }
+          }
+          { ##1 }
+        \tl_use:N \l__enumext_label_fill_right_v_tl
+      }
+  }
+%% Function to calc of horizontal length for all list environment.
+%% #1: \l__enumext_labelwidth_X_dim     #2: \l__enumext_labelsep_X_dim
+%% #3: \l__enumext_listoffset_X_dim     #4: \l__enumext_leftmargin_tmp_X_dim
+%% #5: \l__enumext_leftmargin_X_dim     #6: \l__enumext_itemindent_X_dim
+%% #7: \l__enumext_leftmargin_tmp_X_bool
+\cs_new_protected:Npn \__enumext_calc_hspace:NNNNNNN #1#2#3#4#5#6#7
+  {
+    \dim_compare:nNnT { #1 } < { \c_zero_dim }
+      {
+        \msg_warning:nnnV { enumext } { width-non-positive }{ labelwidth }{ #1 }
+        \dim_set:Nn #1 { \dim_abs:n { #1 } }
+      }
+    \dim_compare:nNnT { #2 } < { \c_zero_dim }
+      {
+        \msg_warning:nnnV { enumext } { width-negative }{ labelsep }{ #2 }
+        \dim_set:Nn #2 { \dim_abs:n { #2 } }
+      }
+    \bool_if:nF #7 { \dim_set:Nn #4 { #1 + #2} }
+    \dim_compare:nNnTF { #4 } < { \c_zero_dim }
+      {
+        \dim_set:Nn #6 { #1 + #2 - #4}
+        \dim_set:Nn #5 { #1 + #2 + #3 - #6 }
+      }
+      {
+        \dim_compare:nNnT { #4 } = { #1 + #2 }
+          { \dim_set:Nn #6 { \c_zero_dim } }
+        \dim_compare:nNnT { #4 } < { #1 + #2 }
+          { \dim_set:Nn #6 { #1 + #2 - #4} }
+        \dim_compare:nNnT { #4 } > { #1 + #2 }
+          {
+            \dim_set:Nn #6 { -#1 - #2 + #4}
+            \dim_set:Nn #6 { #6*-1}
+          }
+        \dim_set:Nn #5 { #1 + #2 + #3 - #6 }
+      }
+  }
+\cs_generate_variant:Nn \__enumext_calc_hspace:NNNNNNN { ccccccc }
+%% Define "second arg" of list for |enumext| and |keyans|.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \cs_new_protected:cpn { __enumext_list_arg_two_#1: }
+      {
+        \__enumext_calc_hspace:ccccccc
+          { l__enumext_labelwidth_#1_dim } { l__enumext_labelsep_#1_dim }
+          { l__enumext_listoffset_#1_dim } { l__enumext_leftmargin_tmp_#1_dim }
+          { l__enumext_leftmargin_#1_dim } { l__enumext_itemindent_#1_dim }
+          { l__enumext_leftmargin_tmp_#1_bool }
+        \clist_map_inline:nn
+          { labelsep, labelwidth, itemindent, leftmargin, rightmargin, listparindent }
+          { \dim_set_eq:cc {####1} { l__enumext_####1_#1_dim } }
+        \clist_map_inline:nn { topsep, parsep, partopsep, itemsep }
+          { \skip_set_eq:cc {####1} { l__enumext_####1_#1_skip } }
+        \usecounter { enumX#1 }
+        \bool_lazy_and:nnTF
+          { \str_if_eq_p:nn {#1} { i } }
+          { \bool_if_p:N \l__enumext_resume_bool }
+          { \setcounter { enumXi  } { \int_eval:n { \g__enumext_resume_int } } }
+          {
+            \setcounter { enumX#1 }
+              { \int_eval:n { \int_use:c { l__enumext_start_#1_int } - 1 } }
+          }
+        \str_if_eq:nnTF {#1} { v }
+          {
+            \__enumext_keyans_redefine_item:
+            \__enumext_keyans_make_label:
+            \__enumext_keyans_fake_item:
+            \bool_if:cT { l__enumext_show_info_length_#1_bool }
+              {
+                \msg_term:nnnn { enumext } { list-lengths-not-nested } { v } { keyans }
+              }
+          }
+          {
+            \__enumext_redefine_item:
+            \__enumext_make_label:
+            \__enumext_use_key_ref:
+            \__enumext_fake_item:
+            \bool_if:cT { l__enumext_show_info_length_#1_bool }
+              {
+                \msg_term:nnne { enumext } { list-lengths } {#1} { \int_use:N \l__enumext_level_int }
+              }
+          }
+      }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, v } { \__enumext_tmp:n {#1} }
+%% Define "second arg" of list for |enumext*| and |keyans*|.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \cs_new_protected:cpn { __enumext_list_arg_two_#1: }
+      {
+        \__enumext_calc_hspace:ccccccc
+          { l__enumext_labelwidth_#1_dim } { l__enumext_labelsep_#1_dim }
+          { l__enumext_listoffset_#1_dim } { l__enumext_leftmargin_tmp_#1_dim }
+          { l__enumext_leftmargin_#1_dim } { l__enumext_itemindent_#1_dim }
+          { l__enumext_leftmargin_tmp_#1_bool }
+        \clist_map_inline:nn
+          { labelsep, labelwidth, itemindent, leftmargin, rightmargin, listparindent }
+          { \dim_set_eq:cc {####1} { l__enumext_####1_#1_dim } }
+        \clist_map_inline:nn { topsep, parsep, partopsep, itemsep }
+          { \skip_set_eq:cc {####1} { l__enumext_####1_#1_skip } }
+        \skip_set_eq:Nc \parsep  { l__enumext_itemsep_#1_skip }
+        \skip_zero:N \partopsep
+        \usecounter { enumX#1 }
+        \bool_lazy_and:nnTF
+          { \str_if_eq_p:nn {#1} { vii } } { \bool_if_p:N \l__enumext_resume_vii_bool }
+          { \setcounter { enumXvii } { \int_eval:n { \g__enumext_resume_vii_int } } }
+          {
+            \setcounter { enumX#1 }
+              { \int_eval:n { \int_use:c { l__enumext_start_#1_int } - 1 } }
+          }
+        \__enumext_use_key_ref_h:
+        \str_if_eq:nnTF {#1} { vii }
+          {
+            \__enumext_fake_item_vii:
+            \bool_if:cT { l__enumext_show_info_length_vii_bool }
+              { \msg_term:nnnn { enumext } { list-lengths-not-nested } { vii } { enumext* } }
+          }
+          {
+            \__enumext_fake_item_viii:
+            \bool_if:cT { l__enumext_show_info_length_#1_bool }
+              { \msg_term:nnnn { enumext } { list-lengths-not-nested } { #1 } { keyans* } }
+          }
+      }
+  }
+\clist_map_inline:nn { vii, viii } { \__enumext_tmp:n {#1} }
+%% Definition of |enumext| and |@@_mini_env*| environments.
+\NewDocumentEnvironment{enumext}{ O{} }
+  {
+    \__enumext_safe_exec:
+    \__enumext_parse_keys:n {#1}
+    \__enumext_before_list:
+    \__enumext_start_store_level:
+    \__enumext_start_list:nn
+      { \tl_use:c { l__enumext_label_ \__enumext_level: _tl } }
+      {
+        \use:c { __enumext_list_arg_two_ \__enumext_level: : }
+        \__enumext_before_keys_exec:
+      }
+    \__enumext_after_args_exec:
+  }
+  {
+    \__enumext_stop_list:
+    \__enumext_stop_store_level:
+    \__enumext_after_list:
+  }
+%% Increment deep-level for |enumext|.
+\cs_new_protected:Nn \__enumext_safe_exec:
+  {
+    \int_incr:N \l__enumext_level_int
+    \int_compare:nNnT { \l__enumext_level_int } > { 4 }
+      { \msg_fatal:nn { enumext } { list-too-deep } }
+  }
+%% Parse |key=val| and store keys for \printkeyans.
+\cs_new_protected:Npn \__enumext_parse_keys:n #1
+  {
+    \exp_args:Ne \keys_set:nn
+      { enumext / level-\int_use:N \l__enumext_level_int } {#1}
+    \bool_if:NT \l__enumext_stored_bool
+      {
+        \__enumext_parse_store_keys:n {#1}
+      }
+    \bool_set_true:N \l__enumext_standar_bool
+  }
+%% Set |key=val| (store keys) for \printkeyans.
+\cs_new_protected:Npn \__enumext_parse_store_keys:n #1
+  {
+    \bool_if:cF { l__enumext_stored_columns_ \__enumext_level: _bool }
+      {
+        \regex_match:nnT { \b columns\b } {#1}
+          {
+            \int_set_eq:cc
+              { l__enumext_stored_columns_ \__enumext_level: _int }
+              { l__enumext_columns_  \__enumext_level: _int }
+            \tl_put_right:ce { l__enumext_stored_opt_ \__enumext_level: _tl }
+              {
+                columns = \exp_not:v { l__enumext_stored_columns_ \__enumext_level: _int },
+              }
+          }
+      }
+    \bool_if:cF { l__enumext_stored_columns_sep_ \__enumext_level: _bool }
+      {
+        \regex_match:nnT { \b columns-sep \b} {#1}
+          {
+            \dim_set_eq:cc
+              { l__enumext_stored_columns_sep_ \__enumext_level: _dim }
+              { l__enumext_columns_sep_  \__enumext_level: _dim }
+            \tl_put_right:ce { l__enumext_stored_opt_ \__enumext_level: _tl }
+              {
+                columns-sep = \exp_not:v { l__enumext_stored_columns_sep_ \__enumext_level: _dim },
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_start_store_level:
+  {
+    \bool_lazy_and:nnT { \l__enumext_stored_bool } { \l__enumext_keyans_env_bool }
+      {
+        \int_compare:nNnT { \l__enumext_level_h_int } = { 1 }
+          {
+            \bool_set_true:c { l__enumext_stored_upper_level_ \__enumext_level: _bool }
+            \__enumext_store_level_open:
+          }
+        \int_compare:nNnT { \l__enumext_level_int } > { 1 }
+          {
+            \bool_set_true:c { l__enumext_stored_upper_level_ \__enumext_level: _bool }
+            \__enumext_store_level_open:
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_stop_store_level:
+  {
+    \bool_if:cT { l__enumext_stored_upper_level_ \__enumext_level: _bool }
+      {
+        \__enumext_store_level_close:
+      }
+  }
+\cs_new_protected:Nn \__enumext_before_list:
+  {
+    \__enumext_vspace_above:
+    \__enumext_before_args_exec:
+    \__enumext_keyans_anskey_count_item:
+%% Set |mini-env| width value.
+    \dim_compare:nNnT
+      { \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } } > { \c_zero_dim }
+      {
+        \dim_set:cn { l__enumext_minipage_left_ \__enumext_level: _dim }
+          {
+            \linewidth
+            - \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim }
+            - \dim_use:c { l__enumext_minipage_hsep_ \__enumext_level: _dim }
+          }
+%% Use internal minipage with |\nointerlineskip| and |\addvspace| here
+        \bool_set_true:c { l__enumext_minipage_active_ \__enumext_level: _bool }
+        \int_gincr:N \g__enumext_minipage_stat_int
+        \__enumext_mini_addvspace:
+        \nointerlineskip\noindent
+        \begin{__enumext_mini_env*}
+          { \dim_use:c { l__enumext_minipage_left_ \__enumext_level: _dim } }
+      }
+    \__enumext_multicols_start:
+  }
+\cs_new_protected:Nn \__enumext_multicols_start:
+  {
+    \int_compare:nNnT
+      { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } > { 1 }
+      {
+        \dim_compare:nNnT
+          { \dim_use:c { l__enumext_columns_sep_ \__enumext_level: _dim } } = { \c_zero_dim }
+          {
+            \dim_set:cn { l__enumext_columns_sep_ \__enumext_level: _dim }
+              {
+                ( \dim_use:c { l__enumext_labelwidth_ \__enumext_level: _dim }
+                  + \dim_use:c { l__enumext_labelsep_ \__enumext_level: _dim }
+                ) / \int_use:c { l__enumext_columns_ \__enumext_level: _int }
+                - \dim_use:c { l__enumext_listoffset_ \__enumext_level: _dim }
+              }
+          }
+        \dim_set_eq:Nc \columnsep { l__enumext_columns_sep_ \__enumext_level: _dim  }
+        \skip_zero:N \multicolsep
+        \int_compare:nNnT { \l__enumext_level_int } > { 1 }
+          {
+            \dim_zero:N \columnseprule
+          }
+        \bool_if:cF { l__enumext_minipage_active_ \__enumext_level: _bool }
+          {
+            \__enumext_multi_addvspace:
+          }
+        \raggedcolumns
+        \begin{multicols}{ \int_use:c { l__enumext_columns_ \__enumext_level: _int } }
+      }
+  }
+\cs_new_protected:Nn \__enumext_multicols_stop:
+  {
+    \int_compare:nNnT
+      { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } > { 1 }
+      {
+        \end{multicols}
+        \bool_if:cF { l__enumext_minipage_active_ \__enumext_level: _bool }
+          {
+            \par\addvspace{ \skip_use:c { l__enumext_multicols_below_ \__enumext_level: _skip } }
+          }
+      }
+    \bool_if:NT \l__enumext_keyans_check_bool
+      {
+        \bool_gset_true:N \g__enumext_keyans_check_show_bool
+        \tl_gset:NV \g__enumext_stored_name_tl \l__enumext_stored_name_tl
+      }
+  }
+\cs_new_protected:Nn \__enumext_after_list:
+  {
+    \bool_if:cTF { l__enumext_minipage_active_ \__enumext_level: _bool }
+      {
+        \int_compare:nNnT { \g__enumext_minipage_stat_int } = { 1 }
+          {
+            \msg_warning:nn { enumext } { missing-miniright }
+            \miniright
+          }
+        \int_gzero:N \g__enumext_minipage_stat_int
+        \end{__enumext_mini_env*}
+        \par\addvspace { \l__enumext_minipage_after_skip }
+      }
+      { \__enumext_multicols_stop: }
+    \__enumext_after_stop_list:
+    \__enumext_vspace_below:
+    \bool_set_false:N \l__enumext_standar_bool
+    \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
+    \int_if_exist:cT { g__enumext_resume_ \l__enumext_stored_name_tl _int }
+      {
+        \int_gset_eq:cN
+          { g__enumext_resume_ \l__enumext_stored_name_tl _int }
+          { \value{enumXi} }
+      }
+  }
+%% Definition of |keyans| environment.
+\NewDocumentEnvironment{keyans}{ O{} }
+  {
+    \__enumext_keyans_safe_exec:
+    \__enumext_keyans_parse_keys:n {#1}
+    \__enumext_before_list_v:
+    \__enumext_start_list:nn
+      { \tl_use:N \l__enumext_label_v_tl }
+      {
+        \__enumext_list_arg_two_v:
+        \__enumext_before_keys_exec_v:
+      }
+    \__enumext_after_args_exec_v:
+  }
+  {
+    \__enumext_keyans_check_starred:nn { item }{ keyans }
+    \__enumext_stop_list:
+    \__enumext_after_list_v:
+  }
+%% Function for check nested level in |keyans|.
+\cs_new_protected:Nn \__enumext_keyans_safe_exec:
+  {
+    \bool_if:NF \l__enumext_stored_bool
+      {
+        \msg_error:nnnn { enumext } { wrong-place }{ keyans }{ save-ans }
+      }
+    \int_incr:N \l__enumext_keyans_level_int
+    \int_compare:nNnT { \l__enumext_keyans_level_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { keyans-nested }
+      }
+    \int_compare:nNnT { \l__enumext_level_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { keyans-wrong-level }
+      }
+    \bool_set_false:N \l__enumext_stored_bool
+  }
+%% Function for parse |key=val| in |keyans|. Replace \exp_args:Nx \keys_set:nn => \keys_set:nx => => \keys_set:nn
+\cs_new_protected:Npn \__enumext_keyans_parse_keys:n #1
+  {
+    \keys_set:nn { enumext / keyans } {#1}
+  }
+%% Actions before start |keyans| environment.
+\cs_new_protected:Nn \__enumext_before_list_v:
+  {
+    \__enumext_vspace_above_v:
+    \__enumext_before_args_exec_v:
+    \dim_compare:nNnT { \l__enumext_minipage_right_v_dim } > { \c_zero_dim }
+      {
+        \dim_set:Nn \l__enumext_minipage_left_v_dim
+          {
+            \linewidth - \l__enumext_minipage_right_v_dim - \l__enumext_minipage_hsep_v_dim
+          }
+        \bool_set_true:N \l__enumext_minipage_active_v_bool
+        \int_gincr:N \g__enumext_minipage_stat_int
+        \__enumext_keyans_mini_addvspace:
+        \nointerlineskip\noindent
+        \begin{__enumext_mini_env*}{ \l__enumext_minipage_left_v_dim }
+      }
+    \__enumext_keyans_multicols_start:
+  }
+%% Actvate multicols in |keyans|.
+\cs_new_protected:Nn \__enumext_keyans_multicols_start:
+  {
+    \int_compare:nNnT { \l__enumext_columns_v_int } > { 1 }
+      {
+        \dim_compare:nNnT { \l__enumext_columns_sep_v_dim } = { \c_zero_dim }
+          {
+            \dim_set:Nn \l__enumext_columns_sep_v_dim
+              {
+                (
+                  \l__enumext_labelwidth_v_dim + \l__enumext_labelsep_v_dim
+                ) / \l__enumext_columns_v_int
+               - \l__enumext_listoffset_v_dim
+              }
+          }
+        \dim_set_eq:NN \columnsep \l__enumext_columns_sep_v_dim
+        \skip_zero:N \multicolsep
+        \dim_zero:N \columnseprule
+        \bool_if:NF \l__enumext_minipage_active_v_bool
+          {
+            \__enumext_keyans_multi_addvspace:
+          }
+        \raggedcolumns
+        \begin{multicols}{ \l__enumext_columns_v_int }
+      }
+  }
+\cs_new_protected:Nn \__enumext_keyans_multicols_stop:
+  {
+    \int_compare:nNnT { \l__enumext_columns_v_int } > { 1 }
+      {
+        \end{multicols}
+        \bool_if:NF \l__enumext_minipage_active_v_bool
+          {
+            \par\addvspace{ \l__enumext_multicols_below_v_skip }
+          }
+      }
+  }
+%% Actions after |keyans|.
+\cs_new_protected:Nn \__enumext_after_list_v:
+  {
+    \bool_if:NTF \l__enumext_minipage_active_v_bool
+      {
+        \int_compare:nNnT { \g__enumext_minipage_stat_int } = { 1 }
+          {
+            \msg_warning:nn { enumext } { missing-miniright }
+            \miniright
+          }
+        \int_gzero:N \g__enumext_minipage_stat_int
+        \end{__enumext_mini_env*}
+        \par\addvspace{ \l__enumext_minipage_after_skip }
+      }
+      { \__enumext_keyans_multicols_stop: }
+    \__enumext_after_stop_list_v:
+    \__enumext_vspace_below_v:
+  }
+%% Define |\anspic| for |keyanspic|.
+\NewDocumentCommand \anspic { s o +m }
+  {
+    \bool_if:NF \l__enumext_stored_bool
+      {
+        \msg_error:nnnn { enumext } { wrong-place }{ keyanspic }{ save-ans }
+      }
+    \int_compare:nNnT { \l__enumext_level_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { keyanspic-wrong-level }
+      }
+    \int_compare:nNnT { \l__enumext_keyans_level_int } = { 1 }
+      {
+        \msg_error:nnnn { enumext } { command-wrong-place }{ anspic }{ keyans }
+      }
+    \seq_put_right:Nn \l__enumext_keyans_pic_body_seq
+      {
+        \__enumext_keyans_anspic_code:nnn { #1 } { #2 } { #3 }
+      }
+  }
+%% Internal code for |\anspic|.
+\cs_new_protected:Nn \__enumext_keyans_anspic_code:nnn
+  {
+    \stepcounter { enumXvi }
+    #3 \\
+    \bool_if:nT { #1 }
+      {
+        \__enumext_keyans_env_addto_prop:n { #2 }
+        \__enumext_keyans_env_make_label_ref:
+        \__enumext_keyans_env_addto_seq:n { #2 }
+        \bool_lazy_or:nnT
+          { \l__enumext_keyans_show_ans_bool }
+          { \l__enumext_keyans_show_pos_bool }
+          {
+            \tl_set_eq:NN \l__enumext_label_v_tl \l__enumext_label_vi_tl
+            \__enumext_keyans_env_show_left:n { #2 }
+            \tl_set_eq:NN \l__enumext_label_vi_tl \l__enumext_label_v_tl
+          }
+      }
+    \tl_use:N \l__enumext_label_font_style_v_tl
+    \__enumext_wrapper_label_v:n { \l__enumext_label_vi_tl }
+  }
+%% Define |keyanspic| environment.
+\NewDocumentEnvironment{keyanspic}{ o }
+  {
+    \__enumext_keyans_pic_safe_exec:
+    \__enumext_start_list:nn
+      { }
+      {
+        \__enumext_keyans_pic_arg_two:
+      }
+    \vspace { \l__enumext_keyans_pic_above_skip }
+  }
+  {
+    \IfNoValueTF { #1 }
+      {
+        \__enumext_keyans_pic_do:e { \seq_count:N \l__enumext_keyans_pic_body_seq }
+      }
+      { \__enumext_keyans_pic_do:n { #1 } }
+    \__enumext_stop_list:
+    \__enumext_keyans_check_starred:nn { anspic } { keyanspic }
+    \setcounter { enumXvi } { 0 }
+    \vspace { \l__enumext_topsep_v_skip }
+  }
+%% Internal code for |keyanspic| environment.
+\cs_new_protected:Nn \__enumext_keyans_pic_safe_exec:
+  {
+    \int_incr:N \l__enumext_keyans_pic_level_int
+    \int_compare:nNnT { \l__enumext_keyans_pic_level_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { keyanspic-nested }
+      }
+  }
+\cs_new_protected:Npn \__enumext_keyans_pic_skip_abs:N #1
+  {
+    \dim_compare:nNnT { #1 } < { 0pt }
+      { \skip_set:Nn #1 { -#1 } }
+  }
+\cs_new_protected:Nn \__enumext_keyans_pic_arg_two:
+  {
+    \bool_set_false:N \l__enumext_leftmargin_tmp_v_bool
+    \__enumext_list_arg_two_v:
+    \skip_add:Nn \parsep { \itemsep }
+    \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
+    \dim_zero:N  \labelwidth
+    \dim_zero:N  \listparindent
+    \dim_zero:N  \labelsep
+    \skip_zero:N \partopsep
+    \skip_zero:N \itemsep
+    \__enumext_keyans_pic_skip_abs:N \parsep
+    \skip_set:Nn \l__enumext_keyans_pic_above_skip
+      {
+        \box_dp:N \strutbox
+        + \l__enumext_topsep_v_skip
+        - \parsep
+      }
+    \__enumext_item_std:w \scan_stop:
+  }
+\cs_new_protected:Nn \__enumext_keyans_pic_do:n
+  {
+    \clist_map_function:nN { #1 } \__enumext_keyans_pic_row:n
+  }
+\cs_generate_variant:Nn \__enumext_keyans_pic_do:n { e }
+\cs_new_protected:Nn \__enumext_keyans_pic_row:n
+  {
+    \dim_set:Nn \l__enumext_keyans_pic_width_dim { \linewidth / #1 }
+    \int_set:Nn \l__enumext_keyans_pic_above_int { \l__enumext_keyans_pic_below_int }
+    \int_set:Nn \l__enumext_keyans_pic_below_int { \l__enumext_keyans_pic_above_int + #1 }
+    \int_step_inline:nnn
+      { \l__enumext_keyans_pic_above_int + 1 }
+      { \l__enumext_keyans_pic_below_int }
+      {
+         \__enumext_minipage:w [ b ]{ \l__enumext_keyans_pic_width_dim }
+           \centering
+           \seq_item:Nn \l__enumext_keyans_pic_body_seq { ##1 }
+         \__enumext_endminipage:
+      }
+    \par
+  }
+%% Define default columns width
+\cs_new_protected:Nn \__enumext_default_columns_set_vii:
+  {
+    \dim_compare:nNnT { \l__enumext_columns_sep_vii_dim } = { \c_zero_dim }
+      {
+        \dim_set:Nn \l__enumext_columns_sep_vii_dim
+          {
+            ( \l__enumext_labelwidth_vii_dim + \l__enumext_labelsep_vii_dim )
+            / \l__enumext_columns_vii_int
+          }
+      }
+    \int_set:Nn \l__enumext_tmpa_vii_int { \l__enumext_columns_vii_int - \c_one_int }
+    \dim_set:Nn \l__enumext_item_width_vii_dim
+      {
+        ( \linewidth - \l__enumext_columns_sep_vii_dim * \l__enumext_tmpa_vii_int )
+        / \l__enumext_columns_vii_int - \l__enumext_labelwidth_vii_dim
+        - \l__enumext_labelsep_vii_dim
+      }
+    \dim_zero_new:N \itemwidth
+  }
+%% Set width for joined item's for |enumext*|
+\cs_new_protected:Npn \__enumext_joined_item_set_vii:n #1
+  {
+    \int_set:Nn \l__enumext_joined_item_vii_int {#1}
+    \int_compare:nNnT { \l__enumext_joined_item_vii_int } > { \l__enumext_columns_vii_int }
+      {
+        \msg_warning:nnee { enumext } { item-joined }
+          { \int_use:N \l__enumext_joined_item_vii_int }
+          { \int_use:N \l__enumext_columns_vii_int }
+        \int_set:Nn \l__enumext_joined_item_vii_int
+          {
+            \l__enumext_columns_vii_int - \l__enumext_item_column_pos_vii_int + \c_one_int
+          }
+      }
+    \int_compare:nNnT
+      { \l__enumext_joined_item_vii_int }
+        >
+      { \l__enumext_columns_vii_int - \l__enumext_item_column_pos_vii_int + \c_one_int }
+      {
+        \msg_warning:nnee { enumext } { item-joined-columns }
+          { \int_use:N \l__enumext_joined_item_vii_int }
+          {
+            \int_eval:n
+              { \l__enumext_columns_vii_int - \l__enumext_item_column_pos_vii_int + \c_one_int }
+          }
+        \int_set:Nn \l__enumext_joined_item_vii_int
+          {
+            \l__enumext_columns_vii_int - \l__enumext_item_column_pos_vii_int + \c_one_int
+          }
+      }
+    \int_compare:nNnTF { \l__enumext_joined_item_vii_int } > { \c_one_int }
+      {
+        \int_set_eq:NN \l__enumext_joined_item_aux_vii_int \l__enumext_joined_item_vii_int
+        \int_decr:N \l__enumext_joined_item_aux_vii_int
+        \int_add:Nn \l__enumext_item_column_pos_vii_int { \l__enumext_joined_item_aux_vii_int }
+        \int_gadd:Nn \g__enumext_item_count_all_vii_int { \l__enumext_joined_item_aux_vii_int }
+        \dim_set:Nn \l__enumext_joined_width_vii_dim
+          {
+            \l__enumext_item_width_vii_dim * \l__enumext_joined_item_vii_int
+            + (  \l__enumext_labelwidth_vii_dim + \l__enumext_labelsep_vii_dim
+               + \l__enumext_columns_sep_vii_dim
+              )*\l__enumext_joined_item_aux_vii_int
+          }
+        \dim_set_eq:NN \itemwidth \l__enumext_joined_width_vii_dim
+      }
+      {
+        \dim_set_eq:NN \l__enumext_joined_width_vii_dim \l__enumext_item_width_vii_dim
+        \dim_set_eq:NN \itemwidth \l__enumext_item_width_vii_dim
+      }
+  }
+%% Start support for |mini-env| key in |enumext*| environment
+\cs_new_protected:Nn \__enumext_start_mini_vii:
+  {
+    \dim_compare:nNnT { \l__enumext_minipage_right_vii_dim } > { \c_zero_dim }
+      {
+        \dim_set:Nn \l__enumext_minipage_left_vii_dim
+          {
+            \linewidth
+            - \l__enumext_minipage_right_vii_dim
+            - \l__enumext_minipage_hsep_vii_dim
+          }
+        \bool_set_true:N \l__enumext_minipage_active_vii_bool
+        \dim_gset_eq:NN
+          \g__enumext_minipage_right_vii_dim
+          \l__enumext_minipage_right_vii_dim
+        \__enumext_mini_addvspace_vii:
+        \nointerlineskip\noindent
+        \begin{__enumext_mini_env*}{ \l__enumext_minipage_left_vii_dim }
+      }
+   }
+%% Stop support for |mini-env| key in |enumext*| environment
+\cs_new_protected:Nn \__enumext_stop_mini_vii:
+  {
+    \bool_if:NT \l__enumext_minipage_active_vii_bool
+      {
+        \end{__enumext_mini_env*}
+        \hfill
+        \bool_gset_true:N \g__enumext_minipage_active_vii_bool
+      }
+   }
+%% Exec |miniright| key in |enumext*| environment
+\__enumext_after_star_env:nn {enumext*}
+  {
+    \bool_if:NT \g__enumext_minipage_active_vii_bool
+      {
+        \begin{__enumext_mini_env*}{ \g__enumext_minipage_right_vii_dim }
+          \par\addvspace { \g__enumext_minipage_right_skip }
+          \bool_if:NF \g__enumext_minipage_center_vii_bool
+            {
+              \centering
+            }
+          \tl_use:N \g__enumext_miniright_code_vii_tl % the code
+        \end{__enumext_mini_env*}
+        \par\addvspace { \g__enumext_minipage_after_skip }
+      }
+    \bool_gset_false:N \g__enumext_minipage_active_vii_bool
+    \bool_gset_true:N \g__enumext_minipage_center_vii_bool
+    \tl_gclear:N \g__enumext_miniright_code_vii_tl
+    \dim_gzero:N \g__enumext_minipage_right_vii_dim
+  }
+%% Define |enumext*|
+\bool_new:N \g__enumext_starred_bool
+\NewDocumentEnvironment{enumext*}{ o }
+  {
+    \int_incr:N \l__enumext_level_h_int
+    \int_compare:nNnT { \l__enumext_level_h_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { nested }
+      }
+    \bool_set_true:N \l__enumext_starred_bool
+    \bool_lazy_all:nT
+      {
+        { !\l__enumext_standar_bool }
+        { \int_compare_p:nNn { \l__enumext_level_int } = { \c_zero_int } }
+      }
+      {
+        \typeout{SET-GLOBAL-STARRED}
+        \bool_gset_true:N \g__enumext_starred_bool
+      }
+    \__enumext_parse_keys_vii:n {#1}
+    \__enumext_vspace_above_vii:
+    \__enumext_before_args_exec_vii:
+    \__enumext_start_mini_vii:
+    \__enumext_start_store_level_vii:
+    \__enumext_start_list:nn { }
+      {
+        \__enumext_list_arg_two_vii:
+        \__enumext_before_keys_exec_vii:
+      }
+      \__enumext_default_columns_set_vii:
+      \item[] \scan_stop:
+      \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \noindent
+      \cs_set_eq:NN \item \__enumext_start_item_tmp_vii:
+  }
+  {
+    \__enumext_stop_item_tmp_vii:
+    \__enumext_remove_extra_parsep_vii:
+    \__enumext_stop_list:
+    \__enumext_stop_store_level_vii:
+    \__enumext_stop_mini_vii:
+    \__enumext_after_stop_list_vii:
+    \__enumext_vspace_below_vii:
+    \int_gset_eq:NN \g__enumext_resume_vii_int \value{enumXvii}
+    \bool_gset_false:N \g__enumext_starred_bool
+    \bool_set_false:N \l__enumext_starred_bool
+  }
+%% Parse |key=val| and store keys for |enumext*|.
+\cs_new_protected:Npn \__enumext_parse_keys_vii:n #1
+  {
+    \tl_if_novalue:nF {#1}
+      {
+        \keys_set:nn { enumext / enumext* } {#1}
+        \bool_if:NT \l__enumext_stored_bool
+          {
+            \__enumext_parse_store_keys_vii:n {#1}
+          }
+      }
+  }
+%% Set |key=val| (store keys) for \printkeyans for |enumext*|.
+\cs_new_protected:Npn \__enumext_parse_store_keys_vii:n #1
+  {
+    \bool_if:NF \l__enumext_stored_columns_vii_bool
+      {
+        \regex_match:nnT { \b columns\b } {#1}
+          {
+            \int_set_eq:NN
+              \l__enumext_stored_columns_vii_int
+              \l__enumext_columns_vii_int
+            \tl_put_right:Ne \l__enumext_stored_opt_vii_tl
+              {
+                columns = \exp_not:V \l__enumext_stored_columns_vii_int ,
+              }
+          }
+      }
+    \bool_if:NF \l__enumext_stored_columns_sep_vii_bool
+      {
+        \regex_match:nnT { \b columns-sep \b} {#1}
+          {
+            \dim_set_eq:NN
+              \l__enumext_stored_columns_sep_vii_dim
+              \l__enumext_columns_sep_vii_dim
+            \tl_put_right:Ne \l__enumext_stored_opt_vii_tl
+              {
+                columns-sep = \exp_not:V \l__enumext_stored_columns_sep_vii_dim,
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_start_store_level_vii:
+  {
+    \bool_if:NT \l__enumext_stored_bool
+      {
+        \int_compare:nNnT { \l__enumext_level_int } > { \c_zero_int }
+          {
+            \__enumext_store_level_open_vii:
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_stop_store_level_vii:
+  {
+    \bool_if:NT \l__enumext_stored_bool
+      {
+        \int_compare:nNnT { \l__enumext_level_int } > { \c_zero_int }
+          {
+            \__enumext_store_level_close_vii:
+          }
+      }
+  }
+%% % Start boxed item's for |enumext*|
+\cs_new_protected_nopar:Nn \__enumext_start_item_tmp_vii:
+  {
+    \__enumext_stop_item_tmp_vii:
+    \int_incr:N \l__enumext_item_column_pos_vii_int
+    \int_gincr:N \g__enumext_item_count_all_vii_int
+    \__enumext_item_peek_args_vii:
+  }
+%% Peek argument for \item()*[][] for |enumext*|
+\cs_new_protected:Nn \__enumext_item_peek_args_vii:
+  {
+    \peek_meaning:NTF (
+      { \__enumext_joined_item_vii:w }
+      { \__enumext_joined_item_vii:w (1) }
+  }
+%% Joined item's for |enumext*|
+\cs_new_protected:Npn \__enumext_joined_item_vii:w (#1)
+  {
+    \__enumext_joined_item_set_vii:n {#1}
+    \peek_meaning_remove:NTF *
+      { \__enumext_starred_item_vii:w  }
+      { \__enumext_standard_item_vii:w }
+  }
+%% Set \item[opt] for |enumext*|
+\cs_new_protected:Npn \__enumext_standard_item_vii:w
+  {
+    \bool_set_false:N \l__enumext_item_starred_vii_bool
+      \peek_meaning:NTF [
+        {
+          \bool_set_eq:NN
+            \l__enumext_wrap_label_vii_bool
+            \l__enumext_wrap_label_opt_vii_bool
+          \__enumext_start_item_vii:w
+        }
+        {
+          \bool_set_true:N \l__enumext_wrap_label_vii_bool
+          \legacy_if_set_true:n { @noitemarg }
+          \__enumext_start_item_vii:w [ \l__enumext_label_vii_tl ]
+        }
+  }
+%% Set \item*[sym][sep] for |enumext*|
+\cs_new_protected:Npn \__enumext_starred_item_vii:w
+  {
+    \bool_set_true:N \l__enumext_item_starred_vii_bool
+    \bool_set_true:N \l__enumext_wrap_label_vii_bool
+    \peek_meaning:NTF [
+      { \__enumext_starred_item_vii_aux_i:w }
+      { \__enumext_starred_item_vii_aux_ii:w }
+  }
+\cs_new_protected:Npn \__enumext_starred_item_vii_aux_i:w [#1]
+  {
+    \tl_gset:Nn \g__enumext_item_symbol_aux_vii_tl {#1}
+    \__enumext_starred_item_vii_aux_ii:w
+  }
+\cs_new_protected:Npn \__enumext_starred_item_vii_aux_ii:w
+  {
+    \peek_meaning:NTF [
+      { \__enumext_starred_item_vii_aux_iii:w }
+      {
+        \dim_set_eq:NN
+          \l__enumext_item_symbol_sep_vii_dim
+          \l__enumext_labelsep_vii_dim
+        \legacy_if_set_true:n { @noitemarg }
+        \__enumext_start_item_vii:w [ \l__enumext_label_vii_tl ]
+      }
+  }
+\cs_new_protected:Npn \__enumext_starred_item_vii_aux_iii:w [#1]
+  {
+    \dim_set:Nn \l__enumext_item_symbol_sep_vii_dim {#1}
+    \legacy_if_set_true:n { @noitemarg }
+    \__enumext_start_item_vii:w [ \l__enumext_label_vii_tl ]
+  }
+%% Real \item definition for |enumext*| \legacy_if_set_true:n { @hyper@item } :D. (doc p170)
+\cs_new_protected_nopar:Npn \__enumext_start_item_vii:w [#1]
+  {
+    \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \__enumext_stop_item_vii:
+    \legacy_if:nT { @noitemarg }
+      {
+        \legacy_if_set_false:n { @noitemarg }
+        \legacy_if:nT { @nmbrlist }
+          {
+            \bool_if:NT \l__enumext_hyperref_bool
+              {
+                \legacy_if_set_true:n { @hyper@item }
+              }
+            \refstepcounter{enumXvii}
+          }
+      }
+    \group_begin:
+      \lrbox{ \l__enumext_item_text_vii_box }
+        \bool_if:NF \l__enumext_footnotes_key_bool
+          {
+            \__enumext_renew_footnote:
+          }
+        \bool_if:NT \l__enumext_item_starred_vii_bool
+          {
+            \tl_if_blank:VT \g__enumext_item_symbol_aux_vii_tl
+              {
+                \tl_gset_eq:NN
+                  \g__enumext_item_symbol_aux_vii_tl \l__enumext_item_symbol_vii_tl
+              }
+            \mode_leave_vertical:
+            \skip_horizontal:n { -\l__enumext_item_symbol_sep_vii_dim }
+            \makebox[ 0pt ][ r ]{ \g__enumext_item_symbol_aux_vii_tl }
+            \skip_horizontal:N \l__enumext_item_symbol_sep_vii_dim
+            \tl_gclear:N \g__enumext_item_symbol_aux_vii_tl
+          }
+        \group_begin:
+          \tl_use:N \l__enumext_label_font_style_vii_tl
+          \bool_if:NTF \l__enumext_wrap_label_vii_bool
+            {
+              \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
+                { \__enumext_wrapper_label_vii:n {#1} }
+            }
+            {
+              \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]{ #1 }
+            }
+        \group_end:
+        \skip_horizontal:N \l__enumext_labelsep_vii_dim
+        \tl_use:N \l__enumext_after_list_args_vii_tl
+        \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_vii_dim  }
+          \skip_set_eq:NN \parindent \l__enumext_listparindent_vii_dim
+          \skip_set_eq:NN \parskip \l__enumext_parsep_vii_skip
+          \tl_use:N \l__enumext_fake_item_indent_vii_tl
+   }
+\cs_new_protected_nopar:Nn \__enumext_stop_item_vii:
+  {
+          \strut
+        \__enumext_endminipage:
+      \endlrbox
+    \group_end:
+    \box_set_wd:Nn \l__enumext_item_text_vii_box
+      {
+        \l__enumext_joined_width_vii_dim
+        + \l__enumext_labelwidth_vii_dim
+        + \l__enumext_labelsep_vii_dim
+      }
+    \int_set:Nn \hbadness { 10000 }
+    \box_use:N \l__enumext_item_text_vii_box
+    \bool_if:NF \l__enumext_footnotes_key_bool
+      {
+        \__enumext_print_footnote:
+      }
+    \int_compare:nNnTF { \l__enumext_item_column_pos_vii_int } = { \l__enumext_columns_vii_int }
+      {
+        \par\noindent
+        \int_zero:N \l__enumext_item_column_pos_vii_int
+      }
+      { \hspace{ \l__enumext_columns_sep_vii_dim } }
+  }
+%% Remove extra \parsep in |enumext*|
+\cs_new_protected:Nn \__enumext_remove_extra_parsep_vii:
+  {
+    \int_compare:nNnT
+      {
+        \int_mod:nn {  \g__enumext_item_count_all_vii_int } { \l__enumext_columns_vii_int }
+      }
+      =
+      { \c_zero_int }
+      {
+        \par
+        \vspace{ -\l__enumext_itemsep_vii_skip }
+        \int_gzero:N \g__enumext_item_count_all_vii_int
+      }
+  }
+%% Define |\getkeyans|, need \exp_args:Ne \tl_to_str:e
+\NewDocumentCommand \getkeyans { m }
+  {
+    \exp_args:Ne \__enumext_getkeyans_aux:n
+      { \tl_to_str:e { \text_expand:n {#1} } }
+  }
+\cs_new_protected:Npn \__enumext_getkeyans_aux:n #1
+  {
+    \str_if_in:nnTF {#1} { : }
+      {
+        \use:e
+          {
+            \cs_set:Npn \exp_not:N \__enumext_tmp:w ##1 \c_colon_str ##2 \scan_stop:
+              { {##1} {##2} }
+          }
+        \exp_after:wN \__enumext_getkeyans:nn \__enumext_tmp:w #1 \scan_stop:
+      }
+      { \msg_error:nnn { enumext } { missing-colon } {#1} }
+  }
+\cs_new_protected:Npn \__enumext_getkeyans:nn #1 #2
+  {
+    \prop_if_exist:cF { g_keyans_#1_prop }
+      { \msg_error:nnn { enumext } { undefined-storage-anskey } {#1} }
+    \group_begin:
+      \prop_item:cn { g_keyans_#1_prop }{#2}
+    \group_end:
+  }
+%% Add keys for |\printkeyans|.
+\keys_define:nn  { keyanskey / print }
+  {
+    level-1 .code:n     = \tl_put_right:Nn \l__enumext_keyans_print_i_tl
+                            {
+                              \setenumext[level,1] {#1} \setenumext[print,1] {#1}
+                            },
+    level-1 .initial:n  = { label=\arabic*., nosep, columns=2, first=\small, font=\small },
+    level-2 .code:n     = \tl_put_right:Nn \l__enumext_keyans_print_ii_tl
+                            {
+                              \setenumext[level,2] {#1} \setenumext[print,2] {#1}
+                            },
+    level-2 .initial:n  = { nosep, label=(\alph*), first=\small, font=\small },
+    level-3 .code:n     = \tl_put_right:Nn \l__enumext_keyans_print_iii_tl
+                            {
+                              \setenumext[level,3] {#1} \setenumext[print,3] {#1}
+                            },
+    level-3 .initial:n  = { nosep, label=\roman*., first=\small, font=\small },
+    level-4 .code:n     = \tl_put_right:Nn \l__enumext_keyans_print_iv_tl
+                            {
+                              \setenumext[level,4] {#1} \setenumext[print,4] {#1}
+                            },
+    level-4 .initial:n  = { nosep, label=\Alph*., first=\small, font=\small },
+    level-* .code:n     = \tl_put_right:Nn \l__enumext_keyans_print_vii_tl % starred
+                            {
+                              \setenumext[enumext*] {#1} %%\setenumext[print,*] {#1}
+                            },
+    level-* .initial:n  = { label=\arabic*., nosep, columns=2, first=\small, font=\small },
+  }
+%% Define |\printkeyans|.
+\NewDocumentCommand \printkeyans { s O{} m }
+  {
+    \group_begin:
+      \tl_use:N \l__enumext_keyans_print_i_tl
+      \tl_use:N \l__enumext_keyans_print_ii_tl
+      \tl_use:N \l__enumext_keyans_print_iii_tl
+      \tl_use:N \l__enumext_keyans_print_iv_tl
+      \tl_use:N \l__enumext_keyans_print_vii_tl
+      \__enumext_keyans_print_anskey:nn {#3}{#2}
+    \group_end:
+  }
+\cs_new_protected:Npn \__enumext_keyans_print_anskey:nn #1#2
+  {
+    \seq_if_exist:cF { g_keyans_#1_seq }
+      {
+        \msg_error:nnn { enumext } { undefined-storage-anskey } {#1}
+      }
+    \seq_if_empty:cF { g_keyans_#1_seq }
+      {
+        \begin{enumext}[#2]
+          \seq_map_inline:cn { g_keyans_#1_seq } { ##1 }
+        \end{enumext}
+      }
+  }
+%% Add keys for |\setenumext|.
+\keys_define:nn { enumext / meta-families }
+  {
+    level-1  .code:n = { \keys_set:nn { enumext / level-1  } {#1} } ,
+    level-2  .code:n = { \keys_set:nn { enumext / level-2  } {#1} } ,
+    level-3  .code:n = { \keys_set:nn { enumext / level-3  } {#1} } ,
+    level-4  .code:n = { \keys_set:nn { enumext / level-4  } {#1} } ,
+    keyans   .code:n = { \keys_set:nn { enumext / keyans   } {#1} } ,
+    enumext* .code:n = { \keys_set:nn { enumext / enumext* } {#1} } ,
+    keyans*  .code:n = { \keys_set:nn { enumext / keyans*  } {#1} } ,
+    print-1  .code:n = { \keys_set:nn { keyanskey / print } { level-1 = {#1} } } ,
+    print-2  .code:n = { \keys_set:nn { keyanskey / print } { level-2 = {#1} } } ,
+    print-3  .code:n = { \keys_set:nn { keyanskey / print } { level-3 = {#1} } } ,
+    print-4  .code:n = { \keys_set:nn { keyanskey / print } { level-4 = {#1} } } ,
+    print-*  .code:n = { \keys_set:nn { keyanskey / print } { level-* = {#1} } } ,
+    unknown  .code:n = { \msg_error:nn { enumext } { unknown-key-family } } ,
+  }
+\seq_const_from_clist:Nn \c__enumext_all_families_seq
+  {
+    level-1 , level-2 , level-3 , level-4 , keyans, enumext*,
+    keyans* , print-1 , print-2 , print-3 , print-4 , print-*,
+  }
+%% Define |\setenumext|., replace \seq_set_map_x => \seq_set_map_e
+\NewDocumentCommand \setenumext { o +m }
+  {
+    \IfValueTF {#1}
+      {
+        \seq_clear:N \l__enumext_setkey_tmpa_seq
+        \seq_set_from_clist:Nn \l__enumext_setkey_tmpb_seq {#1}
+        \int_set:Nn \l__enumext_setkey_tmpa_int
+          { \seq_count:N \l__enumext_setkey_tmpb_seq }
+        \int_compare:nNnTF { \l__enumext_setkey_tmpa_int } > { 1 }
+          {
+            \seq_pop_left:NN \l__enumext_setkey_tmpb_seq \l__enumext_setkey_tmpa_tl
+            \seq_map_function:NN \l__enumext_setkey_tmpb_seq \__enumext_set_parse:n
+            \seq_set_map_e:NNn \l__enumext_setkey_tmpa_seq \l__enumext_setkey_tmpa_seq
+              { \tl_use:N \l__enumext_setkey_tmpa_tl - ##1 }
+          }
+          { \seq_put_right:Ne \l__enumext_setkey_tmpa_seq { \tl_trim_spaces:n {#1} } }
+        \seq_if_empty:NTF \l__enumext_setkey_tmpa_seq
+          { \seq_map_inline:Nn \c__enumext_all_families_seq }
+          { \seq_map_inline:Nn \l__enumext_setkey_tmpa_seq }
+      }
+      { \seq_map_inline:Nn \c__enumext_all_families_seq }
+        { \keys_set:nn { enumext / meta-families } { ##1 = {#2} } }
+  }
+\cs_new_protected:Npn \__enumext_set_parse:n #1
+  {
+    \tl_set:Ne \l__enumext_setkey_tmpb_tl { \tl_trim_spaces:n {#1} }
+    \int_step_inline:nnn { 0 } { 4 } % <- max level
+      { \tl_remove_all:Nn \l__enumext_setkey_tmpb_tl {##1} }
+    \tl_if_empty:NTF \l__enumext_setkey_tmpb_tl
+      {
+        \seq_put_right:Ne \l__enumext_setkey_tmpa_seq
+          { \tl_trim_spaces:n {#1} }
+      }
+      { \__enumext_set_error:nn {#1} { } }
+  }
+\cs_new_protected:Npn \__enumext_set_error:nn #1#2
+  { \msg_error:nnn { enumext } { invalid-key } {#1} {#2} }
+%% Messages.
+\msg_new:nnn { enumext } { counters }
+  {
+    The ~ counter ~ '#1' ~ is ~ already ~ defined ~ by ~ some ~ \\
+    package ~ or ~ macro, ~ it ~ cannot ~ be ~ continued.
+  }
+\msg_new:nnn { enumext } { invalid-key }
+  {
+    The ~ key ~ '#1' ~ is ~ not ~ know ~ the ~ level ~ #2.
+  }
+\msg_new:nnn { enumext } { unknown-key-family }
+  {
+    Unknown~key~family~`\l_keys_key_str'~for~enumext.
+  }
+\msg_new:nnn { enumext } { width-negative }
+  {
+    Ignoring ~ negative ~ value ~ '#1=#2' ~ \msg_line_context:.\\
+    The ~ key ~ '#1'~ accepts ~ values  ~ >= ~ 0pt.
+  }
+\msg_new:nnn { enumext } { width-zero }
+  {
+    Invalid ~ '#1=#2' ~ \msg_line_context:.\\
+    The ~ key ~ '#1'~ accepts ~ values  ~ > ~ 0pt.
+  }
+\msg_new:nnn { enumext } { list-lengths }
+  {
+    **** ~ Lengths ~ used ~ by ~ 'enumext' ~ level ~ '#2' ~ \msg_line_context:~\c_space_tl ****\\
+    \__enumext_msg_skip_show:nnn { dim  } { labelsep      } {#1}
+    \__enumext_msg_skip_show:nnn { dim  } { labelwidth    } {#1}
+    \__enumext_msg_skip_show:nnn { dim  } { itemindent    } {#1}
+    \__enumext_msg_skip_show:nnn { dim  } { leftmargin    } {#1}
+    \__enumext_msg_skip_show:nnn { dim  } { rightmargin   } {#1}
+    \__enumext_msg_skip_show:nnn { dim  } { listparindent } {#1}
+    \__enumext_msg_skip_show:nnn { skip } { topsep    } {#1}
+    \__enumext_msg_skip_show:nnn { skip } { parsep    } {#1}
+    \__enumext_msg_skip_show:nnn { skip } { partopsep } {#1}
+    \__enumext_msg_skip_show:nnn { skip } { itemsep   } {#1}
+    ****************************************************
+  }
+\msg_new:nnn { enumext } { list-lengths-not-nested }
+  {
+    **** ~ Lengths ~ used ~ by ~ '#2' ~ environment ~ \msg_line_context:~\c_space_tl ****\\
+    \__enumext_msg_skip_show:nnn { dim  } { labelsep      } {#1}
+    \__enumext_msg_skip_show:nnn { dim  } { labelwidth    } {#1}
+    \__enumext_msg_skip_show:nnn { dim  } { itemindent    } {#1}
+    \__enumext_msg_skip_show:nnn { dim  } { leftmargin    } {#1}
+    \__enumext_msg_skip_show:nnn { dim  } { rightmargin   } {#1}
+    \__enumext_msg_skip_show:nnn { dim  } { listparindent } {#1}
+    \__enumext_msg_skip_show:nnn { skip } { topsep    } {#1}
+    \__enumext_msg_skip_show:nnn { skip } { parsep    } {#1}
+    \__enumext_msg_skip_show:nnn { skip } { partopsep } {#1}
+    \__enumext_msg_skip_show:nnn { skip } { itemsep   } {#1}
+    ****************************************************
+  }
+\msg_new:nnn { enumext } { items-same-answer }
+  {
+    **********~Checking~answers~on~'#1'~OK~**********\\
+    **~ All ~ items ~ stored ~ in ~ sequence ~ '#1' ~ have ~ an ~ answer. \\
+    ****************************************
+    \prg_replicate:nn { 7 + \str_count:n {#1} } { * }
+  }
+\msg_new:nnn { enumext } { item-different-answer }
+  {
+    Number ~ of ~ items ~ different ~  of ~ number ~ of ~
+    answer ~ in ~ sequence ~ '#1'~ closed ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { missing-starred }
+  {
+    Missing ~ '\c_backslash_str #1*' ~ in ~ '#2' ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { list-too-deep }
+  {
+    Too ~ deep ~ nesting  ~ for ~ 'enumext' ~ \msg_line_context:.~ \\
+    The ~ maximum  ~ level  ~ of  ~ nesting  ~ is ~ 4.
+  }
+\msg_new:nnn { enumext } { anskey-wrong-place }
+  {
+    Wrong ~ place ~ for ~ command ~ '\c_backslash_str #1' ~ \msg_line_context:.~ \\
+    '\c_backslash_str #1' ~ works ~ in ~ the ~ environment ~ '#2'.
+  }
+\msg_new:nnn { enumext } { anspic-wrong-place }
+  {
+    Wrong ~ place ~ for ~ command ~ '\c_backslash_str #1' ~ \msg_line_context:.~ \\
+    '\c_backslash_str #1' ~ works ~ in ~ the ~ environment ~ '#2'.
+  }
+\msg_new:nnn { enumext } { command-wrong-place }
+  {
+    Wrong ~ place ~ for ~ command ~ '\c_backslash_str #1' ~ \msg_line_context:.~ \\
+    '\c_backslash_str #1' ~ works ~ outside ~ the ~ environment ~ '#2'.
+  }
+\msg_new:nnn { enumext } { keyans-nested }
+  {
+    The ~ environment ~ 'keyans' ~ can't ~ be  ~ nested  ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { keyans-wrong-level }
+  {
+    Wrong ~ level ~ position ~ for ~ 'keyans' ~ \msg_line_context:.~ \\
+    The ~ environment ~ 'keyans' ~ can ~ only ~ be ~ in ~ the ~ first ~ level.
+  }
+\msg_new:nnn { enumext } { wrong-place }
+  {
+    Wrong ~ place ~ for ~ '#1' ~ environment ~\msg_line_context:.~ \\
+    '#1' ~ is ~ only ~ found ~ with ~ '#2' ~  in  ~  'enumext.
+  }
+\msg_new:nnn { enumext } { keyanspic-nested }
+  {
+    The ~ environment ~ 'keyanspic' ~ can't ~ be  ~ nested~ \msg_line_context:.~.
+  }
+\msg_new:nnn { enumext } { keyanspic-wrong-level }
+  {
+    Wrong ~ level ~ position ~ for ~ 'keyanspic' ~ \msg_line_context:.~ \\
+    The ~ environment ~ 'keyans' ~ can ~ only ~ be ~ in ~ the ~ first ~ level.
+  }
+\msg_new:nnn { enumext } { undefined-storage-anskey }
+  {
+    Storage ~ named ~ '#1' ~ is ~ not ~ defined ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { missing-miniright }
+  {
+    Missing ~ '\c_backslash_str miniright' ~ in ~ \msg_line_context:.\\
+    The ~ key ~ 'mini-env' ~ need ~ '\c_backslash_str miniright'.
+  }
+\msg_new:nnn { enumext } { wrong-miniright-place }
+  {
+    Wrong ~ place ~ for ~ '\c_backslash_str miniright' ~ \msg_line_context:.~ \\
+    Works ~ in ~ 'enumext' ~ and ~ 'keyans' ~ with ~ key ~ 'mini-env'.
+  }
+\msg_new:nnn { enumext } { wrong-miniright-use }
+  {
+    Wrong ~ use ~ for ~ '\c_backslash_str miniright' ~ \msg_line_context:.~ \\
+    '\c_backslash_str miniright' ~ need ~ a ~ key ~ 'mini-env'.
+  }
+\msg_new:nnn { enumext } { nested }
+  {
+    The ~ starred ~ environment ~ can't ~ be ~ nested ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { item-joined }
+  {
+    Items ~ joined ~ (#1) ~ > ~ #2  ~ columns ~\msg_line_context:.
+  }
+\msg_new:nnn { enumext } { item-joined-columns }
+  {
+    Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
+  }
+\file_input_stop:
+%%
+%%
+%% End of file `enumext.sty'.
