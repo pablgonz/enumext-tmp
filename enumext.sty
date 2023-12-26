@@ -104,12 +104,12 @@
   }
 \clist_map_inline:nn { i, ii, iii, iv, v, vii, viii } { \__enumext_tmp:n {#1} }
 %% Variables used by |save-ans| key.
-\bool_new:N \l__enumext_stored_bool
-\tl_new:N   \l__enumext_stored_name_tl
-\tl_new:N   \g__enumext_stored_name_tl
-\tl_new:N   \l__enumext_stored_anskey_tl
-\int_new:N  \l__enumext_stored_columns_join_int
-\tl_new:N   \l__enumext_stored_keyans_tl
+\bool_new:N \l__enumext_store_bool
+\tl_new:N   \l__enumext_store_name_tl
+\tl_new:N   \g__enumext_store_name_tl
+\tl_new:N   \l__enumext_store_anskey_tl
+\int_new:N  \l__enumext_store_columns_join_int
+\tl_new:N   \l__enumext_store_keyans_tl
 \tl_new:N   \l__enumext_keyans_tmpa_tl
 %% Variables used by |\setenumext|.
 \tl_new:N  \l__enumext_setkey_tmpa_tl
@@ -120,13 +120,13 @@
 %% Variables used by |key=val| in |enumext|, |enumext*| and |\printkeyans| .
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
-    \tl_new:c { l__enumext_stored_opt_#1_tl             }
+    \tl_new:c { l__enumext_store_opt_#1_tl             }
     \tl_new:c { l__enumext_print_keyans_#1_tl           }
-    \bool_new:c { l__enumext_stored_columns_#1_bool     }
-    \int_new:c { l__enumext_stored_columns_#1_int       }
-    \bool_new:c { l__enumext_stored_columns_sep_#1_bool }
-    \dim_new:c { l__enumext_stored_columns_sep_#1_dim   }
-    \bool_new:c { l__enumext_stored_upper_level_#1_bool }
+    \bool_new:c { l__enumext_store_columns_#1_bool     }
+    \int_new:c { l__enumext_store_columns_#1_int       }
+    \bool_new:c { l__enumext_store_columns_sep_#1_bool }
+    \dim_new:c { l__enumext_store_columns_sep_#1_dim   }
+    \bool_new:c { l__enumext_store_upper_level_#1_bool }
   }
 \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {#1} }
 %% Variables used by |show-ans|, |show-pos|, |mark-ans|, |mark-ref| and |\anskey|.
@@ -1430,8 +1430,8 @@
 %% Function to activate ALL storing (and check) used by |save-ans| key.
 \cs_new_protected:Npn \__enumext_storing_set:n #1
   {
-    \tl_set:Ne \l__enumext_stored_name_tl {#1}
-    \bool_set_true:N \l__enumext_stored_bool
+    \tl_set:Ne \l__enumext_store_name_tl {#1}
+    \bool_set_true:N \l__enumext_store_bool
     \int_if_exist:cF { g__enumext_resume_#1_int }
       {
         \int_new:c { g__enumext_resume_#1_int }
@@ -1444,22 +1444,22 @@
 %% Internal function used by |resume| key.
 \cs_new_protected:Nn \__enumext_resume_counter:
   {
-    \bool_if:NT \l__enumext_stored_bool
+    \bool_if:NT \l__enumext_store_bool
       {
         \int_gset:Nn \g__enumext_resume_int
           {
-            \int_use:c { g__enumext_resume_ \l__enumext_stored_name_tl _int }
+            \int_use:c { g__enumext_resume_ \l__enumext_store_name_tl _int }
           }
       }
     \bool_set_true:N \l__enumext_resume_bool
   }
 \cs_new_protected:Nn \__enumext_resume_counter_vii:
   {
-    \bool_if:NT \l__enumext_stored_bool
+    \bool_if:NT \l__enumext_store_bool
       {
         \int_gset:Nn \g__enumext_resume_int
           {
-            \int_use:c { g__enumext_resume_ \l__enumext_stored_name_tl _int }
+            \int_use:c { g__enumext_resume_ \l__enumext_store_name_tl _int }
           }
       }
     \bool_set_true:N \l__enumext_resume_vii_bool
@@ -1471,7 +1471,7 @@
       {
         check-ans .bool_set:N = \l__enumext_check_ans_bool,
         check-ans .initial:n  = false,
-        no-store  .bool_set:N = \l__enumext_stored_ans_bool,
+        no-store  .bool_set:N = \l__enumext_store_ans_bool,
         no-store  .initial:n  = false,
       }
   }
@@ -1518,7 +1518,7 @@
   {
     \bool_if:NT \l__enumext_check_ans_bool
       {
-        \bool_if:NTF \l__enumext_stored_ans_bool
+        \bool_if:NTF \l__enumext_store_ans_bool
           {
             \int_gadd:cn { g__enumext_count_item_ \__enumext_level: _int }
               { \int_use:c { g__enumext_count_tmpa_ \__enumext_level: _int } + 1 }
@@ -1538,11 +1538,11 @@
       { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_ans_int }
       {
         \msg_term:nnV { enumext } { items-same-answer }
-          \g__enumext_stored_name_tl
+          \g__enumext_store_name_tl
       }
       {
         \msg_warning:nnV { enumext } { item-different-answer }
-          \g__enumext_stored_name_tl
+          \g__enumext_store_name_tl
       }
     \int_gzero:N \g__enumext_count_tmpa_i_int
     \int_gzero:N \g__enumext_count_tmpa_ii_int
@@ -1565,11 +1565,11 @@
       { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_ans_int }
       {
         \msg_term:nnV { enumext } { items-same-answer }
-          \g__enumext_stored_name_tl
+          \g__enumext_store_name_tl
       }
       {
         \msg_warning:nnV { enumext } { item-different-answer }
-          \g__enumext_stored_name_tl
+          \g__enumext_store_name_tl
       }
     \int_gzero:N \g__enumext_count_tmpa_i_int
     \int_gzero:N \g__enumext_count_tmpa_ii_int
@@ -1631,18 +1631,18 @@
   {
     \keys_define:nn { enumext / #1 }
       {
-        columns*     .code:n = \bool_set_true:c { l__enumext_stored_columns_#2_bool }
-                               \int_set:cn { l__enumext_stored_columns_#2_int } {##1}
-                               \tl_put_right:ce { l__enumext_stored_opt_#2_tl }
+        columns*     .code:n = \bool_set_true:c { l__enumext_store_columns_#2_bool }
+                               \int_set:cn { l__enumext_store_columns_#2_int } {##1}
+                               \tl_put_right:ce { l__enumext_store_opt_#2_tl }
                                  {
-                                    columns = \exp_not:v { l__enumext_stored_columns_#2_int },
+                                    columns = \exp_not:v { l__enumext_store_columns_#2_int },
                                  },,
         columns*     .value_required:n  = true,
-        columns-sep* .code:n = \bool_set_true:c { l__enumext_stored_columns_sep_#2_bool }
-                               \dim_set:cn { l__enumext_stored_columns_sep_#2_dim } {##1}
-                               \tl_put_right:ce { l__enumext_stored_opt_#2_tl }
+        columns-sep* .code:n = \bool_set_true:c { l__enumext_store_columns_sep_#2_bool }
+                               \dim_set:cn { l__enumext_store_columns_sep_#2_dim } {##1}
+                               \tl_put_right:ce { l__enumext_store_opt_#2_tl }
                                  {
-                                    columns-sep = \exp_not:v { l__enumext_stored_columns_sep_#2_dim },
+                                    columns-sep = \exp_not:v { l__enumext_store_columns_sep_#2_dim },
                                  },
         columns-sep* .value_required:n  = true,
       }
@@ -1655,28 +1655,28 @@
 %% Function for store content to prop list.
 \cs_new_protected:Npn \__enumext_store_addto_prop:n #1
   {
-    \prop_if_exist:cF { g__enumext_ \l__enumext_stored_name_tl _prop }
-      { \prop_new:c { g__enumext_ \l__enumext_stored_name_tl _prop } }
-    \prop_gput:cen { g__enumext_ \l__enumext_stored_name_tl _prop }
+    \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
+      { \prop_new:c { g__enumext_ \l__enumext_store_name_tl _prop } }
+    \prop_gput:cen { g__enumext_ \l__enumext_store_name_tl _prop }
       {
-        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_stored_name_tl _prop } +1 }
+        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } +1 }
       } { #1 }
   }
 \cs_generate_variant:Nn \__enumext_store_addto_prop:n { V }
 %% Function for store content to sequence.
 \cs_new_protected:Npn \__enumext_store_addto_seq:n #1
   {
-    \seq_if_exist:cF { g__enumext_ \l__enumext_stored_name_tl _seq }
-      { \seq_new:c { g__enumext_ \l__enumext_stored_name_tl _seq } }
-    \seq_gput_right:cn { g__enumext_ \l__enumext_stored_name_tl _seq } { #1 }
+    \seq_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _seq }
+      { \seq_new:c { g__enumext_ \l__enumext_store_name_tl _seq } }
+    \seq_gput_right:cn { g__enumext_ \l__enumext_store_name_tl _seq } { #1 }
   }
 \cs_generate_variant:Nn \__enumext_store_addto_seq:n { v, V }
 %% Function for memorize level execution of |\anskey| on |enumext|.
 \cs_new_protected:Nn \__enumext_store_level_open:
   {
-    \bool_if:NF \l__enumext_stored_ans_bool
+    \bool_if:NF \l__enumext_store_ans_bool
       {
-        \tl_if_empty:cTF { l__enumext_stored_opt_ \__enumext_level: _tl }
+        \tl_if_empty:cTF { l__enumext_store_opt_ \__enumext_level: _tl }
           {
             \__enumext_store_addto_seq:n
               {
@@ -1684,21 +1684,21 @@
               }
           }
           {
-            \tl_put_left:cn { l__enumext_stored_opt_ \__enumext_level: _tl }
+            \tl_put_left:cn { l__enumext_store_opt_ \__enumext_level: _tl }
               {
                 \item \begin{enumext} [
               }
-            \tl_put_right:cn { l__enumext_stored_opt_ \__enumext_level: _tl }
+            \tl_put_right:cn { l__enumext_store_opt_ \__enumext_level: _tl }
               {
                 ]
               }
-            \__enumext_store_addto_seq:v { l__enumext_stored_opt_ \__enumext_level: _tl }
+            \__enumext_store_addto_seq:v { l__enumext_store_opt_ \__enumext_level: _tl }
           }
       }
   }
 \cs_new_protected:Nn \__enumext_store_level_close:
   {
-    \bool_if:NF \l__enumext_stored_ans_bool
+    \bool_if:NF \l__enumext_store_ans_bool
       {
         \__enumext_store_addto_seq:n { \end{enumext} }
       }
@@ -1706,9 +1706,9 @@
 %% Function for memorize level execution of |\anskey| on |enumext*|.
 \cs_new_protected:Nn \__enumext_store_level_open_vii:
   {
-    \bool_if:NF \l__enumext_stored_ans_bool
+    \bool_if:NF \l__enumext_store_ans_bool
       {
-        \tl_if_empty:NTF \l__enumext_stored_opt_vii_tl
+        \tl_if_empty:NTF \l__enumext_store_opt_vii_tl
           {
             \__enumext_store_addto_seq:n
               {
@@ -1718,23 +1718,23 @@
               }
           }
           {
-            \tl_put_left:Nn \l__enumext_stored_opt_vii_tl
+            \tl_put_left:Nn \l__enumext_store_opt_vii_tl
               {
                 \item \mode_leave_vertical:
                   \vspace { -\skip_eval:n { \baselineskip + \parsep } }
                   \begin{enumext*}[before={\setlength{\topsep}{0pt}},
               }
-            \tl_put_right:Nn \l__enumext_stored_opt_vii_tl
+            \tl_put_right:Nn \l__enumext_store_opt_vii_tl
               {
                 ]
               }
-            \__enumext_store_addto_seq:V \l__enumext_stored_opt_vii_tl
+            \__enumext_store_addto_seq:V \l__enumext_store_opt_vii_tl
           }
       }
   }
 \cs_new_protected:Nn \__enumext_store_level_close_vii:
   {
-    \bool_if:NF \l__enumext_stored_ans_bool
+    \bool_if:NF \l__enumext_store_ans_bool
       {
         \__enumext_store_addto_seq:n { \end{enumext*} }
       }
@@ -1757,11 +1757,11 @@
 %% Add |key=val| for |\anskey|.
 \keys_define:nn { enumext / anskey }
   {
-    item-sym* .tl_set:N   = \l__enumext_stored_item_symbol_tl,
+    item-sym* .tl_set:N   = \l__enumext_store_item_symbol_tl,
     item-sym* .value_required:n = true,
-    item-pos* .dim_set:N  = \l__enumext_stored_item_symbol_sep_dim,
+    item-pos* .dim_set:N  = \l__enumext_store_item_symbol_sep_dim,
     item-pos* .value_required:n = true,
-    store-brk .bool_set:N = \l__enumext_stored_columns_break_bool,
+    store-brk .bool_set:N = \l__enumext_store_columns_break_bool,
     store-brk .default:n  = true,
     store-brk .value_forbidden:n = true,
   }
@@ -1769,7 +1769,7 @@
 %% #1: (number); #2: * starred; #3: key-val; #4: argument
 \NewDocumentCommand \anskey { d() s o +m }
   {
-    \bool_if:NF \l__enumext_stored_bool
+    \bool_if:NF \l__enumext_store_bool
       {
         \msg_error:nnnn { enumext } { anskey-wrong-place }{ anskey }{ enumext }
       }
@@ -1782,87 +1782,87 @@
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
     \group_begin:
-      \bool_if:NF \l__enumext_stored_ans_bool
+      \bool_if:NF \l__enumext_store_ans_bool
         {
           \bool_if:NT \l__enumext_check_ans_bool
             {
               \int_gincr:N \g__enumext_count_item_ans_int
             }
-          \__enumext_stored_anskey_code:nnnn {#1} {#2} {#3} {#4}
+          \__enumext_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
         }
     \group_end:
   }
 %% Internal function of |\anskey|.
-\cs_new_protected:Npn \__enumext_stored_anskey_code:nnnn #1 #2 #3 #4
+\cs_new_protected:Npn \__enumext_store_anskey_code:nnnn #1 #2 #3 #4
   {
     \__enumext_store_addto_prop:n {#4}
     \bool_if:NT \l__enumext_store_ref_key_bool
       {
-        \__enumext_stored_make_label_ref:
+        \__enumext_store_make_label_ref:
       }
     \__enumext_anskey_show_left:n { #4 }
-    \tl_clear:N \l__enumext_stored_anskey_tl
+    \tl_clear:N \l__enumext_store_anskey_tl
     \tl_if_novalue:nF {#3}
       {
         \keys_set:nn { enumext / anskey } {#3}
       }
     \bool_lazy_and:nnT
-      { \l__enumext_stored_columns_break_bool }
+      { \l__enumext_store_columns_break_bool }
       { \bool_not_p:n { \l__enumext_starred_bool } }
       {
-        \tl_put_left:Nn \l__enumext_stored_anskey_tl { \columnbreak }
+        \tl_put_left:Nn \l__enumext_store_anskey_tl { \columnbreak }
       }
-    \tl_put_right:Nn \l__enumext_stored_anskey_tl { \item }
+    \tl_put_right:Nn \l__enumext_store_anskey_tl { \item }
     \tl_if_novalue:nF {#1}
       {
-        \int_set:Nn \l__enumext_stored_columns_join_int {#1}
+        \int_set:Nn \l__enumext_store_columns_join_int {#1}
         \bool_if:NT \l__enumext_starred_bool
           {
-            \tl_put_right:Ne \l__enumext_stored_anskey_tl
+            \tl_put_right:Ne \l__enumext_store_anskey_tl
               {
-                ( \exp_not:V \l__enumext_stored_columns_join_int )
+                ( \exp_not:V \l__enumext_store_columns_join_int )
               }
           }
       }
     \bool_if:nTF {#2}
       {
-        \tl_put_right:Nn \l__enumext_stored_anskey_tl { * }
-        \tl_if_empty:NF \l__enumext_stored_item_symbol_tl
+        \tl_put_right:Nn \l__enumext_store_anskey_tl { * }
+        \tl_if_empty:NF \l__enumext_store_item_symbol_tl
           {
-            \tl_put_right:Ne \l__enumext_stored_anskey_tl
+            \tl_put_right:Ne \l__enumext_store_anskey_tl
               {
-                [ \exp_not:V \l__enumext_stored_item_symbol_tl ]
+                [ \exp_not:V \l__enumext_store_item_symbol_tl ]
               }
           }
         \dim_compare:nT
           {
-            \l__enumext_stored_item_symbol_sep_dim != \c_zero_dim
+            \l__enumext_store_item_symbol_sep_dim != \c_zero_dim
           }
           {
-            \tl_put_right:Ne \l__enumext_stored_anskey_tl
+            \tl_put_right:Ne \l__enumext_store_anskey_tl
               {
-                [ \exp_not:V \l__enumext_stored_item_symbol_sep_dim ]
+                [ \exp_not:V \l__enumext_store_item_symbol_sep_dim ]
               }
           }
-        \tl_put_right:Nn \l__enumext_stored_anskey_tl {#4}
+        \tl_put_right:Nn \l__enumext_store_anskey_tl {#4}
       }
       {
-        \tl_put_right:Nn \l__enumext_stored_anskey_tl {#4}
+        \tl_put_right:Nn \l__enumext_store_anskey_tl {#4}
       }
     \bool_lazy_and:nnT
       { \l__enumext_store_ref_key_bool }
       { \l__enumext_hyperref_bool }
       {
-        \tl_put_right:Ne \l__enumext_stored_anskey_tl
+        \tl_put_right:Ne \l__enumext_store_anskey_tl
           {
             \hfill \exp_not:N \hyperlink { \exp_not:V \l__enumext_newlabel_arg_one_tl }
                  { \exp_not:V \l__enumext_mark_ref_sym_tl }
           }
       }
-    \__enumext_store_addto_seq:V \l__enumext_stored_anskey_tl
+    \__enumext_store_addto_seq:V \l__enumext_store_anskey_tl
   }
 %% Internal label and ref function for |\anskey|.
-\cs_new_protected:Nn \__enumext_stored_make_label_ref:
+\cs_new_protected:Nn \__enumext_store_make_label_ref:
   {
     \cs_set_protected:Npn \__enumext_tmp:n ##1
       {
@@ -1928,8 +1928,8 @@
       }
     \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
       {
-        \l__enumext_stored_name_tl \c_colon_str
-        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_stored_name_tl _prop } }
+        \l__enumext_store_name_tl \c_colon_str
+        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
       }
     \tl_put_right:Ne \l__enumext_keyans_make_label_ref_tl
       {
@@ -1967,7 +1967,7 @@
             \exp_not:N \normalfont
             \exp_not:N \footnotesize [ \int_eval:n
               {
-                \prop_count:c { g__enumext_ \l__enumext_stored_name_tl _prop }
+                \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop }
               }
               ]
             \group_end:
@@ -1978,19 +1978,19 @@
 %% Function for storing in prop list for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_env_addto_prop:n #1
   {
-    \tl_clear:N \l__enumext_stored_keyans_tl
+    \tl_clear:N \l__enumext_store_keyans_tl
     \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
       {
-        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \l__enumext_label_vi_tl }
+        \tl_put_right:Ne \l__enumext_store_keyans_tl { \l__enumext_label_vi_tl }
       }
       {
-        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \l__enumext_label_v_tl }
+        \tl_put_right:Ne \l__enumext_store_keyans_tl { \l__enumext_label_v_tl }
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \c_space_tl #1 }
+        \tl_put_right:Ne \l__enumext_store_keyans_tl { \c_space_tl #1 }
       }
-    \__enumext_store_addto_prop:V \l__enumext_stored_keyans_tl
+    \__enumext_store_addto_prop:V \l__enumext_store_keyans_tl
   }
 %% Internal label and ref function for |keyans| and |keyanspic|.
 \cs_new_protected:Nn \__enumext_keyans_env_make_label_ref:
@@ -2014,8 +2014,8 @@
       }
     \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
       {
-        \l__enumext_stored_name_tl \c_colon_str
-        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_stored_name_tl _prop } }
+        \l__enumext_store_name_tl \c_colon_str
+        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
       }
     \tl_put_right:Ne \l__enumext_keyans_make_label_ref_tl
       {
@@ -2031,23 +2031,23 @@
 %% Function for storing in sequence for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_env_addto_seq:n #1
   {
-    \tl_clear:N \l__enumext_stored_keyans_tl
+    \tl_clear:N \l__enumext_store_keyans_tl
     \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
       {
-        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \item \l__enumext_label_vi_tl }
+        \tl_put_right:Ne \l__enumext_store_keyans_tl { \item \l__enumext_label_vi_tl }
       }
       {
-        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \item \l__enumext_label_v_tl }
+        \tl_put_right:Ne \l__enumext_store_keyans_tl { \item \l__enumext_label_v_tl }
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l__enumext_stored_keyans_tl { \c_space_tl #1 }
+        \tl_put_right:Ne \l__enumext_store_keyans_tl { \c_space_tl #1 }
       }
     \bool_lazy_and:nnT
       { \l__enumext_store_ref_key_bool }
       { \l__enumext_hyperref_bool }
       {
-        \tl_put_right:Ne \l__enumext_stored_keyans_tl
+        \tl_put_right:Ne \l__enumext_store_keyans_tl
           {
             \hfill \exp_not:N \hyperlink
               {
@@ -2056,8 +2056,8 @@
               { \exp_not:V \l__enumext_mark_ref_sym_tl }
           }
       }
-    \__enumext_store_addto_seq:V \l__enumext_stored_keyans_tl
-    \tl_gset:NV \g__enumext_check_ans_item_tl \l__enumext_stored_keyans_tl
+    \__enumext_store_addto_seq:V \l__enumext_store_keyans_tl
+    \tl_gset:NV \g__enumext_check_ans_item_tl \l__enumext_store_keyans_tl
     \bool_if:NT \l__enumext_check_ans_bool
       {
         \int_gincr:N \g__enumext_count_item_ans_int
@@ -2094,7 +2094,7 @@
             \exp_not:N \normalfont
             \exp_not:N \footnotesize [ \int_eval:n
               {
-                \prop_count:c { g__enumext_ \l__enumext_stored_name_tl _prop }
+                \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop }
                 + \l__enumext_keyans_level_int
               }
               ]
@@ -2465,7 +2465,7 @@
   {
     \exp_args:Ne \keys_set:nn
       { enumext / level-\int_use:N \l__enumext_level_int } {#1}
-    \bool_if:NT \l__enumext_stored_bool
+    \bool_if:NT \l__enumext_store_bool
       {
         \__enumext_parse_store_keys:n {#1}
       }
@@ -2473,52 +2473,52 @@
 %% Set |key=val| (store keys) for \printkeyans.
 \cs_new_protected:Npn \__enumext_parse_store_keys:n #1
   {
-    \bool_if:cF { l__enumext_stored_columns_ \__enumext_level: _bool }
+    \bool_if:cF { l__enumext_store_columns_ \__enumext_level: _bool }
       {
         \regex_match:nnT { \b columns\b } {#1}
           {
             \int_set_eq:cc
-              { l__enumext_stored_columns_ \__enumext_level: _int }
+              { l__enumext_store_columns_ \__enumext_level: _int }
               { l__enumext_columns_  \__enumext_level: _int }
-            \tl_put_right:ce { l__enumext_stored_opt_ \__enumext_level: _tl }
+            \tl_put_right:ce { l__enumext_store_opt_ \__enumext_level: _tl }
               {
-                columns = \exp_not:v { l__enumext_stored_columns_ \__enumext_level: _int },
+                columns = \exp_not:v { l__enumext_store_columns_ \__enumext_level: _int },
               }
           }
       }
-    \bool_if:cF { l__enumext_stored_columns_sep_ \__enumext_level: _bool }
+    \bool_if:cF { l__enumext_store_columns_sep_ \__enumext_level: _bool }
       {
         \regex_match:nnT { \b columns-sep \b} {#1}
           {
             \dim_set_eq:cc
-              { l__enumext_stored_columns_sep_ \__enumext_level: _dim }
+              { l__enumext_store_columns_sep_ \__enumext_level: _dim }
               { l__enumext_columns_sep_  \__enumext_level: _dim }
-            \tl_put_right:ce { l__enumext_stored_opt_ \__enumext_level: _tl }
+            \tl_put_right:ce { l__enumext_store_opt_ \__enumext_level: _tl }
               {
-                columns-sep = \exp_not:v { l__enumext_stored_columns_sep_ \__enumext_level: _dim },
+                columns-sep = \exp_not:v { l__enumext_store_columns_sep_ \__enumext_level: _dim },
               }
           }
       }
   }
 \cs_new_protected:Nn \__enumext_start_store_level:
   {
-    \bool_lazy_and:nnT { \l__enumext_stored_bool } { \bool_not_p:n { \l__enumext_keyans_env_bool } }
+    \bool_lazy_and:nnT { \l__enumext_store_bool } { \bool_not_p:n { \l__enumext_keyans_env_bool } }
       {
         \int_compare:nNnT { \l__enumext_level_h_int } = { 1 }
           {
-            \bool_set_true:c { l__enumext_stored_upper_level_ \__enumext_level: _bool }
+            \bool_set_true:c { l__enumext_store_upper_level_ \__enumext_level: _bool }
             \__enumext_store_level_open:
           }
         \int_compare:nNnT { \l__enumext_level_int } > { 1 }
           {
-            \bool_set_true:c { l__enumext_stored_upper_level_ \__enumext_level: _bool }
+            \bool_set_true:c { l__enumext_store_upper_level_ \__enumext_level: _bool }
             \__enumext_store_level_open:
           }
       }
   }
 \cs_new_protected:Nn \__enumext_stop_store_level:
   {
-    \bool_if:cT { l__enumext_stored_upper_level_ \__enumext_level: _bool }
+    \bool_if:cT { l__enumext_store_upper_level_ \__enumext_level: _bool }
       {
         \__enumext_store_level_close:
       }
@@ -2592,7 +2592,7 @@
     \bool_lazy_and:nnT { \l__enumext_check_ans_bool }{ \bool_not_p:n { \g__enumext_starred_bool } }
       {
         \bool_gset_true:N \g__enumext_check_ans_show_bool
-        \tl_gset:NV \g__enumext_stored_name_tl \l__enumext_stored_name_tl
+        \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
       }
   }
 \cs_new_protected:Nn \__enumext_after_list:
@@ -2613,10 +2613,10 @@
     \__enumext_vspace_below:
     \bool_set_false:N \l__enumext_standar_bool
     \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
-    \int_if_exist:cT { g__enumext_resume_ \l__enumext_stored_name_tl _int }
+    \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
       {
         \int_gset_eq:cN
-          { g__enumext_resume_ \l__enumext_stored_name_tl _int }
+          { g__enumext_resume_ \l__enumext_store_name_tl _int }
           { \value{enumXi} }
       }
   }
@@ -2631,7 +2631,7 @@
           }
       }
     \bool_gset_false:N \g__enumext_check_ans_show_bool
-    \tl_gclear:N \g__enumext_stored_name_tl
+    \tl_gclear:N \g__enumext_store_name_tl
   }
 %% Definition of |keyans| environment.
 \NewDocumentEnvironment{keyans}{ O{} }
@@ -2655,14 +2655,14 @@
 %% Function for check nested level in |keyans|.
 \cs_new_protected:Nn \__enumext_keyans_safe_exec:
   {
-    \bool_if:NF \l__enumext_stored_bool
+    \bool_if:NF \l__enumext_store_bool
       {
         \msg_error:nnnn { enumext } { wrong-place }{ keyans }{ save-ans }
       }
     \int_incr:N \l__enumext_keyans_level_int
     \bool_set_true:N \l__enumext_keyans_env_bool
     % set false for interfering with enumext nested in keyans (yes, its posible and crayze)
-    \bool_set_false:N \l__enumext_stored_bool
+    \bool_set_false:N \l__enumext_store_bool
     \int_compare:nNnT { \l__enumext_keyans_level_int } > { 1 }
       {
         \msg_error:nn { enumext } { keyans-nested }
@@ -2755,7 +2755,7 @@
 %% Define |\anspic| for |keyanspic|.
 \NewDocumentCommand \anspic { s o +m }
   {
-    \bool_if:NF \l__enumext_stored_bool
+    \bool_if:NF \l__enumext_store_bool
       {
         \msg_error:nnnn { enumext } { wrong-place }{ keyanspic }{ save-ans }
       }
@@ -2815,7 +2815,7 @@
     \__enumext_keyans_check_starred:nn { anspic } { keyanspic }
     \setcounter { enumXvi } { 0 }
     \vspace { \l__enumext_topsep_v_skip }
-    %\bool_set_false:N \l__enumext_stored_bool
+    %\bool_set_false:N \l__enumext_store_bool
   }
 %% Internal code for |keyanspic| environment.
 \cs_new_protected:Nn \__enumext_keyans_pic_safe_exec:
@@ -3040,7 +3040,7 @@
     \tl_if_novalue:nF {#1}
       {
         \keys_set:nn { enumext / enumext* } {#1}
-        \bool_if:NT \l__enumext_stored_bool
+        \bool_if:NT \l__enumext_store_bool
           {
             \__enumext_parse_store_keys_vii:n {#1}
           }
@@ -3049,29 +3049,29 @@
 %% Set |key=val| (store keys) for \printkeyans for |enumext*|.
 \cs_new_protected:Npn \__enumext_parse_store_keys_vii:n #1
   {
-    \bool_if:NF \l__enumext_stored_columns_vii_bool
+    \bool_if:NF \l__enumext_store_columns_vii_bool
       {
         \regex_match:nnT { \b columns\b } {#1}
           {
             \int_set_eq:NN
-              \l__enumext_stored_columns_vii_int
+              \l__enumext_store_columns_vii_int
               \l__enumext_columns_vii_int
-            \tl_put_right:Ne \l__enumext_stored_opt_vii_tl
+            \tl_put_right:Ne \l__enumext_store_opt_vii_tl
               {
-                columns = \exp_not:V \l__enumext_stored_columns_vii_int ,
+                columns = \exp_not:V \l__enumext_store_columns_vii_int ,
               }
           }
       }
-    \bool_if:NF \l__enumext_stored_columns_sep_vii_bool
+    \bool_if:NF \l__enumext_store_columns_sep_vii_bool
       {
         \regex_match:nnT { \b columns-sep \b} {#1}
           {
             \dim_set_eq:NN
-              \l__enumext_stored_columns_sep_vii_dim
+              \l__enumext_store_columns_sep_vii_dim
               \l__enumext_columns_sep_vii_dim
-            \tl_put_right:Ne \l__enumext_stored_opt_vii_tl
+            \tl_put_right:Ne \l__enumext_store_opt_vii_tl
               {
-                columns-sep = \exp_not:V \l__enumext_stored_columns_sep_vii_dim,
+                columns-sep = \exp_not:V \l__enumext_store_columns_sep_vii_dim,
               }
           }
       }
@@ -3089,23 +3089,23 @@
     \__enumext_after_stop_list_vii:
     \__enumext_vspace_below_vii:
     \int_gset_eq:NN \g__enumext_resume_vii_int \value{enumXvii}
-    \int_if_exist:cT { g__enumext_resume_ \l__enumext_stored_name_tl _int }
+    \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
       {
         \int_gset_eq:cN
-          { g__enumext_resume_ \l__enumext_stored_name_tl _int }
+          { g__enumext_resume_ \l__enumext_store_name_tl _int }
           { \value{enumXvii} }
       }
     \bool_lazy_and:nnT { \g__enumext_starred_bool } { \l__enumext_check_ans_bool }
       {
         \bool_gset_true:N \g__enumext_check_ans_show_h_bool
-        \tl_gset:NV \g__enumext_stored_name_tl \l__enumext_stored_name_tl
+        \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
       }
     \bool_gset_false:N \g__enumext_starred_bool
     \bool_set_false:N \l__enumext_starred_bool
   }
 \cs_new_protected:Nn \__enumext_start_store_level_vii:
   {
-    \bool_if:NT \l__enumext_stored_bool
+    \bool_if:NT \l__enumext_store_bool
       {
         \int_compare:nNnT { \l__enumext_level_int } > { \c_zero_int }
           {
@@ -3115,7 +3115,7 @@
   }
 \cs_new_protected:Nn \__enumext_stop_store_level_vii:
   {
-    \bool_if:NT \l__enumext_stored_bool
+    \bool_if:NT \l__enumext_store_bool
       {
         \int_compare:nNnT { \l__enumext_level_int } > { \c_zero_int }
           {
@@ -3213,7 +3213,7 @@
             \bool_if:NT \l__enumext_check_ans_bool
               {
                 % If true |no-store| key => nested in |enumext|
-                \bool_if:NTF \l__enumext_stored_ans_bool
+                \bool_if:NTF \l__enumext_store_ans_bool
                   {
                     \int_gadd:cn { g__enumext_count_item_ \__enumext_level: _int }
                       { \int_use:c { g__enumext_count_tmpa_ \__enumext_level: _int } + 1 }
@@ -3312,7 +3312,7 @@
           }
       }
     \bool_gset_false:N \g__enumext_check_ans_show_h_bool
-    \tl_gclear:N \g__enumext_stored_name_tl
+    \tl_gclear:N \g__enumext_store_name_tl
   }
 %% Define |\getkeyans|, need \exp_args:Ne \tl_to_str:e
 \NewDocumentCommand \getkeyans { m }
