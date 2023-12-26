@@ -3770,7 +3770,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_set_protected:Npn \@@_tmp:n #1
   {
     \tl_new:c { l_@@_store_opt_#1_tl             }
-    \tl_new:c { l_@@_print_keyans_#1_tl           }
+    \tl_new:c { l_@@_print_keyans_#1_tl          }
     \bool_new:c { l_@@_store_columns_#1_bool     }
     \int_new:c { l_@@_store_columns_#1_int       }
     \bool_new:c { l_@@_store_columns_sep_#1_bool }
@@ -3859,7 +3859,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}[int]{ \l_@@_newlabel_arg_one_tl, \l_@@_newlabel_arg_two_tl,
-%                        \l_@@_store_write_label_ref_tl, \l_@@_label_copy_X_tl, }
+%                        \l_@@_store_write_aux_file_tl, \l_@@_label_copy_X_tl, }
 %
 %    Internal variables are used when executing the \mykey{store-ref} key.
 %    The variables \myvarenv{l__@@_label_copy_X_tl} correspond to temporary
@@ -3869,7 +3869,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %    The variables \cs{l_@@_newlabel_arg_one_tl} and \cs{l_@@_newlabel_arg_two_tl}
 %    will be used to form the arguments passed to the function
-%    \cs{@@_newlabel_write:nn} and the variable \cs{l_@@_store_write_label_ref_tl}
+%    \cs{@@_newlabel:nn} and the variable \cs{l_@@_store_write_aux_file_tl}
 %    will be in charge of executing the writing code in the |.aux| file.
 % \iffalse
 %% Variables used by |store-ref| key (internal label and ref).
@@ -3877,7 +3877,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \tl_new:N \l_@@_newlabel_arg_one_tl
 \tl_new:N \l_@@_newlabel_arg_two_tl
-\tl_new:N \l_@@_store_write_label_ref_tl
+\tl_new:N \l_@@_store_write_aux_file_tl
 \cs_set_protected:Npn \@@_tmp:n #1
   {
     \tl_new:c { l_@@_label_copy_#1_tl }
@@ -4210,8 +4210,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_newlabel_write:nn,}
-%    The function \cs{@@_newlabel_write:nn} write the information
+% \begin{macro}{\@@_newlabel:nn,}
+%    The function \cs{@@_newlabel:nn} write the information
 %    to the |.aux| file when using the \mykey{store-ref} key. The
 %    arguments taken by the function are:
 %
@@ -4233,7 +4233,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Write internal |label| in |.aux| file for |store-ref| key.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_newlabel_write:nn #1 #2
+\cs_new_protected:Npn \@@_newlabel:nn #1 #2
   {
     \protected@write \@auxout { }
       {
@@ -7019,7 +7019,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   command \mymeta{argument} to the \mymeta{prop list}, then checks the
 %   state of the variable \cs{l_@@_store_ref_key_bool} handled by the
 %   \mykey{store-ref} key and will call the function
-%   \cs{l_@@_store_label_ref:} for the internal \emph{\enquote{label
+%   \cs{l_@@_store_internal_ref:} for the internal \emph{\enquote{label
 %   and ref}} system. Followed by this if the \mykey{show-ans} or
 %   \mykey{show-pos} keys are active we will show the
 %   \emph{\enquote{wrapped}} \mymeta{argument} passed to the command.
@@ -7032,7 +7032,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_store_addto_prop:n {#4}
     \bool_if:NT \l_@@_store_ref_key_bool
       {
-        \@@_store_label_ref:
+        \@@_store_internal_ref:
       }
     \@@_store_anskey_show_left:n { #4 }
 %    \end{macrocode}
@@ -7124,8 +7124,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_store_label_ref:}
-%    The function \cs{@@_store_label_ref:} handles the internal
+% \begin{macro}{\@@_store_internal_ref:}
+%    The function \cs{@@_store_internal_ref:} handles the internal
 %    \emph{\enquote{label and ref}} system used by the \mykey{store-ref} and
 %    \mykey{mark-ref} keys for \ics*{anskey} will allow to execute
 %    \ics{ref}\mymarg[type=tt]{store name \textcolor{red}{:} position} and
@@ -7139,7 +7139,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal label and ref function for |\anskey|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_store_label_ref:
+\cs_new_protected:Nn \@@_store_internal_ref:
   {
     \cs_set_protected:Npn \@@_tmp:n ##1
       {
@@ -7225,17 +7225,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } }
       }
 %    \end{macrocode}
-%    Now execute the function \cs{@@_newlabel_write:nn} and save the
-%    result in the variable \cs{l_@@_store_write_label_ref_tl} and
+%    Now execute the function \cs{@@_newlabel:nn} and save the
+%    result in the variable \cs{l_@@_store_write_aux_file_tl} and
 %    finally we write in the |.aux| file.
 %    \begin{macrocode}
-    \tl_put_right:Ne \l_@@_store_write_label_ref_tl
+    \tl_put_right:Ne \l_@@_store_write_aux_file_tl
       {
-        \@@_newlabel_write:nn
+        \@@_newlabel:nn
           { \exp_not:V \l_@@_newlabel_arg_one_tl }
           { \l_@@_newlabel_arg_two_tl }
       }
-    \l_@@_store_write_label_ref_tl
+    \l_@@_store_write_aux_file_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7303,8 +7303,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Storing content in prop list}
 %
-% \begin{macro}{\@@_keyans_env_addto_prop:n}
-%    The function \cs{@@_keyans_env_addto_prop:n} will pass the
+% \begin{macro}{\@@_keyans_addto_prop:n}
+%    The function \cs{@@_keyans_addto_prop:n} will pass the
 %    contents of the \cs{l_@@_label_v_tl} (current \mymeta{label}) for the
 %    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} (current \mymeta{label})
 %    for the \myenv*{keyanspic} environment when using
@@ -7316,7 +7316,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function for storing in prop list for |keyans| and |keyanspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_keyans_env_addto_prop:n #1
+\cs_new_protected:Npn \@@_keyans_addto_prop:n #1
   {
     \tl_clear:N \l_@@_store_keyans_tl
     \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
@@ -7342,8 +7342,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % implemented for the \ics*{anskey} command, basically because in both
 % environments we are interested in the \emph{current} \mymeta{label}.
 %
-% \begin{macro}{\@@_keyans_env_make_label_ref:}
-%    The function \cs{@@_keyans_env_make_label_ref:} handles the
+% \begin{macro}{\@@_keyans_internal_ref:}
+%    The function \cs{@@_keyans_internal_ref:} handles the
 %    internal \emph{\enquote{label and ref}} system used by the \mykey{store-ref}
 %    and \mykey{mark-ref} keys for \ics*{item*} and \ics*{anspic*}
 %    commands. The mechanism defined here will allow to execute
@@ -7352,7 +7352,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal label and ref function for |keyans| and |keyanspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_env_make_label_ref:
+\cs_new_protected:Nn \@@_keyans_internal_ref:
   {
 %    \end{macrocode}
 %    First we will remove the dots \enquote{\textcolor{red}{\texttt{.}}}
@@ -7387,19 +7387,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } }
       }
 %    \end{macrocode}
-%    Now execute the function \cs{@@_newlabel_write:nn} and save the
-%    result in the variable \cs{l_@@_store_write_label_ref_tl} and
+%    Now execute the function \cs{@@_newlabel:nn} and save the
+%    result in the variable \cs{l_@@_store_write_aux_file_tl} and
 %    finally we write in the |.aux| file.
 %    \begin{macrocode}
-    \tl_put_right:Ne \l_@@_store_write_label_ref_tl
+    \tl_put_right:Ne \l_@@_store_write_aux_file_tl
       {
-        \@@_newlabel_write:nn
+        \@@_newlabel:nn
           { \exp_not:V \l_@@_newlabel_arg_one_tl }
           { \l_@@_newlabel_arg_two_tl }
       }
     \bool_if:NT \l_@@_store_ref_key_bool
       {
-        \l_@@_store_write_label_ref_tl
+        \l_@@_store_write_aux_file_tl
       }
   }
 %    \end{macrocode}
@@ -7407,9 +7407,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Storing content in sequence}
 %
-% \begin{macro}{\@@_keyans_env_addto_seq:n,}
+% \begin{macro}{\@@_keyans_addto_seq:n,}
 %
-%    The function \cs{@@_keyans_env_addto_seq:n} will pass the
+%    The function \cs{@@_keyans_addto_seq:n} will pass the
 %    contents of the \cs{l_@@_label_v_tl} (\emph{\enquote{current label}}) for the
 %    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} (current
 %    label) for the \myenv*{keyanspic} environment when using
@@ -7420,7 +7420,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function for storing in sequence for |keyans| and |keyanspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_keyans_env_addto_seq:n #1
+\cs_new_protected:Npn \@@_keyans_addto_seq:n #1
   {
     \tl_clear:N \l_@@_store_keyans_tl
     \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
@@ -7829,9 +7829,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    finally \emph{store} it in the \mymeta{sequence}.
 %    \begin{macrocode}
     \tl_set_eq:NN \l_@@_label_v_tl \l_@@_keyans_tmpa_tl
-    \@@_keyans_env_addto_prop:n { #1 }
-    \@@_keyans_env_make_label_ref:
-    \@@_keyans_env_addto_seq:n { #1 }
+    \@@_keyans_addto_prop:n { #1 }
+    \@@_keyans_internal_ref:
+    \@@_keyans_addto_seq:n { #1 }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9010,9 +9010,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     #3 \\
     \bool_if:nT { #1 }
       {
-        \@@_keyans_env_addto_prop:n { #2 }
-        \@@_keyans_env_make_label_ref:
-        \@@_keyans_env_addto_seq:n { #2 }
+        \@@_keyans_addto_prop:n { #2 }
+        \@@_keyans_internal_ref:
+        \@@_keyans_addto_seq:n { #2 }
         \bool_lazy_or:nnT
           { \l_@@_show_answer_bool }
           { \l_@@_show_position_bool }

@@ -121,7 +121,7 @@
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \tl_new:c { l__enumext_store_opt_#1_tl             }
-    \tl_new:c { l__enumext_print_keyans_#1_tl           }
+    \tl_new:c { l__enumext_print_keyans_#1_tl          }
     \bool_new:c { l__enumext_store_columns_#1_bool     }
     \int_new:c { l__enumext_store_columns_#1_int       }
     \bool_new:c { l__enumext_store_columns_sep_#1_bool }
@@ -161,7 +161,7 @@
 %% Variables used by |store-ref| key (internal label and ref).
 \tl_new:N \l__enumext_newlabel_arg_one_tl
 \tl_new:N \l__enumext_newlabel_arg_two_tl
-\tl_new:N \l__enumext_store_write_label_ref_tl
+\tl_new:N \l__enumext_store_write_aux_file_tl
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \tl_new:c { l__enumext_label_copy_#1_tl }
@@ -299,7 +299,7 @@
       }
   }
 %% Write internal |label| in |.aux| file for |store-ref| key.
-\cs_new_protected:Npn \__enumext_newlabel_write:nn #1 #2
+\cs_new_protected:Npn \__enumext_newlabel:nn #1 #2
   {
     \protected@write \@auxout { }
       {
@@ -1798,7 +1798,7 @@
     \__enumext_store_addto_prop:n {#4}
     \bool_if:NT \l__enumext_store_ref_key_bool
       {
-        \__enumext_store_label_ref:
+        \__enumext_store_internal_ref:
       }
     \__enumext_store_anskey_show_left:n { #4 }
     \tl_clear:N \l__enumext_store_anskey_tl
@@ -1862,7 +1862,7 @@
     \__enumext_store_addto_seq:V \l__enumext_store_anskey_tl
   }
 %% Internal label and ref function for |\anskey|.
-\cs_new_protected:Nn \__enumext_store_label_ref:
+\cs_new_protected:Nn \__enumext_store_internal_ref:
   {
     \cs_set_protected:Npn \__enumext_tmp:n ##1
       {
@@ -1931,13 +1931,13 @@
         \l__enumext_store_name_tl \c_colon_str
         \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
       }
-    \tl_put_right:Ne \l__enumext_store_write_label_ref_tl
+    \tl_put_right:Ne \l__enumext_store_write_aux_file_tl
       {
-        \__enumext_newlabel_write:nn
+        \__enumext_newlabel:nn
           { \exp_not:V \l__enumext_newlabel_arg_one_tl }
           { \l__enumext_newlabel_arg_two_tl }
       }
-    \l__enumext_store_write_label_ref_tl
+    \l__enumext_store_write_aux_file_tl
   }
 %% Internal |wrap-ans| implementation for |\anskey|.
 \cs_new_protected:Npn \__enumext_store_anskey_show_wrap:n #1
@@ -1976,7 +1976,7 @@
       }
   }
 %% Function for storing in prop list for |keyans| and |keyanspic|.
-\cs_new_protected:Npn \__enumext_keyans_env_addto_prop:n #1
+\cs_new_protected:Npn \__enumext_keyans_addto_prop:n #1
   {
     \tl_clear:N \l__enumext_store_keyans_tl
     \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
@@ -1993,7 +1993,7 @@
     \__enumext_store_addto_prop:V \l__enumext_store_keyans_tl
   }
 %% Internal label and ref function for |keyans| and |keyanspic|.
-\cs_new_protected:Nn \__enumext_keyans_env_make_label_ref:
+\cs_new_protected:Nn \__enumext_keyans_internal_ref:
   {
     \cs_set_protected:Npn \__enumext_tmp:n ##1
       {
@@ -2017,19 +2017,19 @@
         \l__enumext_store_name_tl \c_colon_str
         \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
       }
-    \tl_put_right:Ne \l__enumext_store_write_label_ref_tl
+    \tl_put_right:Ne \l__enumext_store_write_aux_file_tl
       {
-        \__enumext_newlabel_write:nn
+        \__enumext_newlabel:nn
           { \exp_not:V \l__enumext_newlabel_arg_one_tl }
           { \l__enumext_newlabel_arg_two_tl }
       }
     \bool_if:NT \l__enumext_store_ref_key_bool
       {
-        \l__enumext_store_write_label_ref_tl
+        \l__enumext_store_write_aux_file_tl
       }
   }
 %% Function for storing in sequence for |keyans| and |keyanspic|.
-\cs_new_protected:Npn \__enumext_keyans_env_addto_seq:n #1
+\cs_new_protected:Npn \__enumext_keyans_addto_seq:n #1
   {
     \tl_clear:N \l__enumext_store_keyans_tl
     \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
@@ -2237,9 +2237,9 @@
     \bool_set_true:N \l__enumext_wrap_label_v_bool
     \__enumext_item_std:w \tl_use:N \l__enumext_fake_item_indent_v_tl
     \tl_set_eq:NN \l__enumext_label_v_tl \l__enumext_keyans_tmpa_tl
-    \__enumext_keyans_env_addto_prop:n { #1 }
-    \__enumext_keyans_env_make_label_ref:
-    \__enumext_keyans_env_addto_seq:n { #1 }
+    \__enumext_keyans_addto_prop:n { #1 }
+    \__enumext_keyans_internal_ref:
+    \__enumext_keyans_addto_seq:n { #1 }
   }
 %% Redefine |\item| for |keyans|.
 \cs_new_protected:Nn \__enumext_keyans_redefine_item:
@@ -2779,9 +2779,9 @@
     #3 \\
     \bool_if:nT { #1 }
       {
-        \__enumext_keyans_env_addto_prop:n { #2 }
-        \__enumext_keyans_env_make_label_ref:
-        \__enumext_keyans_env_addto_seq:n { #2 }
+        \__enumext_keyans_addto_prop:n { #2 }
+        \__enumext_keyans_internal_ref:
+        \__enumext_keyans_addto_seq:n { #2 }
         \bool_lazy_or:nnT
           { \l__enumext_show_answer_bool }
           { \l__enumext_show_position_bool }
