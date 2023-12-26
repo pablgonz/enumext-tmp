@@ -7457,7 +7457,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %    Finally, copy the contents of the variable \cs{l_@@_store_keyans_tl}
 %    into the global variable \cs{g_@@_check_ans_item_tl} to be used
-%    by the function \cs{@@_keyans_check_starred:nn} and increment
+%    by the function \cs{@@_keyans_check_ans:nn} and increment
 %    the value of the integer variable \cs{g_@@_count_item_ans_int} handled
 %    by the \mykey{check-ans} key.
 %    \begin{macrocode}
@@ -7472,8 +7472,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Check for starred commands}
 %
-% \begin{macro}{\@@_keyans_check_starred:nn,}
-%    The function \cs{@@_keyans_check_starred:nn} performs an extra
+% \begin{macro}{\@@_keyans_check_ans:nn,}
+%    The function \cs{@@_keyans_check_ans:nn} performs an extra
 %    check for the \myenv*{keyans} and \myenv*{keyanspic} environments.
 %    Unlike the check executed by \mykey{check-ans} key this one is not
 %    controlled by any key, it is intended to prevent the forgetting of
@@ -7482,7 +7482,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function for check starred command in |keyans| and |keyanspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_keyans_check_starred:nn #1 #2
+\cs_new_protected:Npn \@@_keyans_check_ans:nn #1 #2
   {
     \tl_if_empty:NTF \g_@@_check_ans_item_tl
       {
@@ -7498,7 +7498,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % The code is very similar to the \ics*{anskey} code, but, if I change
 % the order of the operations the counter off label are incorrect.
 %
-% \begin{macro}{\@@_keyans_env_show_left:n,}
+% \begin{macro}{\@@_keyans_show_left:n,}
 %    Common function to show \emph{starred commands} and \mymeta{position} of
 %    stored content in \mymeta{prop list} for \myenv*{keyans} and
 %    \myenv*{keyanspic}. Need add |1| to \cs{l_@@_mark_answer_sym_tl} for
@@ -7507,7 +7507,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function for |show-ans| and |show-pos| for |keyans| and |keyanspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_keyans_env_show_left:n #1
+\cs_new_protected:Npn \@@_keyans_show_left:n #1
   {
     \bool_if:NT \l_@@_show_answer_bool
       {
@@ -7811,7 +7811,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_keyans_starred_item:n}
 %    which will make a temporary copy of the \emph{\enquote{current label}}, execute the
 %    \mykey{show-ans} or \mykey{show-pos} keys using the function
-%    \cs{@@_keyans_env_show_left:n} and will display the contents
+%    \cs{@@_keyans_show_left:n} and will display the contents
 %    of that item using the internal copy \cs{@@_item_std:w}, this is
 %    necessary to prevent incrementing the current \emph{\enquote{counter}} of the original
 %    \mymeta{label}.
@@ -7819,7 +7819,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_keyans_starred_item:n #1
   {
     \tl_set_eq:NN \l_@@_keyans_tmpa_tl \l_@@_label_v_tl
-    \@@_keyans_env_show_left:n { #1 }
+    \@@_keyans_show_left:n { #1 }
     \bool_set_true:N \l_@@_wrap_label_v_bool
     \@@_item_std:w \tl_use:N \l_@@_fake_item_indent_v_tl
 %    \end{macrocode}
@@ -8644,7 +8644,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_after_args_exec_v:
   }
   {
-    \@@_keyans_check_starred:nn { item }{ keyans }
+    \@@_keyans_check_ans:nn { item }{ keyans }
     \@@_stop_list:
     \@@_after_list_v:
   }
@@ -9018,7 +9018,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           { \l_@@_show_position_bool }
           {
             \tl_set_eq:NN \l_@@_label_v_tl \l_@@_label_vi_tl
-            \@@_keyans_env_show_left:n { #2 }
+            \@@_keyans_show_left:n { #2 }
             \tl_set_eq:NN \l_@@_label_vi_tl \l_@@_label_v_tl
           }
       }
@@ -9067,7 +9067,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       { \@@_keyans_pic_do:n { #1 } }
     \@@_stop_list:
-    \@@_keyans_check_starred:nn { anspic } { keyanspic }
+    \@@_keyans_check_ans:nn { anspic } { keyanspic }
     \setcounter { enumXvi } { 0 }
     \vspace { \l_@@_topsep_v_skip }
     %\bool_set_false:N \l_@@_store_bool
