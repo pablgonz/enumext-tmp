@@ -9214,14 +9214,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Functions for item box width}
 %
-% \begin{macro}{\@@_default_columns_set_vii:}
+% \begin{macro}{\@@_starred_columns_set_vii:}
 %    We set the default value for the width of the box containing the
 %    content of the items and create \ics*{itemwidth} in a public form.
 % \iffalse
 %% Define default columns width
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_default_columns_set_vii:
+\cs_new_protected:Nn \@@_starred_columns_set_vii:
   {
     \dim_compare:nNnT { \l_@@_columns_sep_vii_dim } = { \c_zero_dim }
       {
@@ -9243,8 +9243,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_joined_item_set_vii:n}
-%    The function \cs{@@_joined_item_set_vii:n} will set the \emph{width} of the
+% \begin{macro}{\@@_starred_joined_item_vii:n}
+%    The function \cs{@@_starred_joined_item_vii:n} will set the \emph{width} of the
 %    box in which the content passed to \ics*{item}\myparg{number} will be
 %    stored together with the value of \ics*{itemwidth}.
 %
@@ -9252,7 +9252,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Set width for joined item's for |enumext*|
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_joined_item_set_vii:n #1
+\cs_new_protected:Npn \@@_starred_joined_item_vii:n #1
   {
     \int_set:Nn \l_@@_joined_item_vii_int {#1}
     \int_compare:nNnT { \l_@@_joined_item_vii_int } > { \l_@@_columns_vii_int }
@@ -9414,7 +9414,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_list_arg_two_vii:
         \@@_before_keys_exec_vii:
       }
-      \@@_default_columns_set_vii:
+      \@@_starred_columns_set_vii:
       \item[] \scan_stop:
       \cs_set_eq:NN \@@_stop_item_tmp_vii: \noindent
       \cs_set_eq:NN \item \@@_start_item_tmp_vii:
@@ -9652,7 +9652,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_joined_item_vii:w}
 %
 %    The function \cs{@@_joined_item_vii:w} will first call the
-%    function \cs{@@_joined_item_set_vii:n} in charge of setting the
+%    function \cs{@@_starred_joined_item_vii:n} in charge of setting the
 %    \emph{width} of the box that will store the content passed to \ics*{item}. Then we
 %    will look for the argument \enquote{\textcolor{MediumOrchid}{\ttfamily *}}, if it is present we will call the
 %    function \cs{@@_starred_item_vii:w} otherwise we will call the
@@ -9663,7 +9663,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_joined_item_vii:w (#1)
   {
-    \@@_joined_item_set_vii:n {#1}
+    \@@_starred_joined_item_vii:n {#1}
     \peek_meaning_remove:NTF *
       { \@@_starred_item_vii:w  }
       { \@@_standard_item_vii:w }
