@@ -3820,7 +3820,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{variable}{\l_@@_check_ans_bool, \g_@@_check_ans_show_bool, \g_@@_check_ans_show_h_bool,
 %                  \g_@@_check_ans_item_tl, \l_@@_compare_items_ans_int,
 %                  \g_@@_count_item_ans_int, \g_@@_count_item_all_int,
-%                  \g_@@_count_tmpa_X_int, \g_@@_count_item_X_int,}
+%                  \g_@@_count_level_X_int, \g_@@_count_item_X_int,}
 %    Internal variables used by \emph{\enquote{check answer}} mechanism (\S\ref{int:check-answer}) controlled
 %    by the \mykey{check-ans} and \mykey{no-store} keys.
 % \iffalse
@@ -3836,7 +3836,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N  \g_@@_count_item_all_int
 \cs_set_protected:Npn \@@_tmp:n #1
   {
-    \int_new:c { g_@@_count_tmpa_#1_int }
+    \int_new:c { g_@@_count_level_#1_int }
     \int_new:c { g_@@_count_item_#1_int }
   }
 \clist_map_inline:nn { i, ii, iii, iv, vii } { \@@_tmp:n {#1} }
@@ -3859,7 +3859,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}[int]{ \l_@@_newlabel_arg_one_tl, \l_@@_newlabel_arg_two_tl,
-%                        \l_@@_keyans_make_label_ref_tl, \l_@@_label_copy_X_tl, }
+%                        \l_@@_store_write_label_ref_tl, \l_@@_label_copy_X_tl, }
 %
 %    Internal variables are used when executing the \mykey{store-ref} key.
 %    The variables \myvarenv{l__@@_label_copy_X_tl} correspond to temporary
@@ -3869,7 +3869,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %    The variables \cs{l_@@_newlabel_arg_one_tl} and \cs{l_@@_newlabel_arg_two_tl}
 %    will be used to form the arguments passed to the function
-%    \cs{@@_newlabel_write:nn} and the variable \cs{l_@@_keyans_make_label_ref_tl}
+%    \cs{@@_newlabel_write:nn} and the variable \cs{l_@@_store_write_label_ref_tl}
 %    will be in charge of executing the writing code in the |.aux| file.
 % \iffalse
 %% Variables used by |store-ref| key (internal label and ref).
@@ -3877,7 +3877,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \tl_new:N \l_@@_newlabel_arg_one_tl
 \tl_new:N \l_@@_newlabel_arg_two_tl
-\tl_new:N \l_@@_keyans_make_label_ref_tl
+\tl_new:N \l_@@_store_write_label_ref_tl
 \cs_set_protected:Npn \@@_tmp:n #1
   {
     \tl_new:c { l_@@_label_copy_#1_tl }
@@ -6547,7 +6547,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \bool_if:NTF \l_@@_store_ans_bool
           {
             \int_gadd:cn { g_@@_count_item_ \@@_level: _int }
-              { \int_use:c { g_@@_count_tmpa_ \@@_level: _int } + 1 }
+              { \int_use:c { g_@@_count_level_ \@@_level: _int } + 1 }
           }
           { \int_gincr:c { g_@@_count_item_ \@@_level: _int } }
       }
@@ -6584,11 +6584,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    After the function is executed, we set the temporary integer variables
 %    to zero.
 %    \begin{macrocode}
-    \int_gzero:N \g_@@_count_tmpa_i_int
-    \int_gzero:N \g_@@_count_tmpa_ii_int
-    \int_gzero:N \g_@@_count_tmpa_iii_int
-    \int_gzero:N \g_@@_count_tmpa_iv_int
-    \int_gzero:N \g_@@_count_tmpa_vii_int
+    \int_gzero:N \g_@@_count_level_i_int
+    \int_gzero:N \g_@@_count_level_ii_int
+    \int_gzero:N \g_@@_count_level_iii_int
+    \int_gzero:N \g_@@_count_level_iv_int
+    \int_gzero:N \g_@@_count_level_vii_int
   }
 %    \end{macrocode}
 % \iffalse
@@ -6615,11 +6615,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_warning:nnV { enumext } { item-different-answer }
           \g_@@_store_name_tl
       }
-    \int_gzero:N \g_@@_count_tmpa_i_int
-    \int_gzero:N \g_@@_count_tmpa_ii_int
-    \int_gzero:N \g_@@_count_tmpa_iii_int
-    \int_gzero:N \g_@@_count_tmpa_iv_int
-    \int_gzero:N \g_@@_count_tmpa_vii_int
+    \int_gzero:N \g_@@_count_level_i_int
+    \int_gzero:N \g_@@_count_level_ii_int
+    \int_gzero:N \g_@@_count_level_iii_int
+    \int_gzero:N \g_@@_count_level_iv_int
+    \int_gzero:N \g_@@_count_level_vii_int
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7019,7 +7019,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   command \mymeta{argument} to the \mymeta{prop list}, then checks the
 %   state of the variable \cs{l_@@_store_ref_key_bool} handled by the
 %   \mykey{store-ref} key and will call the function
-%   \cs{l_@@_store_make_label_ref:} for the internal \emph{\enquote{label
+%   \cs{l_@@_store_label_ref:} for the internal \emph{\enquote{label
 %   and ref}} system. Followed by this if the \mykey{show-ans} or
 %   \mykey{show-pos} keys are active we will show the
 %   \emph{\enquote{wrapped}} \mymeta{argument} passed to the command.
@@ -7032,9 +7032,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_store_addto_prop:n {#4}
     \bool_if:NT \l_@@_store_ref_key_bool
       {
-        \@@_store_make_label_ref:
+        \@@_store_label_ref:
       }
-    \@@_anskey_show_left:n { #4 }
+    \@@_store_anskey_show_left:n { #4 }
 %    \end{macrocode}
 %   Now we start processing the optional arguments passed to the
 %   command to build our |\item| in the variable \cs{l_@@_store_anskey_tl}
@@ -7124,8 +7124,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_store_make_label_ref:}
-%    The function \cs{@@_store_make_label_ref:} handles the internal
+% \begin{macro}{\@@_store_label_ref:}
+%    The function \cs{@@_store_label_ref:} handles the internal
 %    \emph{\enquote{label and ref}} system used by the \mykey{store-ref} and
 %    \mykey{mark-ref} keys for \ics*{anskey} will allow to execute
 %    \ics{ref}\mymarg[type=tt]{store name \textcolor{red}{:} position} and
@@ -7139,7 +7139,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal label and ref function for |\anskey|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_store_make_label_ref:
+\cs_new_protected:Nn \@@_store_label_ref:
   {
     \cs_set_protected:Npn \@@_tmp:n ##1
       {
@@ -7226,29 +7226,29 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
 %    \end{macrocode}
 %    Now execute the function \cs{@@_newlabel_write:nn} and save the
-%    result in the variable \cs{l_@@_keyans_make_label_ref_tl} and
+%    result in the variable \cs{l_@@_store_write_label_ref_tl} and
 %    finally we write in the |.aux| file.
 %    \begin{macrocode}
-    \tl_put_right:Ne \l_@@_keyans_make_label_ref_tl
+    \tl_put_right:Ne \l_@@_store_write_label_ref_tl
       {
         \@@_newlabel_write:nn
           { \exp_not:V \l_@@_newlabel_arg_one_tl }
           { \l_@@_newlabel_arg_two_tl }
       }
-    \l_@@_keyans_make_label_ref_tl
+    \l_@@_store_write_label_ref_tl
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_anskey_show_wrap_ans:n,}
-%    The function \cs{@@_anskey_show_wrap_ans:n}
+% \begin{macro}{\@@_store_anskey_show_wrap:n,}
+%    The function \cs{@@_store_anskey_show_wrap:n}
 %    \emph{\enquote{wraps}} the \mymeta{argument} passed to \ics*{anskey}
 %    when using the \mykey{wrap-ans} key.
 % \iffalse
 %% Internal |wrap-ans| implementation for |\anskey|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_anskey_show_wrap_ans:n #1
+\cs_new_protected:Npn \@@_store_anskey_show_wrap:n #1
   {
     \par
     \bool_if:NT \l_@@_starred_bool
@@ -7263,8 +7263,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{ \@@_anskey_show_left:n }
-%    The function \cs{@@_anskey_show_left:n} will show the \emph{\enquote{mark}}
+% \begin{macro}{ \@@_store_anskey_show_left:n }
+%    The function \cs{@@_store_anskey_show_left:n} will show the \emph{\enquote{mark}}
 %    defined by the \mykey{mark-ans} key or the \emph{\enquote{position}} of the content
 %    stored in the \mymeta{prop list} when using the \mykey{show-pos} key on
 %    the left margin next to the \emph{\enquote{wraps}} \mymeta{argument}
@@ -7274,11 +7274,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal |show-ans| and |show-pos| implementation for |\anskey|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_anskey_show_left:n #1
+\cs_new_protected:Npn \@@_store_anskey_show_left:n #1
   {
     \bool_if:NT \l_@@_show_answer_bool
       {
-        \@@_anskey_show_wrap_ans:n { #1 }
+        \@@_store_anskey_show_wrap:n { #1 }
       }
     \bool_if:NT \l_@@_show_position_bool
       {
@@ -7293,7 +7293,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               ]
             \group_end:
           }
-        \@@_anskey_show_wrap_ans:n { #1 }
+        \@@_store_anskey_show_wrap:n { #1 }
       }
   }
 %    \end{macrocode}
@@ -7388,10 +7388,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
 %    \end{macrocode}
 %    Now execute the function \cs{@@_newlabel_write:nn} and save the
-%    result in the variable \cs{l_@@_keyans_make_label_ref_tl} and
+%    result in the variable \cs{l_@@_store_write_label_ref_tl} and
 %    finally we write in the |.aux| file.
 %    \begin{macrocode}
-    \tl_put_right:Ne \l_@@_keyans_make_label_ref_tl
+    \tl_put_right:Ne \l_@@_store_write_label_ref_tl
       {
         \@@_newlabel_write:nn
           { \exp_not:V \l_@@_newlabel_arg_one_tl }
@@ -7399,7 +7399,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \bool_if:NT \l_@@_store_ref_key_bool
       {
-        \l_@@_keyans_make_label_ref_tl
+        \l_@@_store_write_label_ref_tl
       }
   }
 %    \end{macrocode}
@@ -7671,7 +7671,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \bool_if:NT \l_@@_check_ans_bool
           {
             \int_gincr:N \g_@@_count_item_all_int
-            \int_gincr:c { g_@@_count_tmpa_ \@@_level: _int }
+            \int_gincr:c { g_@@_count_level_ \@@_level: _int }
           }
         \bool_set_true:c { l_@@_wrap_label_ \@@_level: _bool }
         \@@_item_std:w \tl_use:c { l_@@_fake_item_indent_ \@@_level: _tl }
@@ -7746,7 +7746,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_if:NT \l_@@_check_ans_bool
       {
         \int_gincr:N \g_@@_count_item_all_int
-        \int_gincr:c { g_@@_count_tmpa_ \@@_level: _int }
+        \int_gincr:c { g_@@_count_level_ \@@_level: _int }
       }
     \bool_set_true:c { l_@@_wrap_label_ \@@_level: _bool }
     \@@_item_std:w \tl_use:c { l_@@_fake_item_indent_ \@@_level: _tl }
@@ -9793,11 +9793,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 \bool_if:NTF \l_@@_store_ans_bool
                   {
                     \int_gadd:cn { g_@@_count_item_ \@@_level: _int }
-                      { \int_use:c { g_@@_count_tmpa_ \@@_level: _int } + 1 }
+                      { \int_use:c { g_@@_count_level_ \@@_level: _int } + 1 }
                   }
                   {
                     \int_gincr:N \g_@@_count_item_all_int
-                    \int_gincr:N \g_@@_count_tmpa_vii_int
+                    \int_gincr:N \g_@@_count_level_vii_int
                   }
               }
           }
