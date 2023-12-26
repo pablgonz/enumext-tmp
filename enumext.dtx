@@ -3697,26 +3697,26 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}[int]{\l_@@_stored_bool, \l_@@_stored_name_tl,
-%                       \g_@@_stored_name_tl, \l_@@_stored_anskey_tl,
-%                       \l_@@_stored_columns_join_int, \l_@@_stored_keyans_tl,
+% \begin{variable}[int]{\l_@@_store_bool, \l_@@_store_name_tl,
+%                       \g_@@_store_name_tl, \l_@@_store_anskey_tl,
+%                       \l_@@_store_columns_join_int, \l_@@_store_keyans_tl,
 %                       \l_@@_keyans_tmpa_tl,}
 %
-%    The boolean variable \cs{l_@@_stored_bool} setting by
+%    The boolean variable \cs{l_@@_store_bool} setting by
 %    \mykey{save-ans} key (\S\ref{key:resume}) activates all the
 %    mechanism related to \ics*{anskey}, \myenv*{keyans}, \myenv*{keyans*}
 %    and \myenv*{keyanspic}.
 %
 %    \smallskip
 %
-%    The variable \cs{l_@@_stored_name_tl} sets the name for the storage in
-%    \mymeta{sequence} and \mymeta{prop list}, the variable \cs{g_@@_stored_name_tl} is
+%    The variable \cs{l_@@_store_name_tl} sets the name for the storage in
+%    \mymeta{sequence} and \mymeta{prop list}, the variable \cs{g_@@_store_name_tl} is
 %    just a copy of the storage name used by the \mykey{check-ans} key (\S\ref{key:resume}).
 %
 %    \smallskip
 %
-%    The variable \cs{l_@@_stored_anskey_tl} stores the contents of \ics*{anskey}  (\S\ref{cmd:anskey})
-%    and the variable \cs{l_@@_stored_keyans_tl} stores the contents of
+%    The variable \cs{l_@@_store_anskey_tl} stores the contents of \ics*{anskey}  (\S\ref{cmd:anskey})
+%    and the variable \cs{l_@@_store_keyans_tl} stores the contents of
 %    \ics*{item*} (\S\ref{cmd:item-starred}) for the \myenv*{keyans} and \myenv*{keyans*} environments and the contents of
 %    \ics*{anspic*} (\S\ref{cmd:anspic}) for the \myenv*{keyanspic} environment.
 %
@@ -3728,12 +3728,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Variables used by |save-ans| key.
 % \fi
 %    \begin{macrocode}
-\bool_new:N \l_@@_stored_bool
-\tl_new:N   \l_@@_stored_name_tl
-\tl_new:N   \g_@@_stored_name_tl
-\tl_new:N   \l_@@_stored_anskey_tl
-\int_new:N  \l_@@_stored_columns_join_int
-\tl_new:N   \l_@@_stored_keyans_tl
+\bool_new:N \l_@@_store_bool
+\tl_new:N   \l_@@_store_name_tl
+\tl_new:N   \g_@@_store_name_tl
+\tl_new:N   \l_@@_store_anskey_tl
+\int_new:N  \l_@@_store_columns_join_int
+\tl_new:N   \l_@@_store_keyans_tl
 \tl_new:N   \l_@@_keyans_tmpa_tl
 %    \end{macrocode}
 % \end{variable}
@@ -3754,9 +3754,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}[int]{\l_@@_stored_opt_X_tl, \l_@@_print_keyans_X_tl,
-%                       \l_@@_stored_columns_X_bool, \l_@@_stored_columns_X_int,
-%                       \l_@@_stored_columns_sep_X_bool, l_@@_stored_columns_sep_X_dim, \l_@@_stored_upper_level_X_bool }
+% \begin{variable}[int]{\l_@@_store_opt_X_tl, \l_@@_print_keyans_X_tl,
+%                       \l_@@_store_columns_X_bool, \l_@@_store_columns_X_int,
+%                       \l_@@_store_columns_sep_X_bool, l_@@_store_columns_sep_X_dim, \l_@@_store_upper_level_X_bool }
 %
 %    Internal variables used by \myoarg[type=tt]{key
 %    \textnormal{\textcolor{gray}{=}} val} in \myenv*{enumext} and
@@ -3769,13 +3769,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:n #1
   {
-    \tl_new:c { l_@@_stored_opt_#1_tl             }
+    \tl_new:c { l_@@_store_opt_#1_tl             }
     \tl_new:c { l_@@_print_keyans_#1_tl           }
-    \bool_new:c { l_@@_stored_columns_#1_bool     }
-    \int_new:c { l_@@_stored_columns_#1_int       }
-    \bool_new:c { l_@@_stored_columns_sep_#1_bool }
-    \dim_new:c { l_@@_stored_columns_sep_#1_dim   }
-    \bool_new:c { l_@@_stored_upper_level_#1_bool }
+    \bool_new:c { l_@@_store_columns_#1_bool     }
+    \int_new:c { l_@@_store_columns_#1_int       }
+    \bool_new:c { l_@@_store_columns_sep_#1_bool }
+    \dim_new:c { l_@@_store_columns_sep_#1_dim   }
+    \bool_new:c { l_@@_store_upper_level_#1_bool }
   }
 \clist_map_inline:nn { i, ii, iii, iv, vii } { \@@_tmp:n {#1} }
 %    \end{macrocode}
@@ -6302,8 +6302,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection{Setting \texttt{save-ans} and \texttt{resume} keys}\label{key:resume}
 %
 % The key \mykey{save-ans} is directly associated with the key
-% \mykey{resume}, this will activate the entire
-% \emph{\enquote{storage system}} in the \mypkg*{enumext} package.
+% \mykey{resume}, this will activate the entire \emph{\enquote{storage
+% system}} in the \mypkg*{enumext} package.
 %
 % \begin{macro}[int]{save-ans, resume, resume*}
 %     We define the keys \mykey{save-ans} and \mykey{resume} only for the
@@ -6341,15 +6341,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_storing_set:n} executed by the
 %    \mykey{save-ans} key sets the parameters for the operation of
 %    \ics*{anskey}, \myenv*{keyans} and \myenv*{keyanspic}.
-%    The variable \cs{l_@@_stored_name_tl} will have the \emph{\enquote{store name}} with
+%    The variable \cs{l_@@_store_name_tl} will have the \emph{\enquote{store name}} with
 %    which the \mymeta{sequence} and \mymeta{prop list} will be created.
 %
-%    The boolean variable \cs{l_@@_stored_bool} will be set to
+%    The boolean var \cs{l_@@_store_bool} will be set to
 %    true activating the entire internal \emph{storage mechanism}, then
 %    the integer variable for the \mykey{resume} key will be created (if not exist),
 %    finally the function \cs{@@_check_ans_make_int:n} will be called
 %    to activate the internal mechanism for checking the answers if the
-%    boolean variable \cs{l_@@_stored_bool} set by \mykey{check-ans}
+%    boolean variable \cs{l_@@_store_bool} set by \mykey{check-ans}
 %    key are active.
 % \iffalse
 %% Function to activate ALL storing (and check) used by |save-ans| key.
@@ -6357,8 +6357,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_storing_set:n #1
   {
-    \tl_set:Ne \l_@@_stored_name_tl {#1}
-    \bool_set_true:N \l_@@_stored_bool
+    \tl_set:Ne \l_@@_store_name_tl {#1}
+    \bool_set_true:N \l_@@_store_bool
     \int_if_exist:cF { g_@@_resume_#1_int }
       {
         \int_new:c { g_@@_resume_#1_int }
@@ -6383,22 +6383,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_resume_counter:
   {
-    \bool_if:NT \l_@@_stored_bool
+    \bool_if:NT \l_@@_store_bool
       {
         \int_gset:Nn \g_@@_resume_int
           {
-            \int_use:c { g_@@_resume_ \l_@@_stored_name_tl _int }
+            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
           }
       }
     \bool_set_true:N \l_@@_resume_bool
   }
 \cs_new_protected:Nn \@@_resume_counter_vii:
   {
-    \bool_if:NT \l_@@_stored_bool
+    \bool_if:NT \l_@@_store_bool
       {
         \int_gset:Nn \g_@@_resume_int
           {
-            \int_use:c { g_@@_resume_ \l_@@_stored_name_tl _int }
+            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
           }
       }
     \bool_set_true:N \l_@@_resume_vii_bool
@@ -6464,7 +6464,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         check-ans .bool_set:N = \l_@@_check_ans_bool,
         check-ans .initial:n  = false,
-        no-store  .bool_set:N = \l_@@_stored_ans_bool,
+        no-store  .bool_set:N = \l_@@_store_ans_bool,
         no-store  .initial:n  = false,
       }
   }
@@ -6533,7 +6533,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_check_ans_count_item:} will count the number of
 %    times the |\item| and |\item*| commands appears per level within the
 %    \myenv*{enumext} environment. The boolean variable
-%    \myvarenv{l__@@_use_anskey_X_bool} controlled by the \mykey{no-store} key will
+%    \myvarenv{l__@@_store_ans_bool} controlled by the \mykey{no-store} key will
 %    increment the integer variable of the level counter by |1| to preserve
 %    the equality that we will use in the final comparison of the process.
 % \iffalse
@@ -6544,7 +6544,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_if:NT \l_@@_check_ans_bool
       {
-        \bool_if:NTF \l_@@_stored_ans_bool
+        \bool_if:NTF \l_@@_store_ans_bool
           {
             \int_gadd:cn { g_@@_count_item_ \@@_level: _int }
               { \int_use:c { g_@@_count_tmpa_ \@@_level: _int } + 1 }
@@ -6574,11 +6574,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_compare_items_ans_int } = { \g_@@_count_item_ans_int }
       {
         \msg_term:nnV { enumext } { items-same-answer }
-          \g_@@_stored_name_tl
+          \g_@@_store_name_tl
       }
       {
         \msg_warning:nnV { enumext } { item-different-answer }
-          \g_@@_stored_name_tl
+          \g_@@_store_name_tl
       }
 %    \end{macrocode}
 %    After the function is executed, we set the temporary integer variables
@@ -6609,11 +6609,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_compare_items_ans_int } = { \g_@@_count_item_ans_int }
       {
         \msg_term:nnV { enumext } { items-same-answer }
-          \g_@@_stored_name_tl
+          \g_@@_store_name_tl
       }
       {
         \msg_warning:nnV { enumext } { item-different-answer }
-          \g_@@_stored_name_tl
+          \g_@@_store_name_tl
       }
     \int_gzero:N \g_@@_count_tmpa_i_int
     \int_gzero:N \g_@@_count_tmpa_ii_int
@@ -6715,18 +6715,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \keys_define:nn { enumext / #1 }
       {
-        columns*     .code:n = \bool_set_true:c { l_@@_stored_columns_#2_bool }
-                               \int_set:cn { l_@@_stored_columns_#2_int } {##1}
-                               \tl_put_right:ce { l_@@_stored_opt_#2_tl }
+        columns*     .code:n = \bool_set_true:c { l_@@_store_columns_#2_bool }
+                               \int_set:cn { l_@@_store_columns_#2_int } {##1}
+                               \tl_put_right:ce { l_@@_store_opt_#2_tl }
                                  {
-                                    columns = \exp_not:v { l_@@_stored_columns_#2_int },
+                                    columns = \exp_not:v { l_@@_store_columns_#2_int },
                                  },,
         columns*     .value_required:n  = true,
-        columns-sep* .code:n = \bool_set_true:c { l_@@_stored_columns_sep_#2_bool }
-                               \dim_set:cn { l_@@_stored_columns_sep_#2_dim } {##1}
-                               \tl_put_right:ce { l_@@_stored_opt_#2_tl }
+        columns-sep* .code:n = \bool_set_true:c { l_@@_store_columns_sep_#2_bool }
+                               \dim_set:cn { l_@@_store_columns_sep_#2_dim } {##1}
+                               \tl_put_right:ce { l_@@_store_opt_#2_tl }
                                  {
-                                    columns-sep = \exp_not:v { l_@@_stored_columns_sep_#2_dim },
+                                    columns-sep = \exp_not:v { l_@@_store_columns_sep_#2_dim },
                                  },
         columns-sep* .value_required:n  = true,
       }
@@ -6762,11 +6762,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_store_addto_prop:n #1
   {
-    \prop_if_exist:cF { g_@@_ \l_@@_stored_name_tl _prop }
-      { \prop_new:c { g_@@_ \l_@@_stored_name_tl _prop } }
-    \prop_gput:cen { g_@@_ \l_@@_stored_name_tl _prop }
+    \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
+      { \prop_new:c { g_@@_ \l_@@_store_name_tl _prop } }
+    \prop_gput:cen { g_@@_ \l_@@_store_name_tl _prop }
       {
-        \int_eval:n { \prop_count:c { g_@@_ \l_@@_stored_name_tl _prop } +1 }
+        \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } +1 }
       } { #1 }
   }
 \cs_generate_variant:Nn \@@_store_addto_prop:n { V }
@@ -6793,9 +6793,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_store_addto_seq:n #1
   {
-    \seq_if_exist:cF { g_@@_ \l_@@_stored_name_tl _seq }
-      { \seq_new:c { g_@@_ \l_@@_stored_name_tl _seq } }
-    \seq_gput_right:cn { g_@@_ \l_@@_stored_name_tl _seq } { #1 }
+    \seq_if_exist:cF { g_@@_ \l_@@_store_name_tl _seq }
+      { \seq_new:c { g_@@_ \l_@@_store_name_tl _seq } }
+    \seq_gput_right:cn { g_@@_ \l_@@_store_name_tl _seq } { #1 }
   }
 \cs_generate_variant:Nn \@@_store_addto_seq:n { v, V }
 %    \end{macrocode}
@@ -6813,7 +6813,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    is better to take only two copies of the values set by the
 %    \mykey{columns} and \mykey{columns-sep} keys if they are present when
 %    changing levels within the \myenv*{enumext} environment when executing
-%    |\anskey|. We will store these values in the variable \myvarenv{l__@@_stored_columns_X_tl} if they
+%    |\anskey|. We will store these values in the variable \myvarenv{l__@@_store_columns_X_tl} if they
 %    are different from \mydim{0} and \mydim{0pt} and pass them as an optional argument
 %    to the environment stored in the sequence \myenv*{enumext}.
 % \iffalse
@@ -6822,9 +6822,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open:
   {
-    \bool_if:NF \l_@@_stored_ans_bool
+    \bool_if:NF \l_@@_store_ans_bool
       {
-        \tl_if_empty:cTF { l_@@_stored_opt_ \@@_level: _tl }
+        \tl_if_empty:cTF { l_@@_store_opt_ \@@_level: _tl }
           {
             \@@_store_addto_seq:n
               {
@@ -6832,21 +6832,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               }
           }
           {
-            \tl_put_left:cn { l_@@_stored_opt_ \@@_level: _tl }
+            \tl_put_left:cn { l_@@_store_opt_ \@@_level: _tl }
               {
                 \item \begin{enumext} [
               }
-            \tl_put_right:cn { l_@@_stored_opt_ \@@_level: _tl }
+            \tl_put_right:cn { l_@@_store_opt_ \@@_level: _tl }
               {
                 ]
               }
-            \@@_store_addto_seq:v { l_@@_stored_opt_ \@@_level: _tl }
+            \@@_store_addto_seq:v { l_@@_store_opt_ \@@_level: _tl }
           }
       }
   }
 \cs_new_protected:Nn \@@_store_level_close:
   {
-    \bool_if:NF \l_@@_stored_ans_bool
+    \bool_if:NF \l_@@_store_ans_bool
       {
         \@@_store_addto_seq:n { \end{enumext} }
       }
@@ -6870,9 +6870,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open_vii:
   {
-    \bool_if:NF \l_@@_stored_ans_bool
+    \bool_if:NF \l_@@_store_ans_bool
       {
-        \tl_if_empty:NTF \l_@@_stored_opt_vii_tl
+        \tl_if_empty:NTF \l_@@_store_opt_vii_tl
           {
             \@@_store_addto_seq:n
               {
@@ -6882,23 +6882,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               }
           }
           {
-            \tl_put_left:Nn \l_@@_stored_opt_vii_tl
+            \tl_put_left:Nn \l_@@_store_opt_vii_tl
               {
                 \item \mode_leave_vertical:
                   \vspace { -\skip_eval:n { \baselineskip + \parsep } }
                   \begin{enumext*}[before={\setlength{\topsep}{0pt}},
               }
-            \tl_put_right:Nn \l_@@_stored_opt_vii_tl
+            \tl_put_right:Nn \l_@@_store_opt_vii_tl
               {
                 ]
               }
-            \@@_store_addto_seq:V \l_@@_stored_opt_vii_tl
+            \@@_store_addto_seq:V \l_@@_store_opt_vii_tl
           }
       }
   }
 \cs_new_protected:Nn \@@_store_level_close_vii:
   {
-    \bool_if:NF \l_@@_stored_ans_bool
+    \bool_if:NF \l_@@_store_ans_bool
       {
         \@@_store_addto_seq:n { \end{enumext*} }
       }
@@ -6963,11 +6963,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \keys_define:nn { enumext / anskey }
   {
-    item-sym* .tl_set:N   = \l_@@_stored_item_symbol_tl,
+    item-sym* .tl_set:N   = \l_@@_store_item_symbol_tl,
     item-sym* .value_required:n = true,
-    item-pos* .dim_set:N  = \l_@@_stored_item_symbol_sep_dim,
+    item-pos* .dim_set:N  = \l_@@_store_item_symbol_sep_dim,
     item-pos* .value_required:n = true,
-    store-brk .bool_set:N = \l_@@_stored_columns_break_bool,
+    store-brk .bool_set:N = \l_@@_store_columns_break_bool,
     store-brk .default:n  = true,
     store-brk .value_forbidden:n = true,
   }
@@ -6978,7 +6978,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    environments, otherwise it will return an error. If the
 %    \mykey{check-ans} key is active, increment
 %    \cs{g_@@_count_item_ans_int}, then call internal function
-%    \cs{@@_stored_anskey_code:nnnn} will \emph{\enquote{store content}} in
+%    \cs{@@_store_anskey_code:nnnn} will \emph{\enquote{store content}} in
 %    the \mymeta{sequence} and in the \mymeta{prop list}.
 % \iffalse
 %% Define the user command |\anskey|.
@@ -6987,7 +6987,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \NewDocumentCommand \anskey { d() s o +m }
   {
-    \bool_if:NF \l_@@_stored_bool
+    \bool_if:NF \l_@@_store_bool
       {
         \msg_error:nnnn { enumext } { anskey-wrong-place }{ anskey }{ enumext }
       }
@@ -7000,26 +7000,26 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
     \group_begin:
-      \bool_if:NF \l_@@_stored_ans_bool
+      \bool_if:NF \l_@@_store_ans_bool
         {
           \bool_if:NT \l_@@_check_ans_bool
             {
               \int_gincr:N \g_@@_count_item_ans_int
             }
-          \@@_stored_anskey_code:nnnn {#1} {#2} {#3} {#4}
+          \@@_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
         }
     \group_end:
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_stored_anskey_code:nnnn}
+% \begin{macro}{\@@_store_anskey_code:nnnn}
 %
-%   The internal function \cs{@@_stored_anskey_code:nnnn} first we pass the
+%   The internal function \cs{@@_store_anskey_code:nnnn} first we pass the
 %   command \mymeta{argument} to the \mymeta{prop list}, then checks the
 %   state of the variable \cs{l_@@_store_ref_key_bool} handled by the
 %   \mykey{store-ref} key and will call the function
-%   \cs{l_@@_stored_make_label_ref:} for the internal \emph{\enquote{label
+%   \cs{l_@@_store_make_label_ref:} for the internal \emph{\enquote{label
 %   and ref}} system. Followed by this if the \mykey{show-ans} or
 %   \mykey{show-pos} keys are active we will show the
 %   \emph{\enquote{wrapped}} \mymeta{argument} passed to the command.
@@ -7027,82 +7027,82 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal function of |\anskey|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_stored_anskey_code:nnnn #1 #2 #3 #4
+\cs_new_protected:Npn \@@_store_anskey_code:nnnn #1 #2 #3 #4
   {
     \@@_store_addto_prop:n {#4}
     \bool_if:NT \l_@@_store_ref_key_bool
       {
-        \@@_stored_make_label_ref:
+        \@@_store_make_label_ref:
       }
     \@@_anskey_show_left:n { #4 }
 %    \end{macrocode}
 %   Now we start processing the optional arguments passed to the
-%   command to build our |\item| in the variable \cs{l_@@_stored_anskey_tl}
+%   command to build our |\item| in the variable \cs{l_@@_store_anskey_tl}
 %   which we will \emph{\enquote{store}} in the \mymeta{sequence}.
-%   First we clear the variable \cs{l_@@_stored_anskey_tl} and process
+%   First we clear the variable \cs{l_@@_store_anskey_tl} and process
 %   \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}, if the
 %   \mykey{store-brk} key is present and the command is running under
 %   \myenv*{enumext} (not in the starred version) we will add
 %   \ics{columnbreak} and then |\item|.
 %
 %    \begin{macrocode}
-    \tl_clear:N \l_@@_stored_anskey_tl
+    \tl_clear:N \l_@@_store_anskey_tl
     \tl_if_novalue:nF {#3}
       {
         \keys_set:nn { enumext / anskey } {#3}
       }
     \bool_lazy_and:nnT
-      { \l_@@_stored_columns_break_bool }
+      { \l_@@_store_columns_break_bool }
       { \bool_not_p:n { \l_@@_starred_bool } }
       {
-        \tl_put_left:Nn \l_@@_stored_anskey_tl { \columnbreak }
+        \tl_put_left:Nn \l_@@_store_anskey_tl { \columnbreak }
       }
-    \tl_put_right:Nn \l_@@_stored_anskey_tl { \item }
+    \tl_put_right:Nn \l_@@_store_anskey_tl { \item }
 %    \end{macrocode}
 %   Now we will check the \myparg{number} argument and add it to
-%   \cs{l_@@_stored_anskey_tl} if the command is running under
+%   \cs{l_@@_store_anskey_tl} if the command is running under
 %   \myenv*{enumext*} (starred version).
 %    \begin{macrocode}
     \tl_if_novalue:nF {#1}
       {
-        \int_set:Nn \l_@@_stored_columns_join_int {#1}
+        \int_set:Nn \l_@@_store_columns_join_int {#1}
         \bool_if:NT \l_@@_starred_bool
           {
-            \tl_put_right:Ne \l_@@_stored_anskey_tl
+            \tl_put_right:Ne \l_@@_store_anskey_tl
               {
-                ( \exp_not:V \l_@@_stored_columns_join_int )
+                ( \exp_not:V \l_@@_store_columns_join_int )
               }
           }
       }
 %    \end{macrocode}
 %   And now we will review the starred argument |*| together with the
 %   keys \mykey{item-sym*} and \mykey{item-pos*} and pass them to
-%   \cs{l_@@_stored_anskey_tl}.
+%   \cs{l_@@_store_anskey_tl}.
 %    \begin{macrocode}
     \bool_if:nTF {#2}
       {
-        \tl_put_right:Nn \l_@@_stored_anskey_tl { * }
-        \tl_if_empty:NF \l_@@_stored_item_symbol_tl
+        \tl_put_right:Nn \l_@@_store_anskey_tl { * }
+        \tl_if_empty:NF \l_@@_store_item_symbol_tl
           {
-            \tl_put_right:Ne \l_@@_stored_anskey_tl
+            \tl_put_right:Ne \l_@@_store_anskey_tl
               {
-                [ \exp_not:V \l_@@_stored_item_symbol_tl ]
+                [ \exp_not:V \l_@@_store_item_symbol_tl ]
               }
           }
         \dim_compare:nT
           {
-            \l_@@_stored_item_symbol_sep_dim != \c_zero_dim
+            \l_@@_store_item_symbol_sep_dim != \c_zero_dim
           }
           {
-            \tl_put_right:Ne \l_@@_stored_anskey_tl
+            \tl_put_right:Ne \l_@@_store_anskey_tl
               {
-                [ \exp_not:V \l_@@_stored_item_symbol_sep_dim ]
+                [ \exp_not:V \l_@@_store_item_symbol_sep_dim ]
               }
           }
-        \tl_put_right:Nn \l_@@_stored_anskey_tl {#4}
+        \tl_put_right:Nn \l_@@_store_anskey_tl {#4}
       }
       {
-        \tl_put_right:Nn \l_@@_stored_anskey_tl {#4}
+        \tl_put_right:Nn \l_@@_store_anskey_tl {#4}
       }
 %    \end{macrocode}
 %    Finally we check if the \mykey{store-ref} key is active along with the
@@ -7113,19 +7113,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_store_ref_key_bool }
       { \l_@@_hyperref_bool }
       {
-        \tl_put_right:Ne \l_@@_stored_anskey_tl
+        \tl_put_right:Ne \l_@@_store_anskey_tl
           {
             \hfill \exp_not:N \hyperlink { \exp_not:V \l_@@_newlabel_arg_one_tl }
                  { \exp_not:V \l_@@_mark_ref_sym_tl }
           }
       }
-    \@@_store_addto_seq:V \l_@@_stored_anskey_tl
+    \@@_store_addto_seq:V \l_@@_store_anskey_tl
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_stored_make_label_ref:}
-%    The function \cs{@@_stored_make_label_ref:} handles the internal
+% \begin{macro}{\@@_store_make_label_ref:}
+%    The function \cs{@@_store_make_label_ref:} handles the internal
 %    \emph{\enquote{label and ref}} system used by the \mykey{store-ref} and
 %    \mykey{mark-ref} keys for \ics*{anskey} will allow to execute
 %    \ics{ref}\mymarg[type=tt]{store name \textcolor{red}{:} position} and
@@ -7139,7 +7139,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal label and ref function for |\anskey|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_stored_make_label_ref:
+\cs_new_protected:Nn \@@_store_make_label_ref:
   {
     \cs_set_protected:Npn \@@_tmp:n ##1
       {
@@ -7221,8 +7221,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
     \tl_put_right:Ne \l_@@_newlabel_arg_one_tl
       {
-        \l_@@_stored_name_tl \c_colon_str
-        \int_eval:n { \prop_count:c { g_@@_ \l_@@_stored_name_tl _prop } }
+        \l_@@_store_name_tl \c_colon_str
+        \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } }
       }
 %    \end{macrocode}
 %    Now execute the function \cs{@@_newlabel_write:nn} and save the
@@ -7288,7 +7288,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \exp_not:N \normalfont
             \exp_not:N \footnotesize [ \int_eval:n
               {
-                \prop_count:c { g_@@_ \l_@@_stored_name_tl _prop }
+                \prop_count:c { g_@@_ \l_@@_store_name_tl _prop }
               }
               ]
             \group_end:
@@ -7309,7 +7309,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} (current \mymeta{label})
 %    for the \myenv*{keyanspic} environment when using
 %    \ics*{item*} and \ics*{anspic*}, followed by the \emph{contents} of the
-%    optional argument of both commands to the \cs{l_@@_stored_keyans_tl}
+%    optional argument of both commands to the \cs{l_@@_store_keyans_tl}
 %    variable, which will be passed to the \mymeta{prop list} defined by the
 %    \mykey{save-ans} key using the \cs{@@_store_addto_prop:V}.
 % \iffalse
@@ -7318,19 +7318,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_env_addto_prop:n #1
   {
-    \tl_clear:N \l_@@_stored_keyans_tl
+    \tl_clear:N \l_@@_store_keyans_tl
     \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
       {
-        \tl_put_right:Ne \l_@@_stored_keyans_tl { \l_@@_label_vi_tl }
+        \tl_put_right:Ne \l_@@_store_keyans_tl { \l_@@_label_vi_tl }
       }
       {
-        \tl_put_right:Ne \l_@@_stored_keyans_tl { \l_@@_label_v_tl }
+        \tl_put_right:Ne \l_@@_store_keyans_tl { \l_@@_label_v_tl }
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l_@@_stored_keyans_tl { \c_space_tl #1 }
+        \tl_put_right:Ne \l_@@_store_keyans_tl { \c_space_tl #1 }
       }
-    \@@_store_addto_prop:V \l_@@_stored_keyans_tl
+    \@@_store_addto_prop:V \l_@@_store_keyans_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7383,8 +7383,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
     \tl_put_right:Ne \l_@@_newlabel_arg_one_tl
       {
-        \l_@@_stored_name_tl \c_colon_str
-        \int_eval:n { \prop_count:c { g_@@_ \l_@@_stored_name_tl _prop } }
+        \l_@@_store_name_tl \c_colon_str
+        \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } }
       }
 %    \end{macrocode}
 %    Now execute the function \cs{@@_newlabel_write:nn} and save the
@@ -7414,7 +7414,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} (current
 %    label) for the \myenv*{keyanspic} environment when using
 %    \ics*{item*} and \ics*{anspic*}, followed by the contents of the
-%    optional argument of both commands to the \cs{l_@@_stored_keyans_tl}
+%    optional argument of both commands to the \cs{l_@@_store_keyans_tl}
 %    variable to the sequence defined by the \mykey{save-ans} key.
 % \iffalse
 %% Function for storing in sequence for |keyans| and |keyanspic|.
@@ -7422,17 +7422,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_env_addto_seq:n #1
   {
-    \tl_clear:N \l_@@_stored_keyans_tl
+    \tl_clear:N \l_@@_store_keyans_tl
     \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
       {
-        \tl_put_right:Ne \l_@@_stored_keyans_tl { \item \l_@@_label_vi_tl }
+        \tl_put_right:Ne \l_@@_store_keyans_tl { \item \l_@@_label_vi_tl }
       }
       {
-        \tl_put_right:Ne \l_@@_stored_keyans_tl { \item \l_@@_label_v_tl }
+        \tl_put_right:Ne \l_@@_store_keyans_tl { \item \l_@@_label_v_tl }
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l_@@_stored_keyans_tl { \c_space_tl #1 }
+        \tl_put_right:Ne \l_@@_store_keyans_tl { \c_space_tl #1 }
       }
 %    \end{macrocode}
 %    Checks if the \mykey{store-ref} key is active along with the
@@ -7444,7 +7444,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_store_ref_key_bool }
       { \l_@@_hyperref_bool }
       {
-        \tl_put_right:Ne \l_@@_stored_keyans_tl
+        \tl_put_right:Ne \l_@@_store_keyans_tl
           {
             \hfill \exp_not:N \hyperlink
               {
@@ -7453,15 +7453,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               { \exp_not:V \l_@@_mark_ref_sym_tl }
           }
       }
-    \@@_store_addto_seq:V \l_@@_stored_keyans_tl
+    \@@_store_addto_seq:V \l_@@_store_keyans_tl
 %    \end{macrocode}
-%    Finally, copy the contents of the variable \cs{l_@@_stored_keyans_tl}
+%    Finally, copy the contents of the variable \cs{l_@@_store_keyans_tl}
 %    into the global variable \cs{g_@@_check_ans_item_tl} to be used
 %    by the function \cs{@@_keyans_check_starred:nn} and increment
 %    the value of the integer variable \cs{g_@@_count_item_ans_int} handled
 %    by the \mykey{check-ans} key.
 %    \begin{macrocode}
-    \tl_gset:NV \g_@@_check_ans_item_tl \l_@@_stored_keyans_tl
+    \tl_gset:NV \g_@@_check_ans_item_tl \l_@@_store_keyans_tl
     \bool_if:NT \l_@@_check_ans_bool
       {
         \int_gincr:N \g_@@_count_item_ans_int
@@ -7528,7 +7528,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \exp_not:N \normalfont
             \exp_not:N \footnotesize [ \int_eval:n
               {
-                \prop_count:c { g_@@_ \l_@@_stored_name_tl _prop }
+                \prop_count:c { g_@@_ \l_@@_store_name_tl _prop }
                 + \l_@@_keyans_level_int
               }
               ]
@@ -8299,7 +8299,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_parse_keys:n}
 %    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 %    by levels in \myenv*{enumext}. If the variable
-%    \cs{l_@@_stored_bool} is true it will call the function
+%    \cs{l_@@_store_bool} is true it will call the function
 %    \cs{@@_parse_store_keys:n} and reprocess the keys to pass them to the
 %    storage sequence.
 % \iffalse
@@ -8310,7 +8310,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \exp_args:Ne \keys_set:nn
       { enumext / level-\int_use:N \l_@@_level_int } {#1}
-    \bool_if:NT \l_@@_stored_bool
+    \bool_if:NT \l_@@_store_bool
       {
         \@@_parse_store_keys:n {#1}
       }
@@ -8324,7 +8324,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   per-level in \myenv*{enumext} environment as long as the starred
 %   versions of the \mykey{columns*} and \mykey{columns-sep*} keys are not
 %   active. The captured values are stored in the variable
-%   \myvarenv{l__@@_stored_opt_X_tl} which is used by the function
+%   \myvarenv{l__@@_store_opt_X_tl} which is used by the function
 %   \cs{@@_store_level_open:}.
 % \iffalse
 %% Set |key=val| (store keys) for \printkeyans.
@@ -8332,29 +8332,29 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_store_keys:n #1
   {
-    \bool_if:cF { l_@@_stored_columns_ \@@_level: _bool }
+    \bool_if:cF { l_@@_store_columns_ \@@_level: _bool }
       {
         \regex_match:nnT { \b columns\b } {#1}
           {
             \int_set_eq:cc
-              { l_@@_stored_columns_ \@@_level: _int }
+              { l_@@_store_columns_ \@@_level: _int }
               { l_@@_columns_  \@@_level: _int }
-            \tl_put_right:ce { l_@@_stored_opt_ \@@_level: _tl }
+            \tl_put_right:ce { l_@@_store_opt_ \@@_level: _tl }
               {
-                columns = \exp_not:v { l_@@_stored_columns_ \@@_level: _int },
+                columns = \exp_not:v { l_@@_store_columns_ \@@_level: _int },
               }
           }
       }
-    \bool_if:cF { l_@@_stored_columns_sep_ \@@_level: _bool }
+    \bool_if:cF { l_@@_store_columns_sep_ \@@_level: _bool }
       {
         \regex_match:nnT { \b columns-sep \b} {#1}
           {
             \dim_set_eq:cc
-              { l_@@_stored_columns_sep_ \__@@_level: _dim }
+              { l_@@_store_columns_sep_ \__@@_level: _dim }
               { l_@@_columns_sep_  \__@@_level: _dim }
-            \tl_put_right:ce { l_@@_stored_opt_ \@@_level: _tl }
+            \tl_put_right:ce { l_@@_store_opt_ \@@_level: _tl }
               {
-                columns-sep = \exp_not:v { l_@@_stored_columns_sep_ \@@_level: _dim },
+                columns-sep = \exp_not:v { l_@@_store_columns_sep_ \@@_level: _dim },
               }
           }
       }
@@ -8372,23 +8372,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level:
   {
-    \bool_lazy_and:nnT { \l_@@_stored_bool } { \bool_not_p:n { \l_@@_keyans_env_bool } }
+    \bool_lazy_and:nnT { \l_@@_store_bool } { \bool_not_p:n { \l_@@_keyans_env_bool } }
       {
         \int_compare:nNnT { \l_@@_level_h_int } = { 1 }
           {
-            \bool_set_true:c { l_@@_stored_upper_level_ \@@_level: _bool }
+            \bool_set_true:c { l_@@_store_upper_level_ \@@_level: _bool }
             \@@_store_level_open:
           }
         \int_compare:nNnT { \l_@@_level_int } > { 1 }
           {
-            \bool_set_true:c { l_@@_stored_upper_level_ \@@_level: _bool }
+            \bool_set_true:c { l_@@_store_upper_level_ \@@_level: _bool }
             \@@_store_level_open:
           }
       }
   }
 \cs_new_protected:Nn \@@_stop_store_level:
   {
-    \bool_if:cT { l_@@_stored_upper_level_ \@@_level: _bool }
+    \bool_if:cT { l_@@_store_upper_level_ \@@_level: _bool }
       {
         \@@_store_level_close:
       }
@@ -8532,14 +8532,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %    If the \mykey{check-ans} key is active, we set the boolean variable
 %    \cs{g_@@_check_ans_show_bool} to true and copy the stored name to
-%    the variable \cs{g_@@_stored_name_tl}. These variables will be used
+%    the variable \cs{g_@@_store_name_tl}. These variables will be used
 %    by the function \cs{@@_after_env:n} to display the result of the
 %    internal check answer mechanism in the terminal.
 %    \begin{macrocode}
     \bool_lazy_and:nnT { \l_@@_check_ans_bool }{ \bool_not_p:n { \g_@@_starred_bool } }
       {
         \bool_gset_true:N \g_@@_check_ans_show_bool
-        \tl_gset:NV \g_@@_stored_name_tl \l_@@_stored_name_tl
+        \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
       }
   }
 %    \end{macrocode}
@@ -8585,10 +8585,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
     \bool_set_false:N \l_@@_standar_bool
     \int_gset_eq:NN \g_@@_resume_int \value{enumXi}
-    \int_if_exist:cT { g_@@_resume_ \l_@@_stored_name_tl _int }
+    \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
       {
         \int_gset_eq:cN
-          { g_@@_resume_ \l_@@_stored_name_tl _int }
+          { g_@@_resume_ \l_@@_store_name_tl _int }
           { \value{enumXi} }
       }
   }
@@ -8612,7 +8612,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \bool_gset_false:N \g_@@_check_ans_show_bool
-    \tl_gclear:N \g_@@_stored_name_tl
+    \tl_gclear:N \g_@@_store_name_tl
   }
 %    \end{macrocode}
 %
@@ -8663,14 +8663,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_safe_exec:
   {
-    \bool_if:NF \l_@@_stored_bool
+    \bool_if:NF \l_@@_store_bool
       {
         \msg_error:nnnn { enumext } { wrong-place }{ keyans }{ save-ans }
       }
     \int_incr:N \l_@@_keyans_level_int
     \bool_set_true:N \l_@@_keyans_env_bool
     % set false for interfering with enumext nested in keyans (yes, its posible and crayze)
-    \bool_set_false:N \l_@@_stored_bool
+    \bool_set_false:N \l_@@_store_bool
     \int_compare:nNnT { \l_@@_keyans_level_int } > { 1 }
       {
         \msg_error:nn { enumext } { keyans-nested }
@@ -8969,7 +8969,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    environment only if the \mykey{save-ans} key is present, otherwise
 %    we return an error.
 %    \begin{macrocode}
-    \bool_if:NF \l_@@_stored_bool
+    \bool_if:NF \l_@@_store_bool
       {
         \msg_error:nnnn { enumext } { wrong-place }{ keyanspic }{ save-ans }
       }
@@ -9070,7 +9070,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_check_starred:nn { anspic } { keyanspic }
     \setcounter { enumXvi } { 0 }
     \vspace { \l_@@_topsep_v_skip }
-    %\bool_set_false:N \l_@@_stored_bool
+    %\bool_set_false:N \l_@@_store_bool
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9459,7 +9459,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_parse_keys_vii:n}
 %    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 %    for \myenv*{enumext*}. If the variable
-%    \cs{l_@@_stored_bool} is true it will call the function
+%    \cs{l_@@_store_bool} is true it will call the function
 %    \cs{@@_parse_store_keys_vii:n} and reprocess the keys to pass them to the
 %    storage sequence.
 % \iffalse
@@ -9471,7 +9471,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_if_novalue:nF {#1}
       {
         \keys_set:nn { enumext / enumext* } {#1}
-        \bool_if:NT \l_@@_stored_bool
+        \bool_if:NT \l_@@_store_bool
           {
             \@@_parse_store_keys_vii:n {#1}
           }
@@ -9486,7 +9486,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   in \myenv*{enumext*} environment as long as the starred
 %   versions of the \mykey{columns*} and \mykey{columns-sep*} keys are not
 %   active. The captured values are stored in the variable
-%   \myvarenv{l__@@_stored_opt_vii_tl} which is used by the function
+%   \myvarenv{l__@@_store_opt_vii_tl} which is used by the function
 %   \cs{@@_store_level_open_vii:}.
 % \iffalse
 %% Set |key=val| (store keys) for \printkeyans for |enumext*|.
@@ -9494,29 +9494,29 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_store_keys_vii:n #1
   {
-    \bool_if:NF \l_@@_stored_columns_vii_bool
+    \bool_if:NF \l_@@_store_columns_vii_bool
       {
         \regex_match:nnT { \b columns\b } {#1}
           {
             \int_set_eq:NN
-              \l_@@_stored_columns_vii_int
+              \l_@@_store_columns_vii_int
               \l_@@_columns_vii_int
-            \tl_put_right:Ne \l_@@_stored_opt_vii_tl
+            \tl_put_right:Ne \l_@@_store_opt_vii_tl
               {
-                columns = \exp_not:V \l_@@_stored_columns_vii_int ,
+                columns = \exp_not:V \l_@@_store_columns_vii_int ,
               }
           }
       }
-    \bool_if:NF \l_@@_stored_columns_sep_vii_bool
+    \bool_if:NF \l_@@_store_columns_sep_vii_bool
       {
         \regex_match:nnT { \b columns-sep \b} {#1}
           {
             \dim_set_eq:NN
-              \l_@@_stored_columns_sep_vii_dim
+              \l_@@_store_columns_sep_vii_dim
               \l_@@_columns_sep_vii_dim
-            \tl_put_right:Ne \l_@@_stored_opt_vii_tl
+            \tl_put_right:Ne \l_@@_store_opt_vii_tl
               {
-                columns-sep = \exp_not:V \l_@@_stored_columns_sep_vii_dim,
+                columns-sep = \exp_not:V \l_@@_store_columns_sep_vii_dim,
               }
           }
       }
@@ -9559,16 +9559,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_after_stop_list_vii:
     \@@_vspace_below_vii:
     \int_gset_eq:NN \g_@@_resume_vii_int \value{enumXvii}
-    \int_if_exist:cT { g_@@_resume_ \l_@@_stored_name_tl _int }
+    \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
       {
         \int_gset_eq:cN
-          { g_@@_resume_ \l_@@_stored_name_tl _int }
+          { g_@@_resume_ \l_@@_store_name_tl _int }
           { \value{enumXvii} }
       }
     \bool_lazy_and:nnT { \g_@@_starred_bool } { \l_@@_check_ans_bool }
       {
         \bool_gset_true:N \g_@@_check_ans_show_h_bool
-        \tl_gset:NV \g_@@_stored_name_tl \l_@@_stored_name_tl
+        \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
       }
     \bool_gset_false:N \g_@@_starred_bool
     \bool_set_false:N \l_@@_starred_bool
@@ -9583,7 +9583,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level_vii:
   {
-    \bool_if:NT \l_@@_stored_bool
+    \bool_if:NT \l_@@_store_bool
       {
         \int_compare:nNnT { \l_@@_level_int } > { \c_zero_int }
           {
@@ -9593,7 +9593,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_stop_store_level_vii:
   {
-    \bool_if:NT \l_@@_stored_bool
+    \bool_if:NT \l_@@_store_bool
       {
         \int_compare:nNnT { \l_@@_level_int } > { \c_zero_int }
           {
@@ -9790,7 +9790,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \bool_if:NT \l_@@_check_ans_bool
               {
                 % If true |no-store| key => nested in |enumext|
-                \bool_if:NTF \l_@@_stored_ans_bool
+                \bool_if:NTF \l_@@_store_ans_bool
                   {
                     \int_gadd:cn { g_@@_count_item_ \@@_level: _int }
                       { \int_use:c { g_@@_count_tmpa_ \@@_level: _int } + 1 }
@@ -9935,7 +9935,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \bool_gset_false:N \g_@@_check_ans_show_h_bool
-    \tl_gclear:N \g_@@_stored_name_tl
+    \tl_gclear:N \g_@@_store_name_tl
   }
 %    \end{macrocode}
 %
