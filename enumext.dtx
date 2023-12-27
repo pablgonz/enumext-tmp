@@ -3698,8 +3698,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}[int]{\l_@@_store_active_bool, \l_@@_store_name_tl,
-%                       \g_@@_store_name_tl, \l_@@_store_anskey_tl,
-%                       \l_@@_store_columns_join_int, \l_@@_store_keyans_tl,
+%                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl,
+%                       \l_@@_store_columns_join_int, \l_@@_store_keyans_label_tl,
 %                       \l_@@_keyans_tmpa_tl,}
 %
 %    The boolean variable \cs{l_@@_store_active_bool} setting by
@@ -3715,8 +3715,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %    \smallskip
 %
-%    The variable \cs{l_@@_store_anskey_tl} stores the contents of \ics*{anskey}  (\S\ref{cmd:anskey})
-%    and the variable \cs{l_@@_store_keyans_tl} stores the contents of
+%    The variable \cs{l_@@_store_anskey_arg_tl} stores the contents of \ics*{anskey}  (\S\ref{cmd:anskey})
+%    and the variable \cs{l_@@_store_keyans_label_tl} stores the contents of
 %    \ics*{item*} (\S\ref{cmd:item-starred}) for the \myenv*{keyans} and \myenv*{keyans*} environments and the contents of
 %    \ics*{anspic*} (\S\ref{cmd:anspic}) for the \myenv*{keyanspic} environment.
 %
@@ -3731,9 +3731,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \l_@@_store_active_bool
 \tl_new:N   \l_@@_store_name_tl
 \tl_new:N   \g_@@_store_name_tl
-\tl_new:N   \l_@@_store_anskey_tl
+\tl_new:N   \l_@@_store_anskey_arg_tl
 \int_new:N  \l_@@_store_columns_join_int
-\tl_new:N   \l_@@_store_keyans_tl
+\tl_new:N   \l_@@_store_keyans_label_tl
 \tl_new:N   \l_@@_keyans_tmpa_tl
 %    \end{macrocode}
 % \end{variable}
@@ -7037,16 +7037,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_store_anskey_show_left:n { #4 }
 %    \end{macrocode}
 %   Now we start processing the optional arguments passed to the
-%   command to build our |\item| in the variable \cs{l_@@_store_anskey_tl}
+%   command to build our |\item| in the variable \cs{l_@@_store_anskey_arg_tl}
 %   which we will \emph{\enquote{store}} in the \mymeta{sequence}.
-%   First we clear the variable \cs{l_@@_store_anskey_tl} and process
+%   First we clear the variable \cs{l_@@_store_anskey_arg_tl} and process
 %   \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}, if the
 %   \mykey{store-brk} key is present and the command is running under
 %   \myenv*{enumext} (not in the starred version) we will add
 %   \ics{columnbreak} and then |\item|.
 %
 %    \begin{macrocode}
-    \tl_clear:N \l_@@_store_anskey_tl
+    \tl_clear:N \l_@@_store_anskey_arg_tl
     \tl_if_novalue:nF {#3}
       {
         \keys_set:nn { enumext / anskey } {#3}
@@ -7055,12 +7055,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_store_columns_break_bool }
       { \bool_not_p:n { \l_@@_starred_bool } }
       {
-        \tl_put_left:Nn \l_@@_store_anskey_tl { \columnbreak }
+        \tl_put_left:Nn \l_@@_store_anskey_arg_tl { \columnbreak }
       }
-    \tl_put_right:Nn \l_@@_store_anskey_tl { \item }
+    \tl_put_right:Nn \l_@@_store_anskey_arg_tl { \item }
 %    \end{macrocode}
 %   Now we will check the \myparg{number} argument and add it to
-%   \cs{l_@@_store_anskey_tl} if the command is running under
+%   \cs{l_@@_store_anskey_arg_tl} if the command is running under
 %   \myenv*{enumext*} (starred version).
 %    \begin{macrocode}
     \tl_if_novalue:nF {#1}
@@ -7068,7 +7068,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \int_set:Nn \l_@@_store_columns_join_int {#1}
         \bool_if:NT \l_@@_starred_bool
           {
-            \tl_put_right:Ne \l_@@_store_anskey_tl
+            \tl_put_right:Ne \l_@@_store_anskey_arg_tl
               {
                 ( \exp_not:V \l_@@_store_columns_join_int )
               }
@@ -7077,14 +7077,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   And now we will review the starred argument |*| together with the
 %   keys \mykey{item-sym*} and \mykey{item-pos*} and pass them to
-%   \cs{l_@@_store_anskey_tl}.
+%   \cs{l_@@_store_anskey_arg_tl}.
 %    \begin{macrocode}
     \bool_if:nTF {#2}
       {
-        \tl_put_right:Nn \l_@@_store_anskey_tl { * }
+        \tl_put_right:Nn \l_@@_store_anskey_arg_tl { * }
         \tl_if_empty:NF \l_@@_store_item_symbol_tl
           {
-            \tl_put_right:Ne \l_@@_store_anskey_tl
+            \tl_put_right:Ne \l_@@_store_anskey_arg_tl
               {
                 [ \exp_not:V \l_@@_store_item_symbol_tl ]
               }
@@ -7094,15 +7094,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \l_@@_store_item_symbol_sep_dim != \c_zero_dim
           }
           {
-            \tl_put_right:Ne \l_@@_store_anskey_tl
+            \tl_put_right:Ne \l_@@_store_anskey_arg_tl
               {
                 [ \exp_not:V \l_@@_store_item_symbol_sep_dim ]
               }
           }
-        \tl_put_right:Nn \l_@@_store_anskey_tl {#4}
+        \tl_put_right:Nn \l_@@_store_anskey_arg_tl {#4}
       }
       {
-        \tl_put_right:Nn \l_@@_store_anskey_tl {#4}
+        \tl_put_right:Nn \l_@@_store_anskey_arg_tl {#4}
       }
 %    \end{macrocode}
 %    Finally we check if the \mykey{store-ref} key is active along with the
@@ -7113,13 +7113,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_store_ref_key_bool }
       { \l_@@_hyperref_bool }
       {
-        \tl_put_right:Ne \l_@@_store_anskey_tl
+        \tl_put_right:Ne \l_@@_store_anskey_arg_tl
           {
             \hfill \exp_not:N \hyperlink { \exp_not:V \l_@@_newlabel_arg_one_tl }
                  { \exp_not:V \l_@@_mark_ref_sym_tl }
           }
       }
-    \@@_store_addto_seq:V \l_@@_store_anskey_tl
+    \@@_store_addto_seq:V \l_@@_store_anskey_arg_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7309,7 +7309,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} (current \mymeta{label})
 %    for the \myenv*{keyanspic} environment when using
 %    \ics*{item*} and \ics*{anspic*}, followed by the \emph{contents} of the
-%    optional argument of both commands to the \cs{l_@@_store_keyans_tl}
+%    optional argument of both commands to the \cs{l_@@_store_keyans_label_tl}
 %    variable, which will be passed to the \mymeta{prop list} defined by the
 %    \mykey{save-ans} key using the \cs{@@_store_addto_prop:V}.
 % \iffalse
@@ -7318,19 +7318,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_addto_prop:n #1
   {
-    \tl_clear:N \l_@@_store_keyans_tl
+    \tl_clear:N \l_@@_store_keyans_label_tl
     \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_tl { \l_@@_label_vi_tl }
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_label_vi_tl }
       }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_tl { \l_@@_label_v_tl }
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_label_v_tl }
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_tl { \c_space_tl #1 }
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \c_space_tl #1 }
       }
-    \@@_store_addto_prop:V \l_@@_store_keyans_tl
+    \@@_store_addto_prop:V \l_@@_store_keyans_label_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7414,7 +7414,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} (current
 %    label) for the \myenv*{keyanspic} environment when using
 %    \ics*{item*} and \ics*{anspic*}, followed by the contents of the
-%    optional argument of both commands to the \cs{l_@@_store_keyans_tl}
+%    optional argument of both commands to the \cs{l_@@_store_keyans_label_tl}
 %    variable to the sequence defined by the \mykey{save-ans} key.
 % \iffalse
 %% Function for storing in sequence for |keyans| and |keyanspic|.
@@ -7422,17 +7422,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_addto_seq:n #1
   {
-    \tl_clear:N \l_@@_store_keyans_tl
+    \tl_clear:N \l_@@_store_keyans_label_tl
     \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_tl { \item \l_@@_label_vi_tl }
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \item \l_@@_label_vi_tl }
       }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_tl { \item \l_@@_label_v_tl }
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \item \l_@@_label_v_tl }
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_tl { \c_space_tl #1 }
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \c_space_tl #1 }
       }
 %    \end{macrocode}
 %    Checks if the \mykey{store-ref} key is active along with the
@@ -7444,7 +7444,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_store_ref_key_bool }
       { \l_@@_hyperref_bool }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_tl
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl
           {
             \hfill \exp_not:N \hyperlink
               {
@@ -7453,15 +7453,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               { \exp_not:V \l_@@_mark_ref_sym_tl }
           }
       }
-    \@@_store_addto_seq:V \l_@@_store_keyans_tl
+    \@@_store_addto_seq:V \l_@@_store_keyans_label_tl
 %    \end{macrocode}
-%    Finally, copy the contents of the variable \cs{l_@@_store_keyans_tl}
+%    Finally, copy the contents of the variable \cs{l_@@_store_keyans_label_tl}
 %    into the global variable \cs{g_@@_check_ans_item_tl} to be used
 %    by the function \cs{@@_keyans_check_ans:nn} and increment
 %    the value of the integer variable \cs{g_@@_count_item_with_ans_int} handled
 %    by the \mykey{check-ans} key.
 %    \begin{macrocode}
-    \tl_gset:NV \g_@@_check_ans_item_tl \l_@@_store_keyans_tl
+    \tl_gset:NV \g_@@_check_ans_item_tl \l_@@_store_keyans_label_tl
     \bool_if:NT \l_@@_check_ans_bool
       {
         \int_gincr:N \g_@@_count_item_with_ans_int
