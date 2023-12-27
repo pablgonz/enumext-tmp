@@ -3697,12 +3697,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}[int]{\l_@@_store_bool, \l_@@_store_name_tl,
+% \begin{variable}[int]{\l_@@_store_active_bool, \l_@@_store_name_tl,
 %                       \g_@@_store_name_tl, \l_@@_store_anskey_tl,
 %                       \l_@@_store_columns_join_int, \l_@@_store_keyans_tl,
 %                       \l_@@_keyans_tmpa_tl,}
 %
-%    The boolean variable \cs{l_@@_store_bool} setting by
+%    The boolean variable \cs{l_@@_store_active_bool} setting by
 %    \mykey{save-ans} key (\S\ref{key:resume}) activates all the
 %    mechanism related to \ics*{anskey}, \myenv*{keyans}, \myenv*{keyans*}
 %    and \myenv*{keyanspic}.
@@ -3728,7 +3728,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Variables used by |save-ans| key.
 % \fi
 %    \begin{macrocode}
-\bool_new:N \l_@@_store_bool
+\bool_new:N \l_@@_store_active_bool
 \tl_new:N   \l_@@_store_name_tl
 \tl_new:N   \g_@@_store_name_tl
 \tl_new:N   \l_@@_store_anskey_tl
@@ -3819,7 +3819,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}{\l_@@_check_ans_bool, \g_@@_check_ans_show_bool, \g_@@_check_ans_show_h_bool,
 %                  \g_@@_check_ans_item_tl, \l_@@_compare_items_ans_int,
-%                  \g_@@_count_item_ans_int, \g_@@_count_item_all_int,
+%                  \g_@@_count_item_with_ans_int, \g_@@_count_item_all_int,
 %                  \g_@@_count_level_X_int, \g_@@_count_item_X_int,}
 %    Internal variables used by \emph{\enquote{check answer}} mechanism (\S\ref{int:check-answer}) controlled
 %    by the \mykey{check-ans} and \mykey{no-store} keys.
@@ -3832,7 +3832,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \g_@@_check_ans_show_h_bool
 \tl_new:N   \g_@@_check_ans_item_tl
 \int_new:N  \l_@@_compare_items_ans_int
-\int_new:N  \g_@@_count_item_ans_int
+\int_new:N  \g_@@_count_item_with_ans_int
 \int_new:N  \g_@@_count_item_all_int
 \cs_set_protected:Npn \@@_tmp:n #1
   {
@@ -6344,12 +6344,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The variable \cs{l_@@_store_name_tl} will have the \emph{\enquote{store name}} with
 %    which the \mymeta{sequence} and \mymeta{prop list} will be created.
 %
-%    The boolean var \cs{l_@@_store_bool} will be set to
+%    The boolean var \cs{l_@@_store_active_bool} will be set to
 %    true activating the entire internal \emph{storage mechanism}, then
 %    the integer variable for the \mykey{resume} key will be created (if not exist),
-%    finally the function \cs{@@_check_ans_make_int:n} will be called
+%    finally the function \cs{@@_check_ans_int:n} will be called
 %    to activate the internal mechanism for checking the answers if the
-%    boolean variable \cs{l_@@_store_bool} set by \mykey{check-ans}
+%    boolean variable \cs{l_@@_store_active_bool} set by \mykey{check-ans}
 %    key are active.
 % \iffalse
 %% Function to activate ALL storing (and check) used by |save-ans| key.
@@ -6358,14 +6358,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_storing_set:n #1
   {
     \tl_set:Ne \l_@@_store_name_tl {#1}
-    \bool_set_true:N \l_@@_store_bool
+    \bool_set_true:N \l_@@_store_active_bool
     \int_if_exist:cF { g_@@_resume_#1_int }
       {
         \int_new:c { g_@@_resume_#1_int }
       }
     \bool_if:NT \l_@@_check_ans_bool
       {
-        \@@_check_ans_make_int:n {#1}
+        \@@_check_ans_int:n {#1}
       }
   }
 %    \end{macrocode}
@@ -6383,7 +6383,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_resume_counter:
   {
-    \bool_if:NT \l_@@_store_bool
+    \bool_if:NT \l_@@_store_active_bool
       {
         \int_gset:Nn \g_@@_resume_int
           {
@@ -6394,7 +6394,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_resume_counter_vii:
   {
-    \bool_if:NT \l_@@_store_bool
+    \bool_if:NT \l_@@_store_active_bool
       {
         \int_gset:Nn \g_@@_resume_int
           {
@@ -6476,15 +6476,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_check_ans_make_int:n}
-%    The function \cs{@@_check_ans_make_int:n} will create the integer
+% \begin{macro}{\@@_check_ans_int:n}
+%    The function \cs{@@_check_ans_int:n} will create the integer
 %    variables for the internal checking answer mechanism used by the
 %    \mykey{check-ans} key.
 % \iffalse
 %% Creation of integer variables for the internal check-answer mechanism.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_check_ans_make_int:n #1
+\cs_new_protected:Npn \@@_check_ans_int:n #1
   {
     \int_if_exist:cF { g_@@_count_#1_item_ans_int }
       { \int_new:c { g_@@_count_#1_item_ans_int } }
@@ -6502,7 +6502,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %    We make \myvarenv{g__@@_count_item_X_int} equal to the integer
 %    variable that contains all the occurrences of |\item| and |\item*| in the different
-%    levels and we will make \cs{g_@@_count_item_ans_int} equal to the
+%    levels and we will make \cs{g_@@_count_item_with_ans_int} equal to the
 %    integer variable handled by the \ics*{anskey} command.
 %
 %    \begin{macrocode}
@@ -6522,15 +6522,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_gset_eq:Nc \g_@@_count_item_iii_int { g_@@_count_#1_iii_int      }
     \int_gset_eq:Nc \g_@@_count_item_iv_int  { g_@@_count_#1_iv_int       }
     \int_gset_eq:Nc \g_@@_count_item_vii_int { g_@@_count_#1_vii_int      }
-    \int_gset_eq:Nc \g_@@_count_item_ans_int { g_@@_count_#1_item_ans_int }
+    \int_gset_eq:Nc \g_@@_count_item_with_ans_int { g_@@_count_#1_item_ans_int }
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \subsubsection{Set-up check answer mechanism}\label{int:set-check-answer}
 %
-% \begin{macro}{\@@_check_ans_count_item:}
-%    The function \cs{@@_check_ans_count_item:} will count the number of
+% \begin{macro}{\@@_check_ans_count:}
+%    The function \cs{@@_check_ans_count:} will count the number of
 %    times the |\item| and |\item*| commands appears per level within the
 %    \myenv*{enumext} environment. The boolean variable
 %    \myvarenv{l__@@_store_ans_bool} controlled by the \mykey{no-store} key will
@@ -6540,7 +6540,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Funtion to count |\item| for internal checking answer mechanism in |enumext|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_check_ans_count_item:
+\cs_new_protected:Nn \@@_check_ans_count:
   {
     \bool_if:NT \l_@@_check_ans_bool
       {
@@ -6571,7 +6571,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
        - \g_@@_count_item_iii_int - \g_@@_count_item_iv_int
       }
     \int_compare:nNnTF
-      { \l_@@_compare_items_ans_int } = { \g_@@_count_item_ans_int }
+      { \l_@@_compare_items_ans_int } = { \g_@@_count_item_with_ans_int }
       {
         \msg_term:nnV { enumext } { items-same-answer }
           \g_@@_store_name_tl
@@ -6606,7 +6606,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
          - \g_@@_count_item_iv_int
       }
     \int_compare:nNnTF
-      { \l_@@_compare_items_ans_int } = { \g_@@_count_item_ans_int }
+      { \l_@@_compare_items_ans_int } = { \g_@@_count_item_with_ans_int }
       {
         \msg_term:nnV { enumext } { items-same-answer }
           \g_@@_store_name_tl
@@ -6977,7 +6977,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \mykey{save-ans} key in \myenv*{enumext} and \myenv*{enumext*}
 %    environments, otherwise it will return an error. If the
 %    \mykey{check-ans} key is active, increment
-%    \cs{g_@@_count_item_ans_int}, then call internal function
+%    \cs{g_@@_count_item_with_ans_int}, then call internal function
 %    \cs{@@_store_anskey_code:nnnn} will \emph{\enquote{store content}} in
 %    the \mymeta{sequence} and in the \mymeta{prop list}.
 % \iffalse
@@ -6987,7 +6987,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \NewDocumentCommand \anskey { d() s o +m }
   {
-    \bool_if:NF \l_@@_store_bool
+    \bool_if:NF \l_@@_store_active_bool
       {
         \msg_error:nnnn { enumext } { anskey-wrong-place }{ anskey }{ enumext }
       }
@@ -7004,7 +7004,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         {
           \bool_if:NT \l_@@_check_ans_bool
             {
-              \int_gincr:N \g_@@_count_item_ans_int
+              \int_gincr:N \g_@@_count_item_with_ans_int
             }
           \@@_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
         }
@@ -7458,13 +7458,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Finally, copy the contents of the variable \cs{l_@@_store_keyans_tl}
 %    into the global variable \cs{g_@@_check_ans_item_tl} to be used
 %    by the function \cs{@@_keyans_check_ans:nn} and increment
-%    the value of the integer variable \cs{g_@@_count_item_ans_int} handled
+%    the value of the integer variable \cs{g_@@_count_item_with_ans_int} handled
 %    by the \mykey{check-ans} key.
 %    \begin{macrocode}
     \tl_gset:NV \g_@@_check_ans_item_tl \l_@@_store_keyans_tl
     \bool_if:NT \l_@@_check_ans_bool
       {
-        \int_gincr:N \g_@@_count_item_ans_int
+        \int_gincr:N \g_@@_count_item_with_ans_int
       }
   }
 %    \end{macrocode}
@@ -8299,7 +8299,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_parse_keys:n}
 %    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 %    by levels in \myenv*{enumext}. If the variable
-%    \cs{l_@@_store_bool} is true it will call the function
+%    \cs{l_@@_store_active_bool} is true it will call the function
 %    \cs{@@_parse_store_keys:n} and reprocess the keys to pass them to the
 %    storage sequence.
 % \iffalse
@@ -8310,7 +8310,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \exp_args:Ne \keys_set:nn
       { enumext / level-\int_use:N \l_@@_level_int } {#1}
-    \bool_if:NT \l_@@_store_bool
+    \bool_if:NT \l_@@_store_active_bool
       {
         \@@_parse_store_keys:n {#1}
       }
@@ -8372,7 +8372,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level:
   {
-    \bool_lazy_and:nnT { \l_@@_store_bool } { \bool_not_p:n { \l_@@_keyans_env_bool } }
+    \bool_lazy_and:nnT { \l_@@_store_active_bool } { \bool_not_p:n { \l_@@_keyans_env_bool } }
       {
         \int_compare:nNnT { \l_@@_level_h_int } = { 1 }
           {
@@ -8406,11 +8406,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_vspace_above:
     \@@_before_args_exec:
 %    \end{macrocode}
-%    The function \cs{@@_check_ans_count_item:}  will handle the check
+%    The function \cs{@@_check_ans_count:}  will handle the check
 %    answer mechanism, which will be activated with the \mykey{check-ans}
 %    key.
 %    \begin{macrocode}
-    \@@_check_ans_count_item:
+    \@@_check_ans_count:
 %    \end{macrocode}
 %    When the \mykey{mini-env} key is active it will set the value of the
 %    \myvarenv{l__@@_minipage_right_X_dim} to be the \emph{width} of the \myvarenv*{__@@_mini_env*}
@@ -8663,14 +8663,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_safe_exec:
   {
-    \bool_if:NF \l_@@_store_bool
+    \bool_if:NF \l_@@_store_active_bool
       {
         \msg_error:nnnn { enumext } { wrong-place }{ keyans }{ save-ans }
       }
     \int_incr:N \l_@@_keyans_level_int
     \bool_set_true:N \l_@@_keyans_env_bool
     % set false for interfering with enumext nested in keyans (yes, its posible and crayze)
-    \bool_set_false:N \l_@@_store_bool
+    \bool_set_false:N \l_@@_store_active_bool
     \int_compare:nNnT { \l_@@_keyans_level_int } > { 1 }
       {
         \msg_error:nn { enumext } { keyans-nested }
@@ -8969,7 +8969,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    environment only if the \mykey{save-ans} key is present, otherwise
 %    we return an error.
 %    \begin{macrocode}
-    \bool_if:NF \l_@@_store_bool
+    \bool_if:NF \l_@@_store_active_bool
       {
         \msg_error:nnnn { enumext } { wrong-place }{ keyanspic }{ save-ans }
       }
@@ -9070,7 +9070,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_check_ans:nn { anspic } { keyanspic }
     \setcounter { enumXvi } { 0 }
     \vspace { \l_@@_topsep_v_skip }
-    %\bool_set_false:N \l_@@_store_bool
+    %\bool_set_false:N \l_@@_store_active_bool
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9459,7 +9459,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_parse_keys_vii:n}
 %    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 %    for \myenv*{enumext*}. If the variable
-%    \cs{l_@@_store_bool} is true it will call the function
+%    \cs{l_@@_store_active_bool} is true it will call the function
 %    \cs{@@_parse_store_keys_vii:n} and reprocess the keys to pass them to the
 %    storage sequence.
 % \iffalse
@@ -9471,7 +9471,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_if_novalue:nF {#1}
       {
         \keys_set:nn { enumext / enumext* } {#1}
-        \bool_if:NT \l_@@_store_bool
+        \bool_if:NT \l_@@_store_active_bool
           {
             \@@_parse_store_keys_vii:n {#1}
           }
@@ -9583,7 +9583,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level_vii:
   {
-    \bool_if:NT \l_@@_store_bool
+    \bool_if:NT \l_@@_store_active_bool
       {
         \int_compare:nNnT { \l_@@_level_int } > { \c_zero_int }
           {
@@ -9593,7 +9593,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_stop_store_level_vii:
   {
-    \bool_if:NT \l_@@_store_bool
+    \bool_if:NT \l_@@_store_active_bool
       {
         \int_compare:nNnT { \l_@@_level_int } > { \c_zero_int }
           {
