@@ -147,7 +147,7 @@
 \bool_new:N \g__enumext_check_ans_show_h_bool
 \tl_new:N   \g__enumext_check_ans_item_tl
 \int_new:N  \l__enumext_compare_items_ans_int
-\int_new:N  \g__enumext_count_item_with_ans_int
+\int_new:N  \g__enumext_count_item_ans_int
 \int_new:N  \g__enumext_count_item_all_int
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
@@ -1465,7 +1465,7 @@
     \bool_set_true:N \l__enumext_resume_vii_bool
   }
 %% Add |check-ans| and |no-store| keys.
-\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+\cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \keys_define:nn { enumext / #1 }
       {
@@ -1477,9 +1477,9 @@
   }
 \clist_map_inline:nn
   {
-    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
+    level-1, level-2, level-3, level-4, enumext*
   }
-  { \__enumext_tmp:nn #1 }
+  { \__enumext_tmp:n {#1} }
 %% Creation of integer variables for the internal check-answer mechanism.
 \cs_new_protected:Npn \__enumext_check_ans_int:n #1
   {
@@ -1511,7 +1511,7 @@
     \int_gset_eq:Nc \g__enumext_count_item_iii_int { g__enumext_count_#1_iii_int      }
     \int_gset_eq:Nc \g__enumext_count_item_iv_int  { g__enumext_count_#1_iv_int       }
     \int_gset_eq:Nc \g__enumext_count_item_vii_int { g__enumext_count_#1_vii_int      }
-    \int_gset_eq:Nc \g__enumext_count_item_with_ans_int { g__enumext_count_#1_item_ans_int }
+    \int_gset_eq:Nc \g__enumext_count_item_ans_int { g__enumext_count_#1_item_ans_int }
   }
 %% Funtion to count |\item| for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_count:
@@ -1535,7 +1535,7 @@
        - \g__enumext_count_item_iii_int - \g__enumext_count_item_iv_int
       }
     \int_compare:nNnTF
-      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_with_ans_int }
+      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_ans_int }
       {
         \msg_term:nnV { enumext } { items-same-answer }
           \g__enumext_store_name_tl
@@ -1562,7 +1562,7 @@
          - \g__enumext_count_item_iv_int
       }
     \int_compare:nNnTF
-      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_with_ans_int }
+      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_ans_int }
       {
         \msg_term:nnV { enumext } { items-same-answer }
           \g__enumext_store_name_tl
@@ -1786,7 +1786,7 @@
         {
           \bool_if:NT \l__enumext_check_ans_bool
             {
-              \int_gincr:N \g__enumext_count_item_with_ans_int
+              \int_gincr:N \g__enumext_count_item_ans_int
             }
           \__enumext_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
         }
@@ -2060,7 +2060,7 @@
     \tl_gset:NV \g__enumext_check_ans_item_tl \l__enumext_store_keyans_label_tl
     \bool_if:NT \l__enumext_check_ans_bool
       {
-        \int_gincr:N \g__enumext_count_item_with_ans_int
+        \int_gincr:N \g__enumext_count_item_ans_int
       }
   }
 %% Function for check starred command in |keyans| and |keyanspic|.
