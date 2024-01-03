@@ -3420,7 +3420,9 @@
 %% Define |\setenumext|,  \tl_if_novalue:nTF NOT work here
 \NewDocumentCommand \setenumext { o +m }
   {
-    \IfValueTF {#1}
+    %\IfValueTF {#1} %
+    \tl_if_novalue:nTF {#1} %%%{#3} {#2}
+      { \seq_map_inline:Nn \c__enumext_all_families_seq }
       {
         \seq_clear:N \l__enumext_setkey_tmpa_seq
         \seq_set_from_clist:Nn \l__enumext_setkey_tmpb_seq {#1}
@@ -3438,8 +3440,7 @@
           { \seq_map_inline:Nn \c__enumext_all_families_seq }
           { \seq_map_inline:Nn \l__enumext_setkey_tmpa_seq }
       }
-      { \seq_map_inline:Nn \c__enumext_all_families_seq }
-        { \keys_set:nn { enumext / meta-families } { ##1 = {#2} } }
+      { \keys_set:nn { enumext / meta-families } { ##1 = {#2} } }
   }
 \cs_new_protected:Npn \__enumext_set_parse:n #1
   {

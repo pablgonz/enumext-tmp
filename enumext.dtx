@@ -9207,7 +9207,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % To achieve the horizontal list environment we will capture the \ics{item}
 % command and the content of this in an plain \myenv{lrbox} box using \ics{makebox} for
-% the \mykey{label} and a \myenv{minpage} environment for the content passed to
+% the \mykey{label} and a \myenv{minipage} environment for the content passed to
 % \ics{item}, we will also add the optional argument \myparg{number} to \ics{item}
 % to be able to \emph{join columns} horizontally, in simple terms, we want
 % \ics{item} to behave in the same way as in the \myenv*{enumext} environment but
@@ -10120,36 +10120,46 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\setenumext}
 %    Now we define the user command \ics*{setenumext}.
 % \iffalse
-%% Define |\setenumext|,  \tl_if_novalue:nTF NOT work here
+%% Define |\setenumext|,  \tl_if_novalue:nTF here (program level)
 % \fi
 %    \begin{macrocode}
 \NewDocumentCommand \setenumext { o +m }
   {
-    \IfValueTF {#1}
+    \tl_if_novalue:nTF {#1}
+      {
+        \seq_map_inline:Nn \c_@@_all_families_seq
+      }
       {
         \seq_clear:N \l_@@_setkey_tmpa_seq
         \seq_set_from_clist:Nn \l_@@_setkey_tmpb_seq {#1}
         \int_set:Nn \l_@@_setkey_tmpa_int
-          { \seq_count:N \l_@@_setkey_tmpb_seq }
+          {
+            \seq_count:N \l_@@_setkey_tmpb_seq
+          }
         \int_compare:nNnTF { \l_@@_setkey_tmpa_int } > { 1 }
           {
             \seq_pop_left:NN \l_@@_setkey_tmpb_seq \l_@@_setkey_tmpa_tl
             \seq_map_function:NN \l_@@_setkey_tmpb_seq \@@_set_parse:n
             \seq_set_map_e:NNn \l_@@_setkey_tmpa_seq \l_@@_setkey_tmpa_seq
-              { \tl_use:N \l_@@_setkey_tmpa_tl - ##1 }
+              {
+                \tl_use:N \l_@@_setkey_tmpa_tl - ##1
+              }
           }
-          { \seq_put_right:Ne \l_@@_setkey_tmpa_seq { \tl_trim_spaces:n {#1} } }
+          {
+            \seq_put_right:Ne \l_@@_setkey_tmpa_seq { \tl_trim_spaces:n {#1} }
+          }
         \seq_if_empty:NTF \l_@@_setkey_tmpa_seq
           { \seq_map_inline:Nn \c_@@_all_families_seq }
           { \seq_map_inline:Nn \l_@@_setkey_tmpa_seq }
       }
-      { \seq_map_inline:Nn \c_@@_all_families_seq }
-        { \keys_set:nn { enumext / meta-families } { ##1 = {#2} } }
+      {
+        \keys_set:nn { enumext / meta-families } { ##1 = {#2} }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{ \@@_set_parse:n, \@@_set_error:nn}
+% \begin{macro}{\@@_set_parse:n, \@@_set_error:nn, }
 %    Internal functions used by the \ics*{setenumext} command.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_set_parse:n #1
