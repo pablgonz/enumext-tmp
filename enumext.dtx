@@ -563,7 +563,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     commentstyle  = \ttfamily\small\color{lightgray},%
 % Important words 1
     keywordstyle  = [1]{\color{gray}},%
-    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,strut,smash, newlength, settowidth, dimeval, dimexpr, IfBooleanTF, %
+    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,strut,smash, newlength, settowidth, dimeval, dimexpr, IfBooleanTF,%
                     },%
 % Other words 2
     keywordstyle  = [2]{\color{blue!75}},%
@@ -575,7 +575,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, %
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip,%
                     textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, %
-                    triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget},%
+                    triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean},%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
     keywords      = [3]{document,article,setlength,pagestyle,definecolor},%
@@ -590,11 +590,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Reserved words 6 (optcolor) KEYS
     keywordstyle  = [6]{\color{optcolor}},%
     keywords      = [6]{save-ans,wrap-ans,store-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
-                    nosep,test,sample,before,after,start, right, item-sym, item-sep, %
+                    nosep,test,sample,before,after,start, right, item-sym, item-sep, hyperfootnotes,%
                     scale,wrap-label,font,first,widest,mini-env,list-indent},%
 % Reserved words 7 (label values)
     keywordstyle  = [7]{\color{MediumOrchid}},%
-    keywords      = [7]{m,s,M,VIII,viii,v,E,t,A,XXIII},%
+    keywords      = [7]{m,s,M,VIII,viii,v,E,t,A,XXIII,true, false},%
 % literate
     literate      =*{\{}{{{\color{gray}{\char`\{}}}}{1}
                     {\}}{{{\color{gray}{\char`\}}}}}{1}
