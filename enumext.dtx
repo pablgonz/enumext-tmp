@@ -10054,29 +10054,46 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       \tl_use:N \l_@@_print_keyans_iii_tl
       \tl_use:N \l_@@_print_keyans_iv_tl
       \tl_use:N \l_@@_print_keyans_vii_tl
-      \@@_printkeyans:nn {#3}{#2}
+      \@@_printkeyans:nnn { #1 } { #2 } { #3 }
     \group_end:
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_printkeyans:nn}
-%    The internal function \cs{@@_printkeyans:nn} will check
+% \begin{macro}{\@@_printkeyans:nnn}
+%    The internal function \cs{@@_printkeyans:nnn} will check
 %    for the existence of the \mymeta{sequence}, if it does not exist
 %    it will return an error message, then it will fetch the content
 %    specified by the first argument mapping the \mymeta{sequence}.
+%
+% \begin{arguments}
+%    \item starred
+%    \item key-val
+%    \item seq-name
+% \end{arguments}
+%
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_printkeyans:nn #1#2
+\cs_new_protected:Npn \@@_printkeyans:nnn #1 #2 #3
   {
-    \seq_if_exist:cF { g_@@_#1_seq }
+    \seq_if_exist:cTF { g_@@_#3_seq }
       {
-        \msg_error:nnn { enumext } { undefined-storage-anskey } {#1}
+        \seq_if_empty:cF { g_@@_#3_seq }
+          {
+            \bool_if:nTF {#1}
+              {
+                \begin{enumext*}[#2]
+                  \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
+                \end{enumext*}
+              }
+              {
+                \begin{enumext}[#2]
+                  \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
+                \end{enumext}
+              }
+          }
       }
-    \seq_if_empty:cF { g_@@_#1_seq }
       {
-        \begin{enumext}[#2]
-          \seq_map_inline:cn { g_@@_#1_seq } { ##1 }
-        \end{enumext}
+        \msg_error:nnn { enumext } { undefined-storage-anskey } {#3}
       }
   }
 %    \end{macrocode}
