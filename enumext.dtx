@@ -1,6 +1,6 @@
 % \iffalse meta-comment
-% arara: lualatex
-% arara: lualatex
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out, glo, gls, hd, ind, ilg, idx, toc, atfi ] }
 % arara: clean: { files: [ userdoc.idx, userdoc.ilg, userdoc.ind ] }
 % arara: halt
@@ -3489,7 +3489,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-01-03}
+  {2024-03-20}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -5297,7 +5297,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                                   \bool_gset_true:c { g_@@_minipage_center_#2_bool }
                                   \keys_set:nn { enumext / #1 } { miniright = {##1} }
                                 },
-        miniright  .value_required:n = true,
+        miniright* .value_required:n = true,
       }
   }
 \clist_map_inline:nn { {enumext*}{vii}, {keyans*}{viii} } { \@@_tmp:nn #1 }
@@ -5342,7 +5342,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \caption{Representation of the vertical space in \myenv{multicols} for a nested level.}
 %   \label{fig:six}
 % \end{figure}
- %
+%
 % To keep the desired spaces \emph{above} and \emph{below} in the \emph{\enquote{list environment}}
 % (|\topsep + [\partopsep]|) it is necessary to \emph{\enquote{adjust}} the spaces added
 % by the \myenv{multicols} environment.

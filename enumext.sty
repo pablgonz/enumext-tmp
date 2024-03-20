@@ -28,7 +28,7 @@
   }
 \ProvidesExplPackage
   {enumext}
-  {2024-01-03}
+  {2024-03-20}
   {1.0}
   {Enumerate exercise sheets}
 %% Variable for levels and nesting off all environments.
@@ -870,11 +870,10 @@
                                   \bool_gset_true:c { g__enumext_minipage_center_#2_bool }
                                   \keys_set:nn { enumext / #1 } { miniright = {##1} }
                                 },
-        miniright  .value_required:n = true,
+        miniright* .value_required:n = true,
       }
   }
 \clist_map_inline:nn { {enumext*}{vii}, {keyans*}{viii} } { \__enumext_tmp:nn #1 }
- %
 %% Adjustment of vertical spacing for |multicols| in |enumext|.
 \cs_new_protected:Nn \__enumext_multi_set_vskip:
   {
