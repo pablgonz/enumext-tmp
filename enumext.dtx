@@ -4152,20 +4152,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_after_hyperref:, \@@_hypertarget:nn, \@@_phantomsection:}
 %    The function \cs{@@_after_hyperref:} sets the state of the boolean
-%    variable \cs{l_@@_hyperref_bool} to true if the package is
-%    loaded, then set the variable \cs{@@_footnotes_key_bool} to true if
-%    the |hyperfootnotes=true| key is present.
+%    variable \cs{l_@@_hyperref_bool} to \enquote{true} if the package is
+%    loaded. At this point we will use the public macro |\IfHyperBoolean| to
+%    determine if the |hyperfootnotes=true| key is present, if so, we set
+%    the state of the boolean variable \cs{@@_footnotes_key_bool} to \enquote{true}.
+%
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_hyperref:
   {
     \IfPackageLoadedTF { hyperref }
       {
         \bool_set_true:N \l_@@_hyperref_bool
-        \legacy_if:nT { Hy@hyperfootnotes }
+        \IfHyperBoolean{hyperfootnotes}
           {
             \typeout{hyperfootnotes=true}
             \bool_set_true:N \l_@@_footnotes_key_bool
           }
+          { \typeout{hyperfootnotes=false} }
       }
       {  }
 %    \end{macrocode}
@@ -10000,11 +10003,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The command \cs{printkeyans}}\label{cmd:printkeyans}
 %
-% The \ics*{printkeyans} command encapsulates the \myenv*{enumext}
-% environment and prints \emph{\enquote{all stored content}} in the \mymeta{sequence}
-% defined by the \mykey{save-ans} key. The first thing we will do is to
-% define a set of \mymeta{keys} with which we will control the options of
-% the different levels of \myenv*{enumext}.
+% The \ics*{printkeyans} command prints \emph{\enquote{all stored
+% content}} in the \mymeta{sequence} defined by the \mykey{save-ans} key.
+%
+% The first thing we will do is to define a set of \mymeta{keys} with
+% which we will control the options of the different nesting levels for
+% the \myenv*{enumext} and \myenv*{enumext*} environment by storing the
+% values of these in the token list variables \myvarenv{l__@@_print_keyans_X_tl}.
+%
 % \iffalse
 %% Add keys for |\printkeyans|.
 % \fi
