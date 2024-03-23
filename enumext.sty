@@ -1513,7 +1513,7 @@
     \int_gset_eq:Nc \g__enumext_count_item_vii_int { g__enumext_count_#1_vii_int      }
     \int_gset_eq:Nc \g__enumext_count_item_ans_int { g__enumext_count_#1_item_ans_int }
   }
-%% Funtion to count |\item| for internal checking answer mechanism in |enumext|.
+%% Function to count |\item| for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_count:
   {
     \bool_if:NT \l__enumext_check_ans_bool
@@ -1526,7 +1526,7 @@
           { \int_gincr:c { g__enumext_count_item_ \__enumext_level: _int } }
       }
   }
-%% Funtion to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_active:
   {
     \int_set:Nn \l__enumext_compare_items_ans_int
@@ -1550,7 +1550,7 @@
     \int_gzero:N \g__enumext_count_level_iv_int
     \int_gzero:N \g__enumext_count_level_vii_int
   }
-%% Funtion to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_active_vii:
   {
     \int_set:Nn \l__enumext_compare_items_ans_int

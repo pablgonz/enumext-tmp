@@ -574,14 +574,14 @@ This work consists of the files enumext.dtx and enumext.sty.
                     multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, if@minipage, parbox, ignorespace %
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, %
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip,%
-                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, %
+                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft,%
                     triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean},%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
     keywords      = [3]{document,article,setlength,pagestyle,definecolor},%
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
-    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, %
+    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item,%
                     setenumext,printkeyans,miniright,parleft,itembx, descitemwd,theenumXi,theenumXii,theenumXiii,theenumXiv,theenumXv, theenumXvii, theenumXviii},%
 % Reserved words 5 (in red)
     keywordstyle  = [5]{\color{red}},%
@@ -590,11 +590,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Reserved words 6 (optcolor) KEYS
     keywordstyle  = [6]{\color{optcolor}},%
     keywords      = [6]{save-ans,wrap-ans,store-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
-                    nosep,test,sample,before,after,start, right, item-sym, item-sep, hyperfootnotes,%
+                    nosep,before,after,start, right, item-sym, item-sep, hyperfootnotes,%
                     scale,wrap-label,font,first,widest,mini-env,list-indent},%
 % Reserved words 7 (label values)
     keywordstyle  = [7]{\color{MediumOrchid}},%
-    keywords      = [7]{m,s,M,VIII,viii,v,E,t,A,XXIII,true, false},%
+    keywords      = [7]{m,s,M,VIII,viii,v,E,t,A,XXIII,true, false,test,sample},%
 % literate
     literate      =*{\{}{{{\color{gray}{\char`\{}}}}{1}
                     {\}}{{{\color{gray}{\char`\}}}}}{1}
@@ -6449,7 +6449,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % With \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} it is enough to increase
 % in one the integer of \ics*{anskey}. The integers created must be global
 % if they are not lost in the interior levels of nesting and to execute
-% the test we will use a \emph{\enquote{hook}} funtion after closing the
+% the test we will use a \emph{\enquote{hook}} function after closing the
 % first level of the environment.
 %
 % \subsubsection{The check answer mechanism}\label{int:check-answer}
@@ -6542,7 +6542,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    increment the integer variable of the level counter by |1| to preserve
 %    the equality that we will use in the final comparison of the process.
 % \iffalse
-%% Funtion to count |\item| for internal checking answer mechanism in |enumext|.
+%% Function to count |\item| for internal checking answer mechanism in |enumext|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_check_ans_count:
@@ -6565,7 +6565,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    and |\item|'s with answer for checking answer mechanism and display the
 %    appropriate message on the terminal.
 % \iffalse
-%% Funtion to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_check_ans_active:
@@ -6597,7 +6597,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \iffalse
-%% Funtion to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_check_ans_active_vii:
