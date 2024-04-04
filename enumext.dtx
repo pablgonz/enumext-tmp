@@ -1,6 +1,8 @@
 % \iffalse meta-comment
-% arara: lualatex: { branch: developer, draft: true }
-% arara: lualatex: { branch: developer }
+%! arara: lualatex: { branch: developer, draft: true }
+%! arara: lualatex: { branch: developer }
+% arara: lualatex: { draft: true }
+% arara: lualatex
 % arara: clean: { extensions: [ aux, log, out, glo, gls, hd, ind, ilg, idx, toc, atfi ] }
 % arara: clean: { files: [ userdoc.idx, userdoc.ilg, userdoc.ind ] }
 % arara: halt
@@ -67,7 +69,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</install>
 %<*driver>
 \documentclass[full]{l3doc}
-% Remove " and | for short verbatim
+% Remove `"` and `|` for short verbatim defined in l3doc, then set short |...|
 \AtBeginDocument
   {
     \DeleteShortVerb \"
@@ -133,7 +135,6 @@ This work consists of the files enumext.dtx and enumext.sty.
                   \fontshape\updefault
                   \small
                   }%
-
 % Patching colordoc.sty to work with l3doc.cls
 \ExplSyntaxOn
 \cs_new_eq:cN { liii@xmacro@code } \__codedoc_xmacro_code:n
@@ -149,7 +150,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 |gdef|xmacro@code#1%    \end{macrocode}[|liii@xmacro@code[#1]|end[macrocode]]
 |catcode`| 12|gdef|sxmacro@code#1%    \end{macrocode*}[|liii@xmacro@code[#1]|end[macrocode*]]
 |endgroup
-
 % Patching colordoc.sty to work with doc v3 (TeX Live 2023 & lualatex-dev)
 \usepackage{etoolbox}
 \makeatletter
@@ -166,7 +166,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \makeatother
 
 \EnableCrossrefs
-% \PageIndex % \CodelineIndex undoes what \PageIndex does
+% \PageIndex, \CodelineIndex undoes what \PageIndex does
 % \CodelineIndex tries to open another write stream for the index file. We don't
 % want that, so we temporarily make \makeindex a no-op:
 \let\ORGmakeindex\makeindex
@@ -189,7 +189,7 @@ This work consists of the files enumext.dtx and enumext.sty.
       { \index[userdoc]{#1\actualchar#2|HP} }
   }
 \ExplSyntaxOff
-
+% imakeidx config
 \indexsetup{level=\section,firstpagestyle=myheader,othercode=\pagestyle{myheader}}
 \makeindex[name=userdoc,options={-q -s gind.ist},columnsep=15pt,title={Index of Documentation}]
 \makeindex[options={-q -s gind.ist},columnsep=15pt,title={Index of Implementation}]
@@ -198,22 +198,18 @@ This work consists of the files enumext.dtx and enumext.sty.
 \makeatletter
 \expandafter\let\expandafter\@indexfile\csname \jobname @idxfile\endcsname
 \makeatother
-
 % Set \parindent
 \setlength{\parindent}{0pt}
-
 % Colors
 \definecolor{optcolor}{rgb}{0.281,0.275,0.485}
 \definecolor{pkgcolor}{rgb}{0,0.5,0.5}
 \definecolor{araracolor}{rgb}{0, 0.72, 0.28}
 \definecolor{linkcolor}{rgb}{0.04,0.38,0.04}
 \definecolor{rulecolor}{rgb}{0.96,0.96,0.96}
-
 % Only for arara... I like arara :)
 \usepackage[scale=0.85]{comfortaa}
 \newcommand{\araratext}[1]{{\small\normalfont\comfortaa\color{araracolor}\bfseries#1}}
 \newcommand*\arara{\araratext{ar\kern-.03emar\kern-.03ema}}
-
 % User level commands
 \ExplSyntaxOn
 % Logo with fetamont font
@@ -223,7 +219,6 @@ This work consists of the files enumext.dtx and enumext.sty.
       \LibertinusSansOsF{\textcolor{pkgcolor}{enum}\textcolor{OrangeRed}{ext}}
     \group_end:
   }
-
 % Custom \meta[...]{...}, \marg[...]{...} and \oarg[...]{...} with color
 \NewDocumentCommand{\mymeta}{O{}m}
   {
@@ -322,24 +317,26 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  }
 % \envexamp{m}
 \newsavebox{\boxexaenv}
+\tl_new:N \l_tempc_tl
 \NewDocumentCommand \envexamp { m }
   {
-   \begin{lrbox}{\boxexaenv}%
-    \begin{minipage}[t]{3\marginparwidth}%
-     \raggedright\ttfamily\small
-     \textcolor{gray}{\textbackslash begin\{\textcolor{pkgcolor}{{#1}}\}\myoarg
-     [type=tt,sbc=gray,ac=lightgray,cf=optcolor]{keyval ~ list}}\par%
-     \hspace{0.25cm}\ics{item}\space\mymeta[type=tt,ac=lightgray,cf=gray]{item ~ content}\par%
-     \hspace{0.25cm}\ics{item}\space\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{custom}\space\mymeta[type=tt,ac=lightgray,cf=gray]{item ~ content}\par
-     \hspace{0.25cm}\ics*{item*}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{symbol}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{offset}\space\mymeta[type=tt,ac=lightgray,cf=gray]{item ~ content}\par
-     \textcolor{gray}{\textbackslash end\{{\textcolor{pkgcolor}{{#1}}}\}}\par
-    \end{minipage}%
-   \end{lrbox}%
-   \usebox{\boxexaenv}
+    \tl_set:Nn \l_tempc_tl { #1 }
+    \regex_replace_once:nnN { (\*) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tempc_tl
+    \begin{lrbox}{\boxexaenv}%
+      \begin{minipage}[t]{3\marginparwidth}%
+        \raggedright\ttfamily\small
+        \textcolor{gray}{\textbackslash begin\{\textcolor{pkgcolor}{{\tl_use:N \l_tempc_tl}}\}\myoarg
+        [type=tt,sbc=gray,ac=lightgray,cf=optcolor]{keyval ~ list}}\par%
+        \hspace{0.25cm}\ics{item}\space\mymeta[type=tt,ac=lightgray,cf=gray]{item ~ content}\par%
+        \hspace{0.25cm}\ics{item}\space\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{custom}\space\mymeta[type=tt,ac=lightgray,cf=gray]{item ~ content}\par
+        \hspace{0.25cm}\ics*{item*}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{symbol}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{offset}\space\mymeta[type=tt,ac=lightgray,cf=gray]{item ~ content}\par
+        \textcolor{gray}{\textbackslash end\{{\textcolor{pkgcolor}{{\tl_use:N \l_tempc_tl}}}\}}\par
+      \end{minipage}%
+    \end{lrbox}%
+    \usebox{\boxexaenv}
   }
-
 % \cmdexamp{s m o m o}
-\DeclareDocumentCommand \cmdexamp { o m o m o }
+\NewDocumentCommand \cmdexamp { o m o m o }
   {
     \group_begin:
     \small\ttfamily
@@ -358,7 +355,7 @@ This work consists of the files enumext.dtx and enumext.sty.
   }
 
 % \keyexamp*{m m m}
-\DeclareDocumentCommand \keyexamp{s m m m }
+\NewDocumentCommand \keyexamp{s m m m }
   {
     \adjustbox{outer=-\marginparsep}{\textcolor{optcolor}{\small\ttfamily{#2}}}
     \IfBooleanTF{#1}
@@ -373,9 +370,8 @@ This work consists of the files enumext.dtx and enumext.sty.
     \hfill\textcolor{gray}{\small\textsf{default}:~\emph{#4}}\par%
     \MYSortIndex{Keys}{Keys ~ for ~ environments ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
   }
-
 % \mykey{m}
-\DeclareDocumentCommand \mykey{ m }
+\NewDocumentCommand \mykey{ m }
   {
     \tl_set:Nn \l_tmpa_tl { #1 }
     \regex_replace_once:nnN { (\*) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tmpa_tl
@@ -383,7 +379,6 @@ This work consists of the files enumext.dtx and enumext.sty.
     %\textcolor{optcolor}{\texttt{#1}}
     \MYSortIndex{Keys}{Keys ~ for ~ environments ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
   }
-
 % \mypkg{sm}
 \NewDocumentCommand \mypkg { s m }
   {
@@ -399,14 +394,12 @@ This work consists of the files enumext.dtx and enumext.sty.
       }
      \group_end:
   }
-
 % \myclass{m}
 \NewDocumentCommand \myclass { m }
   {
     \mbox{\texttt{\textcolor{OrangeRed}{#1}}}
     \MYSortIndex{class}{Document ~ class :>\texttt{#1}}
   }
-
 % \myenv{sm}
 \NewDocumentCommand \myenv { s m O{}}
   {
@@ -422,7 +415,6 @@ This work consists of the files enumext.dtx and enumext.sty.
         \MYSortIndex{environment}{Environments :>\texttt{#2}}
       }
   }
-
 % \ics{sm}
 \NewDocumentCommand \ics {s m}
   {
@@ -432,21 +424,19 @@ This work consists of the files enumext.dtx and enumext.sty.
         \regex_replace_once:nnN { (\*) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tmpa_tl
         \regex_replace_once:nnN { (!) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tmpa_tl
         \textcolor{pkgcolor}{\ttfamily\textbackslash{\tl_use:N \l_tmpa_tl}}
-        \MYSortIndex{Commands}{ Commands ~ provide  ~ by ~ \pkglogo :>\texttt{\textbackslash#2}}
+        \MYSortIndex{Commands}{Commands ~ provide  ~ by ~ \pkglogo :>\texttt{\textbackslash#2}}
       }
       {
         \textcolor{blue!75}{\ttfamily\textbackslash{#2}}
         \MYSortIndex{#2}{\texttt{\textbackslash#2}}
       }
   }
-
 % \icounter{m}
 \NewDocumentCommand \icounter { m }
   {
     \textcolor{optcolor}{\ttfamily #1}
     \MYSortIndex{Counters}{Counters ~ defined ~ by ~ \pkglogo :>\texttt{#1}}
   }
-
 % \ilabel{sm}
 \NewDocumentCommand \ilabel {s m }
   {
@@ -467,7 +457,6 @@ This work consists of the files enumext.dtx and enumext.sty.
       }%
     \textcolor{optcolor}{ \ttfamily \tl_use:N \l_tmpa_tl }
   }
-
 % \mydim{m}
 \NewDocumentCommand \mydim { m }
   {
@@ -476,7 +465,6 @@ This work consists of the files enumext.dtx and enumext.sty.
     \regex_replace_all:nnN  { (\.) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tmpa_tl
     \textcolor{gray}{ \ttfamily \tl_use:N \l_tmpa_tl }
   }
-
 % \myvarenv{m}
 \NewDocumentCommand \myvarenv { s m }
   {
@@ -495,7 +483,6 @@ This work consists of the files enumext.dtx and enumext.sty.
         }
     \group_end:
   }
-
 % \aviso
 \NewDocumentCommand \aviso { }
   {
@@ -509,7 +496,6 @@ This work consists of the files enumext.dtx and enumext.sty.
       }
     \hskip 0.5\marginparsep
   }
-
 % \bomba
 \NewDocumentCommand \bomba { }
   {
@@ -523,7 +509,6 @@ This work consists of the files enumext.dtx and enumext.sty.
       }
     \hskip 0.5\marginparsep
   }
-
 \NewDocumentEnvironment{important}{ s }
   {
     \small\sffamily
@@ -535,7 +520,6 @@ This work consists of the files enumext.dtx and enumext.sty.
   }{}
 
 \ExplSyntaxOff
-
 % email https://tex.stackexchange.com/a/663
 \catcode`\_=11\relax%
 \newcommand\email[1]{\_email #1\q_nil}%
@@ -545,10 +529,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 \newcommand\emailfont{\sffamily}%
 \newcommand\emailampersat{{\color{optcolor}\footnotesize @}}%
 \catcode`\_=8\relax%
-
 % Don't copy numbers in code example
 \newcommand*{\noaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
-
 % Create a language for documentation
 \lstdefinelanguage{enumext-doc}{
     texcsstyle    = *,%
@@ -654,7 +636,6 @@ This work consists of the files enumext.dtx and enumext.sty.
            #1,%
     }% close lstset
 }{\vspace{-\parskip}}% close examplecode
-
 % \lstinline[style=inline]|...|
 \lstdefinestyle{inline}
   {
@@ -672,16 +653,10 @@ This work consists of the files enumext.dtx and enumext.sty.
                   {v}{{\textcolor{optcolor}{v}}}{1}
                   {vi}{{\textcolor{optcolor}{vi}}}{1}
   }
-
 % Set default \lstinline style
 \lstset{style=inline}
-
-% Set short |...|
-%\lstMakeShortInline[language=enumext-doc,basicstyle=\ttfamily]|
-
 % Get file info
 \GetFileInfo{enumext.sty}
-
 % Config hyperref
 \hypersetup{
    allcolors          = linkcolor,
@@ -693,7 +668,6 @@ This work consists of the files enumext.dtx and enumext.sty.
    pdfkeywords        = {worksheets, multiple choice, expl3, l3prop, l3seq, list, enumerate, store answers},
    bookmarksopenlevel = 2,
   }
-
 % Configuration titleps and titlesec
 \settitlemarks{section}
 \renewpagestyle{plain}[\color{optcolor}\small\sffamily]{%
@@ -715,7 +689,6 @@ This work consists of the files enumext.dtx and enumext.sty.
         {\raisebox{0.55cm}{\parbox{\textwidth}{\hspace*{-\oddsidemargin}\centering\small\S.\thesection\space\sectiontitle}}}%
         {}%
 }
-
 \titlecontents{section}[0mm]{}%
     {\bfseries\contentspush{\makebox[5mm][l]{\thecontentslabel\hfill}}}%
     {\hspace*{-5mm}}% numberless
@@ -728,7 +701,6 @@ This work consists of the files enumext.dtx and enumext.sty.
     {\contentspush{\makebox[8mm][l]{\thecontentslabel\hfill}}}
     {\hspace*{-19mm}}% numberless
     {\hspace{0.25em}\titlerule*[6pt]{.}\contentspage}%
-
 % Table of contents
 \makeatletter
 \renewcommand\tableofcontents{%
@@ -1317,14 +1289,15 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \vspace*{-\baselineskip}
 %
-% \begin{function}[label=enumext]{enumext}
-%   \begin{syntax}
-%   \envexamp{enumext}
-%   \end{syntax}
+% \begin{function}{enumext,enumext*}
+%   \begin{minipage}[t]{0.45\linewidth}
+%       \envexamp{enumext}
+%   \end{minipage}\hfill
+%   \begin{minipage}[t]{0.45\linewidth}
+%       \envexamp{enumext*}
+%   \end{minipage}
 % \end{function}
-%
-% \vspace*{-0.5\baselineskip}
-%
+% \medskip
 % The \myenv*{enumext} is an \emph{\enquote{enumerated list}} environment that
 % works in the same way as the standard \myenv{enumerate} environment
 % provided by \hologo{LaTeX}, \ics*{item} and \ics*{item}\myoarg[type=tt]{custom}
@@ -2095,9 +2068,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \vspace*{-\baselineskip}
 %
-% \begin{function}{keyans}
+% \begin{function}{keyans,keyans*}
 %   \begin{syntax}
-%     |\begin{keyans}|\myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg[type=tt]{custom} \ics*{item*} \ics*{item*}\myoarg[type=tt]{content}
+%     |\begin{keyans}|\myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg[type=tt]{custom} \ics*{item*} \ics*{item*}\myoarg[type=tt]{content} |\end{keyans}|\par
+%     |\begin{keyans*}|\myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg[type=tt]{custom} \ics*{item*} \ics*{item*}\myoarg[type=tt]{content} |\end{keyans*}|
 %   \end{syntax}
 % The \myenv*{keyans} is an \emph{\enquote{enumerated
 % list}} environment designed for \emph{\enquote{multiple choice}}
@@ -2128,7 +2102,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The \mymeta{keys} set in the optional argument of the environment are the same
 % (almost) as those of the \myenv*{enumext} environment and have higher
 % precedence than those set by
-% \ics*{setenumext}\myoarg[type=tt]{keyans}\mymeta[type=tt]{key \textnormal{\textcolor{gray}{=}} val}.
+% \ics*{setenumext}\myoarg[type=tt]{keyans}\mymarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}.
 % If the optional argument is not passed or the \mymeta{keys} are not set by
 % \ics*{setenumext}, the default values will be the same as the second
 % level of the \myenv*{enumext} environment with the difference in the
@@ -3489,7 +3463,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-03-20}
+  {2024-04-03}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -5179,7 +5153,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
-%
 %
 % \subsubsection{Functions for \texttt{before}, \texttt{after} and \texttt{first} keys in \env{enumext*} and \env{keyans*}}
 %
@@ -9761,7 +9734,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %  \subsubsection*{Real definition of \cs{item}}
 %
-%  The functions \cs{enumext_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
+%  The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
 %  \ics*{item} inside the \myenv*{enumext*} environment.
 %
 % \begin{macro}{\@@_start_item_vii:w}
