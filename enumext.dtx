@@ -6,7 +6,7 @@
 % arara: clean: { extensions: [ aux, log, out, glo, gls, hd, ind, ilg, idx, toc, atfi ] }
 % arara: clean: { files: [ userdoc.idx, userdoc.ilg, userdoc.ind ] }
 % arara: halt
-%
+% File: enumext.dtx
 % Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
 %
 % This work may be distributed and/or modified under the conditions of the
@@ -335,14 +335,22 @@ This work consists of the files enumext.dtx and enumext.sty.
     \end{lrbox}%
     \usebox{\boxexaenv}
   }
-% \cmdexamp{s m o m o}
+% \cmdexamp{o m o m o}
+\tl_new:N \l_tempd_tl
 \NewDocumentCommand \cmdexamp { o m o m o }
   {
     \group_begin:
     \small\ttfamily
     \textcolor{pkgcolor}{\textbackslash#2}
     \IfValueT{#1}{ \textcolor{MediumOrchid}{#1} }
-    \IfValueT{#3}{ \myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{#3} }
+    \IfValueT{#3}
+      {
+        % \textnormal{\ttfamily } or \c{texttt}\cB\{  \cE\}
+        \tl_set:Nn \l_tempd_tl { #3 }
+        % \regex_replace_once:nnN { (\*) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tempd_tl
+        \regex_replace_once:nnN { (\*) } { \c{texttt}\cB\{\c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} \cE\} } \l_tempd_tl
+        \myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{\tl_use:N \l_tempd_tl}
+      }
     \IfValueTF{#5}
       {
         \mymeta[ac=gray,type=tt,cf=MediumOrchid]{#5}%
@@ -1075,7 +1083,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{User interface}
 % \label{sec:interface}
 %
-% The user interface consists in \myenv*{enumext}, \myenv*{keyans} and
+% The user interface consists in \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans}, \myenv*{keyans*} and
 % \myenv*{keyanspic} environments, \ics*{anskey}, \ics*{item*} and
 % \ics*{anspic*} commands to \mymeta{stored content}, \ics*{getkeyans}
 % command to get the individual \mymeta{stored content}, \ics*{printkeyans}
@@ -1088,13 +1096,18 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The package \mypkg*{enumext} uses internally the \icounter{enumXi},
 % \icounter{enumXii}, \icounter{enumXiii}, \icounter{enumXiv} counters
 % for the four nesting levels of the \myenv*{enumext} environment, the
-% \icounter{enumXv} counter for the \myenv*{keyans} environment and the
-% \icounter{enumXvi} counter for the \myenv*{keyanspic} environment.
+% \icounter{enumXv} counter for the \myenv*{keyans} environment, the
+% \icounter{enumXvi} counter for the \myenv*{keyanspic} environment,
+% the counter \icounter{enumXvii} for \myenv*{enumext*} environment and the counter
+% \icounter{enumXviii} for \myenv*{keyans*} environment.
+%
+% \begin{important}*
 % If any package defines these counters or they are user-defined
 % in the document, the package will return a missing error and abort the
 % load.
+% \end{important}
 %
-% \subsection{The label and ref system}
+% \subsection{The \cs[no-index]{label} and \cs[no-index]{ref} system}
 %
 % This package provides a user interface like the
 % \mypkg{enumitem}\cite{enumitem} package to customize the references
@@ -1103,8 +1116,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % It also provides an \emph{\enquote{internal reference}} system for the
 % \emph{\enquote{stored content}} by means of the key \mykey{store-ref}
-% key (\S\ref{subsec:label-ref}) when the \mykey{save-ans} key
-% (\S\ref{subsec:storage-keys}) is active.
+% (\S\ref{subsec:label-ref}) when the key \mykey{save-ans}(\S\ref{subsec:storage-keys}) is active.
 %
 % \subsection{The concept of left margin}
 %
@@ -1284,6 +1296,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \myenv{minipage} environment to the \emph{\enquote{right}} side one must use the command
 % \ics*{miniright} (see~\S\ref{key:mini}).
 %
+% \subsection{Support for \pkg{hyperref} and \cs[no-index]{footnote}}
+%
+%
 % \section{The environment \texttt{enumext}}
 % \label{sec:envenumext}
 %
@@ -1297,7 +1312,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 %       \envexamp{enumext*}
 %   \end{minipage}
 % \end{function}
+%
 % \medskip
+%
 % The \myenv*{enumext} is an \emph{\enquote{enumerated list}} environment that
 % works in the same way as the standard \myenv{enumerate} environment
 % provided by \hologo{LaTeX}, \ics*{item} and \ics*{item}\myoarg[type=tt]{custom}
@@ -1408,11 +1425,18 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \vspace*{-10pt}
 %
 % \begin{function}{\setenumext}
-%   \begin{syntax}
-%     \cmdexamp{setenumext}[enumext \textnormal{\textcolor{gray}{,}} level]{key \textnormal{\textcolor{gray}{=}} val}
-%     \cmdexamp{setenumext}[print \textnormal{\textcolor{gray}{,}} level]{key \textnormal{\textcolor{gray}{=}} val}
+%   \begin{minipage}[t]{0.45\linewidth}
+%     \cmdexamp{setenumext}[enumext\textnormal{\textcolor{gray}{,}} level]{key \textnormal{\textcolor{gray}{=}} val}
+%     \cmdexamp{setenumext}[print\textnormal{\textcolor{gray}{,}} level]{key \textnormal{\textcolor{gray}{=}} val}
 %     \cmdexamp{setenumext}[keyans]{key \textnormal{\textcolor{gray}{=}} val}
-%   \end{syntax}
+%   \end{minipage}\hfill
+%   \begin{minipage}[t]{0.45\linewidth}
+%     \cmdexamp{setenumext}[enumext*]{key \textnormal{\textcolor{gray}{=}} val}
+%     \cmdexamp{setenumext}[keyans*]{key \textnormal{\textcolor{gray}{=}} val}
+%     \cmdexamp{setenumext}[print*]{key \textnormal{\textcolor{gray}{=}} val}
+%   \end{minipage}
+%
+% \smallskip
 %
 % The command \ics*{setenumext} sets the \mymeta{keys} on a global basis
 % for environment \myenv*{enumext}, the \ics*{printkeyans} command and
