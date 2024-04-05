@@ -553,11 +553,11 @@ This work consists of the files enumext.dtx and enumext.sty.
     commentstyle  = \ttfamily\small\color{lightgray},%
 % Important words 1
     keywordstyle  = [1]{\color{gray}},%
-    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,strut,smash, newlength, settowidth, dimeval, dimexpr, IfBooleanTF,%
+    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,strut,smash, newlength, settowidth, dimeval, dimexpr, IfBooleanTF,footnotehyper,%
                     },%
 % Other words 2
     keywordstyle  = [2]{\color{blue!75}},%
-    keywords      = [2]{usepackage,section,documentclass,input,listparindent,linewidth, emph, textbf,%
+    keywords      = [2]{usepackage,section,documentclass,input,listparindent,linewidth, emph, textbf,makesavenoteenv,%
                     columnseprule, footnote, footnotemark, footnotetext, raggedcolumns, hspace, parindent, %
                     subsection, list,endlist,leftmargin, itemindent,bfseries,endminipage, minipage, parskip, % item,
                     labelwidth,labelsep,labelindent,label,ref,topsep,parsep,includegraphics, itemize, description, %
@@ -1028,7 +1028,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \newpage
 %
-% \subsection{Description}
+% \subsection{Description and usage}
 %
 % The \mypkg*{enumext} package defines enumerated environments using the
 % \myenv{list} environment provided by \hologo{LaTeX}, but
@@ -1044,14 +1044,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 % is intended to work without hindering either of them.
 % \end{important}
 %
-% \subsection{Installation and usage}
-%
 % This package can be used with |xelatex|, |lualatex|, |pdflatex| and
 % the classical |latex>dvips>ps2pdf| and is present in \hologo{TeX} Live and \hologo{MiKTeX},
 % use the package manager to install. For manual installation, download
 % \href{http://mirrors.ctan.org/macros/latex/contrib/enumext.zip}{enumext.zip}
 % and unzip it, run \lstinline[language=enumext-doc,basicstyle=\ttfamily]+lualatex enumext.dtx+
-% and move all files to appropriate locations, then run "mktexlsr". To produce the documentation run
+% and move all files to appropriate locations, then run |mktexlsr|. To produce the documentation run
 % \lstinline[language=enumext-doc,basicstyle=\ttfamily]+lualatex enumext.dtx+
 % two times.
 %
@@ -1079,44 +1077,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \iffalse
 %</example>
 % \fi
-%
-% \subsection{User interface}
-% \label{sec:interface}
-%
-% The user interface consists in \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans}, \myenv*{keyans*} and
-% \myenv*{keyanspic} environments, \ics*{anskey}, \ics*{item*} and
-% \ics*{anspic*} commands to \mymeta{stored content}, \ics*{getkeyans}
-% command to get the individual \mymeta{stored content}, \ics*{printkeyans}
-% to print all \mymeta{stored content}, \ics*{miniright} for \myenv{minipage}
-% and \ics*{setenumext} to config all \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
-% options.
-%
-% \subsection{Internal counters}
-%
-% The package \mypkg*{enumext} uses internally the \icounter{enumXi},
-% \icounter{enumXii}, \icounter{enumXiii}, \icounter{enumXiv} counters
-% for the four nesting levels of the \myenv*{enumext} environment, the
-% \icounter{enumXv} counter for the \myenv*{keyans} environment, the
-% \icounter{enumXvi} counter for the \myenv*{keyanspic} environment,
-% the counter \icounter{enumXvii} for \myenv*{enumext*} environment and the counter
-% \icounter{enumXviii} for \myenv*{keyans*} environment.
-%
-% \begin{important}*
-% If any package defines these counters or they are user-defined
-% in the document, the package will return a missing error and abort the
-% load.
-% \end{important}
-%
-% \subsection{The \cs[no-index]{label} and \cs[no-index]{ref} system}
-%
-% This package provides a user interface like the
-% \mypkg{enumitem}\cite{enumitem} package to customize the references
-% which is activated by the \mykey{ref} key (\S\ref{subsec:label-and-ref}), the standard \hologo{LaTeX}
-% \ics{label} and \ics{ref} commands work as usual.
-%
-% It also provides an \emph{\enquote{internal reference}} system for the
-% \emph{\enquote{stored content}} by means of the key \mykey{store-ref}
-% (\S\ref{subsec:label-ref}) when the key \mykey{save-ans}(\S\ref{subsec:storage-keys}) is active.
 %
 % \subsection{The concept of left margin}
 %
@@ -1200,7 +1160,35 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \label{fig:three}
 % \end{figure}
 %
-% \subsection{Support for \env{multicols}}
+% \subsection{User interface}
+% \label{sec:interface}
+%
+% The user interface consists in \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans}, \myenv*{keyans*} and
+% \myenv*{keyanspic} environments, \ics*{anskey}, \ics*{item*} and
+% \ics*{anspic*} commands to \mymeta{stored content}, \ics*{getkeyans}
+% command to get the individual \mymeta{stored content}, \ics*{printkeyans}
+% to print all \mymeta{stored content}, \ics*{miniright} for \myenv{minipage}
+% and \ics*{setenumext} to config all \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
+% options.
+%
+% \subsubsection{Internal counters}
+%
+% The package \mypkg*{enumext} uses internally the \icounter{enumXi},
+% \icounter{enumXii}, \icounter{enumXiii}, \icounter{enumXiv} counters
+% for the four nesting levels of the \myenv*{enumext} environment, the
+% \icounter{enumXv} counter for the \myenv*{keyans} environment, the
+% \icounter{enumXvi} counter for the \myenv*{keyanspic} environment,
+% the counter \icounter{enumXvii} for \myenv*{enumext*} environment and the counter
+% \icounter{enumXviii} for \myenv*{keyans*} environment.
+%
+% \begin{important}*
+% If any package defines these counters or they are user-defined
+% in the document, the package will return a missing error and abort the
+% load.
+% \end{important}
+%
+%
+% \subsubsection{Support for \pkg{multicol}}
 %
 % The package provides direct support for using the \mypkg{multicol}\cite{multicol}
 % package. This allows to obtain directly a two-column output as shown
@@ -1252,7 +1240,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % use the \mykey{columns} key.
 % \end{important}
 %
-% \subsection{Support for \env{minipage}}
+% \subsubsection{Support for \env{minipage}}
 %
 % The package provides direct support for \myenv{minipage}
 % environment, this allows you to obtain an output like the
@@ -1296,8 +1284,49 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \myenv{minipage} environment to the \emph{\enquote{right}} side one must use the command
 % \ics*{miniright} (see~\S\ref{key:mini}).
 %
-% \subsection{Support for \pkg{hyperref} and \cs[no-index]{footnote}}
+% \subsubsection{The \cs[no-index]{label} and \cs[no-index]{ref} system}
 %
+% This package provides a user interface like the
+% \mypkg{enumitem}\cite{enumitem} package to customize the references
+% which is activated by the \mykey{ref} key (\S\ref{subsec:label-and-ref}), the standard \hologo{LaTeX}
+% \ics{label} and \ics{ref} commands work as usual.
+% It also provides an \emph{\enquote{internal reference}} system for the
+% \emph{\enquote{stored content}} by means of the key \mykey{store-ref}
+% (\S\ref{subsec:label-ref}) when the key \mykey{save-ans}(\S\ref{subsec:storage-keys}) is active.
+%
+% \begin{important}*
+% The implementation of  \ics{label} and \ics{ref} together with the
+% \mykey{store-ref} key are compatible with the \mypkg{hyperref}\cite{hyperref}
+% package.
+% \end{important}
+%
+% \subsubsection{Support for \cs[no-index]{footnote}}
+%
+% This package provides an internal implementation for the |\footnote|
+% command which is compatible with the \mypkg{hyperref} package, but, it
+% will not produce the expected links, and when using the
+% \mykey{mini-env} key or the starred environments \myenv*{enumext*} and
+% \myenv*{keyans*}  the output will look like the classic way they are
+% displayed in the \myenv{minipage} environment.
+%
+% The best way to solve this is to use Jean-François Burnol
+% \mypkg{footnotehyper}\cite{footnotehyper} package, it will support
+% keeping the links if \mypkg{hyperref} is loaded with the
+% |hyperfootnotes=true| option (default) and will show the output numbered at
+% the bottom of the page (as opposed to how it is displayed in the
+% \myenv{minipage} environment). The way to load it is as follows:
+%
+% \iffalse
+%<*example>
+% \fi
+\begin{examplecode}[frame=single]
+\usepackage{footnotehyper}
+\makesavenoteenv{enumext}
+\makesavenoteenv{enumext*}
+\end{examplecode}
+% \iffalse
+%</example>
+% \fi
 %
 % \section{The environment \texttt{enumext}}
 % \label{sec:envenumext}
@@ -3082,7 +3111,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % set \mykey{label}|={}| or \mykey{label}|=|\mymarg[type=tt]{some} and
 % play with the |list-indent|, |list-offset|, |font| and |wrap-label| keys.
 %
-% \subsection{Fake itemize environment}
+% \subsection*{Fake \texttt{itemize} environment}
 %
 % Here we set the \mykey{label} key using the default settings in
 % \hologo{LaTeX} for the four levels |\textbullet|, |\textendash|, |\textasteriskcentered|
@@ -3123,7 +3152,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{enumext}
 % \end{minipage}
 %
-% \subsection{Fake description environment}
+% \subsection*{Fake \texttt{description} environment}
 %
 % Here we set \mykey{label}|={}| and |list-indent=2.5em,font=\bfseries|.
 %
@@ -3263,7 +3292,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Curabitur dictum gravida mauris.
 % \end{enumext}
 %
-% \section{Final notes}
+% \section*{Final notes}
 %
 % The original implementation (if you can call it that) of the ideas that
 % led to the creation of \mypkg*{enumext} were some macros using the \mypkg{enumerate}\cite{enumerate}
@@ -3329,11 +3358,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \bibitem{multicol} \textsc{Mittelbach, Frank}. \enquote{An
 % environment for \textsf{multicolumn} output}. Available from
-% \textsc{ctan}, \url{https://www.ctan.org/pkg/multicol}, 2023.
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/multicol}, 2024.
 %
 % \bibitem{enumerate} The \hologo{LaTeX} Project. \enquote{\textsf{enumerate} – Enumerate
 % with redefinable labels}. Available from
-% \textsc{ctan}, \url{https://www.ctan.org/pkg/enumerate}, 2023.
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/enumerate}, 2024.
 %
 % \bibitem{enumitem} \textsc{Bezos, Javier}. \enquote{Customizing lists
 % with the \textsf{enumitem} package}. Available from
@@ -3341,23 +3370,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \bibitem{latexref} \textsc{Berry, Karl}. \enquote{\hologo{LaTeX2e}: An
 % Unofficial Reference Manual}. Available from \textsc{ctan},
-% \url{https://ctan.org/pkg/latex2e-help-texinfo}, 2023.
+% \url{https://ctan.org/pkg/latex2e-help-texinfo}, 2024.
 %
 % \bibitem{hyperref} The \hologo{LaTeX} Project. \enquote{Extensive support
 % for hypertext in \hologo{LaTeX}}. Available from
-% \textsc{ctan}, \url{https://www.ctan.org/pkg/hyperref}, 2023.
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/hyperref}, 2024.
+%
+% \bibitem{footnotehyper} \textsc{Burnol, Jean-François}. \enquote{The \textsf{footnotehyper}
+% package}. Available from
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/footnotehyper}, 2021.
 %
 % \bibitem{expl3} The \hologo{LaTeX} Project. \enquote{The \textsf{expl3}
 % package}. Available from
-% \textsc{ctan}, \url{https://www.ctan.org/pkg/l3kernel}, 2023.
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/l3kernel}, 2024.
 %
 % \bibitem{inter3} The \hologo{LaTeX} Project. \enquote{The \hologo{LaTeX}3
 % Interfaces}. Available from
-% \textsc{ctan}, \url{https://www.ctan.org/pkg/l3kernel}, 2023.
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/l3kernel}, 2024.
 %
 % \bibitem{xparse} The \hologo{LaTeX} Project. \enquote{The \textsf{xparse}
 % package}. Available from
-% \textsc{ctan}, \url{https://www.ctan.org/pkg/xparse}, 2023.
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/xparse}, 2024.
 %
 % \bibitem{luavisual} \textsc{Gundlach, Patrick}. \enquote{The \textsf{lua-visual-debug}
 % package}. Available from

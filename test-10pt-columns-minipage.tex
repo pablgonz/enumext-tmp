@@ -9,7 +9,9 @@
 \setlength{\columnseprule}{0.5pt}
 \usepackage{lua-visual-debug}
 \usepackage{hyperref}
-\usepackage{postnotes}
+%\usepackage{footnotehyper}
+%\makesavenoteenv{enumext}
+%\makesavenoteenv{enumext*}
 \begin{document}
 \section{Test 0: \texttt{mini-env, columns=2, topsep=default} HORIZONTAL}
 
@@ -30,7 +32,7 @@ Before
 
 \item Using [columns=2,mini-env] here DOS
   \begin{enumext}[columns=2,mini-env={0.4\linewidth},nosep,after={\footnotetext[3]{Some text}}]%,
-    \item  P \item Q \item M\label{X} \item R\postnote{ endnotemark[2] } \item S\footnotemark[3]%\footnote{text}
+    \item  P \footnote{HOLA}\item Q \item M\label{X} \item R \item S\footnotemark[3]%\footnote{text}
     \miniright
     (a) P here
   \end{enumext}
@@ -41,9 +43,9 @@ Before
   \end{enumext}
 
 \end{enumext}
-After  and \ref{X} \printpostnotes
+After  and \ref{X}
 
-%\end{document}
+\end{document}
 
 %\end{document}
 \section{Test 1: \texttt{mini-env, columns=2, topsep=default} HORIZONTAL}
