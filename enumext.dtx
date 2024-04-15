@@ -624,7 +624,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     {.8}{{\textcolor{MediumOrchid}{.8}}}{2}
                     {.9}{{\textcolor{MediumOrchid}{.9}}}{2}
                     {=}{{\textcolor{gray}{=}}}{1},%
-}[keywords,tex,comments,strings]% end languaje
+}[keywords,tex,comments,strings]% end language
 
 % \begin{examplecode}[key=val]...\end{examplecode}
 \lstnewenvironment{examplecode}[1][]{%
@@ -1773,7 +1773,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{list-indent}{rigid length}{labelwidth + labelsep}
-% Sets the \emph{identation} of the whole environment under the box defined by
+% Sets the \emph{indentation} of the whole environment under the box defined by
 % \mykey{labelwidth} and \mykey{labelsep} keys. Internally sets the value of
 % |\leftmargin| and |\itemindent| for the current level.
 %
@@ -3510,9 +3510,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % Then check if the \mypkg{multicol} package is loaded, if not we load it.
 %    \begin{macrocode}
-\IfPackageLoadedTF { multicol } { }
+\IfPackageLoadedTF {multicol}
   {
-    \RequirePackage{ multicol }[2023-03-30]
+    %%%\msg_info:nnn { enumext } { package-load } { multicol }
+  }
+  {
+    \RequirePackage{multicol}[2023-03-30]
   }
 %    \end{macrocode}
 %
@@ -3520,7 +3523,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-04-03}
+  {2024-04-12}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -3560,7 +3563,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \l_@@_counter_v_tl,\l_@@_counter_vi_tl,
 %                       \l_@@_counter_vii_tl,\l_@@_counter_viii_tl}
 %
-%    Variabes to store the \emph{\enquote{name of the counters}}
+%    Variables to store the \emph{\enquote{name of the counters}}
 %    \icounter{enumXi}, \icounter{enumXii}, \icounter{enumXiii} and
 %    \icounter{enumXiv} for \myenv*{enumext}  environment,
 %    \icounter{enumXv} for \myenv*{keyans} environment and
@@ -4191,7 +4194,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_hyperref:
   {
-    \IfPackageLoadedTF { hyperref }
+    \IfPackageLoadedTF {hyperref}
       {
         \bool_set_true:N \l_@@_hyperref_bool
         \IfHyperBoolean{hyperfootnotes}
@@ -4214,7 +4217,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
    \bool_if:NT \l_@@_footnotes_key_bool
      {
-       \IfPackageLoadedTF { footnotehyper }
+       \IfPackageLoadedTF {footnotehyper}
          {
            \typeout{OK ~ hyperref ~ and ~ footnotehyper}
          }
@@ -4382,7 +4385,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_label_style:Nnn, \@@_label_style:cvn}
 %     The function \cs{@@_label_style:Nnn} is used by the \mykey{label}
-%     key to creates the variables containing the \mymeta{label syle}
+%     key to creates the variables containing the \mymeta{label style}
 %     and will allow to use \ilabel{arabic*}, \ilabel{Alph*}, \ilabel{alph*},
 %     \ilabel{Roman*} and \ilabel{roman*} as arguments.
 %
@@ -4391,7 +4394,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %     looking for \ilabel{roman*} and replacing that by \ics{roman}\mymarg[type=tt]{counter},
 %     and doing the same for the \cs{g_@@_widest_label_tl} to keep both in sync.
 % \iffalse
-%% Function to suport |*| in |label| key.
+%% Function to support |*| in |label| key.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_label_style:Nnn #1 #2 #3
@@ -4462,7 +4465,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \emph{\enquote{starred}} and \emph{\enquote{non starred}} environments.
 %
 % \iffalse
-%% Add |aling| key for |enumext| and |keyans|.
+%% Add |align| key for |enumext| and |keyans|.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:nn #1 #2
@@ -4498,7 +4501,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Definition of \mykey{align} key for \myenv*{enumext*} and
 %    \myenv*{keyans*} environments.
 % \iffalse
-%% Add |aling| key for enummext* and keyans*.
+%% Add |align| key for enummext* and keyans*.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:nn #1 #2
@@ -5439,7 +5442,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \ics{parsep} from the previous level. This is necessary since
 %    \ics{parsep} from the previous level affects the \emph{vertical spaces}.
 % \iffalse
-%% Detect |\parsep| from previus level and adjust |\l_@@_multicols_above_X_skip| for |multicols| in |enumext|.
+%% Detect |\parsep| from previous level and adjust |\l_@@_multicols_above_X_skip| for |multicols| in |enumext|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_add_pre_parsep:
@@ -5760,7 +5763,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \ics{parsep} from the previous level affects the \emph{vertical spaces}
 %    and this is noticeable when using the \mykey{nosep} or \mykey{noitemsep} keys.
 % \iffalse
-%% Detect |\parsep| from previus level and adjust |\l_@@_minipage_after_skip| for |mini-env| in |enumext|.
+%% Detect |\parsep| from previous level and adjust |\l_@@_minipage_after_skip| for |mini-env| in |enumext|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_zero_parsep:
@@ -5799,7 +5802,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   play and this affects the \emph{vertical spacing}.
 %
 % \iffalse
-%% Aplly \addvspace in horizontal and vertical mode for enumext environment.
+%% Apply \addvspace in horizontal and vertical mode for enumext environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_mini_addvspace:
@@ -5909,7 +5912,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    of this function is the same as the one used in \myenv*{enumext}.
 %
 % \iffalse
-%% Aplly \addvspace in horizontal and vertical mode for |keyans| environment.
+%% Apply \addvspace in horizontal and vertical mode for |keyans| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_mini_addvspace:
@@ -6015,7 +6018,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mymeta{horizontal mode} or \mymeta{vertical mode}, since |\partopsep|
 %   is equal to \mydim{0pt} in both environments.
 % \iffalse
-%% Aplly \addvspace above minipage for |enumext*| and |keyans*| environments.
+%% Apply \addvspace above minipage for |enumext*| and |keyans*| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_mini_addvspace_vii:
@@ -8015,7 +8018,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %          \textcolor{optcolor}{\texttt{list-indent}}
 %        \end{tabular}} (9.5,5.35);
 %   \end{tikzpicture}
-%   \caption{Representation of standart horizontal lengths in \myenv{list} environment.}
+%   \caption{Representation of standard horizontal lengths in \myenv{list} environment.}
 %   \label{fig:eight}
 % \end{figure}
 %
@@ -8704,7 +8707,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \int_incr:N \l_@@_keyans_level_int
     \bool_set_true:N \l_@@_keyans_env_bool
-    % set false for interfering with enumext nested in keyans (yes, its posible and crayze)
+    % Set false for interfering with enumext nested in keyans (yes, its possible and crayze)
     \bool_set_false:N \l_@@_store_active_bool
     \int_compare:nNnT { \l_@@_keyans_level_int } > { 1 }
       {
@@ -8791,7 +8794,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv{multicols} environment according to the value passed by the
 %    \mykey{columns} key.
 % \iffalse
-%% Actvate multicols in |keyans|.
+%% Activate multicols in |keyans|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_multicols_start:
@@ -8916,7 +8919,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %     % space above
 %     \draw[color=white] (7.0,6.10) rectangle (17.5,6.5) node[pos=.5,text=black]%
 %       { \textcolor{blue}{\texttt{space above keyanspic}} };
-%     % space betwen
+%     % space between
 %     \draw[color=white] (7.0,4.5) rectangle (17.5,4.9) node[pos=.5,text=black]%
 %       { \textcolor{blue}{\texttt{\textbackslash{}parsep [+\textbackslash{}itemsep]}} };
 %     % space below
@@ -9576,7 +9579,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_after_list_vii:}
-%    The function \cs{@@_after_list:} firts call the function \cs{@@_stop_mini_vii:},
+%    The function \cs{@@_after_list:} first call the function \cs{@@_stop_mini_vii:},
 %    then apply the \mymarg[type=tt]{code} handled by the \mykey{after} key
 %    together with the \emph{vertical space} handled by the \mykey{below} key if
 %    they are present.
@@ -9716,7 +9719,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % version \ics*{item}\myoarg[type=tt]{custom} by means of the function
 % \cs{@@_start_item_vii:w}, otherwise we will set the value of the
 % variable \cs{l_@@_wrap_label_vii_bool} handled by the
-% \mykey{wrap-label} key to true and set the swith |\if@noitemarg| to
+% \mykey{wrap-label} key to true and set the switch |\if@noitemarg| to
 % true to execute the enumerated version of \ics*{item} by means of the
 % function \cs{@@_start_item_vii:w} |[| \myvarenv{l__@@_label_vii_tl} |]|.
 %
@@ -9979,7 +9982,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\getkeyans}
 %    The \ics*{getkeyans} command takes a mandatory argument of the
 %    form \mymarg[type=tt]{store name \textcolor{red}{:} position}.
-%    Retrive a \emph{\enquote{single}} content stored by \ics*{anskey}, \ics*{anspic*}
+%    Retrieve a \emph{\enquote{single}} content stored by \ics*{anskey}, \ics*{anspic*}
 %    and \ics*{item*} from \mymeta{prop list} defined by \mykey{save-ans} key.
 % \iffalse
 %% Define |\getkeyans|, need \exp_args:Ne \tl_to_str:e
@@ -10237,6 +10240,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \iffalse
 %% Messages.
 % \fi
+% Message used by package-load for \mypkg{multicol} and package.
+%    \begin{macrocode}
+\msg_new:nnn { enumext } { package-load }
+  {
+    The ~ '#1' ~ package ~ is ~ already ~ loaded.
+  }
+%    \end{macrocode}
+%
 % Message used in the creation of counters by \mypkg*{enumext} package.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { counters }

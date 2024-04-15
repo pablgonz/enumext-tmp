@@ -6,29 +6,33 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%% 
+%%
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%% 
+%%
 %%  https://www.latex-project.org/lppl.txt
-%% 
+%%
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%% 
+%%
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%% 
+%%
 %% This work consists of the files enumext.dtx and enumext.sty.
-%% 
+%%
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
-\IfPackageLoadedTF { multicol } { }
+\IfPackageLoadedTF {multicol}
   {
-    \RequirePackage{ multicol }[2023-03-30]
+    \msg_show:nnn { enumext } { package-load } { multicol }
+    \typeout{ZZZ}
+  }
+  {
+    \RequirePackage{multicol}[2023-03-30]
   }
 \ProvidesExplPackage
   {enumext}
-  {2024-04-03}
+  {2024-04-12}
   {1.0}
   {Enumerate exercise sheets}
 %% Variable for levels and nesting off all environments.
@@ -265,7 +269,7 @@
 \hook_gset_rule:nnnn { begindocument } { enumext } { after } { hyperref }
 \cs_new_protected:Nn \__enumext_after_hyperref:
   {
-    \IfPackageLoadedTF { hyperref }
+    \IfPackageLoadedTF {hyperref}
       {
         \bool_set_true:N \l__enumext_hyperref_bool
         \IfHyperBoolean{hyperfootnotes}
@@ -279,7 +283,7 @@
 %% Detection off |footnotehyper| package.
    \bool_if:NT \l__enumext_footnotes_key_bool
      {
-       \IfPackageLoadedTF { footnotehyper }
+       \IfPackageLoadedTF {footnotehyper}
          {
            \typeout{OK ~ hyperref ~ and ~ footnotehyper}
          }
@@ -3476,6 +3480,10 @@
 \cs_new_protected:Npn \__enumext_set_error:nn #1#2
   { \msg_error:nnn { enumext } { invalid-key } {#1} {#2} }
 %% Messages.
+\msg_new:nnn { enumext } { package-load }
+  {
+    The ~ '#1' ~ package ~ is ~ already ~ loaded.
+  }
 \msg_new:nnn { enumext } { counters }
   {
     The ~ counter ~ '#1' ~ is ~ already ~ defined ~ by ~ some ~ \\
@@ -3620,6 +3628,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%% 
+%%
 %%
 %% End of file `enumext.sty'.

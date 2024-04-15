@@ -3,10 +3,11 @@
 % arara: clean: { extensions: [ aux, log, out] }
 \documentclass[12pt]{article}
 %\documentclass[full]{l3doc}
-\usepackage{lipsum}
+\usepackage{lipsum,enumitem}
 \usepackage[hyperfootnotes=false]{hyperref}%,footnotehyper ,,footnotehyper
 % \hypersetup{}
 %\makesavenoteenv{enumext*}
+\usepackage{multicol}%,footnotehyper ,,footnotehyper
 \usepackage{enumext,xcolor,textcomp}
 \usepackage[base]{babel}
 \setlength{\parindent}{20pt}
@@ -27,10 +28,16 @@ ZZZZ
 \begin{enumext*}[topsep=2cm]
 \item   \begin{enumext}[topsep=0pt]
     \item A
-    \item C
-    \item D
+    \item C \begin{enumerate}[nosep,left=0pt] \item Soy un texto quote \item Soy un texto quote \item Soy un texto quote \end{enumerate}
+    \item D \begin{verbatim} ZZ,,,sss \end{verbatim}
  \end{enumext}
 \end{enumext*}
+
+\begin{enumerate}[nosep,left=0pt]
+  \item Soy un texto quote
+    \begin{enumext*}[nosep] \item Soy un texto quote \item Soy un texto quote \item Soy un texto quote \end{enumext*}
+
+  \item Soy un texto quote \end{enumerate}
 
 After
 \end{document}
