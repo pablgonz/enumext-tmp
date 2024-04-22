@@ -3512,7 +3512,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-04-16}
+  {2024-04-22}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4379,7 +4379,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Set default label width using a box width.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_label_width_by_box:Nn #1#2
+\cs_new_protected:Npn \@@_label_width_by_box:Nn #1 #2
   {
     \hbox_set:Nn \l_@@_label_width_by_box {#2}
     \dim_set:Nn #1 { \box_wd:N \l_@@_label_width_by_box }
@@ -6390,7 +6390,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    the integer variable for the \mykey{resume} key will be created (if not exist),
 %    finally the function \cs{@@_check_ans_int:n} will be called
 %    to activate the internal mechanism for checking the answers if the
-%    boolean variable \cs{l_@@_store_active_bool} set by \mykey{check-ans}
+%    boolean variable \cs{l_@@_check_ans_bool} set by \mykey{check-ans}
 %    key are active.
 % \iffalse
 %% Function to activate ALL storing (and check) used by |save-ans| key.
@@ -8110,7 +8110,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% #7: \l__enumext_leftmargin_tmp_X_bool
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_calc_hspace:NNNNNNN #1#2#3#4#5#6#7
+\cs_new_protected:Npn \@@_calc_hspace:NNNNNNN #1 #2 #3 #4 #5 #6 #7
   {
     \dim_compare:nNnT { #1 } < { \c_zero_dim }
       {
@@ -10235,7 +10235,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       { \@@_set_error:nn {#1} { } }
   }
-\cs_new_protected:Npn \@@_set_error:nn #1#2
+\cs_new_protected:Npn \@@_set_error:nn #1 #2
   { \msg_error:nnn { enumext } { invalid-key } {#1} {#2} }
 %    \end{macrocode}
 % \end{macro}
