@@ -3508,24 +3508,28 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 %    \end{macrocode}
 %
-% Then check if the \mypkg{multicol} package is loaded, if not we load it.
-%    \begin{macrocode}
-\IfPackageLoadedTF {multicol}
-  {
-    %%%\msg_info:nnn { enumext } { package-load } { multicol }
-  }
-  {
-    \RequirePackage{multicol}[2023-03-30]
-  }
-%    \end{macrocode}
-%
 % Finally we declare the \mypkg*{enumext} package.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-04-12}
+  {2024-04-16}
   {1.0}
   {Enumerate exercise sheets}
+%    \end{macrocode}
+%
+% Then check if the \mypkg{multicol} package is loaded, if not we load it.
+%    \begin{macrocode}
+\hook_gput_code:nnn {begindocument} {enumext}
+  {
+    \IfPackageLoadedTF { multicol }
+      {
+        \msg_info:nnn { enumext } { package-load } { multicol }
+      }
+      {
+        \msg_info:nnn { enumext } { package-not-load } { multicol }
+        \RequirePackage{multicol}[2023-03-30]
+      }
+  }
 %    \end{macrocode}
 %
 % \subsection{Definition of variables}
@@ -4194,8 +4198,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_hyperref:
   {
-    \IfPackageLoadedTF {hyperref}
+    \IfPackageLoadedTF { hyperref }
       {
+        \msg_info:nnn { enumext } { package-load } { hyperref }
         \bool_set_true:N \l_@@_hyperref_bool
         \IfHyperBoolean{hyperfootnotes}
           {
@@ -4217,9 +4222,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
    \bool_if:NT \l_@@_footnotes_key_bool
      {
-       \IfPackageLoadedTF {footnotehyper}
+       \IfPackageLoadedTF { footnotehyper }
          {
-           \typeout{OK ~ hyperref ~ and ~ footnotehyper}
+           \msg_info:nnn { enumext } { package-load } { footnotehyper }
          }
          {
            \typeout{No ~ footnotehyper ~ load}
@@ -10240,11 +10245,25 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \iffalse
 %% Messages.
 % \fi
-% Message used by package-load for \mypkg{multicol} and package.
+% Message used by package-load for \mypkg{multicol} and \mypkg{hyperref} packages.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { package-load }
   {
     The ~ '#1' ~ package ~ is ~ already ~ loaded.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\msg_new:nnn { enumext } { package-not-load }
+  {
+    The ~ '#1' ~ package ~ will ~ be ~ loaded ~ as ~ a ~ dependency.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\msg_new:nnn { enumext } { package-load-foot }
+  {
+    The ~ '#1' ~ package ~ is ~ loaded ~ with ~ the ~ option ~ '#2'.
   }
 %    \end{macrocode}
 %

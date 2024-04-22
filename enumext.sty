@@ -6,35 +6,38 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%%
+%% 
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%%
+%% 
 %%  https://www.latex-project.org/lppl.txt
-%%
+%% 
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%%
+%% 
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%%
+%% 
 %% This work consists of the files enumext.dtx and enumext.sty.
-%%
+%% 
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
-\IfPackageLoadedTF {multicol}
-  {
-    \msg_show:nnn { enumext } { package-load } { multicol }
-    \typeout{ZZZ}
-  }
-  {
-    \RequirePackage{multicol}[2023-03-30]
-  }
 \ProvidesExplPackage
   {enumext}
-  {2024-04-12}
+  {2024-04-16}
   {1.0}
   {Enumerate exercise sheets}
+\hook_gput_code:nnn {begindocument} {enumext}
+  {
+    \IfPackageLoadedTF { multicol }
+      {
+        \msg_info:nnn { enumext } { package-load } { multicol }
+      }
+      {
+        \msg_info:nnn { enumext } { package-not-load } { multicol }
+        \RequirePackage{multicol}[2023-03-30]
+      }
+  }
 %% Variable for levels and nesting off all environments.
 \int_new:N  \l__enumext_level_int
 \int_new:N  \l__enumext_level_h_int
@@ -269,8 +272,9 @@
 \hook_gset_rule:nnnn { begindocument } { enumext } { after } { hyperref }
 \cs_new_protected:Nn \__enumext_after_hyperref:
   {
-    \IfPackageLoadedTF {hyperref}
+    \IfPackageLoadedTF { hyperref }
       {
+        \msg_info:nnn { enumext } { package-load } { hyperref }
         \bool_set_true:N \l__enumext_hyperref_bool
         \IfHyperBoolean{hyperfootnotes}
           {
@@ -283,9 +287,9 @@
 %% Detection off |footnotehyper| package.
    \bool_if:NT \l__enumext_footnotes_key_bool
      {
-       \IfPackageLoadedTF {footnotehyper}
+       \IfPackageLoadedTF { footnotehyper }
          {
-           \typeout{OK ~ hyperref ~ and ~ footnotehyper}
+           \msg_info:nnn { enumext } { package-load } { footnotehyper }
          }
          {
            \typeout{No ~ footnotehyper ~ load}
@@ -355,7 +359,7 @@
     \dim_set:Nn #1 { \box_wd:N \l__enumext_label_width_by_box }
   }
 \cs_generate_variant:Nn \__enumext_label_width_by_box:Nn { cv }
-%% Function to suport |*| in |label| key.
+%% Function to support |*| in |label| key.
 \cs_new_protected:Npn \__enumext_label_style:Nnn #1 #2 #3
   {
     \tl_clear_new:N #1
@@ -395,7 +399,7 @@
       }
   }
 \clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
-%% Add |aling| key for |enumext| and |keyans|.
+%% Add |align| key for |enumext| and |keyans|.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
@@ -425,7 +429,7 @@
     {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {keyans}{v}
   }
   { \__enumext_tmp:nn #1 }
-%% Add |aling| key for enummext* and keyans*.
+%% Add |align| key for enummext* and keyans*.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
@@ -892,7 +896,7 @@
       }
     \__enumext_add_pre_parsep:
    }
-%% Detect |\parsep| from previus level and adjust |\l_@@_multicols_above_X_skip| for |multicols| in |enumext|.
+%% Detect |\parsep| from previous level and adjust |\l_@@_multicols_above_X_skip| for |multicols| in |enumext|.
 \cs_new_protected:Nn \__enumext_add_pre_parsep:
   {
     \int_case:nn { \l__enumext_level_int }
@@ -1048,7 +1052,7 @@
           }
       }
   }
-%% Detect |\parsep| from previus level and adjust |\l_@@_minipage_after_skip| for |mini-env| in |enumext|.
+%% Detect |\parsep| from previous level and adjust |\l_@@_minipage_after_skip| for |mini-env| in |enumext|.
 \cs_new_protected:Nn \__enumext_zero_parsep:
   {
     \int_case:nn { \l__enumext_level_int }
@@ -1073,7 +1077,7 @@
              }
       }
   }
-%% Aplly \addvspace in horizontal and vertical mode for enumext environment.
+%% Apply \addvspace in horizontal and vertical mode for enumext environment.
 \cs_new_protected:Nn \__enumext_mini_addvspace:
   {
     \__enumext_mini_set_vskip:
@@ -1154,7 +1158,7 @@
           }
       }
   }
-%% Aplly \addvspace in horizontal and vertical mode for |keyans| environment.
+%% Apply \addvspace in horizontal and vertical mode for |keyans| environment.
 \cs_new_protected:Nn \__enumext_keyans_mini_addvspace:
   {
     \__enumext_keyans_mini_set_vskip:
@@ -1230,7 +1234,7 @@
           }
        }
   }
-%% Aplly \addvspace above minipage for |enumext*| and |keyans*| environments.
+%% Apply \addvspace above minipage for |enumext*| and |keyans*| environments.
 \cs_new_protected:Nn \__enumext_mini_addvspace_vii:
   {
     \__enumext_mini_set_vskip_vii:
@@ -2665,7 +2669,7 @@
       }
     \int_incr:N \l__enumext_keyans_level_int
     \bool_set_true:N \l__enumext_keyans_env_bool
-    % set false for interfering with enumext nested in keyans (yes, its posible and crayze)
+    % Set false for interfering with enumext nested in keyans (yes, its possible and crayze)
     \bool_set_false:N \l__enumext_store_active_bool
     \int_compare:nNnT { \l__enumext_keyans_level_int } > { 1 }
       {
@@ -2700,7 +2704,7 @@
       }
     \__enumext_keyans_multicols_start:
   }
-%% Actvate multicols in |keyans|.
+%% Activate multicols in |keyans|.
 \cs_new_protected:Nn \__enumext_keyans_multicols_start:
   {
     \int_compare:nNnT { \l__enumext_columns_v_int } > { 1 }
@@ -3484,6 +3488,14 @@
   {
     The ~ '#1' ~ package ~ is ~ already ~ loaded.
   }
+\msg_new:nnn { enumext } { package-not-load }
+  {
+    The ~ '#1' ~ package ~ will ~ be ~ loaded ~ as ~ a ~ dependency.
+  }
+\msg_new:nnn { enumext } { package-load-foot }
+  {
+    The ~ '#1' ~ package ~ is ~ loaded ~ with ~ the ~ option ~ '#2'.
+  }
 \msg_new:nnn { enumext } { counters }
   {
     The ~ counter ~ '#1' ~ is ~ already ~ defined ~ by ~ some ~ \\
@@ -3628,6 +3640,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%%
+%% 
 %%
 %% End of file `enumext.sty'.
