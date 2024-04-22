@@ -8415,7 +8415,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level:
   {
-    \bool_lazy_and:nnT { \l_@@_store_active_bool } { \bool_not_p:n { \l_@@_keyans_env_bool } }
+    \bool_lazy_and:nnT
+      { \l_@@_store_active_bool }
+      { \bool_not_p:n { \l_@@_keyans_env_bool } }
       {
         \int_compare:nNnT { \l_@@_level_h_int } = { 1 }
           {
@@ -8579,7 +8581,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    by the function \cs{@@_after_env:n} to display the result of the
 %    internal check answer mechanism in the terminal.
 %    \begin{macrocode}
-    \bool_lazy_and:nnT { \l_@@_check_ans_bool }{ \bool_not_p:n { \g_@@_starred_bool } }
+    \bool_lazy_and:nnT
+      { \l_@@_check_ans_bool }
+      { \bool_not_p:n { \g_@@_starred_bool } }
       {
         \bool_gset_true:N \g_@@_check_ans_show_bool
         \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
