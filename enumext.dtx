@@ -3457,6 +3457,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % feature requests should be reported through the issue
 % tracker: \textcolor{gray}{\scriptsize\faIcon[regular]{github}} \url{https://github.com/pablgonz/enumext/issues}.
 %
+% \begin{important}*
+% The documentation presented here is far from professional, it contains
+% a lot of obvious information that to the eye of a \hologo{TeX}pert are
+% superfluous, but, after so many years developing this project is the
+% only way to remember what does what.
+% \end{important}
+%
 % \subsection{General conventions}
 %
 % Variables containing \lstinline+i+, \lstinline+ii+, \lstinline+iii+ and
@@ -3508,7 +3515,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 %    \end{macrocode}
 %
-% Finally we declare the \mypkg*{enumext} package.
+% Now declare the \mypkg*{enumext} package.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
@@ -3517,7 +3524,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {Enumerate exercise sheets}
 %    \end{macrocode}
 %
-% Then check if the \mypkg{multicol} package is loaded, if not we load it.
+% Finally check if the \mypkg{multicol} package is loaded, if not we load it.
 %    \begin{macrocode}
 \hook_gput_code:nnn {begindocument} {enumext}
   {
@@ -3545,6 +3552,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Integer variables will control the nesting levels of the environments
 %    and boolean variables will be used to determine if they are present
 %    (nested) in each other.
+%    The boolean variables \myvarenv{g__@@_starred_bool} and
+%    \myvarenv{g__@@_standar_bool} will be set to \emph{\enquote{true}} when the
+%    \myenv*{enumext} and \myenv*{enumext*} environments are not nested with
+%    each other.
 % \iffalse
 %% Variable for levels and nesting off all environments.
 % \fi
@@ -6521,7 +6532,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_check_ans_int:n} will create the integer
 %    variables for the internal checking answer mechanism used by the
 %    \mykey{check-ans} key. The integer variables take the form
-%    \myvarenv{g__@@_count_\mymeta{store name}_item_ans_int} and
+%    \myvarenv{g__@@_count_\mymeta[cf=gray]{store name}_item_ans_int} and
 %    \myvarenv{g__@@_count_\mymeta{store name}_item_X_int}
 % \iffalse
 %% Creation of integer variables for the internal check-answer mechanism.
@@ -8287,9 +8298,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{enumext}
 %    We create the \myenv*{enumext} environment based on \myenv{list}
-%    environment by levels and the internal \myvarenv*{__@@_mini_env*} environment.
+%    environment by levels.
 % \iffalse
-%% Definition of |enumext| and |@@_mini_env*| environments.
+%% Definition of |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \NewDocumentEnvironment{enumext}{ O{} }
@@ -8316,7 +8327,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_safe_exec:}
 %    First check the maximum nesting level for the \myenv*{enumext}
-%    environment.
+%    environment and set the state of the booleans vars
+%    \myvarenv{l__@@_standar_bool} and \myvarenv{g__@@_standar_bool} to
+%    \emph{\enquote{true}}, the latter only if the environment is NOT nested
+%    in the \myenv*{enumext*} environment.
 % \iffalse
 %% Increment deep-level for |enumext|.
 % \fi
@@ -8343,7 +8357,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 %    by levels in \myenv*{enumext}. If the variable
 %    \cs{l_@@_store_active_bool} is true it will call the function
-%    \cs{@@_parse_store_keys:n} and reprocess the keys to pass them to the
+%    \cs{@@_parse_store_keys:n} and reprocess the \mymeta{keys} to pass them to the
 %    storage sequence.
 % \iffalse
 %% Parse |key=val| and store keys for \printkeyans.
