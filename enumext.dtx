@@ -1,8 +1,6 @@
 % \iffalse meta-comment
-%! arara: lualatex: { branch: developer, draft: true }
-%! arara: lualatex: { branch: developer }
-% arara: lualatex: { draft: true }
-% arara: lualatex
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out, glo, gls, hd, ind, ilg, idx, toc, atfi ] }
 % arara: clean: { files: [ userdoc.idx, userdoc.ilg, userdoc.ind ] }
 % arara: halt
@@ -6464,25 +6462,39 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % logic:
 %
 % \begin{quote}
-%  If the line starts with an |\item| or |\item*| and does not open a nested environment
-%  it must have a \ics*{anskey}, if the line starts with an |\item| or |\item*| and opens a
-%  \emph{nested environment}, each |\item| or |\item*| in the \emph{nested} environment must have a
-%  \emph{\enquote{once}} \ics*{anskey}.
+%  If the line begins with |\item| or |\item*| and does NOT
+%  \emph{open a nested environment}, each |\item| or |\item*| must contain a
+%  \emph{single} execution of the |\anskey| command, i.e. the counter of the
+%  executions of the |\anskey| command must be equal to the counter
+%  associated with the sum of executions of |\item| and |\item*|.
+%
+%  If the line begins with |\item| or |\item*| and \emph{opens a nested
+%  environment} each |\item| or |\item*| in the nested environment must
+%  have a \emph{single} execution of the |\anskey| command and the counter
+%  associated to the sum of |\item| and |\item*| executions must increment
+%  by \emph{\enquote{one}} to maintain equality.
+%
 % \end{quote}
 %
 % In order for the mechanism for the check-answer to work (not counting
-% \myenv*{keyans} and \myenv*{keyanspic}) we need:
+% \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}) we need:
 %
 % \begin{enumerate}[left=0pt,noitemsep, partopsep=0pt, topsep=5pt]
-%   \item We must keep track of the total number of |\item| and |\item*| that appear within
+%   \item We must keep track of the total number of |\item| and |\item*| (enumerated) that appear within
 %         the environment including the nested levels.
-%   \item We must keep track of the total number of |\item| and |\item*| that appear per
+%   \item We must keep track of the total number of |\item| and |\item*| (enumerated) that appear per
 %         level of nesting.
 %   \item Keeping track of the number of times the environment nests.
 % \end{enumerate}
 %
-% Each |\item| and |\item*| in the environment must be matched with the counter associated
-% with \ics*{anskey} (\myvarenv{g__@@_count_item_ans_int}). We analyze the cases:
+%
+% The integer variable associated to the sum of each |\item| and |\item*|
+% in the environment \myvarenv{g__@@_count_item_all_int} must match the
+% integer variable \myvarenv{g__@@_count_item_ans_int} associated
+% to the execution of the command |\anskey|. We analyze the cases:
+%
+%^^A Each |\item| and |\item*| in the environment must be matched with the counter associated
+%^^A with \ics*{anskey} (\myvarenv{g__@@_count_item_ans_int}).
 %
 % \begin{enumerate}[label=\alph*),left=0pt,noitemsep, partopsep=0pt, topsep=5pt]
 %   \item If the list only has one level the number of |\item + \item*| = \ics*{anskey}
@@ -6533,7 +6545,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    variables for the internal checking answer mechanism used by the
 %    \mykey{check-ans} key. The integer variables take the form
 %    \myvarenv{g__@@_count_\mymeta[cf=gray]{store name}_item_ans_int} and
-%    \myvarenv{g__@@_count_\mymeta{store name}_item_X_int}
+%    \myvarenv{g__@@_count_\mymeta[cf=gray]{store name}_item_X_int}
 % \iffalse
 %% Creation of integer variables for the internal check-answer mechanism.
 % \fi
@@ -6554,10 +6566,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \int_new:c { g_@@_count_#1_vii_int } }
 %    \end{macrocode}
 %
-%    We make \myvarenv{g__@@_count_item_X_int} equal to the integer
-%    variable that contains all the occurrences of |\item| and |\item*| in the different
-%    levels and we will make \cs{g_@@_count_item_ans_int} equal to the
-%    integer variable handled by the \ics*{anskey} command.
+%    We make \myvarenv{g__@@_count_item_all_int} equal to the integer
+%    variables \myvarenv{g__@@_count_\mymeta[cf=gray]{store
+%    name}_item_i_int} or \myvarenv{g__@@_count_\mymeta[cf=gray]{store
+%    name}_item_vii_int} that contains all the occurrences of |\item| and
+%    |\item*| in the different levels and we will make \cs{g_@@_count_item_ans_int}
+%    equal to the integer variable handled by the \ics*{anskey} command.
 %
 %    \begin{macrocode}
     \bool_lazy_all:nTF
@@ -7073,7 +7087,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   command \mymeta{argument} to the \mymeta{prop list}, then checks the
 %   state of the variable \cs{l_@@_store_ref_key_bool} handled by the
 %   \mykey{store-ref} key and will call the function
-%   \cs{l_@@_store_internal_ref:} for the internal \emph{\enquote{label
+%   \cs{@@_store_internal_ref:} for the internal \emph{\enquote{label
 %   and ref}} system. Followed by this if the \mykey{show-ans} or
 %   \mykey{show-pos} keys are active we will show the
 %   \emph{\enquote{wrapped}} \mymeta{argument} passed to the command.
