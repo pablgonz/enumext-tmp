@@ -3517,7 +3517,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-04-28}
+  {2024-04-29}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -3864,14 +3864,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\l_@@_check_ans_bool, \g_@@_check_ans_show_bool, \g_@@_check_ans_show_h_bool,
+% \begin{variable}{\l_@@_store_ans_bool,\l_@@_check_ans_bool,
+%                  \g_@@_check_ans_show_bool, \g_@@_check_ans_show_h_bool,
 %                  \g_@@_check_ans_item_tl, \l_@@_compare_items_ans_int,
 %                  \g_@@_count_item_with_ans_int, \g_@@_count_item_all_int,
 %                  \g_@@_count_level_X_int, \g_@@_count_item_X_int,}
-%    Internal variables used by \emph{\enquote{check answer}} mechanism (\S\ref{int:check-answer}) controlled
-%    by the \mykey{check-ans} and \mykey{no-store} keys.
+%    Internal variables used by \emph{\enquote{check answer}} mechanism
+%    (\S\ref{int:check-answer}) controlled by the \mykey{check-ans} and
+%    \mykey{no-store} keys.
 % \iffalse
-%% Variables used by |check-ans| key.
+%% Variables used by check-answer mechanism, |check-ans| and |no-store| keys.
 % \fi
 %    \begin{macrocode}
 \bool_new:N \l_@@_store_ans_bool
@@ -3972,8 +3974,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \g_@@_item_count_all_X_int, \l_@@_joined_item_X_int,
 %                       \l_@@_joined_item_aux_X_int, \l_@@_tmpa_X_int,
 %                       \l_@@_item_text_X_box, \l_@@_joined_width_X_dim,
-%                       \l_@@_item_width_X_dim, \g_@@_item_symbol_aux_X_tl, \l_@@_align_label_X_str,
-%                       \g_@@_minipage_active_X_bool,
+%                       \l_@@_item_width_X_dim, \g_@@_item_symbol_aux_X_tl,
+%                       \l_@@_align_label_X_str, \g_@@_minipage_active_X_bool,
 %                       \g_@@_miniright_code_X_tl , \g_@@_minipage_center_X_bool,
 %                       \g_@@_minipage_right_X_dim, \g_@@_minipage_right_X_skip,}
 %    Internal variables used by \myenv*{enumext*} and \myenv*{keyans*} environments.
@@ -10394,19 +10396,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_starred_item_viii:w, \@@_starred_item_viii_aux_i:w,
-%               \@@_starred_item_viii_aux_ii:w, \@@_starred_item_viii_aux_iii:w,}
+%               \@@_starred_item_viii_aux_ii:w,}
 %
 % The function \cs{@@_starred_item_viii:w} together with the specified
-% auxiliary functions |aux_i:w|, |aux_ii:w|, and |aux_iii:w| execute \ics*{item*},
-% \ics*{item*} and \ics*{item*}\myoarg[type=tt]{content}.
+% auxiliary functions |aux_i:w| and |aux_ii:w| execute \ics*{item*}
+% and \ics*{item*}\myoarg[type=tt]{content}.
 %
 % \iffalse
-%% Set \item*[sym][sep] for |keyans*|
+%% Set \item*[content] for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_item_viii:w
   {
-    \bool_set_true:N \l_@@_item_starred_viii_bool
+    %%\bool_set_true:N \l_@@_item_starred_viii_bool
     \bool_set_true:N \l_@@_wrap_label_viii_bool
     \peek_meaning:NTF [
       { \@@_starred_item_viii_aux_i:w }
@@ -10415,33 +10417,25 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_starred_item_viii_aux_i:w [#1]
   {
     %\tl_gset:Nn \g_@@_item_symbol_aux_viii_tl {#1}
+    % Aquí debemos capturar el argumento opcional
     \@@_starred_item_viii_aux_ii:w
   }
 \cs_new_protected:Npn \@@_starred_item_viii_aux_ii:w
   {
-    \peek_meaning:NTF [
-      { \@@_starred_item_viii_aux_iii:w }
-      {
-        %%\dim_set_eq:NN
-        %%  \l_@@_item_symbol_sep_viii_dim
-        %%  \l_@@_labelsep_viii_dim
-        \legacy_if_set_true:n { @noitemarg }
-        \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
-      }
-  }
-\cs_new_protected:Npn \@@_starred_item_viii_aux_iii:w [#1]
-  {
-    %%\dim_set:Nn \l_@@_item_symbol_sep_viii_dim {#1}
+    %%\dim_set_eq:NN
+    %%  \l_@@_item_symbol_sep_viii_dim
+    %%  \l_@@_labelsep_viii_dim
     \legacy_if_set_true:n { @noitemarg }
     \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
   }
 %    \end{macrocode}
 % \end{macro}
 %
-%  \subsubsection*{Real definition of \cs{item}}
+% \subsubsection*{Real definition of \cs{item}}
 %
-%  The functions \cs{@@_start_item_viii:w} and \cs{@@_stop_item_viii:} executing the true definition of
-%  \ics*{item} inside the \myenv*{keyans*} environment.
+% The functions \cs{@@_start_item_viii:w} and \cs{@@_stop_item_viii:}
+% executing the true definition of \ics*{item} inside the
+% \myenv*{keyans*} environment.
 %
 % \begin{macro}{\@@_start_item_viii:w}
 %
@@ -10454,7 +10448,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \href{https://tex.stackexchange.com/a/404911}{\textbackslash refstepcounter\{enumi\} twice (or more) creates destination with the same identifier}.
 %
 % \iffalse
-%% Real |\item| definition for |keyans*| \legacy_if_set_true:n { @hyper@item } :D. (doc p170)
+%% Real |\item| definition for |keyans*|, need |\legacy_if_set_true:n { @hyper@item }| :D. (doc p170)
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_start_item_viii:w [#1]
