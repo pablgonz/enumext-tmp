@@ -3508,7 +3508,7 @@
     \int_gincr:N \g__enumext_item_count_all_viii_int
     \__enumext_item_peek_args_viii:
   }
-%% Peek argument for \item()*[][] for |keyans*|
+%% Peek argument for \item(number)*[opt] for |keyans*| environment.
 \cs_new_protected:Nn \__enumext_item_peek_args_viii:
   {
     \peek_meaning:NTF (
@@ -3523,7 +3523,7 @@
       { \__enumext_starred_item_viii:w  }
       { \__enumext_standard_item_viii:w }
   }
-%% Set \item[opt] for |keyans*|
+%% Set standar \item[opt] for |keyans*| environment.
 \cs_new_protected:Npn \__enumext_standard_item_viii:w
   {
     \bool_set_false:N \l__enumext_item_starred_viii_bool
@@ -3540,7 +3540,7 @@
           \__enumext_start_item_viii:w [ \l__enumext_label_viii_tl ]
         }
   }
-%% Set \item*[content] for |keyans*|
+%% Set \item*[content] for |keyans*| environment.
 \cs_new_protected:Npn \__enumext_starred_item_viii:w
   {
     %%\bool_set_true:N \l__enumext_item_starred_viii_bool
@@ -3560,10 +3560,11 @@
     %%\dim_set_eq:NN
     %%  \l__enumext_item_symbol_sep_viii_dim
     %%  \l__enumext_labelsep_viii_dim
+    %% Y probablemente aquí debemos pasar todo a la seq and prop list
     \legacy_if_set_true:n { @noitemarg }
     \__enumext_start_item_viii:w [ \l__enumext_label_viii_tl ]
   }
-%% Real |\item| definition for |keyans*| \legacy_if_set_true:n { @hyper@item } :D. (doc p170)
+%% Real |\item| definition for |keyans*|, need |\legacy_if_set_true:n { @hyper@item }| :D. (doc p170)
 \cs_new_protected_nopar:Npn \__enumext_start_item_viii:w [#1]
   {
     \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \__enumext_stop_item_viii:
@@ -3639,10 +3640,10 @@
       }
     \int_set:Nn \hbadness { 10000 }
     \box_use:N \l__enumext_item_text_viii_box
-    \bool_if:NF \l__enumext_footnotes_key_bool
-      {
-        \__enumext_print_footnote:
-      }
+    %%\bool_if:NF \l__enumext_footnotes_key_bool
+    %%  {
+    %%    \__enumext_print_footnote:
+    %%  }
     \int_compare:nNnTF { \l__enumext_item_column_pos_viii_int } = { \l__enumext_columns_viii_int }
       {
         \par\noindent

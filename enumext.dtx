@@ -10324,7 +10324,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    in the same row, in case they are not present we will set the default
 %    value \textcolor{gray}{\ttfamily(\mydim{1})}.
 % \iffalse
-%% Peek argument for \item()*[][] for |keyans*|
+%% Peek argument for \item(number)*[opt] for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_item_peek_args_viii:
@@ -10373,7 +10373,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % function \cs{@@_start_item_viii:w} |[| \myvarenv{l__@@_label_viii_tl} |]|.
 %
 % \iffalse
-%% Set \item[opt] for |keyans*|
+%% Set standar \item[opt] for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_standard_item_viii:w
@@ -10425,6 +10425,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     %%\dim_set_eq:NN
     %%  \l_@@_item_symbol_sep_viii_dim
     %%  \l_@@_labelsep_viii_dim
+    %% Y probablemente aquí debemos pasar todo a la seq and prop list
     \legacy_if_set_true:n { @noitemarg }
     \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
   }
@@ -10542,10 +10543,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \int_set:Nn \hbadness { 10000 }
     \box_use:N \l_@@_item_text_viii_box
-    \bool_if:NF \l_@@_footnotes_key_bool
-      {
-        \@@_print_footnote:
-      }
+    %%\bool_if:NF \l_@@_footnotes_key_bool
+    %%  {
+    %%    \@@_print_footnote:
+    %%  }
     \int_compare:nNnTF { \l_@@_item_column_pos_viii_int } = { \l_@@_columns_viii_int }
       {
         \par\noindent
