@@ -3866,7 +3866,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}{\l_@@_check_ans_bool, \g_@@_check_ans_show_bool, \g_@@_check_ans_show_h_bool,
 %                  \g_@@_check_ans_item_tl, \l_@@_compare_items_ans_int,
-%                  \g_@@_count_item_ans_int, \g_@@_count_item_all_int,
+%                  \g_@@_count_item_with_ans_int, \g_@@_count_item_all_int,
 %                  \g_@@_count_level_X_int, \g_@@_count_item_X_int,}
 %    Internal variables used by \emph{\enquote{check answer}} mechanism (\S\ref{int:check-answer}) controlled
 %    by the \mykey{check-ans} and \mykey{no-store} keys.
@@ -3874,12 +3874,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Variables used by |check-ans| key.
 % \fi
 %    \begin{macrocode}
+\bool_new:N \l_@@_store_ans_bool
 \bool_new:N \l_@@_check_ans_bool
 \bool_new:N \g_@@_check_ans_show_bool
 \bool_new:N \g_@@_check_ans_show_h_bool
 \tl_new:N   \g_@@_check_ans_item_tl
 \int_new:N  \l_@@_compare_items_ans_int
-\int_new:N  \g_@@_count_item_ans_int
+\int_new:N  \g_@@_count_item_with_ans_int
 \int_new:N  \g_@@_count_item_all_int
 \cs_set_protected:Npn \@@_tmp:n #1
   {
@@ -6528,8 +6529,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         check-ans .bool_set:N = \l_@@_check_ans_bool,
         check-ans .initial:n  = false,
-        no-store  .bool_set:N = \l_@@_store_ans_bool,
-        no-store  .initial:n  = false,
+        no-store  .code:n = {
+                              \bool_set_false:N \l_@@_store_ans_bool
+                              \bool_set_false:N \l_@@_check_ans_bool
+                            },
+        no-store  .value_forbidden:n = true,
       }
   }
 \clist_map_inline:nn
@@ -6570,7 +6574,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    variables \myvarenv{g__@@_count_\mymeta[cf=gray]{store
 %    name}_item_i_int} or \myvarenv{g__@@_count_\mymeta[cf=gray]{store
 %    name}_item_vii_int} that contains all the occurrences of |\item| and
-%    |\item*| in the different levels and we will make \cs{g_@@_count_item_ans_int}
+%    |\item*| in the different levels and we will make \cs{g_@@_count_item_with_ans_int}
 %    equal to the integer variable handled by the \ics*{anskey} command.
 %
 %    \begin{macrocode}
@@ -6585,12 +6589,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \int_gset_eq:Nc \g_@@_count_item_all_int { g_@@_count_#1_i_int }
       }
-    \int_gset_eq:Nc \g_@@_count_item_i_int   { g_@@_count_#1_i_int        }
-    \int_gset_eq:Nc \g_@@_count_item_ii_int  { g_@@_count_#1_ii_int       }
-    \int_gset_eq:Nc \g_@@_count_item_iii_int { g_@@_count_#1_iii_int      }
-    \int_gset_eq:Nc \g_@@_count_item_iv_int  { g_@@_count_#1_iv_int       }
-    \int_gset_eq:Nc \g_@@_count_item_vii_int { g_@@_count_#1_vii_int      }
-    \int_gset_eq:Nc \g_@@_count_item_ans_int { g_@@_count_#1_item_ans_int }
+    \int_gset_eq:Nc \g_@@_count_item_i_int   { g_@@_count_#1_i_int             }
+    \int_gset_eq:Nc \g_@@_count_item_ii_int  { g_@@_count_#1_ii_int            }
+    \int_gset_eq:Nc \g_@@_count_item_iii_int { g_@@_count_#1_iii_int           }
+    \int_gset_eq:Nc \g_@@_count_item_iv_int  { g_@@_count_#1_iv_int            }
+    \int_gset_eq:Nc \g_@@_count_item_vii_int { g_@@_count_#1_vii_int           }
+    \int_gset_eq:Nc \g_@@_count_item_with_ans_int { g_@@_count_#1_item_ans_int }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6639,14 +6643,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
        - \g_@@_count_item_iii_int - \g_@@_count_item_iv_int
       }
     \int_compare:nNnTF
-      { \l_@@_compare_items_ans_int } = { \g_@@_count_item_ans_int }
+      { \l_@@_compare_items_ans_int } = { \g_@@_count_item_with_ans_int }
       {
-        \msg_term:nnV { enumext } { items-same-answer }
-          \g_@@_store_name_tl
+        \msg_term:nnV { enumext } { items-same-answer } \g_@@_store_name_tl
       }
       {
-        \msg_warning:nnV { enumext } { item-different-answer }
-          \g_@@_store_name_tl
+        \msg_warning:nnV { enumext } { item-different-answer } \g_@@_store_name_tl
       }
 %    \end{macrocode}
 %    After the function is executed, we set the temporary integer variables
@@ -6667,21 +6669,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \int_set:Nn \l_@@_compare_items_ans_int
       {
-         \g_@@_count_item_all_int
-         - \g_@@_count_item_i_int
-         - \g_@@_count_item_ii_int
-         - \g_@@_count_item_iii_int
+         \g_@@_count_item_all_int - \g_@@_count_item_i_int
+         - \g_@@_count_item_ii_int - \g_@@_count_item_iii_int
          - \g_@@_count_item_iv_int
       }
     \int_compare:nNnTF
-      { \l_@@_compare_items_ans_int } = { \g_@@_count_item_ans_int }
+      { \l_@@_compare_items_ans_int } = { \g_@@_count_item_with_ans_int }
       {
-        \msg_term:nnV { enumext } { items-same-answer }
-          \g_@@_store_name_tl
+        \msg_term:nnV { enumext } { items-same-answer } \g_@@_store_name_tl
       }
       {
-        \msg_warning:nnV { enumext } { item-different-answer }
-          \g_@@_store_name_tl
+        \msg_warning:nnV { enumext } { item-different-answer } \g_@@_store_name_tl
       }
     \int_gzero:N \g_@@_count_level_i_int
     \int_gzero:N \g_@@_count_level_ii_int
@@ -7045,7 +7043,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \mykey{save-ans} key in \myenv*{enumext} and \myenv*{enumext*}
 %    environments, otherwise it will return an error. If the
 %    \mykey{check-ans} key is active, increment
-%    \cs{g_@@_count_item_ans_int}, then call internal function
+%    \cs{g_@@_count_item_with_ans_int}, then call internal function
 %    \cs{@@_store_anskey_code:nnnn} will \emph{\enquote{store content}} in
 %    the \mymeta{sequence} and in the \mymeta{prop list}.
 % \iffalse
@@ -7072,7 +7070,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         {
           \bool_if:NT \l_@@_check_ans_bool
             {
-              \int_gincr:N \g_@@_count_item_ans_int
+              \int_gincr:N \g_@@_count_item_with_ans_int
             }
           \@@_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
         }
@@ -7526,13 +7524,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Finally, copy the contents of the variable \cs{l_@@_store_keyans_label_tl}
 %    into the global variable \cs{g_@@_check_ans_item_tl} to be used
 %    by the function \cs{@@_keyans_check_ans:nn} and increment
-%    the value of the integer variable \cs{g_@@_count_item_ans_int} handled
+%    the value of the integer variable \cs{g_@@_count_item_with_ans_int} handled
 %    by the \mykey{check-ans} key.
 %    \begin{macrocode}
     \tl_gset:NV \g_@@_check_ans_item_tl \l_@@_store_keyans_label_tl
     \bool_if:NT \l_@@_check_ans_bool
       {
-        \int_gincr:N \g_@@_count_item_ans_int
+        \int_gincr:N \g_@@_count_item_with_ans_int
       }
   }
 %    \end{macrocode}
@@ -8443,21 +8441,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level:
   {
-    \bool_lazy_and:nnT
-      { \l_@@_store_active_bool }
-      { \bool_not_p:n { \l_@@_keyans_env_bool } }
-      {
-        \int_compare:nNnT { \l_@@_level_h_int } = { 1 }
-          {
+    %\bool_lazy_and:nnT
+      %{ \l_@@_store_active_bool }
+      %{ \bool_not_p:n { \l_@@_keyans_env_bool } }
+      %{
+        %\int_compare:nNnT { \l_@@_level_h_int } = { 1 }
+          %{
+            %\bool_set_true:c { l_@@_store_upper_level_ \@@_level: _bool }
+            %\@@_store_level_open:
+          %}
+        %\int_compare:nNnT { \l_@@_level_int } > { 1 }
+          %{
             \bool_set_true:c { l_@@_store_upper_level_ \@@_level: _bool }
             \@@_store_level_open:
-          }
-        \int_compare:nNnT { \l_@@_level_int } > { 1 }
-          {
-            \bool_set_true:c { l_@@_store_upper_level_ \@@_level: _bool }
-            \@@_store_level_open:
-          }
-      }
+          %}
+      %}
   }
 \cs_new_protected:Nn \@@_stop_store_level:
   {

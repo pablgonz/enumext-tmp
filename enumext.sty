@@ -149,12 +149,13 @@
 \int_new:N  \l__enumext_keyans_pic_below_int
 \skip_new:N \l__enumext_keyans_pic_above_skip
 %% Variables used by |check-ans| key.
+\bool_new:N \l__enumext_store_ans_bool
 \bool_new:N \l__enumext_check_ans_bool
 \bool_new:N \g__enumext_check_ans_show_bool
 \bool_new:N \g__enumext_check_ans_show_h_bool
 \tl_new:N   \g__enumext_check_ans_item_tl
 \int_new:N  \l__enumext_compare_items_ans_int
-\int_new:N  \g__enumext_count_item_ans_int
+\int_new:N  \g__enumext_count_item_with_ans_int
 \int_new:N  \g__enumext_count_item_all_int
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
@@ -1479,8 +1480,11 @@
       {
         check-ans .bool_set:N = \l__enumext_check_ans_bool,
         check-ans .initial:n  = false,
-        no-store  .bool_set:N = \l__enumext_store_ans_bool,
-        no-store  .initial:n  = false,
+        no-store  .code:n = {
+                              \bool_set_false:N \l__enumext_store_ans_bool
+                              \bool_set_false:N \l__enumext_check_ans_bool
+                            },
+        no-store  .value_forbidden:n = true,
       }
   }
 \clist_map_inline:nn
@@ -1514,12 +1518,12 @@
       {
         \int_gset_eq:Nc \g__enumext_count_item_all_int { g__enumext_count_#1_i_int }
       }
-    \int_gset_eq:Nc \g__enumext_count_item_i_int   { g__enumext_count_#1_i_int        }
-    \int_gset_eq:Nc \g__enumext_count_item_ii_int  { g__enumext_count_#1_ii_int       }
-    \int_gset_eq:Nc \g__enumext_count_item_iii_int { g__enumext_count_#1_iii_int      }
-    \int_gset_eq:Nc \g__enumext_count_item_iv_int  { g__enumext_count_#1_iv_int       }
-    \int_gset_eq:Nc \g__enumext_count_item_vii_int { g__enumext_count_#1_vii_int      }
-    \int_gset_eq:Nc \g__enumext_count_item_ans_int { g__enumext_count_#1_item_ans_int }
+    \int_gset_eq:Nc \g__enumext_count_item_i_int   { g__enumext_count_#1_i_int             }
+    \int_gset_eq:Nc \g__enumext_count_item_ii_int  { g__enumext_count_#1_ii_int            }
+    \int_gset_eq:Nc \g__enumext_count_item_iii_int { g__enumext_count_#1_iii_int           }
+    \int_gset_eq:Nc \g__enumext_count_item_iv_int  { g__enumext_count_#1_iv_int            }
+    \int_gset_eq:Nc \g__enumext_count_item_vii_int { g__enumext_count_#1_vii_int           }
+    \int_gset_eq:Nc \g__enumext_count_item_with_ans_int { g__enumext_count_#1_item_ans_int }
   }
 %% Function to count |\item| for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_count:
@@ -1543,14 +1547,12 @@
        - \g__enumext_count_item_iii_int - \g__enumext_count_item_iv_int
       }
     \int_compare:nNnTF
-      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_ans_int }
+      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_with_ans_int }
       {
-        \msg_term:nnV { enumext } { items-same-answer }
-          \g__enumext_store_name_tl
+        \msg_term:nnV { enumext } { items-same-answer } \g__enumext_store_name_tl
       }
       {
-        \msg_warning:nnV { enumext } { item-different-answer }
-          \g__enumext_store_name_tl
+        \msg_warning:nnV { enumext } { item-different-answer } \g__enumext_store_name_tl
       }
     \int_gzero:N \g__enumext_count_level_i_int
     \int_gzero:N \g__enumext_count_level_ii_int
@@ -1563,21 +1565,17 @@
   {
     \int_set:Nn \l__enumext_compare_items_ans_int
       {
-         \g__enumext_count_item_all_int
-         - \g__enumext_count_item_i_int
-         - \g__enumext_count_item_ii_int
-         - \g__enumext_count_item_iii_int
+         \g__enumext_count_item_all_int - \g__enumext_count_item_i_int
+         - \g__enumext_count_item_ii_int - \g__enumext_count_item_iii_int
          - \g__enumext_count_item_iv_int
       }
     \int_compare:nNnTF
-      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_ans_int }
+      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_with_ans_int }
       {
-        \msg_term:nnV { enumext } { items-same-answer }
-          \g__enumext_store_name_tl
+        \msg_term:nnV { enumext } { items-same-answer } \g__enumext_store_name_tl
       }
       {
-        \msg_warning:nnV { enumext } { item-different-answer }
-          \g__enumext_store_name_tl
+        \msg_warning:nnV { enumext } { item-different-answer } \g__enumext_store_name_tl
       }
     \int_gzero:N \g__enumext_count_level_i_int
     \int_gzero:N \g__enumext_count_level_ii_int
@@ -1794,7 +1792,7 @@
         {
           \bool_if:NT \l__enumext_check_ans_bool
             {
-              \int_gincr:N \g__enumext_count_item_ans_int
+              \int_gincr:N \g__enumext_count_item_with_ans_int
             }
           \__enumext_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
         }
@@ -2068,7 +2066,7 @@
     \tl_gset:NV \g__enumext_check_ans_item_tl \l__enumext_store_keyans_label_tl
     \bool_if:NT \l__enumext_check_ans_bool
       {
-        \int_gincr:N \g__enumext_count_item_ans_int
+        \int_gincr:N \g__enumext_count_item_with_ans_int
       }
   }
 %% Function for check starred command in |keyans| and |keyanspic|.
@@ -2510,21 +2508,21 @@
   }
 \cs_new_protected:Nn \__enumext_start_store_level:
   {
-    \bool_lazy_and:nnT
-      { \l__enumext_store_active_bool }
-      { \bool_not_p:n { \l__enumext_keyans_env_bool } }
-      {
-        \int_compare:nNnT { \l__enumext_level_h_int } = { 1 }
-          {
+    %\bool_lazy_and:nnT
+      %{ \l__enumext_store_active_bool }
+      %{ \bool_not_p:n { \l__enumext_keyans_env_bool } }
+      %{
+        %\int_compare:nNnT { \l__enumext_level_h_int } = { 1 }
+          %{
+            %\bool_set_true:c { l__enumext_store_upper_level_ \__enumext_level: _bool }
+            %\__enumext_store_level_open:
+          %}
+        %\int_compare:nNnT { \l__enumext_level_int } > { 1 }
+          %{
             \bool_set_true:c { l__enumext_store_upper_level_ \__enumext_level: _bool }
             \__enumext_store_level_open:
-          }
-        \int_compare:nNnT { \l__enumext_level_int } > { 1 }
-          {
-            \bool_set_true:c { l__enumext_store_upper_level_ \__enumext_level: _bool }
-            \__enumext_store_level_open:
-          }
-      }
+          %}
+      %}
   }
 \cs_new_protected:Nn \__enumext_stop_store_level:
   {
