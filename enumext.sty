@@ -3324,6 +3324,356 @@
     \bool_gset_false:N \g__enumext_check_ans_show_h_bool
     \tl_gclear:N \g__enumext_store_name_tl
   }
+%% Define default columns width for |keyans*|
+\cs_new_protected:Nn \__enumext_starred_columns_set_viii:
+  {
+    \dim_compare:nNnT { \l__enumext_columns_sep_viii_dim } = { \c_zero_dim }
+      {
+        \dim_set:Nn \l__enumext_columns_sep_viii_dim
+          {
+            ( \l__enumext_labelwidth_viii_dim + \l__enumext_labelsep_viii_dim )
+            / \l__enumext_columns_viii_int
+          }
+      }
+    \int_set:Nn \l__enumext_tmpa_viii_int { \l__enumext_columns_viii_int - \c_one_int }
+    \dim_set:Nn \l__enumext_item_width_viii_dim
+      {
+        ( \linewidth - \l__enumext_columns_sep_viii_dim * \l__enumext_tmpa_viii_int )
+        / \l__enumext_columns_viii_int - \l__enumext_labelwidth_viii_dim
+        - \l__enumext_labelsep_viii_dim
+      }
+    \dim_zero_new:N \itemwidth
+  }
+%% Set width for joined item's for |keyans*|
+\cs_new_protected:Npn \__enumext_starred_joined_item_viii:n #1
+  {
+    \int_set:Nn \l__enumext_joined_item_viii_int {#1}
+    \int_compare:nNnT { \l__enumext_joined_item_viii_int } > { \l__enumext_columns_viii_int }
+      {
+        \msg_warning:nnee { enumext } { item-joined }
+          { \int_use:N \l__enumext_joined_item_viii_int }
+          { \int_use:N \l__enumext_columns_viii_int }
+        \int_set:Nn \l__enumext_joined_item_viii_int
+          {
+            \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int
+          }
+      }
+    \int_compare:nNnT
+      { \l__enumext_joined_item_viii_int }
+        >
+      { \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int }
+      {
+        \msg_warning:nnee { enumext } { item-joined-columns }
+          { \int_use:N \l__enumext_joined_item_viii_int }
+          {
+            \int_eval:n
+              { \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int }
+          }
+        \int_set:Nn \l__enumext_joined_item_viii_int
+          {
+            \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int
+          }
+      }
+    \int_compare:nNnTF { \l__enumext_joined_item_viii_int } > { \c_one_int }
+      {
+        \int_set_eq:NN \l__enumext_joined_item_aux_viii_int \l__enumext_joined_item_viii_int
+        \int_decr:N \l__enumext_joined_item_aux_viii_int
+        \int_add:Nn \l__enumext_item_column_pos_viii_int { \l__enumext_joined_item_aux_viii_int }
+        \int_gadd:Nn \g__enumext_item_count_all_viii_int { \l__enumext_joined_item_aux_viii_int }
+        \dim_set:Nn \l__enumext_joined_width_viii_dim
+          {
+            \l__enumext_item_width_viii_dim * \l__enumext_joined_item_viii_int
+            + (  \l__enumext_labelwidth_viii_dim + \l__enumext_labelsep_viii_dim
+               + \l__enumext_columns_sep_viii_dim
+              )*\l__enumext_joined_item_aux_viii_int
+          }
+        \dim_set_eq:NN \itemwidth \l__enumext_joined_width_viii_dim
+      }
+      {
+        \dim_set_eq:NN \l__enumext_joined_width_viii_dim \l__enumext_item_width_viii_dim
+        \dim_set_eq:NN \itemwidth \l__enumext_item_width_viii_dim
+      }
+  }
+%% Start support for |mini-env| key in |keyans*| environment
+\cs_new_protected:Nn \__enumext_start_mini_viii:
+  {
+    \dim_compare:nNnT { \l__enumext_minipage_right_viii_dim } > { \c_zero_dim }
+      {
+        \dim_set:Nn \l__enumext_minipage_left_viii_dim
+          {
+            \linewidth
+            - \l__enumext_minipage_right_viii_dim
+            - \l__enumext_minipage_hsep_viii_dim
+          }
+        \bool_set_true:N \l__enumext_minipage_active_viii_bool
+        \dim_gset_eq:NN
+          \g__enumext_minipage_right_viii_dim
+          \l__enumext_minipage_right_viii_dim
+        \__enumext_mini_addvspace_viii:
+        \nointerlineskip\noindent
+        \begin{__enumext_mini_env*}{ \l__enumext_minipage_left_viii_dim }
+      }
+   }
+\cs_new_protected:Nn \__enumext_stop_mini_viii:
+  {
+    \bool_if:NT \l__enumext_minipage_active_viii_bool
+      {
+        \end{__enumext_mini_env*}
+        \hfill
+        \bool_gset_true:N \g__enumext_minipage_active_viii_bool
+      }
+   }
+\__enumext_after_env:nn {keyans*}
+  {
+    \bool_if:NT \g__enumext_minipage_active_viii_bool
+      {
+        \begin{__enumext_mini_env*}{ \g__enumext_minipage_right_viii_dim }
+          \par\addvspace { \g__enumext_minipage_right_skip }
+          \bool_if:NF \g__enumext_minipage_center_viii_bool
+            {
+              \centering
+            }
+          \tl_use:N \g__enumext_miniright_code_viii_tl % the code
+        \end{__enumext_mini_env*}
+        \par\addvspace{ \g__enumext_minipage_after_skip }
+      }
+    \bool_gset_false:N \g__enumext_minipage_active_viii_bool
+    \bool_gset_true:N \g__enumext_minipage_center_viii_bool
+    \tl_gclear:N \g__enumext_miniright_code_viii_tl
+    \dim_gzero:N \g__enumext_minipage_right_viii_dim
+  }
+%% Define |keyans*|
+\NewDocumentEnvironment{keyans*}{ o }
+  {
+    \__enumext_safe_exec_viii:
+    \__enumext_parse_keys_viii:n {#1}
+    \__enumext_before_list_viii:
+    \__enumext_start_list:nn { }
+      {
+        \__enumext_list_arg_two_viii:
+        \__enumext_before_keys_exec_viii:
+      }
+      \__enumext_starred_columns_set_viii:
+      \item[] \scan_stop:
+      \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \noindent
+      \cs_set_eq:NN \item \__enumext_start_item_tmp_viii:
+  }
+  {
+    \__enumext_stop_item_tmp_viii:
+    \__enumext_remove_extra_parsep_viii:
+    \__enumext_stop_list:
+    \__enumext_after_list_viii:
+  }
+%% Test deep-level for |keyans*| and set bool vars.
+\cs_new_protected:Nn \__enumext_safe_exec_viii:
+  {
+    \int_incr:N \l__enumext_keyans_level_h_int
+    \int_compare:nNnT { \l__enumext_keyans_level_h_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { nested }
+      }
+    % Set false for interfering with enumext nested in keyans* (yes, its possible and crayze)
+    \bool_set_false:N \l__enumext_store_active_bool
+    \int_compare:nNnT { \l__enumext_level_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { keyans-wrong-level }
+      }
+  }
+%% Parse |key=val| and store keys for |keyans*|.
+\cs_new_protected:Npn \__enumext_parse_keys_viii:n #1
+  {
+    \tl_if_novalue:nF {#1}
+      {
+        \keys_set:nn { enumext / keyans* } {#1}
+      }
+  }
+\cs_new_protected:Nn \__enumext_before_list_viii:
+  {
+    \__enumext_vspace_above_viii:
+    \__enumext_before_args_exec_viii:
+    \__enumext_start_mini_viii:
+  }
+\cs_new_protected:Nn \__enumext_after_list_viii:
+  {
+
+    \__enumext_stop_mini_viii:
+    \__enumext_after_stop_list_viii:
+    \__enumext_vspace_below_viii:
+  }
+%% % Start boxed item's for |keyans*|
+\cs_new_protected_nopar:Nn \__enumext_start_item_tmp_viii:
+  {
+    \__enumext_stop_item_tmp_viii:
+    \int_incr:N \l__enumext_item_column_pos_viii_int
+    \int_gincr:N \g__enumext_item_count_all_viii_int
+    \__enumext_item_peek_args_viii:
+  }
+%% Peek argument for \item()*[][] for |keyans*|
+\cs_new_protected:Nn \__enumext_item_peek_args_viii:
+  {
+    \peek_meaning:NTF (
+      { \__enumext_joined_item_viii:w }
+      { \__enumext_joined_item_viii:w (1) }
+  }
+%% Joined item's for |keyans*|
+\cs_new_protected:Npn \__enumext_joined_item_viii:w (#1)
+  {
+    \__enumext_starred_joined_item_viii:n {#1}
+    \peek_meaning_remove:NTF *
+      { \__enumext_starred_item_viii:w  }
+      { \__enumext_standard_item_viii:w }
+  }
+%% Set \item[opt] for |keyans*|
+\cs_new_protected:Npn \__enumext_standard_item_viii:w
+  {
+    \bool_set_false:N \l__enumext_item_starred_viii_bool
+      \peek_meaning:NTF [
+        {
+          \bool_set_eq:NN
+            \l__enumext_wrap_label_viii_bool
+            \l__enumext_wrap_label_opt_viii_bool
+          \__enumext_start_item_viii:w
+        }
+        {
+          \bool_set_true:N \l__enumext_wrap_label_viii_bool
+          \legacy_if_set_true:n { @noitemarg }
+          \__enumext_start_item_viii:w [ \l__enumext_label_viii_tl ]
+        }
+  }
+%% Set \item*[sym][sep] for |keyans*|
+\cs_new_protected:Npn \__enumext_starred_item_viii:w
+  {
+    \bool_set_true:N \l__enumext_item_starred_viii_bool
+    \bool_set_true:N \l__enumext_wrap_label_viii_bool
+    \peek_meaning:NTF [
+      { \__enumext_starred_item_viii_aux_i:w }
+      { \__enumext_starred_item_viii_aux_ii:w }
+  }
+\cs_new_protected:Npn \__enumext_starred_item_viii_aux_i:w [#1]
+  {
+    %\tl_gset:Nn \g__enumext_item_symbol_aux_viii_tl {#1}
+    \__enumext_starred_item_viii_aux_ii:w
+  }
+\cs_new_protected:Npn \__enumext_starred_item_viii_aux_ii:w
+  {
+    \peek_meaning:NTF [
+      { \__enumext_starred_item_viii_aux_iii:w }
+      {
+        %%\dim_set_eq:NN
+        %%  \l__enumext_item_symbol_sep_viii_dim
+        %%  \l__enumext_labelsep_viii_dim
+        \legacy_if_set_true:n { @noitemarg }
+        \__enumext_start_item_viii:w [ \l__enumext_label_viii_tl ]
+      }
+  }
+\cs_new_protected:Npn \__enumext_starred_item_viii_aux_iii:w [#1]
+  {
+    %%\dim_set:Nn \l__enumext_item_symbol_sep_viii_dim {#1}
+    \legacy_if_set_true:n { @noitemarg }
+    \__enumext_start_item_viii:w [ \l__enumext_label_viii_tl ]
+  }
+%% Real |\item| definition for |keyans*| \legacy_if_set_true:n { @hyper@item } :D. (doc p170)
+\cs_new_protected_nopar:Npn \__enumext_start_item_viii:w [#1]
+  {
+    \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \__enumext_stop_item_viii:
+    \legacy_if:nT { @noitemarg }
+      {
+        \legacy_if_set_false:n { @noitemarg }
+        \legacy_if:nT { @nmbrlist }
+          {
+            \bool_if:NT \l__enumext_hyperref_bool
+              {
+                \legacy_if_set_true:n { @hyper@item }
+              }
+            \refstepcounter{enumXviii}
+            % code for check-ans
+            %\bool_if:NT \l__enumext_check_ans_bool
+              %{
+                %% If true |no-store| key => nested in |enumext|
+                %\bool_if:NTF \l__enumext_store_ans_bool
+                  %{
+                    %\int_gadd:cn { g__enumext_count_item_ \__enumext_level: _int }
+                      %{ \int_use:c { g__enumext_count_level_ \__enumext_level: _int } + 1 }
+                  %}
+                  %{
+                    %\int_gincr:N \g__enumext_count_item_all_int
+                    %\int_gincr:N \g__enumext_count_level_viii_int
+                  %}
+              %}
+          }
+      }
+    \group_begin:
+      \lrbox{ \l__enumext_item_text_viii_box }
+        \bool_if:NT \l__enumext_item_starred_viii_bool
+          {
+            %\tl_if_blank:VT \g__enumext_item_symbol_aux_viii_tl
+              %{
+                %\tl_gset_eq:NN
+                  %\g__enumext_item_symbol_aux_viii_tl \l__enumext_item_symbol_viii_tl
+              %}
+            \mode_leave_vertical:
+            %%\skip_horizontal:n { -\l__enumext_item_symbol_sep_viii_dim }
+            %\makebox[ 0pt ][ r ]{ \g__enumext_item_symbol_aux_viii_tl }
+            %%\skip_horizontal:N \l__enumext_item_symbol_sep_viii_dim
+            %\tl_gclear:N \g__enumext_item_symbol_aux_viii_tl
+          }
+        \group_begin:
+          \tl_use:N \l__enumext_label_font_style_viii_tl
+          \bool_if:NTF \l__enumext_wrap_label_viii_bool
+            {
+              \makebox[ \l__enumext_labelwidth_viii_dim ][ \l__enumext_align_label_viii_str ]
+                { \__enumext_wrapper_label_viii:n {#1} }
+            }
+            {
+              \makebox[ \l__enumext_labelwidth_viii_dim ][ \l__enumext_align_label_viii_str ]{ #1 }
+            }
+        \group_end:
+        \skip_horizontal:N \l__enumext_labelsep_viii_dim
+        \tl_use:N \l__enumext_after_list_args_viii_tl
+        \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_viii_dim  }
+          \skip_set_eq:NN \parindent \l__enumext_listparindent_viii_dim
+          \skip_set_eq:NN \parskip \l__enumext_parsep_viii_skip
+          \tl_use:N \l__enumext_fake_item_indent_viii_tl
+   }
+\cs_new_protected_nopar:Nn \__enumext_stop_item_viii:
+  {
+        \__enumext_endminipage:
+      \endlrbox
+    \group_end:
+    \box_set_wd:Nn \l__enumext_item_text_viii_box
+      {
+        \l__enumext_joined_width_viii_dim
+        + \l__enumext_labelwidth_viii_dim
+        + \l__enumext_labelsep_viii_dim
+      }
+    \int_set:Nn \hbadness { 10000 }
+    \box_use:N \l__enumext_item_text_viii_box
+    \bool_if:NF \l__enumext_footnotes_key_bool
+      {
+        \__enumext_print_footnote:
+      }
+    \int_compare:nNnTF { \l__enumext_item_column_pos_viii_int } = { \l__enumext_columns_viii_int }
+      {
+        \par\noindent
+        \int_zero:N \l__enumext_item_column_pos_viii_int
+      }
+      { \hspace{ \l__enumext_columns_sep_viii_dim } }
+  }
+%% Remove extra \parsep in |keyans*|
+\cs_new_protected:Nn \__enumext_remove_extra_parsep_viii:
+  {
+    \int_compare:nNnT
+      {
+        \int_mod:nn {  \g__enumext_item_count_all_viii_int } { \l__enumext_columns_viii_int }
+      }
+      =
+      { \c_zero_int }
+      {
+        \par
+        \vspace{ -\l__enumext_itemsep_viii_skip }
+        \int_gzero:N \g__enumext_item_count_all_viii_int
+      }
+  }
 %% Define |\getkeyans|, need \exp_args:Ne \tl_to_str:e
 \NewDocumentCommand \getkeyans { m }
   {

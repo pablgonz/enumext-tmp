@@ -1,0 +1,627 @@
+% \subsection{The \env{keyans*} environment}\label{env:keyans-starred}
+%
+% \subsubsection{Functions for item box width}
+%
+% \begin{macro}{\@@_starred_columns_set_viii:}
+%    We set the default value for the width of the box containing the
+%    content of the items and create \ics*{itemwidth} in a public form.
+% \iffalse
+%% Define default columns width for |keyans*|
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_starred_columns_set_viii:
+  {
+    \dim_compare:nNnT { \l_@@_columns_sep_viii_dim } = { \c_zero_dim }
+      {
+        \dim_set:Nn \l_@@_columns_sep_viii_dim
+          {
+            ( \l_@@_labelwidth_viii_dim + \l_@@_labelsep_viii_dim )
+            / \l_@@_columns_viii_int
+          }
+      }
+    \int_set:Nn \l_@@_tmpa_viii_int { \l_@@_columns_viii_int - \c_one_int }
+    \dim_set:Nn \l_@@_item_width_viii_dim
+      {
+        ( \linewidth - \l_@@_columns_sep_viii_dim * \l_@@_tmpa_viii_int )
+        / \l_@@_columns_viii_int - \l_@@_labelwidth_viii_dim
+        - \l_@@_labelsep_viii_dim
+      }
+    \dim_zero_new:N \itemwidth
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_starred_joined_item_viii:n}
+%    The function \cs{@@_starred_joined_item_viii:n} will set the \emph{width} of the
+%    box in which the content passed to \ics*{item}\myparg{number} will be
+%    stored together with the value of \ics*{itemwidth}.
+%
+% \iffalse
+%% Set width for joined item's for |keyans*|
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_starred_joined_item_viii:n #1
+  {
+    \int_set:Nn \l_@@_joined_item_viii_int {#1}
+    \int_compare:nNnT { \l_@@_joined_item_viii_int } > { \l_@@_columns_viii_int }
+      {
+        \msg_warning:nnee { enumext } { item-joined }
+          { \int_use:N \l_@@_joined_item_viii_int }
+          { \int_use:N \l_@@_columns_viii_int }
+        \int_set:Nn \l_@@_joined_item_viii_int
+          {
+            \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int
+          }
+      }
+    \int_compare:nNnT
+      { \l_@@_joined_item_viii_int }
+        >
+      { \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int }
+      {
+        \msg_warning:nnee { enumext } { item-joined-columns }
+          { \int_use:N \l_@@_joined_item_viii_int }
+          {
+            \int_eval:n
+              { \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int }
+          }
+        \int_set:Nn \l_@@_joined_item_viii_int
+          {
+            \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int
+          }
+      }
+%    \end{macrocode}
+%    Only need if |#1 > 1| (default are set before).
+%    \begin{macrocode}
+    \int_compare:nNnTF { \l_@@_joined_item_viii_int } > { \c_one_int }
+      {
+        \int_set_eq:NN \l_@@_joined_item_aux_viii_int \l_@@_joined_item_viii_int
+        \int_decr:N \l_@@_joined_item_aux_viii_int
+        \int_add:Nn \l_@@_item_column_pos_viii_int { \l_@@_joined_item_aux_viii_int }
+        \int_gadd:Nn \g_@@_item_count_all_viii_int { \l_@@_joined_item_aux_viii_int }
+        \dim_set:Nn \l_@@_joined_width_viii_dim
+          {
+            \l_@@_item_width_viii_dim * \l_@@_joined_item_viii_int
+            + (  \l_@@_labelwidth_viii_dim + \l_@@_labelsep_viii_dim
+               + \l_@@_columns_sep_viii_dim
+              )*\l_@@_joined_item_aux_viii_int
+          }
+        \dim_set_eq:NN \itemwidth \l_@@_joined_width_viii_dim
+      }
+      {
+        \dim_set_eq:NN \l_@@_joined_width_viii_dim \l_@@_item_width_viii_dim
+        \dim_set_eq:NN \itemwidth \l_@@_item_width_viii_dim
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_start_mini_viii:}
+%
+% The implementation of the \mykey{mini-env} key support is almost
+% identical to the one used in the \myenv*{enumext} and \myenv*{keyans}
+% environments, the difference is that the \myvarenv*{__@@_mini_env*}
+% environment on the \emph{\enquote{right side}} is executed
+% \emph{\enquote{after}} closing the environment, so it is necessary to
+% make a global copy of the variable \cs{l_@@_minipage_right_viii_dim} in
+% the variable \cs{g_@@_minipage_right_viii_dim}.
+%
+% \iffalse
+%% Start support for |mini-env| key in |keyans*| environment
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_start_mini_viii:
+  {
+    \dim_compare:nNnT { \l_@@_minipage_right_viii_dim } > { \c_zero_dim }
+      {
+        \dim_set:Nn \l_@@_minipage_left_viii_dim
+          {
+            \linewidth
+            - \l_@@_minipage_right_viii_dim
+            - \l_@@_minipage_hsep_viii_dim
+          }
+        \bool_set_true:N \l_@@_minipage_active_viii_bool
+        \dim_gset_eq:NN
+          \g_@@_minipage_right_viii_dim
+          \l_@@_minipage_right_viii_dim
+        \@@_mini_addvspace_viii:
+        \nointerlineskip\noindent
+        \begin{@@_mini_env*}{ \l_@@_minipage_left_viii_dim }
+      }
+   }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_stop_mini_viii:}
+%   The function \cs{@@_stop_mini_viii:} closes the
+%   \myvarenv*{__@@_mini_env*} environment on the left side, applies
+%   |\hfill| and sets the value of the variable
+%   \cs{g_@@_minipage_active_viii_bool} to true which will be used in the
+%   function \cs{@@_after_star_env:nn} to execute the
+%   \myvarenv*{__@@_mini_env*} on the \emph{\enquote{right side}}.
+% \iffalse
+%% Stop support for |mini-env| key in |keyans*| environment
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_stop_mini_viii:
+  {
+    \bool_if:NT \l_@@_minipage_active_viii_bool
+      {
+        \end{@@_mini_env*}
+        \hfill
+        \bool_gset_true:N \g_@@_minipage_active_viii_bool
+      }
+   }
+%    \end{macrocode}
+%
+%    Finally we execute code passed to the \mykey{miniright} key
+%    stored in the variable \cs{g_@@_miniright_code_viii_tl} in the
+%    \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{right side}}.
+% \iffalse
+%% Exec |miniright| key in |keyans*| environment
+% \fi
+%    \begin{macrocode}
+\@@_after_env:nn {keyans*}
+  {
+    \bool_if:NT \g_@@_minipage_active_viii_bool
+      {
+        \begin{@@_mini_env*}{ \g_@@_minipage_right_viii_dim }
+          \par\addvspace { \g_@@_minipage_right_skip }
+          \bool_if:NF \g_@@_minipage_center_viii_bool
+            {
+              \centering
+            }
+          \tl_use:N \g_@@_miniright_code_viii_tl % the code
+        \end{@@_mini_env*}
+        \par\addvspace{ \g_@@_minipage_after_skip }
+      }
+    \bool_gset_false:N \g_@@_minipage_active_viii_bool
+    \bool_gset_true:N \g_@@_minipage_center_viii_bool
+    \tl_gclear:N \g_@@_miniright_code_viii_tl
+    \dim_gzero:N \g_@@_minipage_right_viii_dim
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{keyans*}
+%    First we will generate the environment and we will give a
+%    temporary definition to \cs{@@_stop_item_tmp_viii:} equal to
+%    \ics{noindent} and next to \ics{item} equal to
+%    \cs{@@_start_item_tmp_viii:} which we will redefine later.
+% \iffalse
+%% Define |keyans*|
+% \fi
+%    \begin{macrocode}
+\NewDocumentEnvironment{keyans*}{ o }
+  {
+    \@@_safe_exec_viii:
+    \@@_parse_keys_viii:n {#1}
+    \@@_before_list_viii:
+    \@@_start_store_level_viii:
+    \@@_start_list:nn { }
+      {
+        \@@_list_arg_two_viii:
+        \@@_before_keys_exec_viii:
+      }
+      \@@_starred_columns_set_viii:
+      \item[] \scan_stop:
+      \cs_set_eq:NN \@@_stop_item_tmp_viii: \noindent
+      \cs_set_eq:NN \item \@@_start_item_tmp_viii:
+  }
+  {
+    \@@_stop_item_tmp_viii:
+    \@@_remove_extra_parsep_viii:
+    \@@_stop_list:
+    \@@_stop_store_level_viii:
+    \@@_after_list_viii:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_safe_exec_viii:}
+%    First check the maximum nesting level for the \myenv*{keyans*}
+%    environment.
+% \iffalse
+%% Test deep-level for |keyans*| and set bool vars.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_safe_exec_viii:
+  {
+    \int_incr:N \l_@@_keyans_level_h_int
+    \int_compare:nNnT { \l_@@_keyans_level_h_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { nested }
+      }
+    % Set false for interfering with enumext nested in keyans* (yes, its possible and crayze)
+    \bool_set_false:N \l_@@_store_active_bool
+    \int_compare:nNnT { \l_@@_level_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { keyans-wrong-level }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_parse_keys_viii:n}
+%    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
+%    for \myenv*{keyans*}.
+% \iffalse
+%% Parse |key=val| and store keys for |keyans*|.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_parse_keys_viii:n #1
+  {
+    \tl_if_novalue:nF {#1}
+      {
+        \keys_set:nn { enumext / keyans* } {#1}
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_before_list_viii:}
+%    The function \cs{@@_before_list_viii:} will add the vertical
+%    spacing on the environment if the \mykey{above} key is active next to
+%    the \mymarg[type=tt]{code} defined by the \mykey{before*} key if
+%    it is active, the call the function \cs{@@_start_mini_viii:} handle by
+%    \mykey{mini-env}.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_before_list_viii:
+  {
+    \@@_vspace_above_viii:
+    \@@_before_args_exec_viii:
+    \@@_start_mini_viii:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_after_list_viii:}
+%    The function \cs{@@_after_list:} first call the function \cs{@@_stop_mini_viii:},
+%    then apply the \mymarg[type=tt]{code} handled by the \mykey{after} key
+%    together with the \emph{vertical space} handled by the \mykey{below} key if
+%    they are present.
+%
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_after_list_viii:
+  {
+
+    \@@_stop_mini_viii:
+    \@@_after_stop_list_viii:
+    \@@_vspace_below_viii:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{The command \cs{item} in \env{keyans*}}\label{cmd:item-boxed-viii}
+%
+% \begin{macro}{\@@_start_item_tmp_viii:}
+%
+% First we will call the function \cs{@@_stop_item_tmp_viii:} that we
+% will redefine later, we will increment the value of
+% \cs{l_@@_item_column_pos_viii_int} that will count the item's by rows and
+% the value of \cs{g_@@_item_count_all_viii_int} that will count the
+% total of item's in the environment. After that we will call the
+% function \cs{@@_item_peek_args_viii:} that will handle the
+% arguments passed to \ics*{item}.
+% \iffalse
+%% % Start boxed item's for |keyans*|
+% \fi
+%    \begin{macrocode}
+\cs_new_protected_nopar:Nn \@@_start_item_tmp_viii:
+  {
+    \@@_stop_item_tmp_viii:
+    \int_incr:N \l_@@_item_column_pos_viii_int
+    \int_gincr:N \g_@@_item_count_all_viii_int
+    \@@_item_peek_args_viii:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_item_peek_args_viii:}
+%
+%    The function \cs{@@_item_peek_args_viii:} will handle the \ics*{item}\myparg{number}.
+%    Look for the argument \enquote{\textcolor{MediumOrchid}{\ttfamily (}}, if it is
+%    present we will call the function \cs{@@_joined_item_viii:w} \myparg{number}, which is in charge of joining the item's
+%    in the same row, in case they are not present we will set the default
+%    value \textcolor{gray}{\ttfamily(\mydim{1})}.
+% \iffalse
+%% Peek argument for \item()*[][] for |keyans*|
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_item_peek_args_viii:
+  {
+    \peek_meaning:NTF (
+      { \@@_joined_item_viii:w }
+      { \@@_joined_item_viii:w (1) }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_joined_item_viii:w}
+%
+%    The function \cs{@@_joined_item_viii:w} will first call the
+%    function \cs{@@_starred_joined_item_viii:n} in charge of setting the
+%    \emph{width} of the box that will store the content passed to \ics*{item}. Then we
+%    will look for the argument \enquote{\textcolor{MediumOrchid}{\ttfamily *}}, if it is present we will call the
+%    function \cs{@@_starred_item_viii:w} otherwise we will call the
+%    function \cs{@@_standard_item_viii:w}.
+% \iffalse
+%% Joined item's for |keyans*|
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_joined_item_viii:w (#1)
+  {
+    \@@_starred_joined_item_viii:n {#1}
+    \peek_meaning_remove:NTF *
+      { \@@_starred_item_viii:w  }
+      { \@@_standard_item_viii:w }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_standard_item_viii:w}
+%
+% The function \cs{@@_standard_item_viii:w} will first look for the
+% argument “|[|”, if present it will set the state of the variable
+% \cs{l_@@_wrap_label_opt_viii_bool} equal to the state of the variable
+% \cs{l_@@_wrap_label_opt_viii_bool} handled by the key
+% \mykey{wrap-label*} and finally execute the \emph{non-enumerated}
+% version \ics*{item}\myoarg[type=tt]{custom} by means of the function
+% \cs{@@_start_item_viii:w}, otherwise we will set the value of the
+% variable \cs{l_@@_wrap_label_viii_bool} handled by the
+% \mykey{wrap-label} key to true and set the switch |\if@noitemarg| to
+% true to execute the enumerated version of \ics*{item} by means of the
+% function \cs{@@_start_item_viii:w} |[| \myvarenv{l__@@_label_viii_tl} |]|.
+%
+% \iffalse
+%% Set \item[opt] for |keyans*|
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_standard_item_viii:w
+  {
+    \bool_set_false:N \l_@@_item_starred_viii_bool
+      \peek_meaning:NTF [
+        {
+          \bool_set_eq:NN
+            \l_@@_wrap_label_viii_bool
+            \l_@@_wrap_label_opt_viii_bool
+          \@@_start_item_viii:w
+        }
+        {
+          \bool_set_true:N \l_@@_wrap_label_viii_bool
+          \legacy_if_set_true:n { @noitemarg }
+          \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
+        }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_starred_item_viii:w, \@@_starred_item_viii_aux_i:w,
+%               \@@_starred_item_viii_aux_ii:w, \@@_starred_item_viii_aux_iii:w,}
+%
+% The function \cs{@@_starred_item_viii:w} together with the specified
+% auxiliary functions |aux_i:w|, |aux_ii:w|, and |aux_iii:w| execute \ics*{item*},
+% \ics*{item*}\myoarg[type=tt]{symbol} and
+% \ics*{item*}\myoarg[type=tt]{symbol}\myoarg[type=tt]{offset}.
+%
+% \iffalse
+%% Set \item*[sym][sep] for |keyans*|
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_starred_item_viii:w
+  {
+    \bool_set_true:N \l_@@_item_starred_viii_bool
+    \bool_set_true:N \l_@@_wrap_label_viii_bool
+    \peek_meaning:NTF [
+      { \@@_starred_item_viii_aux_i:w }
+      { \@@_starred_item_viii_aux_ii:w }
+  }
+\cs_new_protected:Npn \@@_starred_item_viii_aux_i:w [#1]
+  {
+    \tl_gset:Nn \g_@@_item_symbol_aux_viii_tl {#1}
+    \@@_starred_item_viii_aux_ii:w
+  }
+\cs_new_protected:Npn \@@_starred_item_viii_aux_ii:w
+  {
+    \peek_meaning:NTF [
+      { \@@_starred_item_viii_aux_iii:w }
+      {
+        \dim_set_eq:NN
+          \l_@@_item_symbol_sep_viii_dim
+          \l_@@_labelsep_viii_dim
+        \legacy_if_set_true:n { @noitemarg }
+        \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
+      }
+  }
+\cs_new_protected:Npn \@@_starred_item_viii_aux_iii:w [#1]
+  {
+    \dim_set:Nn \l_@@_item_symbol_sep_viii_dim {#1}
+    \legacy_if_set_true:n { @noitemarg }
+    \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+%  \subsubsection*{Real definition of \cs{item}}
+%
+%  The functions \cs{@@_start_item_viii:w} and \cs{@@_stop_item_viii:} executing the true definition of
+%  \ics*{item} inside the \myenv*{keyans*} environment.
+%
+% \begin{macro}{\@@_start_item_viii:w}
+%
+%    The first thing we will do is set the value of \cs{@@_stop_item_tmp_viii:} equal to the
+%    value of \cs{@@_stop_item_viii:} which we will define later and add the
+%    \mypkg{hyperref} compatible \icounter{enumXviii} counter, after that we will
+%    start capturing the item content in a box. Here need setting the |\if@hyper@item| switch to
+%    \emph{\enquote{true}} for \mypkg{hyperref} compatible. The
+%    explanation for this is given by the master Heiko Oberdiek on
+%    \href{https://tex.stackexchange.com/a/404911}{\textbackslash refstepcounter\{enumi\} twice (or more) creates destination with the same identifier}.
+%
+% \iffalse
+%% Real |\item| definition for |keyans*| \legacy_if_set_true:n { @hyper@item } :D. (doc p170)
+% \fi
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_start_item_viii:w [#1]
+  {
+    \cs_set_eq:NN \@@_stop_item_tmp_viii: \@@_stop_item_viii:
+    \legacy_if:nT { @noitemarg }
+      {
+        \legacy_if_set_false:n { @noitemarg }
+        \legacy_if:nT { @nmbrlist }
+          {
+            \bool_if:NT \l_@@_hyperref_bool
+              {
+                \legacy_if_set_true:n { @hyper@item }
+              }
+            \refstepcounter{enumXviii}
+            % code for check-ans
+            \bool_if:NT \l_@@_check_ans_bool
+              {
+                % If true |no-store| key => nested in |enumext|
+                \bool_if:NTF \l_@@_store_ans_bool
+                  {
+                    \int_gadd:cn { g_@@_count_item_ \@@_level: _int }
+                      { \int_use:c { g_@@_count_level_ \@@_level: _int } + 1 }
+                  }
+                  {
+                    \int_gincr:N \g_@@_count_item_all_int
+                    \int_gincr:N \g_@@_count_level_viii_int
+                  }
+              }
+          }
+      }
+%    \end{macrocode}
+%
+%    Here we start capturing |\item| and its contents into a group using the
+%    plain form of the \myenv{lrbox} environment. If the state of the
+%    variable \cs{l_@@_footnotes_key_bool} is false, we will redefine the
+%    command |\footnote|, followed by printing the \mymeta{symbol} defined
+%    for |\item*| if it is present and open a new group inside which we
+%    execute \mykey{font} key next to |\item| and the keys
+%    \mykey{wrap-label}, \mykey{wrap-label*}, \mykey{align}, close the group and execute
+%    the key \mykey{labelsep} and then the key \mykey{first}. Finally we
+%    open the \myenv{minipage} environment and execute the
+%    \mykey{listparindent} key which will be equal to |\parindent|, the
+%    \mykey{parsep} key which will be equal to |\parskip| and the
+%    \mykey{itemindent} key.
+%    \begin{macrocode}
+    \group_begin:
+      \lrbox{ \l_@@_item_text_viii_box }
+        \bool_if:NF \l_@@_footnotes_key_bool
+          {
+            \@@_renew_footnote:
+          }
+        \bool_if:NT \l_@@_item_starred_viii_bool
+          {
+            \tl_if_blank:VT \g_@@_item_symbol_aux_viii_tl
+              {
+                \tl_gset_eq:NN
+                  \g_@@_item_symbol_aux_viii_tl \l_@@_item_symbol_viii_tl
+              }
+            \mode_leave_vertical:
+            \skip_horizontal:n { -\l_@@_item_symbol_sep_viii_dim }
+            \makebox[ 0pt ][ r ]{ \g_@@_item_symbol_aux_viii_tl }
+            \skip_horizontal:N \l_@@_item_symbol_sep_viii_dim
+            \tl_gclear:N \g_@@_item_symbol_aux_viii_tl
+          }
+        \group_begin:
+          \tl_use:N \l_@@_label_font_style_viii_tl
+          \bool_if:NTF \l_@@_wrap_label_viii_bool
+            {
+              \makebox[ \l_@@_labelwidth_viii_dim ][ \l_@@_align_label_viii_str ]
+                { \@@_wrapper_label_viii:n {#1} }
+            }
+            {
+              \makebox[ \l_@@_labelwidth_viii_dim ][ \l_@@_align_label_viii_str ]{ #1 }
+            }
+        \group_end:
+        \skip_horizontal:N \l_@@_labelsep_viii_dim
+        \tl_use:N \l_@@_after_list_args_viii_tl
+        \@@_minipage:w [ t ]{ \l_@@_joined_width_viii_dim  }
+          \skip_set_eq:NN \parindent \l_@@_listparindent_viii_dim
+          \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
+          \tl_use:N \l_@@_fake_item_indent_viii_tl
+   }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_stop_item_viii:}
+%   The function \cs{@@_stop_item_viii:} shall terminate with the capture of
+%   |\item| and its \mymeta{contents}. Close the environments
+%   \myenv{minipage}, \myenv{lrbox} and the group. Then we
+%   only have to set the width of the box and print it next to
+%   |\footnote|, and add the horizontal and vertical separation between
+%   the boxes.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Nn \@@_stop_item_viii:
+  {
+        \@@_endminipage:
+      \endlrbox
+    \group_end:
+    \box_set_wd:Nn \l_@@_item_text_viii_box
+      {
+        \l_@@_joined_width_viii_dim
+        + \l_@@_labelwidth_viii_dim
+        + \l_@@_labelsep_viii_dim
+      }
+    \int_set:Nn \hbadness { 10000 }
+    \box_use:N \l_@@_item_text_viii_box
+    \bool_if:NF \l_@@_footnotes_key_bool
+      {
+        \@@_print_footnote:
+      }
+    \int_compare:nNnTF { \l_@@_item_column_pos_viii_int } = { \l_@@_columns_viii_int }
+      {
+        \par\noindent
+        \int_zero:N \l_@@_item_column_pos_viii_int
+      }
+      { \hspace{ \l_@@_columns_sep_viii_dim } }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_remove_extra_parsep_viii:}
+%   Finally we will remove the vertical space equal to |\parsep| when the
+%   total number of items is divisible by the number of items in the last
+%   row of the environment.
+%
+% \iffalse
+%% Remove extra \parsep in |keyans*|
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_remove_extra_parsep_viii:
+  {
+    \int_compare:nNnT
+      {
+        \int_mod:nn {  \g_@@_item_count_all_viii_int } { \l_@@_columns_viii_int }
+      }
+      =
+      { \c_zero_int }
+      {
+        \par
+        \vspace{ -\l_@@_itemsep_viii_skip }
+        \int_gzero:N \g_@@_item_count_all_viii_int
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% As we don't want our check to be executed \mykey{check-ans} by levels but on the
+% complete list, we will take it out of the \myenv*{keyans*}
+% environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
+% \iffalse
+%% Execute |check-ans| key out of |keyans*|.
+% \fi
+%    \begin{macrocode}
+\@@_after_env:nn {keyans*}
+  {
+    \bool_if:NT \g_@@_check_ans_show_h_bool
+      {
+        \int_compare:nNnT { \l_@@_level_int } = { 0 }
+          {
+            \@@_check_ans_active_viii:
+          }
+      }
+    \bool_gset_false:N \g_@@_check_ans_show_h_bool
+    \tl_gclear:N \g_@@_store_name_tl
+  }
+%    \end{macrocode}
