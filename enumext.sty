@@ -3094,7 +3094,6 @@
   }
 \cs_new_protected:Nn \__enumext_after_list_vii:
   {
-
     \__enumext_stop_mini_vii:
     \__enumext_after_stop_list_vii:
     \__enumext_vspace_below_vii:
@@ -3173,7 +3172,7 @@
           \__enumext_start_item_vii:w [ \l__enumext_label_vii_tl ]
         }
   }
-%% Set \item*[sym][sep] for |enumext*|
+%% Set \item*[sym][sep] for |enumext*| environment.
 \cs_new_protected:Npn \__enumext_starred_item_vii:w
   {
     \bool_set_true:N \l__enumext_item_starred_vii_bool
@@ -3495,7 +3494,6 @@
   }
 \cs_new_protected:Nn \__enumext_after_list_viii:
   {
-
     \__enumext_stop_mini_viii:
     \__enumext_after_stop_list_viii:
     \__enumext_vspace_below_viii:
@@ -3596,6 +3594,10 @@
       }
     \group_begin:
       \lrbox{ \l__enumext_item_text_viii_box }
+         \bool_if:NF \l__enumext_footnotes_key_bool
+          {
+            \__enumext_renew_footnote:
+          }
         \bool_if:NT \l__enumext_item_starred_viii_bool
           {
             %\tl_if_blank:VT \g__enumext_item_symbol_aux_viii_tl
@@ -3640,10 +3642,10 @@
       }
     \int_set:Nn \hbadness { 10000 }
     \box_use:N \l__enumext_item_text_viii_box
-    %%\bool_if:NF \l__enumext_footnotes_key_bool
-    %%  {
-    %%    \__enumext_print_footnote:
-    %%  }
+    \bool_if:NF \l__enumext_footnotes_key_bool
+      {
+        \__enumext_print_footnote:
+      }
     \int_compare:nNnTF { \l__enumext_item_column_pos_viii_int } = { \l__enumext_columns_viii_int }
       {
         \par\noindent

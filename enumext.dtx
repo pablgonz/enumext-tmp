@@ -7476,12 +7476,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Storing content in sequence}
 %
 % \begin{macro}{\@@_keyans_addto_seq:n,}
-%
 %    The function \cs{@@_keyans_addto_seq:n} will pass the
-%    contents of the \cs{l_@@_label_v_tl} (\emph{\enquote{current label}}) for the
-%    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} (current
-%    label) for the \myenv*{keyanspic} environment when using
-%    \ics*{item*} and \ics*{anspic*}, followed by the contents of the
+%    contents of the \emph{\enquote{current}} \mymeta{label} \cs{l_@@_label_v_tl} for the
+%    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} for the \myenv*{keyanspic} environment when using
+%    \ics*{item*} and \ics*{anspic*}, followed by the \mymeta{contents} of the
 %    optional argument of both commands to the \cs{l_@@_store_keyans_label_tl}
 %    variable to the sequence defined by the \mykey{save-ans} key.
 % \iffalse
@@ -7564,7 +7562,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{The \texttt{show-ans} and \texttt{show-pos} keys for \env{keyans} and \env{keyanspic}}
 %
 % The code is very similar to the \ics*{anskey} code, but, if I change
-% the order of the operations the counter off label are incorrect.
+% the order of the operations the counter off \mymeta{label} are incorrect.
 %
 % \begin{macro}{\@@_keyans_show_left:n,}
 %    Common function to show \emph{starred commands} and \mymeta{position} of
@@ -9629,7 +9627,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_list_vii:
   {
-
     \@@_stop_mini_vii:
     \@@_after_stop_list_vii:
     \@@_vspace_below_vii:
@@ -9792,7 +9789,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \ics*{item*}\myoarg[type=tt]{symbol}\myoarg[type=tt]{offset}.
 %
 % \iffalse
-%% Set \item*[sym][sep] for |enumext*|
+%% Set \item*[sym][sep] for |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_item_vii:w
@@ -10274,7 +10271,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_list_viii:
   {
-
     \@@_stop_mini_viii:
     \@@_after_stop_list_viii:
     \@@_vspace_below_viii:
@@ -10488,6 +10484,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
     \group_begin:
       \lrbox{ \l_@@_item_text_viii_box }
+         \bool_if:NF \l_@@_footnotes_key_bool
+          {
+            \@@_renew_footnote:
+          }
         \bool_if:NT \l_@@_item_starred_viii_bool
           {
             %\tl_if_blank:VT \g_@@_item_symbol_aux_viii_tl
@@ -10543,10 +10543,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \int_set:Nn \hbadness { 10000 }
     \box_use:N \l_@@_item_text_viii_box
-    %%\bool_if:NF \l_@@_footnotes_key_bool
-    %%  {
-    %%    \@@_print_footnote:
-    %%  }
+    \bool_if:NF \l_@@_footnotes_key_bool
+      {
+        \@@_print_footnote:
+      }
     \int_compare:nNnTF { \l_@@_item_column_pos_viii_int } = { \l_@@_columns_viii_int }
       {
         \par\noindent
