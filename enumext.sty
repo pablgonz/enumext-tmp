@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-04-29}
+  {2024-04-30}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -2016,31 +2016,41 @@
    }
 \cs_new_protected:Nn \__enumext_keyans_store_ref_aux_i:
   {
-        \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
-          {
-            \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
-              { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_vi_tl }
-          }
-          {
-            \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
-              { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_v_tl }
-          }
-        \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
-          {
-            \l__enumext_store_name_tl \c_colon_str
-            \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
-          }
+    \bool_if:NT \g__enumext_starred_bool
+      {
+        \tl_set_eq:NN \l__enumext_label_copy_i_tl \l__enumext_label_copy_vii_tl
+      }
+    \int_compare:nNnT { \l__enumext_keyans_pic_level_int } = { 1 }
+      {
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_vi_tl }
+      }
+    \int_compare:nNnT { \l__enumext_keyans_level_int } = { 1 }
+      {
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_v_tl }
+      }
+    \int_compare:nNnT { \l__enumext_keyans_level_h_int } = { 1 }
+      {
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_viii_tl }
+      }
+    \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
+      {
+        \l__enumext_store_name_tl \c_colon_str
+        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
+      }
      \__enumext_keyans_store_ref_aux_ii:
   }
 \cs_new_protected:Nn \__enumext_keyans_store_ref_aux_ii:
   {
-        \tl_put_right:Ne \l__enumext_store_write_aux_file_tl
-          {
-            \__enumext_newlabel:nn
-              { \exp_not:V \l__enumext_newlabel_arg_one_tl }
-              { \l__enumext_newlabel_arg_two_tl }
-          }
-        \l__enumext_store_write_aux_file_tl
+    \tl_put_right:Ne \l__enumext_store_write_aux_file_tl
+      {
+        \__enumext_newlabel:nn
+          { \exp_not:V \l__enumext_newlabel_arg_one_tl }
+          { \l__enumext_newlabel_arg_two_tl }
+      }
+    \l__enumext_store_write_aux_file_tl
   }
 %% Function for storing in sequence for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_addto_seq:n #1
@@ -2057,6 +2067,10 @@
       {
         \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \c_space_tl #1 }
       }
+    \__enumext_keyans_addto_seq_link:
+  }
+\cs_new_protected:Nn \__enumext_keyans_addto_seq_link:
+  {
     \bool_lazy_and:nnT
       { \l__enumext_store_ref_key_bool }
       { \l__enumext_hyperref_bool }

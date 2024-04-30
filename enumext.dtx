@@ -3517,7 +3517,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-04-29}
+  {2024-04-30}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -7367,7 +7367,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Common functions for \env{keyans} and \env{keyanspic}}
+% \subsection{Common functions for \env{keyans}, \env{keyans*} and \env{keyanspic}}
 %
 % \subsubsection{Storing content in prop list}
 %
@@ -7403,7 +7403,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{The \texttt{store-ref} key for \env{keyans} and \env{keyanspic}}
+% \subsubsection{The \texttt{store-ref} key for \env{keyans}, \env{keyans*} and \env{keyanspic}}
 %
 % The internal \emph{\enquote{label and ref}} system for the \myenv*{keyans}, \myenv*{keyans*} and
 % \myenv*{keyanspic} environments has slight differences with the one
@@ -7451,47 +7451,57 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    variable \cs{l_@@_newlabel_arg_one_tl} which will
 %    contain \mymarg[type=tt]{store name \textcolor{red}{:} position}
 %    analyzing whether the environment in which they are executed is
-%    \myenv*{enumext} or \myenv*{enumext*}.
+%    \myenv*{enumext*} or \myenv*{enumext}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_store_ref_aux_i:
   {
-        \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
-          {
-            \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
-              { \l_@@_label_copy_i_tl . \l_@@_label_copy_vi_tl }
-          }
-          {
-            \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
-              { \l_@@_label_copy_i_tl . \l_@@_label_copy_v_tl }
-          }
-        \tl_put_right:Ne \l_@@_newlabel_arg_one_tl
-          {
-            \l_@@_store_name_tl \c_colon_str
-            \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } }
-          }
+    \bool_if:NT \g_@@_starred_bool
+      {
+        \tl_set_eq:NN \l_@@_label_copy_i_tl \l_@@_label_copy_vii_tl
+      }
+    \int_compare:nNnT { \l_@@_keyans_pic_level_int } = { 1 }
+      {
+        \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
+          { \l_@@_label_copy_i_tl . \l_@@_label_copy_vi_tl }
+      }
+    \int_compare:nNnT { \l_@@_keyans_level_int } = { 1 }
+      {
+        \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
+          { \l_@@_label_copy_i_tl . \l_@@_label_copy_v_tl }
+      }
+    \int_compare:nNnT { \l_@@_keyans_level_h_int } = { 1 }
+      {
+        \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
+          { \l_@@_label_copy_i_tl . \l_@@_label_copy_viii_tl }
+      }
+    \tl_put_right:Ne \l_@@_newlabel_arg_one_tl
+      {
+        \l_@@_store_name_tl \c_colon_str
+        \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } }
+      }
      \@@_keyans_store_ref_aux_ii:
   }
 %    \end{macrocode}
-%    Now execute the function \cs{@@_newlabel:nn} and save the
+%    Now auxiliary function \cs{@@_keyans_store_ref_aux_ii:} save the
 %    result in the variable \cs{l_@@_store_write_aux_file_tl} and
 %    finally we write in the |.aux| file.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_store_ref_aux_ii:
   {
-        \tl_put_right:Ne \l_@@_store_write_aux_file_tl
-          {
-            \@@_newlabel:nn
-              { \exp_not:V \l_@@_newlabel_arg_one_tl }
-              { \l_@@_newlabel_arg_two_tl }
-          }
-        \l_@@_store_write_aux_file_tl
+    \tl_put_right:Ne \l_@@_store_write_aux_file_tl
+      {
+        \@@_newlabel:nn
+          { \exp_not:V \l_@@_newlabel_arg_one_tl }
+          { \l_@@_newlabel_arg_two_tl }
+      }
+    \l_@@_store_write_aux_file_tl
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \subsubsection{Storing content in sequence}
 %
-% \begin{macro}{\@@_keyans_addto_seq:n,}
+% \begin{macro}{\@@_keyans_addto_seq:n, \@@_keyans_addto_seq_link:}
 %    The function \cs{@@_keyans_addto_seq:n} will pass the
 %    contents of the current \mymeta{label} \cs{l_@@_label_v_tl} for the
 %    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} for the \myenv*{keyanspic} environment when using
@@ -7516,12 +7526,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \tl_put_right:Ne \l_@@_store_keyans_label_tl { \c_space_tl #1 }
       }
+    \@@_keyans_addto_seq_link:
+  }
 %    \end{macrocode}
 %    Checks if the \mykey{store-ref} key is active along with the
 %    \mypkg{hyperref} package load, if both conditions are met, it will
 %    create the \ics{hyperlink} and then store using the
 %    \cs{@@_store_addto_seq:V} function.
+%    Finally, copy the contents of the variable \cs{l_@@_store_keyans_label_tl}
+%    into the global variable \cs{g_@@_check_ans_item_tl} to be used
+%    by the function \cs{@@_keyans_check_ans:nn} and increment
+%    the value of the integer variable \cs{g_@@_count_item_with_ans_int} handled
+%    by the \mykey{check-ans} key.
 %    \begin{macrocode}
+\cs_new_protected:Nn \@@_keyans_addto_seq_link:
+  {
     \bool_lazy_and:nnT
       { \l_@@_store_ref_key_bool }
       { \l_@@_hyperref_bool }
@@ -7536,13 +7555,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \@@_store_addto_seq:V \l_@@_store_keyans_label_tl
-%    \end{macrocode}
-%    Finally, copy the contents of the variable \cs{l_@@_store_keyans_label_tl}
-%    into the global variable \cs{g_@@_check_ans_item_tl} to be used
-%    by the function \cs{@@_keyans_check_ans:nn} and increment
-%    the value of the integer variable \cs{g_@@_count_item_with_ans_int} handled
-%    by the \mykey{check-ans} key.
-%    \begin{macrocode}
     \tl_gset:NV \g_@@_check_ans_item_tl \l_@@_store_keyans_label_tl
     \bool_if:NT \l_@@_check_ans_bool
       {
