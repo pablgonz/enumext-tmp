@@ -7200,7 +7200,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    will return |1.(a).i.A|.
 %
 %    First we will remove the dots \enquote{\textcolor{red}{.}} from
-%    the \emph{current} \mymeta{labels}, we do not want to get double
+%    the current \mymeta{labels}, we do not want to get double
 %    dots in our references, then we will place this in the variable
 %    \cs{l_@@_newlabel_arg_two_tl}.
 % \iffalse
@@ -7405,70 +7405,86 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{The \texttt{store-ref} key for \env{keyans} and \env{keyanspic}}
 %
-% The internal \emph{\enquote{label and ref}} system for the \myenv*{keyans} and
+% The internal \emph{\enquote{label and ref}} system for the \myenv*{keyans}, \myenv*{keyans*} and
 % \myenv*{keyanspic} environments has slight differences with the one
-% implemented for the \ics*{anskey} command, basically because in both
-% environments we are interested in the \emph{current} \mymeta{label}.
+% implemented for the \ics*{anskey} command, basically because in this
+% environments we are interested in the current \mymeta{label}. The
+% mechanism defined here will allow to execute
+% \ics{ref}\mymarg[type=tt]{store name \textcolor{red}{:} position} and
+% will return |1.(A)|.
 %
-% \begin{macro}{\@@_keyans_internal_ref:}
-%    The function \cs{@@_keyans_internal_ref:} handles the
-%    internal \emph{\enquote{label and ref}} system used by the \mykey{store-ref}
-%    and \mykey{mark-ref} keys for \ics*{item*} and \ics*{anspic*}
-%    commands. The mechanism defined here will allow to execute
-%    \ics{ref}\mymarg[type=tt]{store name \textcolor{red}{:} position} and will return |1.(A)|.
+%^^A    First we will remove the dots \enquote{\textcolor{red}{\texttt{.}}}
+%^^A    from the current \mymeta{labels}, we do not want to get
+%^^A    double dots in our references, then we will place this in the
+%^^A    variable \cs{l_@@_newlabel_arg_two_tl}.
+%
+%
+% \begin{macro}{\@@_keyans_store_ref:, \@@_keyans_store_ref_aux_i:,\@@_keyans_store_ref_aux_ii:}
+%    The function \cs{@@_keyans_store_ref:} handles the internal \emph{\enquote{label and ref}}
+%    system used by the \mykey{store-ref} key for \ics*{item*} and \ics*{anspic*}
+%    commands.
+%    First we will create copies of the current \mymeta{labels} and remove
+%    the dots \enquote{\textcolor{red}{\texttt{.}}} from them, we do not
+%    want to get double dots in our references.
+%
 % \iffalse
-%% Internal label and ref function for |keyans| and |keyanspic|.
+%% Internal label and ref function for |keyans|, |keyans*| and |keyanspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_internal_ref:
+\cs_new_protected:Nn \@@_keyans_store_ref:
   {
+    \bool_if:NT \l_@@_store_ref_key_bool
+      {
+        \cs_set_protected:Npn \@@_tmp:n ##1
+          {
+            \tl_set_eq:cc { l_@@_label_copy_##1_tl } { l_@@_label_##1_tl }
+            \tl_reverse:c { l_@@_label_copy_##1_tl }
+            \tl_remove_once:cn { l_@@_label_copy_##1_tl } { . }
+            \tl_reverse:c { l_@@_label_copy_##1_tl }
+          }
+        \clist_map_inline:nn { i, v, vi, vii, viii } { \@@_tmp:n {##1} }
+        \@@_keyans_store_ref_aux_i:
+      }
+   }
 %    \end{macrocode}
-%    First we will remove the dots \enquote{\textcolor{red}{\texttt{.}}}
-%    from the \emph{\enquote{current labels}}, we do not want to get
-%    double dots in our references, then we will place this in the
-%    variable \cs{l_@@_newlabel_arg_two_tl}.
+%    The auxiliary function \cs{@@_keyans_store_ref_aux_i:} set the
+%    variable \cs{l_@@_newlabel_arg_one_tl} which will
+%    contain \mymarg[type=tt]{store name \textcolor{red}{:} position}
+%    analyzing whether the environment in which they are executed is
+%    \myenv*{enumext} or \myenv*{enumext*}.
 %    \begin{macrocode}
-    \cs_set_protected:Npn \@@_tmp:n ##1
-      {
-        \tl_set_eq:cc { l_@@_label_copy_##1_tl } { l_@@_label_##1_tl }
-        \tl_reverse:c { l_@@_label_copy_##1_tl }
-        \tl_remove_once:cn { l_@@_label_copy_##1_tl } { . }
-        \tl_reverse:c { l_@@_label_copy_##1_tl }
-      }
-    \clist_map_inline:nn { i, v, vi, vii, viii } { \@@_tmp:n {##1} }
-    \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
-      {
-        \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
-          { \l_@@_label_copy_i_tl . \l_@@_label_copy_vi_tl }
-      }
-      {
-        \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
-          { \l_@@_label_copy_i_tl . \l_@@_label_copy_v_tl }
-      }
-%    \end{macrocode}
-%    Now we set the variable \cs{l_@@_newlabel_arg_one_tl} which will
-%    contain \mymarg[type=tt]{store name \textcolor{red}{:} position}.
-%    \begin{macrocode}
-    \tl_put_right:Ne \l_@@_newlabel_arg_one_tl
-      {
-        \l_@@_store_name_tl \c_colon_str
-        \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } }
-      }
+\cs_new_protected:Nn \@@_keyans_store_ref_aux_i:
+  {
+        \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
+          {
+            \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
+              { \l_@@_label_copy_i_tl . \l_@@_label_copy_vi_tl }
+          }
+          {
+            \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
+              { \l_@@_label_copy_i_tl . \l_@@_label_copy_v_tl }
+          }
+        \tl_put_right:Ne \l_@@_newlabel_arg_one_tl
+          {
+            \l_@@_store_name_tl \c_colon_str
+            \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } }
+          }
+     \@@_keyans_store_ref_aux_ii:
+  }
 %    \end{macrocode}
 %    Now execute the function \cs{@@_newlabel:nn} and save the
 %    result in the variable \cs{l_@@_store_write_aux_file_tl} and
 %    finally we write in the |.aux| file.
 %    \begin{macrocode}
-    \tl_put_right:Ne \l_@@_store_write_aux_file_tl
-      {
-        \@@_newlabel:nn
-          { \exp_not:V \l_@@_newlabel_arg_one_tl }
-          { \l_@@_newlabel_arg_two_tl }
-      }
-    \bool_if:NT \l_@@_store_ref_key_bool
-      {
+\cs_new_protected:Nn \@@_keyans_store_ref_aux_ii:
+  {
+        \tl_put_right:Ne \l_@@_store_write_aux_file_tl
+          {
+            \@@_newlabel:nn
+              { \exp_not:V \l_@@_newlabel_arg_one_tl }
+              { \l_@@_newlabel_arg_two_tl }
+          }
         \l_@@_store_write_aux_file_tl
-      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7477,7 +7493,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_keyans_addto_seq:n,}
 %    The function \cs{@@_keyans_addto_seq:n} will pass the
-%    contents of the \emph{\enquote{current}} \mymeta{label} \cs{l_@@_label_v_tl} for the
+%    contents of the current \mymeta{label} \cs{l_@@_label_v_tl} for the
 %    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} for the \myenv*{keyanspic} environment when using
 %    \ics*{item*} and \ics*{anspic*}, followed by the \mymeta{contents} of the
 %    optional argument of both commands to the \cs{l_@@_store_keyans_label_tl}
@@ -7651,7 +7667,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   To keep the correct numbering of \ics{footnote} and to make it work
 %   correctly with the \mykey{mini-env} key and in the \myenv*{enumext*} and \myenv*{keyans*}
 %   environments, it is necessary to redefine the command.
-%   This implementation is adapted from the answer given by \texttt{@cfr}
+%   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
 %   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
 % \iffalse
 %% Redefining \footnote.
@@ -7875,7 +7891,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_keyans_starred_item:n}
 %    The function \cs{@@_keyans_starred_item:n}
-%    which will make a temporary copy of the \emph{\enquote{current label}}, execute the
+%    which will make a temporary copy of the current \mymeta{label}, execute the
 %    \mykey{show-ans} or \mykey{show-pos} keys using the function
 %    \cs{@@_keyans_show_left:n} and will display the contents
 %    of that item using the internal copy \cs{@@_item_std:w}, this is
@@ -7889,14 +7905,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_set_true:N \l_@@_wrap_label_v_bool
     \@@_item_std:w \tl_use:N \l_@@_fake_item_indent_v_tl
 %    \end{macrocode}
-%    Recover the original value of the \emph{\enquote{current label}} and \emph{store}
+%    Recover the original value of the current \mymeta{label} and \emph{store}
 %    it first in the \mymeta{prop list} (including the optional argument), run the
 %    internal \emph{\enquote{label and ref}} system if the \mykey{store-ref} key is active and
 %    finally \emph{store} it in the \mymeta{sequence}.
 %    \begin{macrocode}
     \tl_set_eq:NN \l_@@_label_v_tl \l_@@_keyans_tmpa_tl
     \@@_keyans_addto_prop:n { #1 }
-    \@@_keyans_internal_ref:
+    \@@_keyans_store_ref:
     \@@_keyans_addto_seq:n { #1 }
   }
 %    \end{macrocode}
@@ -9084,7 +9100,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_if:nT { #1 }
       {
         \@@_keyans_addto_prop:n { #2 }
-        \@@_keyans_internal_ref:
+        \@@_keyans_store_ref:
         \@@_keyans_addto_seq:n { #2 }
         \bool_lazy_or:nnT
           { \l_@@_show_answer_bool }

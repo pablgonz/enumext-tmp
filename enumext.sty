@@ -1998,41 +1998,49 @@
       }
     \__enumext_store_addto_prop:V \l__enumext_store_keyans_label_tl
   }
-%% Internal label and ref function for |keyans| and |keyanspic|.
-\cs_new_protected:Nn \__enumext_keyans_internal_ref:
+%% Internal label and ref function for |keyans|, |keyans*| and |keyanspic|.
+\cs_new_protected:Nn \__enumext_keyans_store_ref:
   {
-    \cs_set_protected:Npn \__enumext_tmp:n ##1
-      {
-        \tl_set_eq:cc { l__enumext_label_copy_##1_tl } { l__enumext_label_##1_tl }
-        \tl_reverse:c { l__enumext_label_copy_##1_tl }
-        \tl_remove_once:cn { l__enumext_label_copy_##1_tl } { . }
-        \tl_reverse:c { l__enumext_label_copy_##1_tl }
-      }
-    \clist_map_inline:nn { i, v, vi, vii, viii } { \__enumext_tmp:n {##1} }
-    \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
-      {
-        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
-          { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_vi_tl }
-      }
-      {
-        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
-          { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_v_tl }
-      }
-    \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
-      {
-        \l__enumext_store_name_tl \c_colon_str
-        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
-      }
-    \tl_put_right:Ne \l__enumext_store_write_aux_file_tl
-      {
-        \__enumext_newlabel:nn
-          { \exp_not:V \l__enumext_newlabel_arg_one_tl }
-          { \l__enumext_newlabel_arg_two_tl }
-      }
     \bool_if:NT \l__enumext_store_ref_key_bool
       {
-        \l__enumext_store_write_aux_file_tl
+        \cs_set_protected:Npn \__enumext_tmp:n ##1
+          {
+            \tl_set_eq:cc { l__enumext_label_copy_##1_tl } { l__enumext_label_##1_tl }
+            \tl_reverse:c { l__enumext_label_copy_##1_tl }
+            \tl_remove_once:cn { l__enumext_label_copy_##1_tl } { . }
+            \tl_reverse:c { l__enumext_label_copy_##1_tl }
+          }
+        \clist_map_inline:nn { i, v, vi, vii, viii } { \__enumext_tmp:n {##1} }
+        \__enumext_keyans_store_ref_aux_i:
       }
+   }
+\cs_new_protected:Nn \__enumext_keyans_store_ref_aux_i:
+  {
+        \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
+          {
+            \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+              { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_vi_tl }
+          }
+          {
+            \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+              { \l__enumext_label_copy_i_tl . \l__enumext_label_copy_v_tl }
+          }
+        \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
+          {
+            \l__enumext_store_name_tl \c_colon_str
+            \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
+          }
+     \__enumext_keyans_store_ref_aux_ii:
+  }
+\cs_new_protected:Nn \__enumext_keyans_store_ref_aux_ii:
+  {
+        \tl_put_right:Ne \l__enumext_store_write_aux_file_tl
+          {
+            \__enumext_newlabel:nn
+              { \exp_not:V \l__enumext_newlabel_arg_one_tl }
+              { \l__enumext_newlabel_arg_two_tl }
+          }
+        \l__enumext_store_write_aux_file_tl
   }
 %% Function for storing in sequence for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_addto_seq:n #1
@@ -2244,7 +2252,7 @@
     \__enumext_item_std:w \tl_use:N \l__enumext_fake_item_indent_v_tl
     \tl_set_eq:NN \l__enumext_label_v_tl \l__enumext_keyans_tmpa_tl
     \__enumext_keyans_addto_prop:n { #1 }
-    \__enumext_keyans_internal_ref:
+    \__enumext_keyans_store_ref:
     \__enumext_keyans_addto_seq:n { #1 }
   }
 %% Redefine |\item| for |keyans|.
@@ -2790,7 +2798,7 @@
     \bool_if:nT { #1 }
       {
         \__enumext_keyans_addto_prop:n { #2 }
-        \__enumext_keyans_internal_ref:
+        \__enumext_keyans_store_ref:
         \__enumext_keyans_addto_seq:n { #2 }
         \bool_lazy_or:nnT
           { \l__enumext_show_answer_bool }
