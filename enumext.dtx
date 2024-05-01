@@ -10039,11 +10039,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-%
-%
-%
-%
-%
 % \subsection{The \env{keyans*} environment}\label{env:keyans-starred}
 %
 % \subsubsection{Functions for item box width}
@@ -10115,9 +10110,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int
           }
       }
-%    \end{macrocode}
-%    Only need if |#1 > 1| (default are set before).
-%    \begin{macrocode}
     \int_compare:nNnTF { \l_@@_joined_item_viii_int } > { \c_one_int }
       {
         \int_set_eq:NN \l_@@_joined_item_aux_viii_int \l_@@_joined_item_viii_int
@@ -10295,7 +10287,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    then apply the \mymarg[type=tt]{code} handled by the \mykey{after} key
 %    together with the \emph{vertical space} handled by the \mykey{below} key if
 %    they are present.
-%
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_list_viii:
   {
@@ -10361,7 +10352,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_joined_item_viii:w}
-%
 %    The function \cs{@@_joined_item_viii:w} will first call the
 %    function \cs{@@_starred_joined_item_viii:n} in charge of setting the
 %    \emph{width} of the box that will store the content passed to \ics*{item}. Then we
@@ -10383,19 +10373,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_standard_item_viii:w}
-%
-% The function \cs{@@_standard_item_viii:w} will first look for the
-% argument “|[|”, if present it will set the state of the variable
-% \cs{l_@@_wrap_label_opt_viii_bool} equal to the state of the variable
-% \cs{l_@@_wrap_label_opt_viii_bool} handled by the key
-% \mykey{wrap-label*} and finally execute the \emph{non-enumerated}
-% version \ics*{item}\myoarg[type=tt]{custom} by means of the function
-% \cs{@@_start_item_viii:w}, otherwise we will set the value of the
-% variable \cs{l_@@_wrap_label_viii_bool} handled by the
-% \mykey{wrap-label} key to true and set the switch |\if@noitemarg| to
-% true to execute the enumerated version of \ics*{item} by means of the
-% function \cs{@@_start_item_viii:w} |[| \myvarenv{l__@@_label_viii_tl} |]|.
-%
+%   The function \cs{@@_standard_item_viii:w} will first look for the
+%   argument “|[|”, if present it will set the state of the variable
+%   \cs{l_@@_wrap_label_opt_viii_bool} equal to the state of the variable
+%   \cs{l_@@_wrap_label_opt_viii_bool} handled by the key
+%   \mykey{wrap-label*} and finally execute the \emph{non-enumerated}
+%   version \ics*{item}\myoarg[type=tt]{custom} by means of the function
+%   \cs{@@_start_item_viii:w}, otherwise we will set the value of the
+%   variable \cs{l_@@_wrap_label_viii_bool} handled by the
+%   \mykey{wrap-label} key to true and set the switch |\if@noitemarg| to
+%   true to execute the enumerated version of \ics*{item} by means of the
+%   function \cs{@@_start_item_viii:w} |[| \myvarenv{l__@@_label_viii_tl} |]|.
 % \iffalse
 %% Set standar \item[opt] for |keyans*| environment.
 % \fi
@@ -10421,18 +10409,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_starred_item_viii:w, \@@_starred_item_viii_aux_i:w,
 %               \@@_starred_item_viii_aux_ii:w,}
-%
 % The function \cs{@@_starred_item_viii:w} together with the specified
 % auxiliary functions |aux_i:w| and |aux_ii:w| execute \ics*{item*}
 % and \ics*{item*}\myoarg[type=tt]{content}.
-%
 % \iffalse
 %% Set \item*[content] for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_item_viii:w
   {
-    %%\bool_set_true:N \l_@@_item_starred_viii_bool
+    \bool_set_true:N \l_@@_item_starred_viii_bool
     \bool_set_true:N \l_@@_wrap_label_viii_bool
     \peek_meaning:NTF [
       { \@@_starred_item_viii_aux_i:w }
@@ -10440,18 +10426,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Npn \@@_starred_item_viii_aux_i:w [#1]
   {
-    %\tl_gset:Nn \g_@@_item_symbol_aux_viii_tl {#1}
-    % Aquí debemos capturar el argumento opcional
+    \tl_clear:N \l_@@_store_keyans_label_tl
+    \tl_if_novalue:nF { #1 }
+      {
+        \tl_set:Ne \l_@@_store_keyans_label_tl { \c_space_tl #1 }
+      }
     \@@_starred_item_viii_aux_ii:w
   }
 \cs_new_protected:Npn \@@_starred_item_viii_aux_ii:w
   {
-    %%\dim_set_eq:NN
-    %%  \l_@@_item_symbol_sep_viii_dim
-    %%  \l_@@_labelsep_viii_dim
-    %% Y probablemente aquí debemos pasar todo a la seq and prop list
     \legacy_if_set_true:n { @noitemarg }
     \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
+    \tl_put_left:Ne \l_@@_store_keyans_label_tl { \l_@@_label_viii_tl }
+    \@@_store_addto_prop:V \l_@@_store_keyans_label_tl
+    \@@_keyans_store_ref:
+    \tl_put_left:Ne \l_@@_store_keyans_label_tl { \item }
+    \@@_keyans_addto_seq_link:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10489,20 +10479,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 \legacy_if_set_true:n { @hyper@item }
               }
             \refstepcounter{enumXviii}
-            % code for check-ans
-            %\bool_if:NT \l_@@_check_ans_bool
-              %{
-                %% If true |no-store| key => nested in |enumext|
-                %\bool_if:NTF \l_@@_store_ans_bool
-                  %{
-                    %\int_gadd:cn { g_@@_count_item_ \@@_level: _int }
-                      %{ \int_use:c { g_@@_count_level_ \@@_level: _int } + 1 }
-                  %}
-                  %{
-                    %\int_gincr:N \g_@@_count_item_all_int
-                    %\int_gincr:N \g_@@_count_level_viii_int
-                  %}
-              %}
           }
       }
 %    \end{macrocode}
@@ -10610,9 +10586,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
-%
-%
-%
 %
 % \subsection{The command \cs{getkeyans}}\label{cmd:getkeyans}
 %
@@ -10755,6 +10728,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \seq_if_empty:cF { g_@@_#3_seq }
           {
+            %%\seq_show:c { g_@@_#3_seq }
             \bool_if:nTF {#1}
               {
                 \begin{enumext*}[#2]
