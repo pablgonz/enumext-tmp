@@ -6412,7 +6412,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \mykey{save-ans} key sets the parameters for the operation of
 %    \ics*{anskey}, \myenv*{keyans} and \myenv*{keyanspic}.
 %    The variable \cs{l_@@_store_name_tl} will have the \emph{\enquote{store name}} with
-%    which the \mymeta{sequence} and \mymeta{prop list} will be created.
+%    which the \mymeta{sequence} and \mymeta{prop list} will be created, if it does not exist it will
+%    create it globally.
 %
 %    The boolean var \cs{l_@@_store_active_bool} will be set to
 %    true activating the entire internal \emph{storage mechanism}, then
@@ -6428,6 +6429,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_storing_set:n #1
   {
     \tl_set:Ne \l_@@_store_name_tl {#1}
+    \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
+      {
+        \prop_new:c { g_@@_ \l_@@_store_name_tl _prop }
+      }
+    \seq_if_exist:cF { g_@@_ \l_@@_store_name_tl _seq }
+      {
+        \seq_new:c { g_@@_ \l_@@_store_name_tl _seq }
+      }
     \bool_set_true:N \l_@@_store_active_bool
     \int_if_exist:cF { g_@@_resume_#1_int }
       {
@@ -6821,8 +6830,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_store_addto_prop:n, \@@_store_addto_prop:V}
 %    The function \cs{@@_store_addto_prop:n} stores the content in
-%    \mymeta{prop list} defined by \mykey{save-ans} key, if it does not
-%    exist it will create it globally. The \emph{\enquote{stored
+%    \mymeta{prop list} defined by \mykey{save-ans} key. The \emph{\enquote{stored
 %    content}} is retrieved by means of the \ics*{getkeyans} command.
 %
 %    \smallskip
@@ -6837,14 +6845,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function for store content to prop list.
 % \fi
 %    \begin{macrocode}
+\cs_generate_variant:Nn \prop_gput_if_not_in:Nnn { cen }
 \cs_new_protected:Npn \@@_store_addto_prop:n #1
   {
-    \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
-      { \prop_new:c { g_@@_ \l_@@_store_name_tl _prop } }
-    \prop_gput:cen { g_@@_ \l_@@_store_name_tl _prop }
+    \prop_gput_if_not_in:cen { g_@@_ \l_@@_store_name_tl _prop }
       {
-        \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } +1 }
-      } { #1 }
+        \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } + \c_one_int }
+      }
+      { #1 }
   }
 \cs_generate_variant:Nn \@@_store_addto_prop:n { V }
 %    \end{macrocode}
@@ -6854,10 +6862,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_store_addto_seq:n, \@@_store_addto_seq:v, \@@_store_addto_seq:V}
 %    The function \cs{@@_store_addto_seq:n} stores the content in
-%    \mymeta{sequence} defined by \mykey{save-ans} key, if it does not exist it will
-%    create it globally. This function is used by \ics*{anskey} in
+%    \mymeta{sequence} defined by \mykey{save-ans} key. This function is used by \ics*{anskey} in
 %    \myenv*{enumext}, \ics*{item*} in \myenv*{keyans} and
 %    \ics*{anspic} in \myenv*{keyanspic}.
+%
 %    The form in which the content is stored in \mymeta{sequence} is in
 %    a internal \myenv*{enumext} or \myenv*{enumext*} environments with the \emph{same structure}
 %    in which the command was executed.
@@ -6870,8 +6878,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_store_addto_seq:n #1
   {
-    \seq_if_exist:cF { g_@@_ \l_@@_store_name_tl _seq }
-      { \seq_new:c { g_@@_ \l_@@_store_name_tl _seq } }
     \seq_gput_right:cn { g_@@_ \l_@@_store_name_tl _seq } { #1 }
   }
 \cs_generate_variant:Nn \@@_store_addto_seq:n { v, V }
@@ -7382,8 +7388,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_keyans_addto_prop:n}
 %    The function \cs{@@_keyans_addto_prop:n} will pass the
-%    contents of the \cs{l_@@_label_v_tl} (current \mymeta{label}) for the
-%    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} (current \mymeta{label})
+%    contents of the current \mymeta{label} \cs{l_@@_label_v_tl} for the
+%    \myenv*{keyans} environment and the current \mymeta{label} \cs{l_@@_label_vi_tl}
 %    for the \myenv*{keyanspic} environment when using
 %    \ics*{item*} and \ics*{anspic*}, followed by the \emph{contents} of the
 %    optional argument of both commands to the \cs{l_@@_store_keyans_label_tl}
@@ -7602,9 +7608,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % the order of the operations the counter off \mymeta{label} are incorrect.
 %
 % \begin{macro}{\@@_keyans_show_left:n,}
-%    Common function to show \emph{starred commands} and \mymeta{position} of
+%    Common function to show \emph{starred commands} |\item*| and \mymeta{position} of
 %    stored content in \mymeta{prop list} for \myenv*{keyans} and
-%    \myenv*{keyanspic}. Need add |1| to \cs{l_@@_mark_answer_sym_tl} for
+%    \myenv*{keyanspic}. Need add |1| to \cs{l_@@_show_position_bool} for
 %    \myenv*{keyans} environment.
 % \iffalse
 %% Function for |show-ans| and |show-pos| for |keyans| and |keyanspic|.
@@ -7631,8 +7637,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \exp_not:N \normalfont
             \exp_not:N \footnotesize [ \int_eval:n
               {
-                \prop_count:c { g_@@_ \l_@@_store_name_tl _prop }
-                + \l_@@_keyans_level_int
+                \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } + \c_one_int
               }
               ]
             \group_end:

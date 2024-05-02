@@ -1449,6 +1449,14 @@
 \cs_new_protected:Npn \__enumext_storing_set:n #1
   {
     \tl_set:Ne \l__enumext_store_name_tl {#1}
+    \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
+      {
+        \prop_new:c { g__enumext_ \l__enumext_store_name_tl _prop }
+      }
+    \seq_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _seq }
+      {
+        \seq_new:c { g__enumext_ \l__enumext_store_name_tl _seq }
+      }
     \bool_set_true:N \l__enumext_store_active_bool
     \int_if_exist:cF { g__enumext_resume_#1_int }
       {
@@ -1660,21 +1668,19 @@
   }
   { \__enumext_tmp:nn #1 }
 %% Function for store content to prop list.
+\cs_generate_variant:Nn \prop_gput_if_not_in:Nnn { cen }
 \cs_new_protected:Npn \__enumext_store_addto_prop:n #1
   {
-    \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
-      { \prop_new:c { g__enumext_ \l__enumext_store_name_tl _prop } }
-    \prop_gput:cen { g__enumext_ \l__enumext_store_name_tl _prop }
+    \prop_gput_if_not_in:cen { g__enumext_ \l__enumext_store_name_tl _prop }
       {
-        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } +1 }
-      } { #1 }
+        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } + \c_one_int }
+      }
+      { #1 }
   }
 \cs_generate_variant:Nn \__enumext_store_addto_prop:n { V }
 %% Function for store content to sequence.
 \cs_new_protected:Npn \__enumext_store_addto_seq:n #1
   {
-    \seq_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _seq }
-      { \seq_new:c { g__enumext_ \l__enumext_store_name_tl _seq } }
     \seq_gput_right:cn { g__enumext_ \l__enumext_store_name_tl _seq } { #1 }
   }
 \cs_generate_variant:Nn \__enumext_store_addto_seq:n { v, V }
@@ -2123,8 +2129,7 @@
             \exp_not:N \normalfont
             \exp_not:N \footnotesize [ \int_eval:n
               {
-                \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop }
-                + \l__enumext_keyans_level_int
+                \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } + \c_one_int
               }
               ]
             \group_end:
