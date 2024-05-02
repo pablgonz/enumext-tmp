@@ -6,25 +6,25 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%%
+%% 
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%%
+%% 
 %%  https://www.latex-project.org/lppl.txt
-%%
+%% 
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%%
+%% 
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%%
+%% 
 %% This work consists of the files enumext.dtx and enumext.sty.
-%%
+%% 
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-04-30}
+  {2024-05-02}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -254,6 +254,15 @@
     * ~ #2
     \prg_replicate:nn { 14 - \str_count:n {#2} } { ~ }
       = ~ \use:c { #1_use:c } { l__enumext_#2_#3_#1 } \\
+  }
+%% Function to zero count level used by |check-ans| key.
+\cs_set_protected:Nn \__enumext_zero_count_level:
+  {
+    \cs_set_protected:Npn \__enumext_tmp:n ##1
+      {
+        \int_gzero:c { g__enumext_count_level_##1_int }
+      }
+    \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {##1} }
   }
 %% Copy list tools.
 \__enumext_at_begin_document:n
@@ -1554,11 +1563,7 @@
       {
         \msg_warning:nnV { enumext } { item-different-answer } \g__enumext_store_name_tl
       }
-    \int_gzero:N \g__enumext_count_level_i_int
-    \int_gzero:N \g__enumext_count_level_ii_int
-    \int_gzero:N \g__enumext_count_level_iii_int
-    \int_gzero:N \g__enumext_count_level_iv_int
-    \int_gzero:N \g__enumext_count_level_vii_int
+    \__enumext_zero_count_level:
   }
 %% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_active_vii:
@@ -1577,11 +1582,7 @@
       {
         \msg_warning:nnV { enumext } { item-different-answer } \g__enumext_store_name_tl
       }
-    \int_gzero:N \g__enumext_count_level_i_int
-    \int_gzero:N \g__enumext_count_level_ii_int
-    \int_gzero:N \g__enumext_count_level_iii_int
-    \int_gzero:N \g__enumext_count_level_iv_int
-    \int_gzero:N \g__enumext_count_level_vii_int
+    \__enumext_zero_count_level:
   }
 %% Add keys associated with storage on first level of |enumext| and |enumext*|.
 \cs_set_protected:Npn \__enumext_tmp:n #1
@@ -2114,33 +2115,28 @@
         \tl_if_novalue:nF { #1 }
           { \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] } }
       }
-    \prop_show:c { g__enumext_ \l__enumext_store_name_tl _prop }
     \bool_if:NT \l__enumext_show_position_bool
       {
-        %\int_set:N \l_tmpa_int { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
-        %\int_show:N \l_tmpa_int
-        %\tl_put_right:Ne \l__enumext_mark_answer_sym_tl
-        \tl_set:Ne \l_tmpa_tl
+        \tl_set:Ne \l__enumext_mark_answer_sym_tl
           {
-            %\group_begin:
-            %\exp_not:N \normalfont
-            %\exp_not:N \footnotesize [
-            %\int_eval:n {\exp_not:V \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
-            %  ]
-            %\group_end:
-            %\int_eval:n {\exp_not:V \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
-            %\exp_not:V \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop }
-            %\int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
+            \group_begin:
+            \exp_not:N \normalfont
+            \exp_not:N \footnotesize [ \int_eval:n
+              {
+                \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop }
+                + \l__enumext_keyans_level_int
+              }
+              ]
+            \group_end:
           }
-        \tl_show:N \l__enumext_store_name_tl
-%        \tl_put_left:Nn \l__enumext_label_v_tl
-%          {
-%            \__enumext_print_keyans_box:NN
-%              \l__enumext_labelwidth_i_dim
-%              \l__enumext_labelsep_i_dim
-%          }
-%        \tl_if_novalue:nF { #1 }
-%          { \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] } }
+        \tl_put_left:Nn \l__enumext_label_v_tl
+          {
+            \__enumext_print_keyans_box:NN
+              \l__enumext_labelwidth_i_dim
+              \l__enumext_labelsep_i_dim
+          }
+        \tl_if_novalue:nF { #1 }
+          { \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] } }
       }
   }
 %% Add |item-sym*| and |item*-sep| keys.
@@ -2265,7 +2261,6 @@
   }
 \cs_new_protected:Npn \__enumext_keyans_starred_item:n #1
   {
-  %% Aqui necesito revisar el código, la última actualización provocó esto :(
     \tl_set_eq:NN \l__enumext_keyans_tmpa_tl \l__enumext_label_v_tl
     \__enumext_keyans_show_left:n { #1 }
     \bool_set_true:N \l__enumext_wrap_label_v_bool
@@ -2545,11 +2540,11 @@
             %\bool_set_true:c { l__enumext_store_upper_level_ \__enumext_level: _bool }
             %\__enumext_store_level_open:
           %}
-        \int_compare:nNnT { \l__enumext_level_int } > { 1 }
-          {
+        %\int_compare:nNnT { \l__enumext_level_int } > { 1 }
+          %{
             \bool_set_true:c { l__enumext_store_upper_level_ \__enumext_level: _bool }
             \__enumext_store_level_open:
-          }
+          %}
       %}
   }
 \cs_new_protected:Nn \__enumext_stop_store_level:
@@ -3593,26 +3588,6 @@
     \__enumext_keyans_store_ref:
     \tl_put_left:Ne \l__enumext_store_keyans_label_tl { \item }
     \__enumext_keyans_addto_seq_link:
-    %\bool_if:NT \l__enumext_show_answer_bool
-      %{
-        %\tl_put_left:Nn \l__enumext_label_viii_tl
-          %{
-            %\__enumext_print_keyans_box:NN
-              %\l__enumext_labelwidth_viii_dim
-              %\l__enumext_labelsep_viii_dim
-          %}
-      %}
-
-
-
-
-
-
-
-
-
-
-
   }
 %% Real |\item| definition for |keyans*|, need |\legacy_if_set_true:n { @hyper@item }| :D. (doc p170)
 \cs_new_protected_nopar:Npn \__enumext_start_item_viii:w [#1]
@@ -4025,6 +4000,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%%
+%% 
 %%
 %% End of file `enumext.sty'.

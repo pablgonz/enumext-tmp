@@ -3517,7 +3517,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-04-30}
+  {2024-05-02}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4110,6 +4110,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     * ~ #2
     \prg_replicate:nn { 14 - \str_count:n {#2} } { ~ }
       = ~ \use:c { #1_use:c } { l_@@_#2_#3_#1 } \\
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_zero_count_level:}
+%    Internal function used by \mykey{check-ans} key.
+% \iffalse
+%% Function to zero count level used by |check-ans| key.
+% \fi
+%    \begin{macrocode}
+\cs_set_protected:Nn \@@_zero_count_level:
+  {
+    \cs_set_protected:Npn \@@_tmp:n ##1
+      {
+        \int_gzero:c { g_@@_count_level_##1_int }
+      }
+    \clist_map_inline:nn { i, ii, iii, iv, vii } { \@@_tmp:n {##1} }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6653,14 +6670,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_warning:nnV { enumext } { item-different-answer } \g_@@_store_name_tl
       }
 %    \end{macrocode}
-%    After the function is executed, we set the temporary integer variables
+%    After the function is executed, we set the level integer variables
 %    to zero.
 %    \begin{macrocode}
-    \int_gzero:N \g_@@_count_level_i_int
-    \int_gzero:N \g_@@_count_level_ii_int
-    \int_gzero:N \g_@@_count_level_iii_int
-    \int_gzero:N \g_@@_count_level_iv_int
-    \int_gzero:N \g_@@_count_level_vii_int
+    \@@_zero_count_level:
   }
 %    \end{macrocode}
 % \iffalse
@@ -6683,11 +6696,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_warning:nnV { enumext } { item-different-answer } \g_@@_store_name_tl
       }
-    \int_gzero:N \g_@@_count_level_i_int
-    \int_gzero:N \g_@@_count_level_ii_int
-    \int_gzero:N \g_@@_count_level_iii_int
-    \int_gzero:N \g_@@_count_level_iv_int
-    \int_gzero:N \g_@@_count_level_vii_int
+    \@@_zero_count_level:
   }
 %    \end{macrocode}
 % \end{macro}
