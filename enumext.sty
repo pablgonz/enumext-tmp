@@ -3636,7 +3636,7 @@
         \__enumext_print_keyans_box:NN \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
       }
   }
-%% Real |\item| definition for |keyans*|, need |\legacy_if_set_true:n { @hyper@item }| :D. (doc p170)
+%% Real |\item| definition for |keyans*| environment.
 \cs_new_protected_nopar:Npn \__enumext_start_item_viii:w [#1]
   {
     \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \__enumext_stop_item_viii:
@@ -3654,7 +3654,7 @@
       }
     \group_begin:
       \lrbox{ \l__enumext_item_text_viii_box }
-         \bool_if:NF \l__enumext_footnotes_key_bool
+        \bool_if:NF \l__enumext_footnotes_key_bool
           {
             \__enumext_renew_footnote:
           }

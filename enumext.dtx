@@ -9310,7 +9310,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{The \env{enumext*} and \env{keyans*} environments}\label{env:starred}
+% \subsection{The \env{enumext*} environment}\label{env:starred}
 %
 % Generating horizontal list environments is NOT as simple as standard
 % \hologo{LaTeX} list environments. The fundamental part of the code is adapted
@@ -9870,12 +9870,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-%  \subsubsection*{Real definition of \cs{item}}
-%
-%  The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
-%  \ics*{item} inside the \myenv*{enumext*} environment.
+%  \subsubsection{Real definition of \cs{item} in \env{enumext*}}
 %
 % \begin{macro}{\@@_start_item_vii:w}
+%  The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
+%  \ics*{item} inside the \myenv*{enumext*} environment.
 %
 %    The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to the
 %    value of \cs{@@_stop_item_vii:} which we will define later and add the
@@ -10466,12 +10465,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 %
-% \subsubsection*{Pass content to prop list and more}
+% \begin{macro}{\@@_starred_item_exec:,}
+% The function \cs{@@_starred_item_exec:} will be in charge of storing
+% the current \mymeta{label} for \ics*{item*} followed by the
+% \myoarg[type=tt]{content} for \ics*{item*}\myoarg[type=tt]{content} if
+% present in the \mymeta{sequence} and \mymeta{prop list} set by the
+% \mykey{save-ans} key. In this same function the keys \mykey{show-ans},
+% \mykey{show-pos} and \mykey{store-ref} are implemented.
 %
-% \begin{macro}{\@@_starred_item_exec:, \@@_starred_item_show_ans:, \@@_starred_item_show_pos:,}
-% The function \cs{@@_starred_item_exec:} together with the specified
-% auxiliary functions |aux_i:w| and |aux_ii:w| execute \ics*{item*}
-% and \ics*{item*}\myoarg[type=tt]{content}.
 % \iffalse
 %% Set \item*[content] for |keyans*| environment.
 % \fi
@@ -10522,24 +10523,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection*{Real definition of \cs{item}}
+% \subsubsection*{Real definition of \cs{item} in \env{keyans*}}
 %
-% The functions \cs{@@_start_item_viii:w} and \cs{@@_stop_item_viii:}
-% executing the true definition of \ics*{item} inside the
-% \myenv*{keyans*} environment.
+% The implementation at this point is very similar to that of the
+% \myenv*{enumext*} environment.
 %
 % \begin{macro}{\@@_start_item_viii:w}
-%
-%    The first thing we will do is set the value of \cs{@@_stop_item_tmp_viii:} equal to the
-%    value of \cs{@@_stop_item_viii:} which we will define later and add the
-%    \mypkg{hyperref} compatible \icounter{enumXviii} counter, after that we will
-%    start capturing the item content in a box. Here need setting the |\if@hyper@item| switch to
-%    \emph{\enquote{true}} for \mypkg{hyperref} compatible. The
-%    explanation for this is given by the master Heiko Oberdiek on
-%    \href{https://tex.stackexchange.com/a/404911}{\textbackslash refstepcounter\{enumi\} twice (or more) creates destination with the same identifier}.
-%
 % \iffalse
-%% Real |\item| definition for |keyans*|, need |\legacy_if_set_true:n { @hyper@item }| :D. (doc p170)
+%% Real |\item| definition for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_start_item_viii:w [#1]
@@ -10558,13 +10549,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
 %    \end{macrocode}
-%
 %    Here we start capturing |\item| and its contents into a group using the
 %    plain form of the \myenv{lrbox} environment.
 %    \begin{macrocode}
     \group_begin:
       \lrbox{ \l_@@_item_text_viii_box }
-         \bool_if:NF \l_@@_footnotes_key_bool
+        \bool_if:NF \l_@@_footnotes_key_bool
           {
             \@@_renew_footnote:
           }
