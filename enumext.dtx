@@ -10440,6 +10440,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \@@_starred_item_viii_aux_i:w }
       { \@@_starred_item_viii_aux_ii:w }
   }
+%    \end{macrocode}
+% The optional argument will be captured in the variables
+% \cs{l_@@_keyans_tmpa_tl} and \cs{l_@@_keyans_tmpb_tl} which we will use
+% later for the implementation of the \mykey{show-ans} and
+% \mykey{show-pos} keys together with the stored in \mymeta{sequence} and
+% \mymeta{prop list}.
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_item_viii_aux_i:w [#1]
   {
     \tl_clear:N \l_@@_store_keyans_label_tl
@@ -10461,8 +10468,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection*{Pass content to prop list and more}
 %
-% \begin{macro}{\@@_starred_item_exec_viii:,}
-% The function \cs{@@_starred_item_exec_viii:} together with the specified
+% \begin{macro}{\@@_starred_item_exec:, \@@_starred_item_show_ans:, \@@_starred_item_show_pos:,}
+% The function \cs{@@_starred_item_exec:} together with the specified
 % auxiliary functions |aux_i:w| and |aux_ii:w| execute \ics*{item*}
 % and \ics*{item*}\myoarg[type=tt]{content}.
 % \iffalse
@@ -10485,7 +10492,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_if_blank:VF \l_@@_keyans_tmpa_tl
           {
             \tl_put_right:Ne \l_@@_label_viii_tl { \l_@@_keyans_tmpa_tl }
-            \@@_label_width_by_box:Nn \l_@@_keyans_tmpa_dim { \tl_use:N \l_@@_keyans_tmpa_tl }
+            \@@_label_width_by_box:Nn \l_@@_keyans_tmpa_dim { \l_@@_keyans_tmpa_tl }
             \dim_add:Nn \l_@@_fake_item_indent_viii_dim { \l_@@_keyans_tmpa_dim }
           }
         \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
@@ -10506,7 +10513,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_if_blank:VF \l_@@_keyans_tmpa_tl
           {
             \tl_put_right:Ne \l_@@_label_viii_tl { \l_@@_keyans_tmpa_tl }
-            \@@_label_width_by_box:Nn \l_@@_keyans_tmpa_dim { \tl_use:N \l_@@_keyans_tmpa_tl }
+            \@@_label_width_by_box:Nn \l_@@_keyans_tmpa_dim { \l_@@_keyans_tmpa_tl }
             \dim_add:Nn \l_@@_fake_item_indent_viii_dim { \l_@@_keyans_tmpa_dim }
           }
         \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
