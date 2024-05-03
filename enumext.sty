@@ -118,6 +118,7 @@
 \int_new:N  \l__enumext_store_columns_join_int
 \tl_new:N   \l__enumext_store_keyans_label_tl
 \tl_new:N   \l__enumext_keyans_tmpa_tl
+\tl_new:N   \l__enumext_keyans_tmpb_tl
 %% Variables used by |\setenumext|.
 \tl_new:N  \l__enumext_setkey_tmpa_tl
 \tl_new:N  \l__enumext_setkey_tmpb_tl
@@ -3580,7 +3581,8 @@
     \tl_clear:N \l__enumext_store_keyans_label_tl
     \tl_if_novalue:nF { #1 }
       {
-        \tl_set:Ne \l__enumext_store_keyans_label_tl { \c_space_tl #1 }
+        \tl_set:Ne \l__enumext_keyans_tmpa_tl { \c_space_tl [#1] }
+        \tl_set:Ne \l__enumext_keyans_tmpb_tl { \c_space_tl #1 }
       }
     \__enumext_starred_item_viii_aux_ii:w
   }
@@ -3588,11 +3590,50 @@
   {
     \legacy_if_set_true:n { @noitemarg }
     \__enumext_start_item_viii:w [ \l__enumext_label_viii_tl ]
+  }
+%% Set \item*[content] for |keyans*| environment.
+\cs_new_protected:Nn \__enumext_starred_item_exec:
+  {
     \tl_put_left:Ne \l__enumext_store_keyans_label_tl { \l__enumext_label_viii_tl }
+    \tl_if_blank:VF \l__enumext_keyans_tmpb_tl
+      {
+        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \l__enumext_keyans_tmpb_tl }
+      }
     \__enumext_store_addto_prop:V \l__enumext_store_keyans_label_tl
     \__enumext_keyans_store_ref:
     \tl_put_left:Ne \l__enumext_store_keyans_label_tl { \item }
     \__enumext_keyans_addto_seq_link:
+    \bool_if:NT \l__enumext_show_answer_bool
+      {
+        \tl_if_blank:VF \l__enumext_keyans_tmpa_tl
+          {
+            \tl_put_right:Ne \l__enumext_label_viii_tl { \l__enumext_keyans_tmpa_tl }
+            \__enumext_label_width_by_box:Nn \l_tmpa_dim { \tl_use:N \l__enumext_keyans_tmpa_tl }
+            \dim_add:Nn \l__enumext_fake_item_indent_viii_dim { \l_tmpa_dim }
+          }
+        \__enumext_print_keyans_box:NN \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
+      }
+    \bool_if:NT \l__enumext_show_position_bool
+      {
+        \tl_set:Ne \l__enumext_mark_answer_sym_tl
+          {
+            \group_begin:
+              \exp_not:N \normalfont
+              \exp_not:N \footnotesize [ \int_eval:n
+                {
+                  \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop }
+                }
+               ]
+            \group_end:
+          }
+        \tl_if_blank:VF \l__enumext_keyans_tmpa_tl
+          {
+            \tl_put_right:Ne \l__enumext_label_viii_tl { \l__enumext_keyans_tmpa_tl }
+            \__enumext_label_width_by_box:Nn \l_tmpa_dim { \tl_use:N \l__enumext_keyans_tmpa_tl }
+            \dim_add:Nn \l__enumext_fake_item_indent_viii_dim { \l_tmpa_dim }
+          }
+        \__enumext_print_keyans_box:NN \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
+      }
   }
 %% Real |\item| definition for |keyans*|, need |\legacy_if_set_true:n { @hyper@item }| :D. (doc p170)
 \cs_new_protected_nopar:Npn \__enumext_start_item_viii:w [#1]
@@ -3618,16 +3659,7 @@
           }
         \bool_if:NT \l__enumext_item_starred_viii_bool
           {
-            %\tl_if_blank:VT \g__enumext_item_symbol_aux_viii_tl
-              %{
-                %\tl_gset_eq:NN
-                  %\g__enumext_item_symbol_aux_viii_tl \l__enumext_item_symbol_viii_tl
-              %}
-            \mode_leave_vertical:
-            %%\skip_horizontal:n { -\l__enumext_item_symbol_sep_viii_dim }
-            %\makebox[ 0pt ][ r ]{ \g__enumext_item_symbol_aux_viii_tl }
-            %%\skip_horizontal:N \l__enumext_item_symbol_sep_viii_dim
-            %\tl_gclear:N \g__enumext_item_symbol_aux_viii_tl
+            \__enumext_starred_item_exec:
           }
         \group_begin:
           \tl_use:N \l__enumext_label_font_style_viii_tl

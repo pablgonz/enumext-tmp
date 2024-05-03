@@ -3747,7 +3747,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{variable}[int]{\l_@@_store_active_bool, \l_@@_store_name_tl,
 %                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl,
 %                       \l_@@_store_columns_join_int, \l_@@_store_keyans_label_tl,
-%                       \l_@@_keyans_tmpa_tl,}
+%                       \l_@@_keyans_tmpa_tl,\l_@@_keyans_tmpb_tl,}
 %
 %    The boolean variable \cs{l_@@_store_active_bool} setting by
 %    \mykey{save-ans} key (\S\ref{key:resume}) activates all the
@@ -3782,6 +3782,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N  \l_@@_store_columns_join_int
 \tl_new:N   \l_@@_store_keyans_label_tl
 \tl_new:N   \l_@@_keyans_tmpa_tl
+\tl_new:N   \l_@@_keyans_tmpb_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -10443,7 +10444,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_clear:N \l_@@_store_keyans_label_tl
     \tl_if_novalue:nF { #1 }
       {
-        \tl_set:Ne \l_@@_store_keyans_label_tl { \c_space_tl #1 }
+        \tl_set:Ne \l_@@_keyans_tmpa_tl { \c_space_tl [#1] }
+        \tl_set:Ne \l_@@_keyans_tmpb_tl { \c_space_tl #1 }
       }
     \@@_starred_item_viii_aux_ii:w
   }
@@ -10451,11 +10453,63 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \legacy_if_set_true:n { @noitemarg }
     \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsubsection*{Pass content to prop list and more}
+%
+% \begin{macro}{\@@_starred_item_exec_viii:,}
+% The function \cs{\@@_starred_item_exec_viii:} together with the specified
+% auxiliary functions |aux_i:w| and |aux_ii:w| execute \ics*{item*}
+% and \ics*{item*}\myoarg[type=tt]{content}.
+% \iffalse
+%% Set \item*[content] for |keyans*| environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_starred_item_exec:
+  {
     \tl_put_left:Ne \l_@@_store_keyans_label_tl { \l_@@_label_viii_tl }
+    \tl_if_blank:VF \l_@@_keyans_tmpb_tl
+      {
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_keyans_tmpb_tl }
+      }
     \@@_store_addto_prop:V \l_@@_store_keyans_label_tl
     \@@_keyans_store_ref:
     \tl_put_left:Ne \l_@@_store_keyans_label_tl { \item }
     \@@_keyans_addto_seq_link:
+    \bool_if:NT \l_@@_show_answer_bool
+      {
+        \tl_if_blank:VF \l_@@_keyans_tmpa_tl
+          {
+            \tl_put_right:Ne \l_@@_label_viii_tl { \l_@@_keyans_tmpa_tl }
+            \@@_label_width_by_box:Nn \l_tmpa_dim { \tl_use:N \l_@@_keyans_tmpa_tl }
+            \dim_add:Nn \l_@@_fake_item_indent_viii_dim { \l_tmpa_dim }
+          }
+        \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
+      }
+    \bool_if:NT \l_@@_show_position_bool
+      {
+        \tl_set:Ne \l_@@_mark_answer_sym_tl
+          {
+            \group_begin:
+              \exp_not:N \normalfont
+              \exp_not:N \footnotesize [ \int_eval:n
+                {
+                  \prop_count:c { g_@@_ \l_@@_store_name_tl _prop }
+                }
+               ]
+            \group_end:
+          }
+        \tl_if_blank:VF \l_@@_keyans_tmpa_tl
+          {
+            \tl_put_right:Ne \l_@@_label_viii_tl { \l_@@_keyans_tmpa_tl }
+            \@@_label_width_by_box:Nn \l_tmpa_dim { \tl_use:N \l_@@_keyans_tmpa_tl }
+            \dim_add:Nn \l_@@_fake_item_indent_viii_dim { \l_tmpa_dim }
+          }
+        \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10508,16 +10562,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
         \bool_if:NT \l_@@_item_starred_viii_bool
           {
-            %\tl_if_blank:VT \g_@@_item_symbol_aux_viii_tl
-              %{
-                %\tl_gset_eq:NN
-                  %\g_@@_item_symbol_aux_viii_tl \l_@@_item_symbol_viii_tl
-              %}
-            \mode_leave_vertical:
-            %%\skip_horizontal:n { -\l_@@_item_symbol_sep_viii_dim }
-            %\makebox[ 0pt ][ r ]{ \g_@@_item_symbol_aux_viii_tl }
-            %%\skip_horizontal:N \l_@@_item_symbol_sep_viii_dim
-            %\tl_gclear:N \g_@@_item_symbol_aux_viii_tl
+            \@@_starred_item_exec:
           }
         \group_begin:
           \tl_use:N \l_@@_label_font_style_viii_tl
