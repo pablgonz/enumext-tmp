@@ -3747,7 +3747,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{variable}[int]{\l_@@_store_active_bool, \l_@@_store_name_tl,
 %                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl,
 %                       \l_@@_store_columns_join_int, \l_@@_store_keyans_label_tl,
-%                       \l_@@_keyans_tmpa_tl,\l_@@_keyans_tmpb_tl,}
+%                       \l_@@_keyans_tmpa_tl,\l_@@_keyans_tmpb_tl,\l_@@_keyans_tmpa_dim}
 %
 %    The boolean variable \cs{l_@@_store_active_bool} setting by
 %    \mykey{save-ans} key (\S\ref{key:resume}) activates all the
@@ -3783,6 +3783,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \tl_new:N   \l_@@_store_keyans_label_tl
 \tl_new:N   \l_@@_keyans_tmpa_tl
 \tl_new:N   \l_@@_keyans_tmpb_tl
+\dim_new:N  \l_@@_keyans_tmpa_dim
 %    \end{macrocode}
 % \end{variable}
 %
@@ -10461,7 +10462,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection*{Pass content to prop list and more}
 %
 % \begin{macro}{\@@_starred_item_exec_viii:,}
-% The function \cs{\@@_starred_item_exec_viii:} together with the specified
+% The function \cs{@@_starred_item_exec_viii:} together with the specified
 % auxiliary functions |aux_i:w| and |aux_ii:w| execute \ics*{item*}
 % and \ics*{item*}\myoarg[type=tt]{content}.
 % \iffalse
@@ -10484,8 +10485,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_if_blank:VF \l_@@_keyans_tmpa_tl
           {
             \tl_put_right:Ne \l_@@_label_viii_tl { \l_@@_keyans_tmpa_tl }
-            \@@_label_width_by_box:Nn \l_tmpa_dim { \tl_use:N \l_@@_keyans_tmpa_tl }
-            \dim_add:Nn \l_@@_fake_item_indent_viii_dim { \l_tmpa_dim }
+            \@@_label_width_by_box:Nn \l_@@_keyans_tmpa_dim { \tl_use:N \l_@@_keyans_tmpa_tl }
+            \dim_add:Nn \l_@@_fake_item_indent_viii_dim { \l_@@_keyans_tmpa_dim }
           }
         \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
       }
@@ -10505,8 +10506,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_if_blank:VF \l_@@_keyans_tmpa_tl
           {
             \tl_put_right:Ne \l_@@_label_viii_tl { \l_@@_keyans_tmpa_tl }
-            \@@_label_width_by_box:Nn \l_tmpa_dim { \tl_use:N \l_@@_keyans_tmpa_tl }
-            \dim_add:Nn \l_@@_fake_item_indent_viii_dim { \l_tmpa_dim }
+            \@@_label_width_by_box:Nn \l_@@_keyans_tmpa_dim { \tl_use:N \l_@@_keyans_tmpa_tl }
+            \dim_add:Nn \l_@@_fake_item_indent_viii_dim { \l_@@_keyans_tmpa_dim }
           }
         \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
       }

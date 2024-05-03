@@ -119,6 +119,7 @@
 \tl_new:N   \l__enumext_store_keyans_label_tl
 \tl_new:N   \l__enumext_keyans_tmpa_tl
 \tl_new:N   \l__enumext_keyans_tmpb_tl
+\dim_new:N  \l__enumext_keyans_tmpa_dim
 %% Variables used by |\setenumext|.
 \tl_new:N  \l__enumext_setkey_tmpa_tl
 \tl_new:N  \l__enumext_setkey_tmpb_tl
@@ -3608,8 +3609,8 @@
         \tl_if_blank:VF \l__enumext_keyans_tmpa_tl
           {
             \tl_put_right:Ne \l__enumext_label_viii_tl { \l__enumext_keyans_tmpa_tl }
-            \__enumext_label_width_by_box:Nn \l_tmpa_dim { \tl_use:N \l__enumext_keyans_tmpa_tl }
-            \dim_add:Nn \l__enumext_fake_item_indent_viii_dim { \l_tmpa_dim }
+            \__enumext_label_width_by_box:Nn \l__enumext_keyans_tmpa_dim { \tl_use:N \l__enumext_keyans_tmpa_tl }
+            \dim_add:Nn \l__enumext_fake_item_indent_viii_dim { \l__enumext_keyans_tmpa_dim }
           }
         \__enumext_print_keyans_box:NN \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
       }
@@ -3629,8 +3630,8 @@
         \tl_if_blank:VF \l__enumext_keyans_tmpa_tl
           {
             \tl_put_right:Ne \l__enumext_label_viii_tl { \l__enumext_keyans_tmpa_tl }
-            \__enumext_label_width_by_box:Nn \l_tmpa_dim { \tl_use:N \l__enumext_keyans_tmpa_tl }
-            \dim_add:Nn \l__enumext_fake_item_indent_viii_dim { \l_tmpa_dim }
+            \__enumext_label_width_by_box:Nn \l__enumext_keyans_tmpa_dim { \tl_use:N \l__enumext_keyans_tmpa_tl }
+            \dim_add:Nn \l__enumext_fake_item_indent_viii_dim { \l__enumext_keyans_tmpa_dim }
           }
         \__enumext_print_keyans_box:NN \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
       }
