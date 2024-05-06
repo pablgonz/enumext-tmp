@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-02}
+  {2024-05-06}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -156,17 +156,13 @@
 \bool_new:N \g__enumext_check_ans_show_bool
 \bool_new:N \g__enumext_check_ans_show_h_bool
 \tl_new:N   \g__enumext_check_ans_item_tl
-\int_new:N  \l__enumext_compare_items_ans_int
-\int_new:N  \g__enumext_count_item_with_ans_int
-\int_new:N  \g__enumext_count_item_all_int
 \int_new:N  \g__enumext_count_item_anskey_int
 \int_new:N  \g__enumext_count_item_number_int
-\cs_set_protected:Npn \__enumext_tmp:n #1
-  {
-    \int_new:c { g__enumext_count_level_#1_int }
-    \int_new:c { g__enumext_count_item_#1_int }
-  }
-\clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {#1} }
+\int_new:N  \g__enumext_standar_star_env_int
+\int_new:N  \g__enumext_starred_star_env_int
+\int_new:N  \g__enumext_starred_keyans_star_env_int
+\int_new:N  \g__enumext_standar_keyans_star_env_int
+\int_new:N  \g__enumext_standar_keyans_pic_star_env_int
 %% Variables used for hyperref detection.
 \bool_new:N \l__enumext_hyperref_bool
 \bool_new:N \l__enumext_footnotes_key_bool
@@ -234,16 +230,6 @@
 \cs_new:Nn \__enumext_level:
   {
     \int_to_roman:n { \l__enumext_level_int }
-  }
-%% Function to check current level on starred and keyans environments.
-\cs_new:Npn \__enumext_level_set:n #1
-  {
-    \cs_set_eq:cN { \__enumext_level_#1: } \__enumext_level:
-    \cs_set:Nn \__enumext_level: { #1 }
-  }
-\cs_new:Npn \__enumext_level_end:n #1
-  {
-    \cs_set_eq:Nc \__enumext_level: { __enumext_level_#1: }
   }
 %% Function to check integer variables used by |start| and |widest| keys.
 \prg_new_protected_conditional:Npnn \__enumext_if_is_int:n #1 { T, F, TF }
@@ -1509,22 +1495,6 @@
     level-1, level-2, level-3, level-4, enumext*
   }
   { \__enumext_tmp:n {#1} }
-%% Creation of integer variables for the internal check-answer mechanism.
-\cs_new_protected:Npn \__enumext_check_ans_int:n #1
-  {
-    \int_if_exist:cF { g__enumext_count_#1_item_ans_int }
-      { \int_new:c { g__enumext_count_#1_item_ans_int } }
-    \int_if_exist:cF { g__enumext_count_#1_i_int }
-      { \int_new:c { g__enumext_count_#1_i_int } }
-    \int_if_exist:cF { g__enumext_count_#1_ii_int }
-      { \int_new:c { g__enumext_count_#1_ii_int } }
-    \int_if_exist:cF { g__enumext_count_#1_iii_int }
-      { \int_new:c { g__enumext_count_#1_iii_int } }
-    \int_if_exist:cF { g__enumext_count_#1_iv_int }
-      { \int_new:c { g__enumext_count_#1_iv_int } }
-    \int_if_exist:cF { g__enumext_count_#1_vii_int }
-      { \int_new:c { g__enumext_count_#1_vii_int } }
-  }
 %% Function to check current environment for |enumext| and |enumext*|.
 \cs_new_protected:Nn \__enumext_current_env:
   {
@@ -1535,7 +1505,9 @@
             \int_compare:nNnT { \l__enumext_level_h_int } = { \c_zero_int }
               {
                 \bool_gset_true:N \g__enumext_standar_bool
+                \int_gset:Nn \g__enumext_standar_star_env_int { \inputlineno }
                 \typeout{working-on-enumext}
+                % \int_show:N \g__enumext_standar_star_env_int
               }
           }
         {enumext*}
@@ -1543,13 +1515,14 @@
             \int_compare:nNnT { \l__enumext_level_int } = { \c_zero_int }
               {
                 \bool_gset_true:N \g__enumext_starred_bool
-                \typeout{working-on-enumext*}
+                \int_gset:Nn \g__enumext_starred_star_env_int { \inputlineno }
+                \typeout{working-on-enumext* ~ \g__enumext_starred_star_env_int}
               }
           }
       }
   }
 %% Decrementing \g_@@_count_item_number_int for nested level off |enumext|.
-\cs_new_protected:Nn \__enumext_check_ans_set_int_by_level:
+\cs_new_protected:Nn \__enumext_check_ans_set_int_level:
   {
     \int_case:nn { \l__enumext_level_int }
       {
@@ -1590,7 +1563,7 @@
   {
     \bool_if:NT \l__enumext_check_ans_bool
       {
-        \__enumext_check_ans_set_int_by_level:
+        \__enumext_check_ans_set_int_level:
       }
   }
 %% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
@@ -1606,22 +1579,6 @@
       }
     \int_gzero:N \g__enumext_count_item_number_int
     \int_gzero:N \g__enumext_count_item_anskey_int
-%%    \@@_zero_count_level:
-  }
-%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
-\cs_new_protected:Nn \__enumext_check_ans_active_vii:
-  {
-    \int_compare:nNnTF
-      { \g__enumext_count_item_number_int } = { \g__enumext_count_item_anskey_int }
-      {
-        \msg_term:nnV { enumext } { items-same-answer } \g__enumext_store_name_tl
-      }
-      {
-        \msg_warning:nnV { enumext } { item-different-answer } \g__enumext_store_name_tl
-      }
-    \int_gzero:N \g__enumext_count_item_number_int
-    \int_gzero:N \g__enumext_count_item_anskey_int
-%%    \@@_zero_count_level:
   }
 %% Add keys associated with storage on first level of |enumext| and |enumext*|.
 \cs_set_protected:Npn \__enumext_tmp:n #1
@@ -2126,7 +2083,7 @@
     \tl_gset:NV \g__enumext_check_ans_item_tl \l__enumext_store_keyans_label_tl
     \bool_if:NT \l__enumext_check_ans_bool
       {
-        \int_gincr:N \g__enumext_count_item_with_ans_int
+        \int_gincr:N \g__enumext_count_item_number_int
       }
   }
 %% Function for check starred command in |keyans| and |keyanspic|.
@@ -3263,20 +3220,9 @@
                 \legacy_if_set_true:n { @hyper@item }
               }
             \refstepcounter{enumXvii}
-            % code for check-ans
             \bool_if:NT \l__enumext_check_ans_bool
               {
-                \int_gincr:N \g__enumext_count_item_number_int % new
-                % If true |no-store| key => nested in |enumext|
-                \bool_if:NTF \l__enumext_store_ans_bool
-                  {
-                    \int_gadd:cn { g__enumext_count_item_ \__enumext_level: _int }
-                      { \int_use:c { g__enumext_count_level_ \__enumext_level: _int } + 1 }
-                  }
-                  {
-                    \int_gincr:N \g__enumext_count_item_all_int
-                    \int_gincr:N \g__enumext_count_level_vii_int
-                  }
+                \int_gincr:N \g__enumext_count_item_number_int
               }
           }
       }
@@ -3363,7 +3309,7 @@
       {
         \int_compare:nNnT { \l__enumext_level_int } = { 0 }
           {
-            \__enumext_check_ans_active_vii:
+            \__enumext_check_ans_active:
           }
       }
     \bool_gset_false:N \g__enumext_check_ans_show_h_bool
