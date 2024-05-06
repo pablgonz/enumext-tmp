@@ -7522,7 +7522,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Finally, copy the contents of the variable \cs{l_@@_store_keyans_label_tl}
 %    into the global variable \cs{g_@@_check_ans_item_tl} to be used
 %    by the function \cs{@@_keyans_check_ans:nn} and increment
-%    the value of the integer variable \cs{g_@@_count_item_number_int} handled
+%    the value of the integer variable \cs{g_@@_count_item_anskey_int} handled
 %    by the \mykey{check-ans} key.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_addto_seq_link:
@@ -7544,7 +7544,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_gset:NV \g_@@_check_ans_item_tl \l_@@_store_keyans_label_tl
     \bool_if:NT \l_@@_check_ans_bool
       {
-        \int_gincr:N \g_@@_count_item_number_int
+        \int_gincr:N \g_@@_count_item_anskey_int
       }
   }
 %    \end{macrocode}
