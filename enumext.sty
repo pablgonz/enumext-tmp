@@ -6,21 +6,21 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%%
+%% 
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%%
+%% 
 %%  https://www.latex-project.org/lppl.txt
-%%
+%% 
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%%
+%% 
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%%
+%% 
 %% This work consists of the files enumext.dtx and enumext.sty.
-%%
+%% 
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
@@ -159,6 +159,8 @@
 \int_new:N  \l__enumext_compare_items_ans_int
 \int_new:N  \g__enumext_count_item_with_ans_int
 \int_new:N  \g__enumext_count_item_all_int
+\int_new:N  \g__enumext_count_item_anskey_int
+\int_new:N  \g__enumext_count_item_number_int
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \int_new:c { g__enumext_count_level_#1_int }
@@ -1464,10 +1466,6 @@
       {
         \int_new:c { g__enumext_resume_#1_int }
       }
-    \bool_if:NT \l__enumext_check_ans_bool
-      {
-        \__enumext_check_ans_int:n {#1}
-      }
   }
 %% Internal function used by |resume| key.
 \cs_new_protected:Nn \__enumext_resume_counter:
@@ -1526,79 +1524,104 @@
       { \int_new:c { g__enumext_count_#1_iv_int } }
     \int_if_exist:cF { g__enumext_count_#1_vii_int }
       { \int_new:c { g__enumext_count_#1_vii_int } }
-    \bool_lazy_all:nTF
+  }
+%% Function to check current environment for |enumext| and |enumext*|.
+\cs_new_protected:Nn \__enumext_current_env:
+  {
+    \str_case:en { \@currenvir }
       {
-        { \g__enumext_starred_bool }
-        { \int_compare_p:nNn { \l__enumext_level_int } = { \c_zero_int } }
+        {enumext}
+          {
+            \int_compare:nNnT { \l__enumext_level_h_int } = { \c_zero_int }
+              {
+                \bool_gset_true:N \g__enumext_standar_bool
+                \typeout{working-on-enumext}
+              }
+          }
+        {enumext*}
+          {
+            \int_compare:nNnT { \l__enumext_level_int } = { \c_zero_int }
+              {
+                \bool_gset_true:N \g__enumext_starred_bool
+                \typeout{working-on-enumext*}
+              }
+          }
       }
+  }
+%% Decrementing \g_@@_count_item_number_int for nested level off |enumext|.
+\cs_new_protected:Nn \__enumext_check_ans_set_int_by_level:
+  {
+    \int_case:nn { \l__enumext_level_int }
       {
-        \int_gset_eq:Nc \g__enumext_count_item_all_int { g__enumext_count_#1_vii_int }
+        { 1 }{
+               \bool_lazy_all:nT
+                 {
+                   { \l__enumext_starred_bool }
+                   { \int_compare_p:nNn { \l__enumext_level_int } = { \c_zero_int } }
+                 }
+                 {
+                   \int_gdecr:N \g__enumext_count_item_number_int
+                   \typeout{ENUMEXT ~ STANDAR ~ NEEEEEEEEEEEESTED}
+                 }
+             }
+        { 2 }{
+               \int_gdecr:N \g__enumext_count_item_number_int
+             }
+        { 3 }{
+               \int_gdecr:N \g__enumext_count_item_number_int
+             }
+        { 4 }{
+               \int_gdecr:N \g__enumext_count_item_number_int
+             }
       }
+    \int_case:nn { \l__enumext_level_h_int }
       {
-        \int_gset_eq:Nc \g__enumext_count_item_all_int { g__enumext_count_#1_i_int }
+        { 1 }{
+               \bool_if:NT \l__enumext_standar_bool
+                 {
+                   \int_gdecr:N \g__enumext_count_item_number_int
+                   \typeout{ENUMEXT ~ STARRED ~ NEEEEEEEEEEEESTED}
+                 }
+             }
       }
-    \int_gset_eq:Nc \g__enumext_count_item_i_int   { g__enumext_count_#1_i_int             }
-    \int_gset_eq:Nc \g__enumext_count_item_ii_int  { g__enumext_count_#1_ii_int            }
-    \int_gset_eq:Nc \g__enumext_count_item_iii_int { g__enumext_count_#1_iii_int           }
-    \int_gset_eq:Nc \g__enumext_count_item_iv_int  { g__enumext_count_#1_iv_int            }
-    \int_gset_eq:Nc \g__enumext_count_item_vii_int { g__enumext_count_#1_vii_int           }
-    \int_gset_eq:Nc \g__enumext_count_item_with_ans_int { g__enumext_count_#1_item_ans_int }
   }
 %% Function to count |\item| for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_count:
   {
     \bool_if:NT \l__enumext_check_ans_bool
       {
-        \bool_if:NTF \l__enumext_store_ans_bool
-          {
-            \int_gadd:cn { g__enumext_count_item_ \__enumext_level: _int }
-              { \int_use:c { g__enumext_count_level_ \__enumext_level: _int } + 1 }
-          }
-          { \int_gincr:c { g__enumext_count_item_ \__enumext_level: _int } }
+        \__enumext_check_ans_set_int_by_level:
       }
   }
 %% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_active:
   {
-    \int_set:Nn \l__enumext_compare_items_ans_int
-      {
-         \g__enumext_count_item_all_int - \g__enumext_count_item_ii_int
-       - \g__enumext_count_item_iii_int - \g__enumext_count_item_iv_int
-      }
-    \int_show:N \l__enumext_compare_items_ans_int
-    \int_show:N \g__enumext_count_item_with_ans_int
     \int_compare:nNnTF
-      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_with_ans_int }
+      { \g__enumext_count_item_number_int } = { \g__enumext_count_item_anskey_int }
       {
         \msg_term:nnV { enumext } { items-same-answer } \g__enumext_store_name_tl
       }
       {
         \msg_warning:nnV { enumext } { item-different-answer } \g__enumext_store_name_tl
       }
-    \__enumext_zero_count_level:
-    %\int_gzero:N \g__enumext_count_item_with_ans_int
-    %\int_gzero:N \g__enumext_count_item_all_int
+    \int_gzero:N \g__enumext_count_item_number_int
+    \int_gzero:N \g__enumext_count_item_anskey_int
+%%    \@@_zero_count_level:
   }
 %% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_active_vii:
   {
-    \int_set:Nn \l__enumext_compare_items_ans_int
-      {
-         \g__enumext_count_item_all_int - \g__enumext_count_item_i_int
-         - \g__enumext_count_item_ii_int - \g__enumext_count_item_iii_int
-         - \g__enumext_count_item_iv_int
-      }
     \int_compare:nNnTF
-      { \l__enumext_compare_items_ans_int } = { \g__enumext_count_item_with_ans_int }
+      { \g__enumext_count_item_number_int } = { \g__enumext_count_item_anskey_int }
       {
         \msg_term:nnV { enumext } { items-same-answer } \g__enumext_store_name_tl
       }
       {
         \msg_warning:nnV { enumext } { item-different-answer } \g__enumext_store_name_tl
       }
-    \__enumext_zero_count_level:
-%    \int_gzero:N \g__enumext_count_item_with_ans_int
-%    \int_gzero:N \g__enumext_count_item_all_int
+    \int_gzero:N \g__enumext_count_item_number_int
+    \int_gzero:N \g__enumext_count_item_anskey_int
+%%    \@@_zero_count_level:
   }
 %% Add keys associated with storage on first level of |enumext| and |enumext*|.
 \cs_set_protected:Npn \__enumext_tmp:n #1
@@ -1681,7 +1704,7 @@
   {
     \prop_gput_if_not_in:cen { g__enumext_ \l__enumext_store_name_tl _prop }
       {
-        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } + \c_one_int }
+        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } + 1 }
       }
       { #1 }
   }
@@ -1807,18 +1830,12 @@
         {
           \bool_if:NT \l__enumext_check_ans_bool
             {
-              %\int_gincr:N \g__enumext_count_item_with_ans_int
-              %\int_gincr:c { g__enumext_count_ \l__enumext_store_name_tl _item_ans_int }
-              \int_gset_eq:Nc \g_tmpa_int { g__enumext_count_ \l__enumext_store_name_tl _item_ans_int }
-              \int_gincr:N \g_tmpa_int
-              \int_show:N \g_tmpa_int
-              %%\int_gadd:cn { g__enumext_count_ \l__enumext_store_name_tl _item_ans_int } { \c_one_int }
-             }
+              \int_gincr:N \g__enumext_count_item_anskey_int
+            }
           \__enumext_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
         }
     \group_end:
   }
-\cs_generate_variant:Nn \int_gadd:Nn { en }
 %% Internal function of |\anskey|.
 \cs_new_protected:Npn \__enumext_store_anskey_code:nnnn #1 #2 #3 #4
   {
@@ -2110,8 +2127,6 @@
     \bool_if:NT \l__enumext_check_ans_bool
       {
         \int_gincr:N \g__enumext_count_item_with_ans_int
-        %\int_show:N \g__enumext_count_item_with_ans_int
-        %\int_show:N \g__enumext_count_item_all_int
       }
   }
 %% Function for check starred command in |keyans| and |keyanspic|.
@@ -2218,8 +2233,7 @@
       {
         \bool_if:NT \l__enumext_check_ans_bool
           {
-            \int_gincr:N \g__enumext_count_item_all_int
-            \int_gincr:c { g__enumext_count_level_ \__enumext_level: _int }
+            \int_gincr:N \g__enumext_count_item_number_int
           }
         \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
         \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
@@ -2250,8 +2264,7 @@
       }
     \bool_if:NT \l__enumext_check_ans_bool
       {
-        \int_gincr:N \g__enumext_count_item_all_int
-        \int_gincr:c { g__enumext_count_level_ \__enumext_level: _int }
+        \int_gincr:N \g__enumext_count_item_number_int
       }
     \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
     \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
@@ -2315,7 +2328,7 @@
       {
         \mode_leave_vertical:
         \skip_horizontal:n { -\dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
-        \makebox[ 0pt ][ r ]{ \tl_use:N \g__enumext_item_symbol_tl }
+        \makebox[ 0pt ][ r ]{ \g__enumext_item_symbol_tl }
         \skip_horizontal:n { \dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
       }
   }
@@ -2477,6 +2490,7 @@
 %% Definition of |enumext| environment.
 \NewDocumentEnvironment{enumext}{ O{} }
   {
+    \__enumext_current_env:
     \__enumext_safe_exec:
     \__enumext_parse_keys:n {#1}
     \__enumext_before_list:
@@ -2501,14 +2515,6 @@
     \int_compare:nNnT { \l__enumext_level_int } > { 4 }
       { \msg_fatal:nn { enumext } { list-too-deep } }
     \bool_set_true:N \l__enumext_standar_bool
-    \bool_lazy_all:nT
-      {
-        { \bool_not_p:n { \l__enumext_starred_bool } }
-        { \int_compare_p:nNn { \l__enumext_level_h_int } = { \c_zero_int } }
-      }
-      {
-        \bool_gset_true:N \g__enumext_standar_bool
-      }
   }
 %% Parse |key=val| and store keys for \printkeyans.
 \cs_new_protected:Npn \__enumext_parse_keys:n #1
@@ -2666,6 +2672,7 @@
     \__enumext_after_stop_list:
     \__enumext_vspace_below:
     \bool_set_false:N \l__enumext_standar_bool
+    \bool_gset_false:N \g__enumext_standar_bool
     \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
     \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
       {
@@ -3049,6 +3056,7 @@
 %% Define |enumext*|
 \NewDocumentEnvironment{enumext*}{ o }
   {
+    \__enumext_current_env:
     \__enumext_safe_exec_vii:
     \__enumext_parse_keys_vii:n {#1}
     \__enumext_before_list_vii:
@@ -3079,14 +3087,6 @@
         \msg_error:nn { enumext } { nested }
       }
     \bool_set_true:N \l__enumext_starred_bool
-    \bool_lazy_all:nT
-      {
-        { \bool_not_p:n { \l__enumext_standar_bool } }
-        { \int_compare_p:nNn { \l__enumext_level_int } = { \c_zero_int } }
-      }
-      {
-        \bool_gset_true:N \g__enumext_starred_bool
-      }
   }
 %% Parse |key=val| and store keys for |enumext*|.
 \cs_new_protected:Npn \__enumext_parse_keys_vii:n #1
@@ -3133,6 +3133,7 @@
 \cs_new_protected:Nn \__enumext_before_list_vii:
   {
     \__enumext_vspace_above_vii:
+    \__enumext_check_ans_count: % need by chek-ans
     \__enumext_before_args_exec_vii:
     \__enumext_start_mini_vii:
   }
@@ -3265,6 +3266,7 @@
             % code for check-ans
             \bool_if:NT \l__enumext_check_ans_bool
               {
+                \int_gincr:N \g__enumext_count_item_number_int % new
                 % If true |no-store| key => nested in |enumext|
                 \bool_if:NTF \l__enumext_store_ans_bool
                   {
@@ -4053,6 +4055,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%%
+%% 
 %%
 %% End of file `enumext.sty'.
