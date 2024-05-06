@@ -2818,10 +2818,10 @@ $ pdfdetach -saveall enumext.pdf
 \item Question with image and label below:
 \begin{keyanspic}[3,2]
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
-\anspic*{\includegraphics[scale=0.15]{example-image-b}}
+\anspic{\includegraphics[scale=0.15]{example-image-b}}
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
-\anspic[A duck]{\includegraphics[scale=0.32]{example-image-duck}}
+\anspic*[A duck]{\includegraphics[scale=0.32]{example-image-duck}}
 \end{keyanspic}
 
 \item Question with image on left side:
@@ -2886,10 +2886,10 @@ Test keys
 % \item Question with image and label below:
 %  \begin{keyanspic}[3,2]
 %    \anspic{\includegraphics[scale=0.15]{example-image-a}}
-%    \anspic*{\includegraphics[scale=0.15]{example-image-b}}
+%    \anspic{\includegraphics[scale=0.15]{example-image-b}}
 %    \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %    \anspic{\includegraphics[scale=0.15]{example-image-a}}
-%    \anspic[A duck]{\includegraphics[scale=0.32]{example-image-duck}}
+%    \anspic*[A duck]{\includegraphics[scale=0.32]{example-image-duck}}
 %  \end{keyanspic}
 %
 % \item Question with image on left side:
@@ -6419,6 +6419,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \seq_new:c { g_@@_ \l_@@_store_name_tl _seq }
       }
     \bool_set_true:N \l_@@_store_active_bool
+    \bool_set_true:N \l_@@_store_ans_bool
     \int_if_exist:cF { g_@@_resume_#1_int }
       {
         \int_new:c { g_@@_resume_#1_int }
@@ -6599,10 +6600,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_case:nn { \l_@@_level_int }
       {
         { 1 }{
+               %\bool_show:N \g__enumext_starred_bool
                \bool_lazy_all:nT
                  {
-                   { \l_@@_starred_bool }
-                   { \int_compare_p:nNn { \l_@@_level_int } = { \c_zero_int } }
+                   { \bool_if_p:N \g_@@_starred_bool }
+                   { \int_compare_p:nNn { \l_@@_level_h_int } = { \c_one_int } }
                  }
                  {
                    \int_gdecr:N \g_@@_count_item_number_int
@@ -6622,7 +6624,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_case:nn { \l_@@_level_h_int }
       {
         { 1 }{
-               \bool_if:NT \l_@@_standar_bool
+               %\bool_show:N \g__enumext_standar_bool
+               \bool_if:NT \g_@@_standar_bool
                  {
                    \int_gdecr:N \g_@@_count_item_number_int
                    \typeout{ENUMEXT ~ STARRED ~ NEEEEEEEEEEEESTED}
@@ -6876,7 +6879,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open:
   {
-    \bool_if:NF \l_@@_store_ans_bool
+    \bool_if:NT \l_@@_store_ans_bool
       {
         \tl_if_empty:cTF { l_@@_store_opt_ \@@_level: _tl }
           {
@@ -6900,7 +6903,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_store_level_close:
   {
-    \bool_if:NF \l_@@_store_ans_bool
+    \bool_if:NT \l_@@_store_ans_bool
       {
         \@@_store_addto_seq:n { \end{enumext} }
       }
@@ -6924,7 +6927,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open_vii:
   {
-    \bool_if:NF \l_@@_store_ans_bool
+    \bool_if:NT \l_@@_store_ans_bool
       {
         \tl_if_empty:NTF \l_@@_store_opt_vii_tl
           {
@@ -6952,7 +6955,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_store_level_close_vii:
   {
-    \bool_if:NF \l_@@_store_ans_bool
+    \bool_if:NT \l_@@_store_ans_bool
       {
         \@@_store_addto_seq:n { \end{enumext*} }
       }
@@ -7054,7 +7057,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
     \group_begin:
-      \bool_if:NF \l_@@_store_ans_bool
+      \bool_if:NT \l_@@_store_ans_bool
         {
           \bool_if:NT \l_@@_check_ans_bool
             {
@@ -7106,7 +7109,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \keys_set:nn { enumext / anskey } {#3}
       }
     \bool_lazy_and:nnT
-      { \l_@@_store_columns_break_bool }
+      { \bool_if_p:N \l_@@_store_columns_break_bool }
       { \bool_not_p:n { \l_@@_starred_bool } }
       {
         \tl_put_left:Nn \l_@@_store_anskey_arg_tl { \columnbreak }
@@ -7164,8 +7167,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    create the \ics{hyperlink} and then store in \mymeta{sequence}.
 %    \begin{macrocode}
     \bool_lazy_and:nnT
-      { \l_@@_store_ref_key_bool }
-      { \l_@@_hyperref_bool }
+      { \bool_if_p:N \l_@@_store_ref_key_bool }
+      { \bool_if_p:N \l_@@_hyperref_bool }
       {
         \tl_put_right:Ne \l_@@_store_anskey_arg_tl
           {
@@ -7214,7 +7217,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
     \bool_lazy_all:nT
       {
-        { \g_@@_starred_bool }
+        { \bool_if_p:N \g_@@_starred_bool }
         { \int_compare_p:nNn { \l_@@_level_int } = { \c_zero_int } }
       }
       {
@@ -7223,8 +7226,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \bool_lazy_all:nT
       {
-        { \l_@@_standar_bool }
-        { \g_@@_starred_bool }
+        { \bool_if_p:N \l_@@_standar_bool }
+        { \bool_if_p:N \g_@@_starred_bool }
         { \int_compare_p:nNn { \l_@@_level_int } > { \c_zero_int } }
       }
       {
@@ -7241,7 +7244,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
     \bool_lazy_all:nT
       {
-        { \l_@@_standar_bool }
+        { \bool_if_p:N \l_@@_standar_bool }
         { \int_compare_p:nNn { \l_@@_level_int } > { \c_zero_int } }
         { \int_compare_p:nNn { \l_@@_level_h_int } = { \c_zero_int } }
         { \bool_not_p:n { \l_@@_starred_bool } }
@@ -7257,7 +7260,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \tl_use:c { l_@@_label_copy_ \int_to_roman:n {##1} _tl } }
     \bool_lazy_all:nT
       {
-        { \l_@@_standar_bool }
+        { \bool_if_p:N \l_@@_standar_bool }
         { \int_compare_p:nNn { \l_@@_level_int } > { \c_zero_int } }
         { \bool_not_p:n { \g_@@_starred_bool } }
         { \int_compare_p:nNn { \l_@@_level_h_int } > { \c_zero_int } }
@@ -7528,8 +7531,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_keyans_addto_seq_link:
   {
     \bool_lazy_and:nnT
-      { \l_@@_store_ref_key_bool }
-      { \l_@@_hyperref_bool }
+      { \bool_if_p:N \l_@@_store_ref_key_bool }
+      { \bool_if_p:N \l_@@_hyperref_bool }
       {
         \tl_put_right:Ne \l_@@_store_keyans_label_tl
           {
@@ -8446,20 +8449,32 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_start_store_level:
   {
     %\bool_lazy_and:nnT
-      %{ \l_@@_store_active_bool }
-      %{ \bool_not_p:n { \l_@@_keyans_env_bool } }
-      %{
-        %\int_compare:nNnT { \l_@@_level_h_int } = { 1 }
-          %{
-            %\bool_set_true:c { l_@@_store_upper_level_ \@@_level: _bool }
-            %\@@_store_level_open:
-          %}
-        %\int_compare:nNnT { \l_@@_level_int } > { 1 }
-          %{
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \l_@@_store_active_bool }
+        { \bool_not_p:n { \l_@@_keyans_env_bool } }
+        { \bool_not_p:n { \g_@@_starred_bool } }
+      }
+      {
+        \int_compare:nNnT { \l_@@_level_int } > { 1 }
+          {
             \bool_set_true:c { l_@@_store_upper_level_ \@@_level: _bool }
             \@@_store_level_open:
-          %}
-      %}
+          }
+      }
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \l_@@_store_active_bool }
+        { \bool_not_p:n { \l_@@_keyans_env_bool } }
+        { \bool_if_p:N \g_@@_starred_bool }
+      }
+      {
+        \int_compare:nNnT { \l_@@_level_int } > { 0 }
+          {
+            \bool_set_true:c { l_@@_store_upper_level_ \@@_level: _bool }
+            \@@_store_level_open:
+          }
+      }
   }
 \cs_new_protected:Nn \@@_stop_store_level:
   {
@@ -8612,7 +8627,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    internal check answer mechanism in the terminal.
 %    \begin{macrocode}
     \bool_lazy_and:nnT
-      { \l_@@_check_ans_bool }
+      { \bool_if_p:N \l_@@_check_ans_bool }
       { \bool_not_p:n { \g_@@_starred_bool } }
       {
         \bool_gset_true:N \g_@@_check_ans_show_bool
@@ -8661,7 +8676,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   value of the current counter.
 %    \begin{macrocode}
     \bool_set_false:N \l_@@_standar_bool
-    \bool_gset_false:N \g_@@_standar_bool
+    %\bool_gset_false:N \g_@@_standar_bool
     \int_gset_eq:NN \g_@@_resume_int \value{enumXi}
     \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
       {
@@ -8682,15 +8697,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \@@_after_env:nn {enumext}
   {
-    \bool_if:NT \g_@@_check_ans_show_bool
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
       {
-        \int_compare:nNnT { \l_@@_level_int } = { 0 }
+        \bool_if:NT \g_@@_check_ans_show_bool
           {
             \@@_check_ans_active:
           }
+        \bool_gset_false:N \g_@@_standar_bool
+        \bool_gset_false:N \g_@@_check_ans_show_bool
+        \tl_gclear:N \g_@@_store_name_tl
       }
-    \bool_gset_false:N \g_@@_check_ans_show_bool
-    \tl_gclear:N \g_@@_store_name_tl
   }
 %    \end{macrocode}
 %
@@ -9092,8 +9108,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_keyans_store_ref:
         \@@_keyans_addto_seq:n { #2 }
         \bool_lazy_or:nnT
-          { \l_@@_show_answer_bool }
-          { \l_@@_show_position_bool }
+          { \bool_if_p:N \l_@@_show_answer_bool }
+          { \bool_if_p:N \l_@@_show_position_bool }
           {
             \tl_set_eq:NN \l_@@_label_v_tl \l_@@_label_vi_tl
             \@@_keyans_show_left:n { #2 }
@@ -9636,12 +9652,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           { g_@@_resume_ \l_@@_store_name_tl _int }
           { \value{enumXvii} }
       }
-    \bool_lazy_and:nnT { \g_@@_starred_bool } { \l_@@_check_ans_bool }
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \g_@@_starred_bool }
+      { \bool_if_p:N \l_@@_check_ans_bool }
       {
         \bool_gset_true:N \g_@@_check_ans_show_h_bool
         \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
       }
-    \bool_gset_false:N \g_@@_starred_bool
+    %\bool_gset_false:N \g_@@_starred_bool
     \bool_set_false:N \l_@@_starred_bool
   }
 %    \end{macrocode}
@@ -9987,15 +10005,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \@@_after_env:nn {enumext*}
   {
-    \bool_if:NT \g_@@_check_ans_show_h_bool
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
       {
-        \int_compare:nNnT { \l_@@_level_int } = { 0 }
+        \bool_if:NT \g_@@_check_ans_show_h_bool
           {
             \@@_check_ans_active:
           }
+        \bool_gset_false:N \g_@@_starred_bool
+        \bool_gset_false:N \g_@@_check_ans_show_h_bool
+        \tl_gclear:N \g_@@_store_name_tl
       }
-    \bool_gset_false:N \g_@@_check_ans_show_h_bool
-    \tl_gclear:N \g_@@_store_name_tl
   }
 %    \end{macrocode}
 %

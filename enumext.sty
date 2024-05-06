@@ -1448,6 +1448,7 @@
         \seq_new:c { g__enumext_ \l__enumext_store_name_tl _seq }
       }
     \bool_set_true:N \l__enumext_store_active_bool
+    \bool_set_true:N \l__enumext_store_ans_bool
     \int_if_exist:cF { g__enumext_resume_#1_int }
       {
         \int_new:c { g__enumext_resume_#1_int }
@@ -1527,10 +1528,11 @@
     \int_case:nn { \l__enumext_level_int }
       {
         { 1 }{
+               %\bool_show:N \g__enumext_starred_bool
                \bool_lazy_all:nT
                  {
-                   { \l__enumext_starred_bool }
-                   { \int_compare_p:nNn { \l__enumext_level_int } = { \c_zero_int } }
+                   { \bool_if_p:N \g__enumext_starred_bool }
+                   { \int_compare_p:nNn { \l__enumext_level_h_int } = { \c_one_int } }
                  }
                  {
                    \int_gdecr:N \g__enumext_count_item_number_int
@@ -1550,7 +1552,8 @@
     \int_case:nn { \l__enumext_level_h_int }
       {
         { 1 }{
-               \bool_if:NT \l__enumext_standar_bool
+               %\bool_show:N \g__enumext_standar_bool
+               \bool_if:NT \g__enumext_standar_bool
                  {
                    \int_gdecr:N \g__enumext_count_item_number_int
                    \typeout{ENUMEXT ~ STARRED ~ NEEEEEEEEEEEESTED}
@@ -1675,7 +1678,7 @@
 %% Function for memorize level execution of |\anskey| on |enumext|.
 \cs_new_protected:Nn \__enumext_store_level_open:
   {
-    \bool_if:NF \l__enumext_store_ans_bool
+    \bool_if:NT \l__enumext_store_ans_bool
       {
         \tl_if_empty:cTF { l__enumext_store_opt_ \__enumext_level: _tl }
           {
@@ -1699,7 +1702,7 @@
   }
 \cs_new_protected:Nn \__enumext_store_level_close:
   {
-    \bool_if:NF \l__enumext_store_ans_bool
+    \bool_if:NT \l__enumext_store_ans_bool
       {
         \__enumext_store_addto_seq:n { \end{enumext} }
       }
@@ -1707,7 +1710,7 @@
 %% Function for memorize level execution of |\anskey| on |enumext*|.
 \cs_new_protected:Nn \__enumext_store_level_open_vii:
   {
-    \bool_if:NF \l__enumext_store_ans_bool
+    \bool_if:NT \l__enumext_store_ans_bool
       {
         \tl_if_empty:NTF \l__enumext_store_opt_vii_tl
           {
@@ -1735,7 +1738,7 @@
   }
 \cs_new_protected:Nn \__enumext_store_level_close_vii:
   {
-    \bool_if:NF \l__enumext_store_ans_bool
+    \bool_if:NT \l__enumext_store_ans_bool
       {
         \__enumext_store_addto_seq:n { \end{enumext*} }
       }
@@ -1783,7 +1786,7 @@
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
     \group_begin:
-      \bool_if:NF \l__enumext_store_ans_bool
+      \bool_if:NT \l__enumext_store_ans_bool
         {
           \bool_if:NT \l__enumext_check_ans_bool
             {
@@ -1808,7 +1811,7 @@
         \keys_set:nn { enumext / anskey } {#3}
       }
     \bool_lazy_and:nnT
-      { \l__enumext_store_columns_break_bool }
+      { \bool_if_p:N \l__enumext_store_columns_break_bool }
       { \bool_not_p:n { \l__enumext_starred_bool } }
       {
         \tl_put_left:Nn \l__enumext_store_anskey_arg_tl { \columnbreak }
@@ -1851,8 +1854,8 @@
         \tl_put_right:Nn \l__enumext_store_anskey_arg_tl {#4}
       }
     \bool_lazy_and:nnT
-      { \l__enumext_store_ref_key_bool }
-      { \l__enumext_hyperref_bool }
+      { \bool_if_p:N \l__enumext_store_ref_key_bool }
+      { \bool_if_p:N \l__enumext_hyperref_bool }
       {
         \tl_put_right:Ne \l__enumext_store_anskey_arg_tl
           {
@@ -1877,7 +1880,7 @@
       { . \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
     \bool_lazy_all:nT
       {
-        { \g__enumext_starred_bool }
+        { \bool_if_p:N \g__enumext_starred_bool }
         { \int_compare_p:nNn { \l__enumext_level_int } = { \c_zero_int } }
       }
       {
@@ -1886,8 +1889,8 @@
       }
     \bool_lazy_all:nT
       {
-        { \l__enumext_standar_bool }
-        { \g__enumext_starred_bool }
+        { \bool_if_p:N \l__enumext_standar_bool }
+        { \bool_if_p:N \g__enumext_starred_bool }
         { \int_compare_p:nNn { \l__enumext_level_int } > { \c_zero_int } }
       }
       {
@@ -1899,7 +1902,7 @@
       }
     \bool_lazy_all:nT
       {
-        { \l__enumext_standar_bool }
+        { \bool_if_p:N \l__enumext_standar_bool }
         { \int_compare_p:nNn { \l__enumext_level_int } > { \c_zero_int } }
         { \int_compare_p:nNn { \l__enumext_level_h_int } = { \c_zero_int } }
         { \bool_not_p:n { \l__enumext_starred_bool } }
@@ -1915,7 +1918,7 @@
       { \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
     \bool_lazy_all:nT
       {
-        { \l__enumext_standar_bool }
+        { \bool_if_p:N \l__enumext_standar_bool }
         { \int_compare_p:nNn { \l__enumext_level_int } > { \c_zero_int } }
         { \bool_not_p:n { \g__enumext_starred_bool } }
         { \int_compare_p:nNn { \l__enumext_level_h_int } > { \c_zero_int } }
@@ -2067,8 +2070,8 @@
 \cs_new_protected:Nn \__enumext_keyans_addto_seq_link:
   {
     \bool_lazy_and:nnT
-      { \l__enumext_store_ref_key_bool }
-      { \l__enumext_hyperref_bool }
+      { \bool_if_p:N \l__enumext_store_ref_key_bool }
+      { \bool_if_p:N \l__enumext_hyperref_bool }
       {
         \tl_put_right:Ne \l__enumext_store_keyans_label_tl
           {
@@ -2516,20 +2519,32 @@
 \cs_new_protected:Nn \__enumext_start_store_level:
   {
     %\bool_lazy_and:nnT
-      %{ \l__enumext_store_active_bool }
-      %{ \bool_not_p:n { \l__enumext_keyans_env_bool } }
-      %{
-        %\int_compare:nNnT { \l__enumext_level_h_int } = { 1 }
-          %{
-            %\bool_set_true:c { l__enumext_store_upper_level_ \__enumext_level: _bool }
-            %\__enumext_store_level_open:
-          %}
-        %\int_compare:nNnT { \l__enumext_level_int } > { 1 }
-          %{
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \l__enumext_store_active_bool }
+        { \bool_not_p:n { \l__enumext_keyans_env_bool } }
+        { \bool_not_p:n { \g__enumext_starred_bool } }
+      }
+      {
+        \int_compare:nNnT { \l__enumext_level_int } > { 1 }
+          {
             \bool_set_true:c { l__enumext_store_upper_level_ \__enumext_level: _bool }
             \__enumext_store_level_open:
-          %}
-      %}
+          }
+      }
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \l__enumext_store_active_bool }
+        { \bool_not_p:n { \l__enumext_keyans_env_bool } }
+        { \bool_if_p:N \g__enumext_starred_bool }
+      }
+      {
+        \int_compare:nNnT { \l__enumext_level_int } > { 0 }
+          {
+            \bool_set_true:c { l__enumext_store_upper_level_ \__enumext_level: _bool }
+            \__enumext_store_level_open:
+          }
+      }
   }
 \cs_new_protected:Nn \__enumext_stop_store_level:
   {
@@ -2605,7 +2620,7 @@
           }
       }
     \bool_lazy_and:nnT
-      { \l__enumext_check_ans_bool }
+      { \bool_if_p:N \l__enumext_check_ans_bool }
       { \bool_not_p:n { \g__enumext_starred_bool } }
       {
         \bool_gset_true:N \g__enumext_check_ans_show_bool
@@ -2629,7 +2644,7 @@
     \__enumext_after_stop_list:
     \__enumext_vspace_below:
     \bool_set_false:N \l__enumext_standar_bool
-    \bool_gset_false:N \g__enumext_standar_bool
+    %\bool_gset_false:N \g__enumext_standar_bool
     \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
     \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
       {
@@ -2641,15 +2656,16 @@
 %% Execute |check-ans| key out of |enumext|.
 \__enumext_after_env:nn {enumext}
   {
-    \bool_if:NT \g__enumext_check_ans_show_bool
+    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
       {
-        \int_compare:nNnT { \l__enumext_level_int } = { 0 }
+        \bool_if:NT \g__enumext_check_ans_show_bool
           {
             \__enumext_check_ans_active:
           }
+        \bool_gset_false:N \g__enumext_standar_bool
+        \bool_gset_false:N \g__enumext_check_ans_show_bool
+        \tl_gclear:N \g__enumext_store_name_tl
       }
-    \bool_gset_false:N \g__enumext_check_ans_show_bool
-    \tl_gclear:N \g__enumext_store_name_tl
   }
 %% Definition of |keyans| environment.
 \NewDocumentEnvironment{keyans}{ O{} }
@@ -2801,8 +2817,8 @@
         \__enumext_keyans_store_ref:
         \__enumext_keyans_addto_seq:n { #2 }
         \bool_lazy_or:nnT
-          { \l__enumext_show_answer_bool }
-          { \l__enumext_show_position_bool }
+          { \bool_if_p:N \l__enumext_show_answer_bool }
+          { \bool_if_p:N \l__enumext_show_position_bool }
           {
             \tl_set_eq:NN \l__enumext_label_v_tl \l__enumext_label_vi_tl
             \__enumext_keyans_show_left:n { #2 }
@@ -3106,12 +3122,14 @@
           { g__enumext_resume_ \l__enumext_store_name_tl _int }
           { \value{enumXvii} }
       }
-    \bool_lazy_and:nnT { \g__enumext_starred_bool } { \l__enumext_check_ans_bool }
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \g__enumext_starred_bool }
+      { \bool_if_p:N \l__enumext_check_ans_bool }
       {
         \bool_gset_true:N \g__enumext_check_ans_show_h_bool
         \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
       }
-    \bool_gset_false:N \g__enumext_starred_bool
+    %\bool_gset_false:N \g__enumext_starred_bool
     \bool_set_false:N \l__enumext_starred_bool
   }
 \cs_new_protected:Nn \__enumext_start_store_level_vii:
@@ -3305,15 +3323,16 @@
 %% Execute |check-ans| key out of |enumext*|.
 \__enumext_after_env:nn {enumext*}
   {
-    \bool_if:NT \g__enumext_check_ans_show_h_bool
+    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
       {
-        \int_compare:nNnT { \l__enumext_level_int } = { 0 }
+        \bool_if:NT \g__enumext_check_ans_show_h_bool
           {
             \__enumext_check_ans_active:
           }
+        \bool_gset_false:N \g__enumext_starred_bool
+        \bool_gset_false:N \g__enumext_check_ans_show_h_bool
+        \tl_gclear:N \g__enumext_store_name_tl
       }
-    \bool_gset_false:N \g__enumext_check_ans_show_h_bool
-    \tl_gclear:N \g__enumext_store_name_tl
   }
 %% Define default columns width for |keyans*|
 \cs_new_protected:Nn \__enumext_starred_columns_set_viii:
