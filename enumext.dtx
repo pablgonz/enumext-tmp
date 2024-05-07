@@ -3517,7 +3517,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-06}
+  {2024-05-07}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -7378,7 +7378,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \c_space_tl #1 }
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { , \c_space_tl #1 }
       }
     \@@_store_addto_prop:V \l_@@_store_keyans_label_tl
   }
@@ -7506,7 +7506,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \c_space_tl #1 }
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { , \c_space_tl #1 }
       }
     \@@_keyans_addto_seq_link:
   }
@@ -7577,10 +7577,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_keyans_show_left:n,}
 %    Common function to show \emph{starred commands} |\item*| and \mymeta{position} of
 %    stored content in \mymeta{prop list} for \myenv*{keyans} and
-%    \myenv*{keyanspic}. Need add |1| to \cs{l_@@_show_position_bool} for
-%    \myenv*{keyans} environment.
+%    \myenv*{keyanspic}. Need add |1| to \cs{g_@@_ \l_@@_store_name_tl _prop } for \mykey{show-pos} key.
 % \iffalse
-%% Function for |show-ans| and |show-pos| for |keyans| and |keyanspic|.
+%% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_show_left:n #1
@@ -7594,7 +7593,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               \l_@@_labelsep_i_dim
           }
         \tl_if_novalue:nF { #1 }
-          { \tl_put_right:Nn \l_@@_label_v_tl { \c_space_tl [ #1 ] } }
+          {
+            \tl_put_right:Nn \l_@@_label_v_tl { \c_space_tl [ #1 ] }
+          }
       }
     \bool_if:NT \l_@@_show_position_bool
       {
@@ -7604,7 +7605,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \exp_not:N \normalfont
             \exp_not:N \footnotesize [ \int_eval:n
               {
-                \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } + \c_one_int
+                \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } + 1
               }
               ]
             \group_end:
@@ -7616,7 +7617,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               \l_@@_labelsep_i_dim
           }
         \tl_if_novalue:nF { #1 }
-          { \tl_put_right:Nn \l_@@_label_v_tl { \c_space_tl [ #1 ] } }
+          {
+            \tl_put_right:Nn \l_@@_label_v_tl { \c_space_tl [ #1 ] }
+          }
       }
   }
 %    \end{macrocode}
@@ -10408,7 +10411,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_if_novalue:nF { #1 }
       {
         \tl_set:Ne \l_@@_keyans_tmpa_tl { \c_space_tl [#1] }
-        \tl_set:Ne \l_@@_keyans_tmpb_tl { \c_space_tl #1 }
+        \tl_set:Ne \l_@@_keyans_tmpb_tl { , \c_space_tl #1 }
       }
     \@@_starred_item_viii_aux_ii:w
   }

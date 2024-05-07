@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-06}
+  {2024-05-07}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -1989,7 +1989,7 @@
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \c_space_tl #1 }
+        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { , \c_space_tl #1 }
       }
     \__enumext_store_addto_prop:V \l__enumext_store_keyans_label_tl
   }
@@ -2060,7 +2060,7 @@
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \c_space_tl #1 }
+        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { , \c_space_tl #1 }
       }
     \__enumext_keyans_addto_seq_link:
   }
@@ -2095,7 +2095,7 @@
       }
       { \tl_gclear:N \g__enumext_check_ans_item_tl }
   }
-%% Function for |show-ans| and |show-pos| for |keyans| and |keyanspic|.
+%% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_show_left:n #1
   {
     \bool_if:NT \l__enumext_show_answer_bool
@@ -2107,7 +2107,9 @@
               \l__enumext_labelsep_i_dim
           }
         \tl_if_novalue:nF { #1 }
-          { \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] } }
+          {
+            \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] }
+          }
       }
     \bool_if:NT \l__enumext_show_position_bool
       {
@@ -2117,7 +2119,7 @@
             \exp_not:N \normalfont
             \exp_not:N \footnotesize [ \int_eval:n
               {
-                \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } + \c_one_int
+                \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } + 1
               }
               ]
             \group_end:
@@ -2129,7 +2131,9 @@
               \l__enumext_labelsep_i_dim
           }
         \tl_if_novalue:nF { #1 }
-          { \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] } }
+          {
+            \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] }
+          }
       }
   }
 %% Add |item-sym*| and |item*-sep| keys.
@@ -3560,7 +3564,7 @@
     \tl_if_novalue:nF { #1 }
       {
         \tl_set:Ne \l__enumext_keyans_tmpa_tl { \c_space_tl [#1] }
-        \tl_set:Ne \l__enumext_keyans_tmpb_tl { \c_space_tl #1 }
+        \tl_set:Ne \l__enumext_keyans_tmpb_tl { , \c_space_tl #1 }
       }
     \__enumext_starred_item_viii_aux_ii:w
   }
