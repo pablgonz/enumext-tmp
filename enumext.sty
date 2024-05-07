@@ -254,6 +254,31 @@
       }
     \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {##1} }
   }
+%% Function to check current environment for |enumext| and |enumext*|.
+\cs_new_protected:Nn \__enumext_current_env:
+  {
+    \str_case:en { \@currenvir }
+      {
+        {enumext}
+          {
+            \int_compare:nNnT { \l__enumext_level_h_int } = { \c_zero_int }
+              {
+                \bool_gset_true:N \g__enumext_standar_bool
+                \int_gset:Nn \g__enumext_standar_star_env_int { \inputlineno }
+                \typeout{working-on-enumext}
+              }
+          }
+        {enumext*}
+          {
+            \int_compare:nNnT { \l__enumext_level_int } = { \c_zero_int }
+              {
+                \bool_gset_true:N \g__enumext_starred_bool
+                \int_gset:Nn \g__enumext_starred_star_env_int { \inputlineno }
+                \typeout{working-on-enumext*}
+              }
+          }
+      }
+  }
 %% Copy list tools.
 \__enumext_at_begin_document:n
   {
@@ -1496,39 +1521,12 @@
     level-1, level-2, level-3, level-4, enumext*
   }
   { \__enumext_tmp:n {#1} }
-%% Function to check current environment for |enumext| and |enumext*|.
-\cs_new_protected:Nn \__enumext_current_env:
-  {
-    \str_case:en { \@currenvir }
-      {
-        {enumext}
-          {
-            \int_compare:nNnT { \l__enumext_level_h_int } = { \c_zero_int }
-              {
-                \bool_gset_true:N \g__enumext_standar_bool
-                \int_gset:Nn \g__enumext_standar_star_env_int { \inputlineno }
-                \typeout{working-on-enumext}
-                % \int_show:N \g__enumext_standar_star_env_int
-              }
-          }
-        {enumext*}
-          {
-            \int_compare:nNnT { \l__enumext_level_int } = { \c_zero_int }
-              {
-                \bool_gset_true:N \g__enumext_starred_bool
-                \int_gset:Nn \g__enumext_starred_star_env_int { \inputlineno }
-                \typeout{working-on-enumext* ~ \g__enumext_starred_star_env_int}
-              }
-          }
-      }
-  }
 %% Decrementing \g_@@_count_item_number_int for nested level off |enumext|.
-\cs_new_protected:Nn \__enumext_check_ans_set_int_level:
+\cs_new_protected:Nn \__enumext_check_ans_set:
   {
     \int_case:nn { \l__enumext_level_int }
       {
         { 1 }{
-               %\bool_show:N \g__enumext_starred_bool
                \bool_lazy_all:nT
                  {
                    { \bool_if_p:N \g__enumext_starred_bool }
@@ -1552,7 +1550,6 @@
     \int_case:nn { \l__enumext_level_h_int }
       {
         { 1 }{
-               %\bool_show:N \g__enumext_standar_bool
                \bool_if:NT \g__enumext_standar_bool
                  {
                    \int_gdecr:N \g__enumext_count_item_number_int
@@ -1562,15 +1559,15 @@
       }
   }
 %% Function to count |\item| for internal checking answer mechanism in |enumext|.
-\cs_new_protected:Nn \__enumext_check_ans_count:
+\cs_new_protected:Nn \__enumext_check_ans_exec:
   {
     \bool_if:NT \l__enumext_check_ans_bool
       {
-        \__enumext_check_ans_set_int_level:
+        \__enumext_check_ans_set:
       }
   }
 %% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
-\cs_new_protected:Nn \__enumext_check_ans_active:
+\cs_new_protected:Nn \__enumext_check_ans_show:
   {
     \int_compare:nNnTF
       { \g__enumext_count_item_number_int } = { \g__enumext_count_item_anskey_int }
@@ -2518,7 +2515,6 @@
   }
 \cs_new_protected:Nn \__enumext_start_store_level:
   {
-    %\bool_lazy_and:nnT
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \l__enumext_store_active_bool }
@@ -2557,7 +2553,7 @@
   {
     \__enumext_vspace_above:
     \__enumext_before_args_exec:
-    \__enumext_check_ans_count:
+    \__enumext_check_ans_exec:
 %% Set |mini-env| width value.
     \dim_compare:nNnT
       { \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } } > { \c_zero_dim }
@@ -2644,7 +2640,6 @@
     \__enumext_after_stop_list:
     \__enumext_vspace_below:
     \bool_set_false:N \l__enumext_standar_bool
-    %\bool_gset_false:N \g__enumext_standar_bool
     \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
     \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
       {
@@ -2660,7 +2655,7 @@
       {
         \bool_if:NT \g__enumext_check_ans_show_bool
           {
-            \__enumext_check_ans_active:
+            \__enumext_check_ans_show:
           }
         \bool_gset_false:N \g__enumext_standar_bool
         \bool_gset_false:N \g__enumext_check_ans_show_bool
@@ -3106,7 +3101,7 @@
 \cs_new_protected:Nn \__enumext_before_list_vii:
   {
     \__enumext_vspace_above_vii:
-    \__enumext_check_ans_count: % need by chek-ans
+    \__enumext_check_ans_exec: % need by chek-ans
     \__enumext_before_args_exec_vii:
     \__enumext_start_mini_vii:
   }
@@ -3327,7 +3322,7 @@
       {
         \bool_if:NT \g__enumext_check_ans_show_h_bool
           {
-            \__enumext_check_ans_active:
+            \__enumext_check_ans_show:
           }
         \bool_gset_false:N \g__enumext_starred_bool
         \bool_gset_false:N \g__enumext_check_ans_show_h_bool
