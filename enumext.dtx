@@ -1667,8 +1667,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % the \enquote{top} and \enquote{bottom} the environment or nested level.
 % \end{important}
 %
-% \newpage
-%
 % \keyexamp{itemsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
 % Set the \emph{vertical space} between items, beyond the \mykey{parsep}.
 % Internally sets the value of \ics{itemsep} for the current level.
@@ -1803,25 +1801,23 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{before}{code}{not used}
 % Execute \mymarg[type=tt]{code} \emph{\enquote{before}} the
-% environment starts. The \mymarg[type=tt]{code} is executed
+% environment starts. The \mymarg[type=tt]{code} must be passed between braces, is executed
 % \emph{\enquote{after}} performing all calculations related to the
 % \emph{list parameters} in the environment and the parameters sets by
 % \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val} that is, in the second argument of the list after setting all the parameters
-% |\list|\mymarg[type=tt]{arg one}|{|\mymeta{arg two}\mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|}|. The \mymarg[type=tt]{code} must be
-% passed between braces.
+% |\list|\mymarg[type=tt]{arg one}|{|\mymeta{arg two}\mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|}|.
 %
 % \smallskip
 %
 % \keyexamp{before\textcolor{MediumOrchid}{*}}{code}{not used}
 % Execute \mymarg[type=tt]{code} \emph{\enquote{before}} the
-% environment starts. The \mymarg[type=tt]{code} is executed
+% environment starts. The \mymarg[type=tt]{code} must be passed between braces, is executed
 % \emph{\enquote{before}} performing all calculations related to the \emph{list
 % parameters} and \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}}
 % val} sets in the environment that is,
 % before the arguments defining the environment are executed:
 % \mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|\list|\mymarg[type=tt]{arg
-% one}\mymarg[type=tt]{arg two}. The \mymarg[type=tt]{code} must be passed
-% between braces.
+% one}\mymarg[type=tt]{arg two}.
 %
 % \smallskip
 %
@@ -1928,6 +1924,20 @@ This work consists of the files enumext.dtx and enumext.sty.
 % or via the \mykey{after} key.
 % \end{important}
 %
+% \subsubsection{The key \texttt{miniright}}
+%
+% In the horizontal list environments \myenv*{enumext*} and \myenv*{keyans*}
+% it is not possible to use the \ics*{miniright} command and the \mykey{miniright}
+% key must be used instead.
+%
+% \keyexamp{miniright}{code for drawing or tabular}{not used}
+% Set the \emph{code} for the drawing or tabular to be placed in the
+% \myenv{minipage} environment on the \emph{\enquote{right side}} by
+% starting it with the command |\centering|.
+%
+% \keyexamp{miniright\textcolor{MediumOrchid}{*}}{code for drawing or tabular}{not used}
+% Same as above, but \emph{without} starting with the |\centering| command.
+%
 % \section{The storage system}\label{sec:storage system}
 %
 % The entire mechanism for \emph{\enquote{storing content}} it is
@@ -1969,22 +1979,44 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{Keys for storage}\label{subsec:storage-keys}
 %
 % \keyexamp{save-ans}{store name}{not set}
-% Sets the \emph{\enquote{name}} of the \mymeta{sequence} and
+% Sets the \emph{name} of the \mymeta{sequence} and
 % \mymeta{prop list} in which the contents will be \emph{\enquote{stored}} by
 % \ics*{anskey} in \myenv*{enumext} environment, \ics*{item*} in
-% \myenv*{keyans} environment and \ics*{anspic*} in \myenv*{keyanspic}
+% \myenv*{keyans} and \myenv*{keyans*} environments and \ics*{anspic*} in \myenv*{keyanspic}
 % environment. If the \mymeta{sequence} or \mymeta{prop list} does not
 % exist, it will be created globally.
 %
 % \smallskip
 %
-% \keyexamp{wrap-ans}{code{} \space\usebox{\hashbox} more code}{\textbackslash{}fbox}
-% Wraps the current \mymeta{argument} passed \ics*{anskey} command to
+% \keyexamp{wrap-ans}{code{} \space\usebox{\hashbox} more code}{\textbackslash{}fbox\{\#1\}}
+% Wraps the \emph{current argument} passed \ics*{anskey} command to
 % referenced by |{#1}|. The \mymarg[type=tt]{code} must be passed between
-% braces. This \mymeta{key} only affects the current \mymeta{argument} passed to
+% braces and only affects the \mymeta{current argument} passed to
 % \ics*{anskey} and NOT the \emph{\enquote{stored content}} in the \mymeta{store name}
 % set by \mykey{save-ans} key. If this key is passed using the
 % \ics*{setenumext} command it is necessary to use double ‘|{##1}|’.
+%
+% \keyexamp{wrap-opt}{code{} \space\usebox{\hashbox} more code}{[\{\#1\}]}
+% Wraps the \emph{optional argument} passed to the
+% \ics*{item*} and \ics*{anspic*} commands referenced by |{#1}|
+% in the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
+% environments. The \mymarg[type=tt]{code} must be passed between braces
+% and only affects the current \mymeta{optional argument} and NOT the
+% \emph{\enquote{stored content}} in \mymeta{store name} set by
+% \mykey{save-ans} key. If this key is passed using the \ics*{setenumext}
+% command, it is necessary to use the double ‘|{##1}|’.
+%
+% \keyexamp{save-sep}{text symbol}{\{, \}}
+% Sets the \emph{text symbol} that will separate the current
+% \mymeta{label} defined by the \mykey{label} key from the
+% \mymeta{optional argument} (if present), when storing them in
+% the \mymeta{store name} defined by the \mykey{save-ans} key for the
+% \ics*{item*} command in the \myenv*{keyans} and \myenv*{keyans*}
+% environment and for the \ics*{anspic} command in the \myenv*{keyanspic}
+% environment. The \mymarg{text symbol} must always be passed between
+% braces, whitespace ‘\verb*+ +’ is preserved within the braces and only
+% affects the \emph{\enquote{stored content}} and not what is displayed
+% when using the \mykey{show-ans} or \mykey{show-pos} keys.
 %
 % \keyexamp{mark-ans}{symbol}{\textbackslash{}textasteriskcentered}
 % Sets the \emph{symbol} to be displayed in the left margin of the
