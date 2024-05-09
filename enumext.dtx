@@ -577,7 +577,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     splittopskip,showboxdepth,topskip,showoutput,nointerlineskip},%
 % Reserved words 6 (optcolor) KEYS
     keywordstyle  = [6]{\color{optcolor}},%
-    keywords      = [6]{save-ans,wrap-ans,store-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
+    keywords      = [6]{save-ans,wrap-ans,save-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
                     nosep,before,after,start, right, item-sym, item-sep, hyperfootnotes,%
                     scale,wrap-label,font,first,widest,mini-env,list-indent},%
 % Reserved words 7 (label values)
@@ -869,7 +869,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \begin{enumext}[save-ans=temp2,columns=2,nosep,store-ref]%
+% \begin{enumext}[save-ans=temp2,columns=2,nosep,save-ref]%
 %  \item Factor $x^{2}-2x+1$  \anskey{$\left(x-1\right)^{2}$}
 %  \item Factor $3x+3y+3z$    \anskey{$3(x+y+z)$}
 %  \item True False
@@ -897,7 +897,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \begin{enumext}[save-ans=worksheet,columns=2,show-ans,nosep,store-ref]
+% \begin{enumext}[save-ans=worksheet,columns=2,show-ans,nosep,save-ref]
 %  \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
 %  \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
 %  \item True False
@@ -943,7 +943,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \begin{enumext}[save-ans=mytest,columns=2,nosep,store-ref]
+% \begin{enumext}[save-ans=mytest,columns=2,nosep,save-ref]
 %   \item First type of questions
 %      \begin{keyans}[columns=2,noitemsep]
 %        \item value
@@ -1289,12 +1289,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 % which is activated by the \mykey{ref} key (\S\ref{subsec:label-and-ref}), the standard \hologo{LaTeX}
 % \ics{label} and \ics{ref} commands work as usual.
 % It also provides an \emph{\enquote{internal reference}} system for the
-% \emph{\enquote{stored content}} by means of the key \mykey{store-ref}
+% \emph{\enquote{stored content}} by means of the key \mykey{save-ref}
 % (\S\ref{subsec:label-ref}) when the key \mykey{save-ans}(\S\ref{subsec:storage-keys}) is active.
 %
 % \begin{important}*
 % The implementation of  \ics{label} and \ics{ref} together with the
-% \mykey{store-ref} key are compatible with the \mypkg{hyperref}\cite{hyperref}
+% \mykey{save-ref} key are compatible with the \mypkg{hyperref}\cite{hyperref}
 % package.
 % \end{important}
 %
@@ -1512,7 +1512,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % This key is intended to give the basic structure with which the
 % \mymeta{label} will be displayed, and the and the form in which it is
 % used by standard \emph{\enquote{label and ref}} and the \emph{\enquote{internal reference}} system with the
-% \mykey{store-ref} key. You cannot use commands with \mymeta{label} as an
+% \mykey{save-ref} key. You cannot use commands with \mymeta{label} as an
 % argument, for example |\emph|\mymarg[type=tt]{\textnormal{\ilabel{alph*}}} will return an
 % error. For full customization of how \mymeta{label} is displayed use the \mykey{font}
 % or \mykey{wrap-label} keys.
@@ -2018,11 +2018,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \myenv*{keyans} environment and \ics*{anspic*} in \myenv*{keyanspic}
 % environment in \mymeta[type=tt]{store name} set by \mykey{save-ans} key.
 % This position is used by the \ics*{getkeyans} command and by the |\ref|
-% command if the \mykey{store-ref} key is active.
+% command if the \mykey{save-ref} key is active.
 %
 % \subsection{Keys for internal \texttt{label} and \texttt{ref}}\label{subsec:label-ref}
 %
-% \keyexamp{store-ref}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
+% \keyexamp{save-ref}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Activates the internal \emph{\enquote{label and ref}} mechanism for
 % referencing \emph{\enquote{stored content}} in \mymeta[type=tt]{store name} set by \mykey{save-ans} key. To reference the location
 % of the \emph{\enquote{stored content}} within the environment you must
@@ -2038,7 +2038,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{mark-ref}{symbol}{\textbackslash{}textasteriskcentered}
 % Sets the \emph{symbol} that will be displayed by the \ics*{printkeyans}
 % command only if the \mypkg{hyperref} package is detected and the
-% \mykey{store-ref} key are active.
+% \mykey{save-ref} key are active.
 % This \emph{\enquote{symbol}} is used as a \emph{\enquote{link}} between the environment
 % in which the \mykey{save-ans} key was used and the place where the
 % command is executed.
@@ -2080,7 +2080,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  assumed that each \ics*{item} or \ics*{item*} will have a \emph{\enquote{single}}
 %  occurrence of the command unless a nested level is opened or the
 %  \mykey{no-store} key is used.
-%  If \mykey{store-ref} key are active and the \mypkg{hyperref}\cite{hyperref} package is detected,
+%  If \mykey{save-ref} key are active and the \mypkg{hyperref}\cite{hyperref} package is detected,
 %  |\hyperlink| and |\hypertarget| will be used, otherwise the
 %  usual \emph{\enquote{label and ref}} system provided by \hologo{LaTeX} will be used.
 % \end{function}
@@ -2411,7 +2411,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{after}} it is stored, if the \mymeta[type=tt]{store name}
 % does not exist the command will return an error. The form taken by the argument \mymeta[type=tt]{store name
 % \textnormal{\textcolor{red}{:}} position} is the same as that used to
-% generate the internal \emph{\enquote{label and ref}} system when \mykey{store-ref} key are active, so to
+% generate the internal \emph{\enquote{label and ref}} system when \mykey{save-ref} key are active, so to
 % refer to a stored \emph{\enquote{content}}.
 % For example |\getkeyans{test:4}| will return the \emph{\enquote{stored
 % content}} at position |4| of the environment in which the key
@@ -2451,7 +2451,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %<*example>
 % \fi
 \begin{examplecode}[frame=single]
-\begin{enumext}[save-ans=sample,columns=2,show-pos,nosep,store-ref]
+\begin{enumext}[save-ans=sample,columns=2,show-pos,nosep,save-ref]
   \item Factor $3x+3y+3z$. \anskey{$3(x+y+z)$}
   \item True False
 
@@ -2480,7 +2480,7 @@ all the worksheets are as follows:
 %</example>
 % \fi
 %
-% \begin{enumext}[save-ans=sampleXX,columns=2,show-pos,nosep,store-ref]
+% \begin{enumext}[save-ans=sampleXX,columns=2,show-pos,nosep,save-ref]
 %  \item Factor $3x+3y+3z$. \anskey{$3(x+y+z)$}
 %  \item True False
 %    \begin{enumext}[nosep]
@@ -2664,7 +2664,7 @@ $ pdfdetach -saveall enumext.pdf
 \pagestyle{empty}
 \begin{document}
 \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\mySquared{##1}}}
-\begin{enumext}[columns=1,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,store-ref,show-ans,itemsep=0pt]
+\begin{enumext}[columns=1,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,save-ref,show-ans,itemsep=0pt]
  \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
    \begin{keyans}
      \item \SI{36}{km/h}.
@@ -2714,7 +2714,7 @@ $ pdfdetach -saveall enumext.pdf
 % Adapted from the response given by Florent Rougon in \href{https://tex.stackexchange.com/q/529034/7832}{Multiple choice questions with proposed answers in random order — addition of automatic correction (cross mark)}
 % \textattachfile[color=red,print=false]{enumext-exa-2.tex}{\faFile*[regular]}.
 % \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\mySquared{##1}}}
-% \begin{enumext}[columns=1,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,store-ref,show-ans,itemsep=0pt]
+% \begin{enumext}[columns=1,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,save-ref,show-ans,itemsep=0pt]
 % \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
 %   \begin{keyans}
 %     \item \SI{36}{km/h}.
@@ -2781,7 +2781,7 @@ $ pdfdetach -saveall enumext.pdf
 \pagestyle{empty}
 \begin{document}
 \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
-\begin{enumext}[save-ans=simplemc,columns=1,nosep,store-ref]
+\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref]
 \item First type of questions
   \begin{keyans}[columns=1,noitemsep]
     \item value
@@ -2849,7 +2849,7 @@ Test keys
 %
 % A \emph{\enquote{simple multiple choice}} test \textattachfile[color=red,print=false]{enumext-exa-3.tex}{\faFile*[regular]}.
 % \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
-% \begin{enumext}[save-ans=simplemc,columns=1,nosep,store-ref]
+% \begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref]
 %   \item First type of questions
 %      \begin{keyans}[columns=1,noitemsep]
 %        \item value
@@ -2927,7 +2927,7 @@ Test keys
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\begin{enumext}[save-ans=simplews,columns=2,check-ans,show-ans,nosep,store-ref,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
+\begin{enumext}[save-ans=simplews,columns=2,check-ans,show-ans,nosep,save-ref,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
   \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
   \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
   \item True False
@@ -2960,7 +2960,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % A \emph{\enquote{simple worksheet}} using ducks :) \textattachfile[color=red,print=false]{enumext-exa-4.tex}{\faFile*[regular]}.
 %
-% \begin{enumext}[save-ans=simplews,columns=1,check-ans,nosep,store-ref,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
+% \begin{enumext}[save-ans=simplews,columns=1,check-ans,nosep,save-ref,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
 %  \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
 %  \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
 %  \item[] The following questions need to be cuaqtified :)
@@ -3517,7 +3517,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-07}
+  {2024-05-08}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -3747,7 +3747,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{variable}[int]{\l_@@_store_active_bool, \l_@@_store_name_tl,
 %                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl,
 %                       \l_@@_store_columns_join_int, \l_@@_store_keyans_label_tl,
-%                       \l_@@_keyans_tmpa_tl,\l_@@_keyans_tmpb_tl,\l_@@_keyans_tmpa_dim}
+%                       \l_@@_store_keyans_item_opt_tl, \l_@@_keyans_item_opt_tl,
+%                       \l_@@_keyans_tmpa_tl, \l_@@_keyans_tmpb_tl,
+%                       \l_@@_keyans_tmpa_dim,}
 %
 %    The boolean variable \cs{l_@@_store_active_bool} setting by
 %    \mykey{save-ans} key (\S\ref{key:resume}) activates all the
@@ -3762,7 +3764,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %    \smallskip
 %
-%    The variable \cs{l_@@_store_anskey_arg_tl} stores the contents of \ics*{anskey}  (\S\ref{cmd:anskey})
+%    The variable \cs{l_@@_store_anskey_arg_tl} stores the contents of \ics*{anskey} (\S\ref{cmd:anskey})
 %    and the variable \cs{l_@@_store_keyans_label_tl} stores the contents of
 %    \ics*{item*} (\S\ref{cmd:item-starred}) for the \myenv*{keyans} and \myenv*{keyans*} environments and the contents of
 %    \ics*{anspic*} (\S\ref{cmd:anspic}) for the \myenv*{keyanspic} environment.
@@ -3781,6 +3783,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \tl_new:N   \l_@@_store_anskey_arg_tl
 \int_new:N  \l_@@_store_columns_join_int
 \tl_new:N   \l_@@_store_keyans_label_tl
+\tl_new:N   \l_@@_store_keyans_item_opt_tl
+\tl_new:N   \l_@@_keyans_item_opt_tl
 \tl_new:N   \l_@@_keyans_tmpa_tl
 \tl_new:N   \l_@@_keyans_tmpb_tl
 \dim_new:N  \l_@@_keyans_tmpa_dim
@@ -3910,7 +3914,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{variable}[int]{ \l_@@_newlabel_arg_one_tl, \l_@@_newlabel_arg_two_tl,
 %                        \l_@@_store_write_aux_file_tl, \l_@@_label_copy_X_tl, }
 %
-%    Internal variables are used when executing the \mykey{store-ref} key.
+%    Internal variables are used when executing the \mykey{save-ref} key.
 %    The variables \myvarenv{l__@@_label_copy_X_tl} correspond to temporary
 %    copies of the labels defined by level on which operations will be performed.
 %
@@ -3921,7 +3925,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \cs{@@_newlabel:nn} and the variable \cs{l_@@_store_write_aux_file_tl}
 %    will be in charge of executing the writing code in the |.aux| file.
 % \iffalse
-%% Variables used by |store-ref| key (internal label and ref).
+%% Variables used by |save-ref| key (internal label and ref).
 % \fi
 %    \begin{macrocode}
 \tl_new:N \l_@@_newlabel_arg_one_tl
@@ -4300,7 +4304,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_newlabel:nn,}
 %    The function \cs{@@_newlabel:nn} write the information
-%    to the |.aux| file when using the \mykey{store-ref} key. The
+%    to the |.aux| file when using the \mykey{save-ref} key. The
 %    arguments taken by the function are:
 %
 % \begin{arguments}
@@ -4318,7 +4322,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \smallskip
 %
 % \iffalse
-%% Write internal |label| in |.aux| file for |store-ref| key.
+%% Write internal |label| in |.aux| file for |save-ref| key.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_newlabel:nn #1 #2
@@ -6679,9 +6683,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{Keys and functions associated with storage}\label{int:storage-system}
 %
-% \begin{macro}[int]{wrap-ans, mark-ans, mark-pos, show-ans, mark-ref, store-ref}
+% \begin{macro}[int]{wrap-ans, mark-ans, mark-pos, show-ans, mark-ref, save-ref}
 %    We add the keys \mykey{wrap-ans}, \mykey{mark-ans}, \mykey{mark-pos},
-%    \mykey{show-ans}, \mykey{show-pos}, \mykey{mark-ref} and \mykey{store-ref}
+%    \mykey{show-ans}, \mykey{show-pos}, \mykey{mark-ref} and \mykey{save-ref}
 %    related to the \emph{\enquote{storage system}} and internal
 %    mechanism of \emph{\enquote{label and ref}} only at the \emph{first
 %    level} of \myenv*{enumext} and \myenv*{enumext*}.
@@ -6713,8 +6717,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         mark-ref   .code:n     = \tl_set:Nn \l_@@_mark_ref_sym_tl {##1},
         mark-ref   .initial:n  = \textasteriskcentered,
         mark-ref   .value_required:n = true,
-        store-ref  .bool_set:N = \l_@@_store_ref_key_bool,
-        store-ref  .initial:n  = false,
+        save-ref  .bool_set:N = \l_@@_store_ref_key_bool,
+        save-ref  .initial:n  = false,
       }
   }
 \clist_map_inline:nn { level-1, enumext* } { \@@_tmp:n {#1} }
@@ -7068,7 +7072,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   The internal function \cs{@@_store_anskey_code:nnnn} first we pass the
 %   command \mymeta{argument} to the \mymeta{prop list}, then checks the
 %   state of the variable \cs{l_@@_store_ref_key_bool} handled by the
-%   \mykey{store-ref} key and will call the function
+%   \mykey{save-ref} key and will call the function
 %   \cs{@@_store_internal_ref:} for the internal \emph{\enquote{label
 %   and ref}} system. Followed by this if the \mykey{show-ans} or
 %   \mykey{show-pos} keys are active we will show the
@@ -7155,7 +7159,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_put_right:Nn \l_@@_store_anskey_arg_tl {#4}
       }
 %    \end{macrocode}
-%    Finally we check if the \mykey{store-ref} key is active along with the
+%    Finally we check if the \mykey{save-ref} key is active along with the
 %    \mypkg{hyperref} package load, if both conditions are met, it will
 %    create the \ics{hyperlink} and then store in \mymeta{sequence}.
 %    \begin{macrocode}
@@ -7176,7 +7180,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_store_internal_ref:}
 %    The function \cs{@@_store_internal_ref:} handles the internal
-%    \emph{\enquote{label and ref}} system used by the \mykey{store-ref} and
+%    \emph{\enquote{label and ref}} system used by the \mykey{save-ref} and
 %    \mykey{mark-ref} keys for \ics*{anskey} will allow to execute
 %    \ics{ref}\mymarg[type=tt]{store name \textcolor{red}{:} position} and
 %    will return |1.(a).i.A|.
@@ -7385,7 +7389,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{The \texttt{store-ref} key for \env{keyans}, \env{keyans*} and \env{keyanspic}}
+% \subsubsection{The \texttt{save-ref} key for \env{keyans}, \env{keyans*} and \env{keyanspic}}
 %
 % The internal \emph{\enquote{label and ref}} system for the \myenv*{keyans}, \myenv*{keyans*} and
 % \myenv*{keyanspic} environments has slight differences with the one
@@ -7403,7 +7407,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_keyans_store_ref:, \@@_keyans_store_ref_aux_i:,\@@_keyans_store_ref_aux_ii:}
 %    The function \cs{@@_keyans_store_ref:} handles the internal \emph{\enquote{label and ref}}
-%    system used by the \mykey{store-ref} key for \ics*{item*} and \ics*{anspic*}
+%    system used by the \mykey{save-ref} key for \ics*{item*} and \ics*{anspic*}
 %    commands.
 %    First we will create copies of the current \mymeta{labels} and remove
 %    the dots \enquote{\textcolor{red}{\texttt{.}}} from them, we do not
@@ -7511,7 +7515,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_addto_seq_link:
   }
 %    \end{macrocode}
-%    Checks if the \mykey{store-ref} key is active along with the
+%    Checks if the \mykey{save-ref} key is active along with the
 %    \mypkg{hyperref} package load, if both conditions are met, it will
 %    create the \ics{hyperlink} and then store using the
 %    \cs{@@_store_addto_seq:V} function.
@@ -7901,7 +7905,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %    Recover the original value of the current \mymeta{label} and \emph{store}
 %    it first in the \mymeta{prop list} (including the optional argument), run the
-%    internal \emph{\enquote{label and ref}} system if the \mykey{store-ref} key is active and
+%    internal \emph{\enquote{label and ref}} system if the \mykey{save-ref} key is active and
 %    finally \emph{store} it in the \mymeta{sequence}.
 %    \begin{macrocode}
     \tl_set_eq:NN \l_@@_label_v_tl \l_@@_keyans_tmpa_tl
@@ -10430,7 +10434,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \myoarg[type=tt]{content} for \ics*{item*}\myoarg[type=tt]{content} if
 % present in the \mymeta{sequence} and \mymeta{prop list} set by the
 % \mykey{save-ans} key. In this same function the keys \mykey{show-ans},
-% \mykey{show-pos} and \mykey{store-ref} are implemented.
+% \mykey{show-pos} and \mykey{save-ref} are implemented.
 %
 % \iffalse
 %% Set \item*[content] for |keyans*| environment.

@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-07}
+  {2024-05-08}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -117,6 +117,8 @@
 \tl_new:N   \l__enumext_store_anskey_arg_tl
 \int_new:N  \l__enumext_store_columns_join_int
 \tl_new:N   \l__enumext_store_keyans_label_tl
+\tl_new:N   \l__enumext_store_keyans_item_opt_tl
+\tl_new:N   \l__enumext_keyans_item_opt_tl
 \tl_new:N   \l__enumext_keyans_tmpa_tl
 \tl_new:N   \l__enumext_keyans_tmpb_tl
 \dim_new:N  \l__enumext_keyans_tmpa_dim
@@ -166,7 +168,7 @@
 %% Variables used for hyperref detection.
 \bool_new:N \l__enumext_hyperref_bool
 \bool_new:N \l__enumext_footnotes_key_bool
-%% Variables used by |store-ref| key (internal label and ref).
+%% Variables used by |save-ref| key (internal label and ref).
 \tl_new:N \l__enumext_newlabel_arg_one_tl
 \tl_new:N \l__enumext_newlabel_arg_two_tl
 \tl_new:N \l__enumext_store_write_aux_file_tl
@@ -332,7 +334,7 @@
         \cs_new_eq:NN \__enumext_phantomsection: \prg_do_nothing:
       }
   }
-%% Write internal |label| in |.aux| file for |store-ref| key.
+%% Write internal |label| in |.aux| file for |save-ref| key.
 \cs_new_protected:Npn \__enumext_newlabel:nn #1 #2
   {
     \protected@write \@auxout { }
@@ -1605,8 +1607,8 @@
         mark-ref   .code:n     = \tl_set:Nn \l__enumext_mark_ref_sym_tl {##1},
         mark-ref   .initial:n  = \textasteriskcentered,
         mark-ref   .value_required:n = true,
-        store-ref  .bool_set:N = \l__enumext_store_ref_key_bool,
-        store-ref  .initial:n  = false,
+        save-ref  .bool_set:N = \l__enumext_store_ref_key_bool,
+        save-ref  .initial:n  = false,
       }
   }
 \clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
