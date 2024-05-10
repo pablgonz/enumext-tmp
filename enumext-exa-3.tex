@@ -15,8 +15,8 @@
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\setenumext[keyans]{itemindent=1cm,label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
-\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref,save-sep={; },show-ans,wrap-opt={#1}]
+\setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
+\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref]
 \item First type of questions
   \begin{keyans}[columns=1,noitemsep]
     \item value
@@ -45,7 +45,7 @@
 \begin{keyans}[columns=2,noitemsep]
     \item value
     \item value
-    \item*[value note] value
+    \item*[some note] value
     \item value
     \item value
 \end{keyans}
@@ -54,9 +54,9 @@
 \begin{keyanspic}[3,2]
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
 \anspic{\includegraphics[scale=0.15]{example-image-b}}
+\anspic{\includegraphics[scale=0.15]{example-image-a}}
+\anspic{\includegraphics[scale=0.15]{example-image-a}}
 \anspic*[A duck]{\includegraphics[scale=0.32]{example-image-duck}}
-\anspic{\includegraphics[scale=0.15]{example-image-a}}
-\anspic{\includegraphics[scale=0.15]{example-image-a}}
 \end{keyanspic}
 
 \item Question with image on left side:
@@ -73,7 +73,7 @@
 
 \medskip
 
-Test keys \getkeyans{simplemc:4}
+Test keys
 
 \printkeyans{simplemc}
 \end{document}
