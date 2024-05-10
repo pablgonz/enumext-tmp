@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-08}
+  {2024-05-09}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -1590,6 +1590,12 @@
         wrap-ans   .cs_set_protected:Np = \__enumext_anskey_wrapper:n ##1,
         wrap-ans   .initial:n  = \fbox{##1},
         wrap-ans   .value_required:n = true,
+        wrap-opt   .cs_set_protected:Np = \__enumext_keyans_wrapper_opt:n ##1,
+        wrap-opt   .initial:n  = [{##1}],
+        wrap-opt   .value_required:n = true,
+        save-sep   .tl_set:N   = \l__enumext_store_keyans_item_opt_sep_tl,
+        save-sep   .initial:n  = {, },
+        save-sep   .value_required:n = true,
         mark-ans   .code:n     = \tl_set:Nn \l__enumext_mark_answer_sym_tl {##1},
         mark-ans   .initial:n  = \textasteriskcentered,
         mark-ans   .value_required:n = true,
@@ -1607,8 +1613,8 @@
         mark-ref   .code:n     = \tl_set:Nn \l__enumext_mark_ref_sym_tl {##1},
         mark-ref   .initial:n  = \textasteriskcentered,
         mark-ref   .value_required:n = true,
-        save-ref  .bool_set:N = \l__enumext_store_ref_key_bool,
-        save-ref  .initial:n  = false,
+        save-ref   .bool_set:N = \l__enumext_store_ref_key_bool,
+        save-ref   .initial:n  = false,
       }
   }
 \clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
@@ -1991,7 +1997,12 @@
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { , \c_space_tl #1 }
+        % Set save-sep
+        \tl_if_empty:NF \l__enumext_store_keyans_item_opt_sep_tl
+          {
+            \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \l__enumext_store_keyans_item_opt_sep_tl }
+          }
+        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { #1 }
       }
     \__enumext_store_addto_prop:V \l__enumext_store_keyans_label_tl
   }
@@ -2062,7 +2073,11 @@
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { , \c_space_tl #1 }
+        \tl_if_empty:NF \l__enumext_store_keyans_item_opt_sep_tl
+          {
+            \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \l__enumext_store_keyans_item_opt_sep_tl }
+          }
+        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { #1 }
       }
     \__enumext_keyans_addto_seq_link:
   }
@@ -2100,20 +2115,54 @@
 %% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_show_left:n #1
   {
+    \tl_if_novalue:nF { #1 }
+      {
+        \tl_set:Ne \l__enumext_keyans_item_opt_tl { #1 }
+      }
     \bool_if:NT \l__enumext_show_answer_bool
       {
-        \tl_put_left:Nn \l__enumext_label_v_tl
-          {
-            \__enumext_print_keyans_box:NN
-              \l__enumext_labelwidth_i_dim
-              \l__enumext_labelsep_i_dim
-          }
-        \tl_if_novalue:nF { #1 }
-          {
-            \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] }
-          }
+        \__enumext_keyans_show_ans:
       }
     \bool_if:NT \l__enumext_show_position_bool
+      {
+        \__enumext_keyans_show_pos:
+      }
+  }
+\cs_new_protected:Nn \__enumext_keyans_show_item_opt:
+  {
+    \tl_if_empty:NF \l__enumext_keyans_item_opt_tl
+      {
+        \bool_lazy_or:nnT
+          { \bool_if_p:N \l__enumext_show_answer_bool }
+          { \bool_if_p:N \l__enumext_show_position_bool }
+          {
+            \__enumext_keyans_wrapper_opt:n { \l__enumext_keyans_item_opt_tl } \c_space_tl
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_keyans_show_ans:
+  {
+    \tl_put_left:Nn \l__enumext_label_v_tl
+      {
+        \__enumext_print_keyans_box:NN \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
+      }
+  }
+\cs_new_protected:Nn \__enumext_keyans_show_pos:
+  {
+    \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
+      {
+        \tl_set:Ne \l__enumext_mark_answer_sym_tl
+          {
+            \group_begin:
+            \exp_not:N \normalfont
+            \exp_not:N \footnotesize [ \int_eval:n
+              {
+                \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop }
+              }
+              ]
+            \group_end:
+          }
+      }
       {
         \tl_set:Ne \l__enumext_mark_answer_sym_tl
           {
@@ -2126,16 +2175,12 @@
               ]
             \group_end:
           }
-        \tl_put_left:Nn \l__enumext_label_v_tl
-          {
-            \__enumext_print_keyans_box:NN
-              \l__enumext_labelwidth_i_dim
-              \l__enumext_labelsep_i_dim
-          }
-        \tl_if_novalue:nF { #1 }
-          {
-            \tl_put_right:Nn \l__enumext_label_v_tl { \c_space_tl [ #1 ] }
-          }
+      }
+    \tl_put_left:Nn \l__enumext_label_v_tl
+      {
+        \__enumext_print_keyans_box:NN
+          \l__enumext_labelwidth_i_dim
+          \l__enumext_labelsep_i_dim
       }
   }
 %% Add |item-sym*| and |item*-sep| keys.
@@ -2261,7 +2306,7 @@
     \tl_set_eq:NN \l__enumext_keyans_tmpa_tl \l__enumext_label_v_tl
     \__enumext_keyans_show_left:n { #1 }
     \bool_set_true:N \l__enumext_wrap_label_v_bool
-    \__enumext_item_std:w \tl_use:N \l__enumext_fake_item_indent_v_tl
+    \__enumext_item_std:w \tl_use:N \l__enumext_fake_item_indent_v_tl \__enumext_keyans_show_item_opt:
     \tl_set_eq:NN \l__enumext_label_v_tl \l__enumext_keyans_tmpa_tl
     \__enumext_keyans_addto_prop:n { #1 }
     \__enumext_keyans_store_ref:
@@ -2827,7 +2872,7 @@
           }
       }
     \tl_use:N \l__enumext_label_font_style_v_tl
-    \__enumext_wrapper_label_v:n { \l__enumext_label_vi_tl }
+    \__enumext_wrapper_label_v:n { \l__enumext_label_vi_tl } \__enumext_keyans_show_item_opt:
   }
 %% Define |keyanspic| environment.
 \NewDocumentEnvironment{keyanspic}{ o }

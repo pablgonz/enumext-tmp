@@ -2031,27 +2031,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % defined by \mykey{labelwidth} key on the current level and separated by the value of the
 % \mykey{labelsep} key.
 %
-% \smallskip
-%
-% \keyexamp{show-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
-% Displays the current \mymeta{argument} passed to \ics*{anskey} in
-% \myenv*{enumext} environment, the current \mymeta{label}
-% for \ics*{item*} in \myenv*{keyans} environment and the current
-% \mymeta{label} for \ics*{anspic*} in \myenv*{keyanspic}
-% environment at the place where it is executed. If the optional
-% argument is present in \ics*{item*} or \ics*{anspic*} it will
-% be shown in square brackets.
-%
-% \smallskip
-%
-% \keyexamp{show-pos}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
-% Displays the \emph{position} occupied by the \emph{\enquote{stored content}} by
-% \ics*{anskey} in \myenv*{enumext} environment, \ics*{item*} in
-% \myenv*{keyans} environment and \ics*{anspic*} in \myenv*{keyanspic}
-% environment in \mymeta[type=tt]{store name} set by \mykey{save-ans} key.
-% This position is used by the \ics*{getkeyans} command and by the |\ref|
-% command if the \mykey{save-ref} key is active.
-%
 % \subsection{Keys for internal \texttt{label} and \texttt{ref}}\label{subsec:label-ref}
 %
 % \keyexamp{save-ref}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
@@ -2075,17 +2054,38 @@ This work consists of the files enumext.dtx and enumext.sty.
 % in which the \mykey{save-ans} key was used and the place where the
 % command is executed.
 %
-% \subsection{Keys for check answers}
+% \subsection{Keys for debugging and checking}
+%
+% \keyexamp{show-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
+% Displays the \emph{current} \mymeta{argument} passed to \ics*{anskey} in
+% \myenv*{enumext} environment, the current \mymeta{label}
+% for \ics*{item*} in \myenv*{keyans} environment and the current
+% \mymeta{label} for \ics*{anspic*} in \myenv*{keyanspic}
+% environment at the place where it is executed. If the optional
+% argument is present in \ics*{item*} or \ics*{anspic*} it will
+% be shown in square brackets.
+%
+% \smallskip
+%
+% \keyexamp{show-pos}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
+% Displays the \emph{position} occupied by the \emph{\enquote{stored content}} by
+% \ics*{anskey} in \myenv*{enumext} environment, \ics*{item*} in
+% \myenv*{keyans} environment and \ics*{anspic*} in \myenv*{keyanspic}
+% environment in \mymeta[type=tt]{store name} set by \mykey{save-ans} key.
+% This position is used by the \ics*{getkeyans} command and by the |\ref|
+% command if the \mykey{save-ref} key is active.
+%
+% \smallskip
 %
 % \keyexamp{check-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
-% Enables the \emph{\enquote{checking answer}} mechanism. This key works under the logic that
+% Enables the \emph{checking answer} mechanism. This key works under the logic that
 % each question will contain \emph{\enquote{only one answer}}, it is
 % intended to be used in conjunction with \mykey{no-store} key.
 %
 % \smallskip
 %
 % \keyexamp*{no-store}{value forbidden}{not used}
-% This is a \emph{\enquote{meta-key}} that does not receive an argument. This key is
+% This is a \emph{meta-key} that does not receive an argument. This key is
 % used in conjunction with \mykey{check-ans} and is designed to be used
 % with nested levels of \myenv*{enumext} in which the \ics*{anskey}
 % command will not be used.
@@ -3549,7 +3549,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-08}
+  {2024-05-09}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -6715,8 +6715,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{Keys and functions associated with storage}\label{int:storage-system}
 %
-% \begin{macro}[int]{wrap-ans, mark-ans, mark-pos, show-ans, mark-ref, save-ref}
-%    We add the keys \mykey{wrap-ans}, \mykey{mark-ans}, \mykey{mark-pos},
+% \begin{macro}[int]{wrap-ans, wrap-opt, save-sep,mark-ans, mark-pos, show-ans, mark-ref, save-ref}
+%    We add the keys \mykey{wrap-ans}, \mykey{wrap-opt}, \mykey{save-sep}, \mykey{mark-ans}, \mykey{mark-pos},
 %    \mykey{show-ans}, \mykey{show-pos}, \mykey{mark-ref} and \mykey{save-ref}
 %    related to the \emph{\enquote{storage system}} and internal
 %    mechanism of \emph{\enquote{label and ref}} only at the \emph{first
@@ -6732,6 +6732,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         wrap-ans   .cs_set_protected:Np = \@@_anskey_wrapper:n ##1,
         wrap-ans   .initial:n  = \fbox{##1},
         wrap-ans   .value_required:n = true,
+        wrap-opt   .cs_set_protected:Np = \@@_keyans_wrapper_opt:n ##1,
+        wrap-opt   .initial:n  = [{##1}],
+        wrap-opt   .value_required:n = true,
+        save-sep   .tl_set:N   = \l_@@_store_keyans_item_opt_sep_tl,
+        save-sep   .initial:n  = {, },
+        save-sep   .value_required:n = true,
         mark-ans   .code:n     = \tl_set:Nn \l_@@_mark_answer_sym_tl {##1},
         mark-ans   .initial:n  = \textasteriskcentered,
         mark-ans   .value_required:n = true,
@@ -6749,8 +6755,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         mark-ref   .code:n     = \tl_set:Nn \l_@@_mark_ref_sym_tl {##1},
         mark-ref   .initial:n  = \textasteriskcentered,
         mark-ref   .value_required:n = true,
-        save-ref  .bool_set:N = \l_@@_store_ref_key_bool,
-        save-ref  .initial:n  = false,
+        save-ref   .bool_set:N = \l_@@_store_ref_key_bool,
+        save-ref   .initial:n  = false,
       }
   }
 \clist_map_inline:nn { level-1, enumext* } { \@@_tmp:n {#1} }
@@ -7414,7 +7420,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { , \c_space_tl #1 }
+        % Set save-sep
+        \tl_if_empty:NF \l_@@_store_keyans_item_opt_sep_tl
+          {
+            \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_store_keyans_item_opt_sep_tl }
+          }
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { #1 }
       }
     \@@_store_addto_prop:V \l_@@_store_keyans_label_tl
   }
@@ -7435,7 +7446,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %^^A    from the current \mymeta{labels}, we do not want to get
 %^^A    double dots in our references, then we will place this in the
 %^^A    variable \cs{l_@@_newlabel_arg_two_tl}.
-%
 %
 % \begin{macro}{\@@_keyans_store_ref:, \@@_keyans_store_ref_aux_i:,\@@_keyans_store_ref_aux_ii:}
 %    The function \cs{@@_keyans_store_ref:} handles the internal \emph{\enquote{label and ref}}
@@ -7542,7 +7552,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \tl_if_novalue:nF { #1 }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { , \c_space_tl #1 }
+        \tl_if_empty:NF \l_@@_store_keyans_item_opt_sep_tl
+          {
+            \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_store_keyans_item_opt_sep_tl }
+          }
+        \tl_put_right:Ne \l_@@_store_keyans_label_tl { #1 }
       }
     \@@_keyans_addto_seq_link:
   }
@@ -7610,7 +7624,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % The code is very similar to the \ics*{anskey} code, but, if I change
 % the order of the operations the counter off \mymeta{label} are incorrect.
 %
-% \begin{macro}{\@@_keyans_show_left:n,}
+% \begin{macro}{\@@_keyans_show_left:n,\@@_keyans_show_ans:, \@@_keyans_show_pos:, \@@_keyans_show_item_opt:,}
 %    Common function to show \emph{starred commands} |\item*| and \mymeta{position} of
 %    stored content in \mymeta{prop list} for \myenv*{keyans} and
 %    \myenv*{keyanspic}. Need add |1| to \cs{g_@@_ \l_@@_store_name_tl _prop } for \mykey{show-pos} key.
@@ -7620,20 +7634,54 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_show_left:n #1
   {
+    \tl_if_novalue:nF { #1 }
+      {
+        \tl_set:Ne \l_@@_keyans_item_opt_tl { #1 }
+      }
     \bool_if:NT \l_@@_show_answer_bool
       {
-        \tl_put_left:Nn \l_@@_label_v_tl
-          {
-            \@@_print_keyans_box:NN
-              \l_@@_labelwidth_i_dim
-              \l_@@_labelsep_i_dim
-          }
-        \tl_if_novalue:nF { #1 }
-          {
-            \tl_put_right:Nn \l_@@_label_v_tl { \c_space_tl [ #1 ] }
-          }
+        \@@_keyans_show_ans:
       }
     \bool_if:NT \l_@@_show_position_bool
+      {
+        \@@_keyans_show_pos:
+      }
+  }
+\cs_new_protected:Nn \@@_keyans_show_item_opt:
+  {
+    \tl_if_empty:NF \l_@@_keyans_item_opt_tl
+      {
+        \bool_lazy_or:nnT
+          { \bool_if_p:N \l_@@_show_answer_bool }
+          { \bool_if_p:N \l_@@_show_position_bool }
+          {
+            \@@_keyans_wrapper_opt:n { \l_@@_keyans_item_opt_tl } \c_space_tl
+          }
+      }
+  }
+\cs_new_protected:Nn \@@_keyans_show_ans:
+  {
+    \tl_put_left:Nn \l_@@_label_v_tl
+      {
+        \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
+      }
+  }
+\cs_new_protected:Nn \@@_keyans_show_pos:
+  {
+    \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
+      {
+        \tl_set:Ne \l_@@_mark_answer_sym_tl
+          {
+            \group_begin:
+            \exp_not:N \normalfont
+            \exp_not:N \footnotesize [ \int_eval:n
+              {
+                \prop_count:c { g_@@_ \l_@@_store_name_tl _prop }
+              }
+              ]
+            \group_end:
+          }
+      }
       {
         \tl_set:Ne \l_@@_mark_answer_sym_tl
           {
@@ -7646,16 +7694,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               ]
             \group_end:
           }
-        \tl_put_left:Nn \l_@@_label_v_tl
-          {
-            \@@_print_keyans_box:NN
-              \l_@@_labelwidth_i_dim
-              \l_@@_labelsep_i_dim
-          }
-        \tl_if_novalue:nF { #1 }
-          {
-            \tl_put_right:Nn \l_@@_label_v_tl { \c_space_tl [ #1 ] }
-          }
+      }
+    \tl_put_left:Nn \l_@@_label_v_tl
+      {
+        \@@_print_keyans_box:NN
+          \l_@@_labelwidth_i_dim
+          \l_@@_labelsep_i_dim
       }
   }
 %    \end{macrocode}
@@ -7933,7 +7977,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_set_eq:NN \l_@@_keyans_tmpa_tl \l_@@_label_v_tl
     \@@_keyans_show_left:n { #1 }
     \bool_set_true:N \l_@@_wrap_label_v_bool
-    \@@_item_std:w \tl_use:N \l_@@_fake_item_indent_v_tl
+    \@@_item_std:w \tl_use:N \l_@@_fake_item_indent_v_tl \@@_keyans_show_item_opt:
 %    \end{macrocode}
 %    Recover the original value of the current \mymeta{label} and \emph{store}
 %    it first in the \mymeta{prop list} (including the optional argument), run the
@@ -9147,7 +9191,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \tl_use:N \l_@@_label_font_style_v_tl
-    \@@_wrapper_label_v:n { \l_@@_label_vi_tl }
+    \@@_wrapper_label_v:n { \l_@@_label_vi_tl } \@@_keyans_show_item_opt:
   }
 %    \end{macrocode}
 % \end{macro}
