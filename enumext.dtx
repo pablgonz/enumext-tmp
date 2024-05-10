@@ -869,7 +869,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \begin{enumext}[save-ans=temp2,columns=2,nosep,save-ref]%
+% \begin{enumext}[save-ans=temp2,columns=2,nosep,save-ref=true]%
 %  \item Factor $x^{2}-2x+1$  \anskey{$\left(x-1\right)^{2}$}
 %  \item Factor $3x+3y+3z$    \anskey{$3(x+y+z)$}
 %  \item True False
@@ -897,7 +897,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \begin{enumext}[save-ans=worksheet,columns=2,show-ans,nosep,save-ref]
+% \begin{enumext}[save-ans=worksheet,columns=2,show-ans=true,nosep,save-ref=true]
 %  \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
 %  \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
 %  \item True False
@@ -943,7 +943,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \begin{enumext}[save-ans=mytest,columns=2,nosep,save-ref]
+% \begin{enumext}[save-ans=mytest,columns=2,nosep,save-ref=true]
 %   \item First type of questions
 %      \begin{keyans}[columns=2,noitemsep]
 %        \item value
@@ -2119,7 +2119,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsubsection*{Example}
 %
-% \begin{enumext}[save-ans=test,show-ans,columns=2,nosep]
+% \begin{enumext}[save-ans=test,show-ans=true,columns=2,nosep]
 %   \item* Text containing our instructions or questions.\anskey{first answer}
 %   \item Text containing our instructions or questions.
 %     \begin{enumext}
@@ -2133,7 +2133,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %<*example>
 % \fi
 \begin{examplecode}[frame=single]
-\begin{enumext}[save-ans=test,show-ans]
+\begin{enumext}[save-ans=test,show-ans=true]
   \item* Text containing our instructions or questions. `\ics*{anskey}\mymarg[type=tt]{first answer}`
   \item Text containing our instructions or questions.
     \begin{enumext}
@@ -2226,7 +2226,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %<*example>
 % \fi
 \begin{examplecode}[frame=single]
-\begin{enumext}[save-ans=test,columns=2,show-ans]
+\begin{enumext}[save-ans=test,columns=2,show-ans=true]
   \item Text containing a question.
     \begin{keyans}[nosep]
       \item Choice
@@ -2253,7 +2253,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</example>
 % \fi
 %
-% \begin{enumext}[save-ans=test,show-ans,columns=2]
+% \begin{enumext}[save-ans=test,show-ans=true,columns=2]
 %  \item Text containing a question.
 %
 %    \begin{keyans}[nosep]
@@ -2409,7 +2409,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</example>
 % \fi
 %
-% \begin{enumext}[save-ans=test,show-ans,nosep]
+% \begin{enumext}[save-ans=test,show-ans=true,nosep]
 %  \item Question with images.
 %    \begin{keyanspic}[3,2]
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -2483,7 +2483,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %<*example>
 % \fi
 \begin{examplecode}[frame=single]
-\begin{enumext}[save-ans=sample,columns=2,show-pos,nosep,save-ref]
+\begin{enumext}[save-ans=sample,columns=2,show-pos=true,nosep,save-ref=true]
   \item Factor $3x+3y+3z$. \anskey{$3(x+y+z)$}
   \item True False
 
@@ -2512,7 +2512,7 @@ all the worksheets are as follows:
 %</example>
 % \fi
 %
-% \begin{enumext}[save-ans=sampleXX,columns=2,show-pos,nosep,save-ref]
+% \begin{enumext}[save-ans=sampleXX,columns=2,show-pos=true,nosep,save-ref=true]
 %  \item Factor $3x+3y+3z$. \anskey{$3(x+y+z)$}
 %  \item True False
 %    \begin{enumext}[nosep]
@@ -2696,7 +2696,7 @@ $ pdfdetach -saveall enumext.pdf
 \pagestyle{empty}
 \begin{document}
 \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\mySquared{##1}}}
-\begin{enumext}[columns=1,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,save-ref,show-ans,itemsep=0pt]
+\begin{enumext}[columns=1,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,save-ref=true,show-ans=true,itemsep=0pt]
  \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
    \begin{keyans}
      \item \SI{36}{km/h}.
@@ -2746,7 +2746,7 @@ $ pdfdetach -saveall enumext.pdf
 % Adapted from the response given by Florent Rougon in \href{https://tex.stackexchange.com/q/529034/7832}{Multiple choice questions with proposed answers in random order — addition of automatic correction (cross mark)}
 % \textattachfile[color=red,print=false]{enumext-exa-2.tex}{\faFile*[regular]}.
 % \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\mySquared{##1}}}
-% \begin{enumext}[columns=1,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,save-ref,show-ans,itemsep=0pt]
+% \begin{enumext}[columns=1,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,save-ref=true,show-ans=true,itemsep=0pt]
 % \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
 %   \begin{keyans}
 %     \item \SI{36}{km/h}.
@@ -2813,7 +2813,7 @@ $ pdfdetach -saveall enumext.pdf
 \pagestyle{empty}
 \begin{document}
 \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
-\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref]
+\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
 \item First type of questions
   \begin{keyans}[columns=1,noitemsep]
     \item value
@@ -2881,7 +2881,7 @@ Test keys
 %
 % A \emph{\enquote{simple multiple choice}} test \textattachfile[color=red,print=false]{enumext-exa-3.tex}{\faFile*[regular]}.
 % \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
-% \begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref]
+% \begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
 %   \item First type of questions
 %      \begin{keyans}[columns=1,noitemsep]
 %        \item value
@@ -2959,7 +2959,7 @@ Test keys
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\begin{enumext}[save-ans=simplews,columns=2,check-ans,show-ans,nosep,save-ref,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
+\begin{enumext}[save-ans=simplews,columns=2,check-ans,show-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
   \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
   \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
   \item True False
@@ -2992,7 +2992,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % A \emph{\enquote{simple worksheet}} using ducks :) \textattachfile[color=red,print=false]{enumext-exa-4.tex}{\faFile*[regular]}.
 %
-% \begin{enumext}[save-ans=simplews,columns=1,check-ans,nosep,save-ref,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
+% \begin{enumext}[save-ans=simplews,columns=1,check-ans,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
 %  \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
 %  \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
 %  \item[] The following questions need to be cuaqtified :)
@@ -3549,7 +3549,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-09}
+  {2024-05-10}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -6730,33 +6730,34 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \keys_define:nn { enumext / #1 }
       {
         wrap-ans   .cs_set_protected:Np = \@@_anskey_wrapper:n ##1,
-        wrap-ans   .initial:n  = \fbox{##1},
+        wrap-ans   .initial:n = \fbox{##1},
         wrap-ans   .value_required:n = true,
         wrap-opt   .cs_set_protected:Np = \@@_keyans_wrapper_opt:n ##1,
-        wrap-opt   .initial:n  = [{##1}],
+        wrap-opt   .initial:n = [{##1}],
         wrap-opt   .value_required:n = true,
-        save-sep   .tl_set:N   = \l_@@_store_keyans_item_opt_sep_tl,
-        save-sep   .initial:n  = {, },
+        save-sep   .tl_set:N  = \l_@@_store_keyans_item_opt_sep_tl,
+        save-sep   .initial:n = {, },
         save-sep   .value_required:n = true,
-        mark-ans   .code:n     = \tl_set:Nn \l_@@_mark_answer_sym_tl {##1},
-        mark-ans   .initial:n  = \textasteriskcentered,
+        mark-ans   .tl_set:N  = \l_@@_mark_answer_sym_tl,
+        mark-ans   .initial:n = \textasteriskcentered,
         mark-ans   .value_required:n = true,
         mark-pos   .choice:,
         mark-pos  / left   .code:n = \str_set:Nn \l_@@_mark_position_str { l },
         mark-pos  / right  .code:n = \str_set:Nn \l_@@_mark_position_str { r },
-        mark-pos   .initial:n      = right,
+        mark-pos   .initial:n = right,
         mark-pos   .value_required:n = true,
-        show-ans   .code:n     = \bool_set_true:N  \l_@@_show_answer_bool
-                                 \bool_set_false:N \l_@@_show_position_bool,
-        show-ans   .value_forbidden:n = true,
-        show-pos   .code:n     = \bool_set_true:N \l_@@_show_position_bool
-                                 \bool_set_false:N  \l_@@_show_answer_bool,
-        show-pos   .value_forbidden:n = true,
-        mark-ref   .code:n     = \tl_set:Nn \l_@@_mark_ref_sym_tl {##1},
+        show-ans   .bool_set:N = \l_@@_show_answer_bool,
+        show-ans   .initial:n  = false,
+        show-ans   .value_required:n = true,
+        show-pos   .bool_set:N = \l_@@_show_position_bool,
+        show-pos   .initial:n  = false,
+        show-pos   .value_required:n = true,
+        mark-ref   .tl_set:N   = \l_@@_mark_ref_sym_tl,
         mark-ref   .initial:n  = \textasteriskcentered,
         mark-ref   .value_required:n = true,
         save-ref   .bool_set:N = \l_@@_store_ref_key_bool,
         save-ref   .initial:n  = false,
+        save-ref   .value_required:n = true,
       }
   }
 \clist_map_inline:nn { level-1, enumext* } { \@@_tmp:n {#1} }
@@ -6775,16 +6776,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \keys_define:nn { enumext / #1 }
       {
         mark-pos .choice:,
-        mark-pos / left  .code:n    = \str_set:Nn \l_@@_mark_position_str { l },
-        mark-pos / right .code:n    = \str_set:Nn \l_@@_mark_position_str { r },
-        mark-pos         .initial:n = right,
+        mark-pos / left  .code:n = \str_set:Nn \l_@@_mark_position_str { l },
+        mark-pos / right .code:n = \str_set:Nn \l_@@_mark_position_str { r },
+        mark-pos .initial:n = right,
         mark-pos .value_required:n  = true,
-        show-ans .code:n   = \bool_set_true:N  \l_@@_show_answer_bool
-                             \bool_set_false:N \l_@@_show_position_bool,
-        show-ans .value_forbidden:n = true,
-        show-pos .code:n   = \bool_set_true:N  \l_@@_show_position_bool
-                             \bool_set_false:N \l_@@_show_answer_bool,
-        show-pos .value_forbidden:n = true,
+        show-ans .bool_set:N = \l_@@_show_answer_bool,
+        show-ans .initial:n  = false,
+        show-ans .value_required:n = true,
+        show-pos .bool_set:N = \l_@@_show_position_bool,
+        show-pos .initial:n  = false,
+        show-pos .value_required:n = true,
       }
   }
 \clist_map_inline:nn { keyans, keyans* } { \@@_tmp:n {#1} }

@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-09}
+  {2024-05-10}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -1588,33 +1588,34 @@
     \keys_define:nn { enumext / #1 }
       {
         wrap-ans   .cs_set_protected:Np = \__enumext_anskey_wrapper:n ##1,
-        wrap-ans   .initial:n  = \fbox{##1},
+        wrap-ans   .initial:n = \fbox{##1},
         wrap-ans   .value_required:n = true,
         wrap-opt   .cs_set_protected:Np = \__enumext_keyans_wrapper_opt:n ##1,
-        wrap-opt   .initial:n  = [{##1}],
+        wrap-opt   .initial:n = [{##1}],
         wrap-opt   .value_required:n = true,
-        save-sep   .tl_set:N   = \l__enumext_store_keyans_item_opt_sep_tl,
-        save-sep   .initial:n  = {, },
+        save-sep   .tl_set:N  = \l__enumext_store_keyans_item_opt_sep_tl,
+        save-sep   .initial:n = {, },
         save-sep   .value_required:n = true,
-        mark-ans   .code:n     = \tl_set:Nn \l__enumext_mark_answer_sym_tl {##1},
-        mark-ans   .initial:n  = \textasteriskcentered,
+        mark-ans   .tl_set:N  = \l__enumext_mark_answer_sym_tl,
+        mark-ans   .initial:n = \textasteriskcentered,
         mark-ans   .value_required:n = true,
         mark-pos   .choice:,
         mark-pos  / left   .code:n = \str_set:Nn \l__enumext_mark_position_str { l },
         mark-pos  / right  .code:n = \str_set:Nn \l__enumext_mark_position_str { r },
-        mark-pos   .initial:n      = right,
+        mark-pos   .initial:n = right,
         mark-pos   .value_required:n = true,
-        show-ans   .code:n     = \bool_set_true:N  \l__enumext_show_answer_bool
-                                 \bool_set_false:N \l__enumext_show_position_bool,
-        show-ans   .value_forbidden:n = true,
-        show-pos   .code:n     = \bool_set_true:N \l__enumext_show_position_bool
-                                 \bool_set_false:N  \l__enumext_show_answer_bool,
-        show-pos   .value_forbidden:n = true,
-        mark-ref   .code:n     = \tl_set:Nn \l__enumext_mark_ref_sym_tl {##1},
+        show-ans   .bool_set:N = \l__enumext_show_answer_bool,
+        show-ans   .initial:n  = false,
+        show-ans   .value_required:n = true,
+        show-pos   .bool_set:N = \l__enumext_show_position_bool,
+        show-pos   .initial:n  = false,
+        show-pos   .value_required:n = true,
+        mark-ref   .tl_set:N   = \l__enumext_mark_ref_sym_tl,
         mark-ref   .initial:n  = \textasteriskcentered,
         mark-ref   .value_required:n = true,
         save-ref   .bool_set:N = \l__enumext_store_ref_key_bool,
         save-ref   .initial:n  = false,
+        save-ref   .value_required:n = true,
       }
   }
 \clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
@@ -1624,16 +1625,16 @@
     \keys_define:nn { enumext / #1 }
       {
         mark-pos .choice:,
-        mark-pos / left  .code:n    = \str_set:Nn \l__enumext_mark_position_str { l },
-        mark-pos / right .code:n    = \str_set:Nn \l__enumext_mark_position_str { r },
-        mark-pos         .initial:n = right,
+        mark-pos / left  .code:n = \str_set:Nn \l__enumext_mark_position_str { l },
+        mark-pos / right .code:n = \str_set:Nn \l__enumext_mark_position_str { r },
+        mark-pos .initial:n = right,
         mark-pos .value_required:n  = true,
-        show-ans .code:n   = \bool_set_true:N  \l__enumext_show_answer_bool
-                             \bool_set_false:N \l__enumext_show_position_bool,
-        show-ans .value_forbidden:n = true,
-        show-pos .code:n   = \bool_set_true:N  \l__enumext_show_position_bool
-                             \bool_set_false:N \l__enumext_show_answer_bool,
-        show-pos .value_forbidden:n = true,
+        show-ans .bool_set:N = \l__enumext_show_answer_bool,
+        show-ans .initial:n  = false,
+        show-ans .value_required:n = true,
+        show-pos .bool_set:N = \l__enumext_show_position_bool,
+        show-pos .initial:n  = false,
+        show-pos .value_required:n = true,
       }
   }
 \clist_map_inline:nn { keyans, keyans* } { \__enumext_tmp:n {#1} }
