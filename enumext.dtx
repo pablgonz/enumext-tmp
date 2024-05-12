@@ -4163,7 +4163,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         {enumext}
           {
-            \int_compare:nNnT { \l_@@_level_h_int } = { \c_zero_int }
+            \bool_lazy_and:nnT
+              { \bool_not_p:n { \g_@@_standar_bool } }
+              { \int_compare_p:nNn { \l_@@_level_h_int } = { \c_zero_int } }
               {
                 \bool_gset_true:N \g_@@_standar_bool
                 \int_gset:Nn \g_@@_standar_star_env_int { \inputlineno }
@@ -4172,7 +4174,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
         {enumext*}
           {
-            \int_compare:nNnT { \l_@@_level_int } = { \c_zero_int }
+            \bool_lazy_and:nnT
+              { \bool_not_p:n { \g_@@_starred_bool } }
+              { \int_compare_p:nNn { \l_@@_level_int } = { \c_zero_int } }
               {
                 \bool_gset_true:N \g_@@_starred_bool
                 \int_gset:Nn \g_@@_starred_star_env_int { \inputlineno }
@@ -10553,10 +10557,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection*{Real definition of \cs{item} in \env{keyans*}}
 %
-% The implementation at this point is very similar to that of the
-% \myenv*{enumext*} environment.
-%
 % \begin{macro}{\@@_start_item_viii:w}
+%    The implementation at this point is very similar to that of the
+%    \myenv*{enumext*} environment.
 % \iffalse
 %% Real |\item| definition for |keyans*| environment.
 % \fi
