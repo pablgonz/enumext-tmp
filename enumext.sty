@@ -6,21 +6,21 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%%
+%% 
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%%
+%% 
 %%  https://www.latex-project.org/lppl.txt
-%%
+%% 
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%%
+%% 
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%%
+%% 
 %% This work consists of the files enumext.dtx and enumext.sty.
-%%
+%% 
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
@@ -1594,7 +1594,7 @@
         wrap-opt   .initial:n = [{##1}],
         wrap-opt   .value_required:n = true,
         save-sep   .tl_set:N  = \l__enumext_store_keyans_item_opt_sep_tl,
-        save-sep   .initial:n = {, },
+        save-sep   .initial:n = {, ~ },
         save-sep   .value_required:n = true,
         mark-ans   .tl_set:N  = \l__enumext_mark_answer_sym_tl,
         mark-ans   .initial:n = \textasteriskcentered,
@@ -3697,7 +3697,8 @@
           \skip_set_eq:NN \parskip \l__enumext_parsep_viii_skip
           \bool_if:NT \l__enumext_item_starred_viii_bool
             {
-              \tl_use:N \l__enumext_fake_item_indent_viii_tl \__enumext_keyans_show_item_opt:
+              \tl_use:N \l__enumext_fake_item_indent_viii_tl
+              \__enumext_keyans_show_item_opt: \skip_horizontal:n { -\l__enumext_fake_item_indent_viii_dim }
             }
             {
               \tl_use:N \l__enumext_fake_item_indent_viii_tl
@@ -4061,6 +4062,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%%
+%% 
 %%
 %% End of file `enumext.sty'.

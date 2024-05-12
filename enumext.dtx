@@ -6736,7 +6736,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         wrap-opt   .initial:n = [{##1}],
         wrap-opt   .value_required:n = true,
         save-sep   .tl_set:N  = \l_@@_store_keyans_item_opt_sep_tl,
-        save-sep   .initial:n = {, },
+        save-sep   .initial:n = {, ~ },
         save-sep   .value_required:n = true,
         mark-ans   .tl_set:N  = \l_@@_mark_answer_sym_tl,
         mark-ans   .initial:n = \textasteriskcentered,
@@ -8344,7 +8344,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_list_arg_two_vii:,\@@_list_arg_two_viii:,}
-%   For the horizontal environments \myenv{enumext*} and \myenv{keyans*}
+%   For the horizontal environments \myenv*{enumext*} and \myenv*{keyans*}
 %   the implementation is similar, but, the value of |\partopsep| is always
 %   \mydim{0pt}. At this point we will modify the \mykey{parsep} key to
 %   make it take the value of the \mykey{itemsep} key and later, in the
@@ -10608,7 +10608,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
           \bool_if:NT \l_@@_item_starred_viii_bool
             {
-              \tl_use:N \l_@@_fake_item_indent_viii_tl \@@_keyans_show_item_opt:
+              \tl_use:N \l_@@_fake_item_indent_viii_tl
+              \@@_keyans_show_item_opt: \skip_horizontal:n { -\l_@@_fake_item_indent_viii_dim }
             }
             {
               \tl_use:N \l_@@_fake_item_indent_viii_tl
