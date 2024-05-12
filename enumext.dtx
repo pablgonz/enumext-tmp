@@ -3549,7 +3549,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-10}
+  {2024-05-12}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -10491,8 +10491,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_clear:N \l_@@_store_keyans_label_tl
     \tl_if_novalue:nF { #1 }
       {
-        \tl_set:Ne \l_@@_keyans_tmpa_tl { \c_space_tl [#1] }
-        \tl_set:Ne \l_@@_keyans_tmpb_tl { , \c_space_tl #1 }
+        \tl_if_empty:NF \l_@@_store_keyans_item_opt_sep_tl
+          {
+            \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_store_keyans_item_opt_sep_tl }
+            \tl_put_right:Ne \l_@@_store_keyans_label_tl { #1 }
+          }
+        \tl_set:Ne \l_@@_keyans_item_opt_tl { #1 }
       }
     \@@_starred_item_viii_aux_ii:w
   }
@@ -10520,22 +10524,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_starred_item_exec:
   {
     \tl_put_left:Ne \l_@@_store_keyans_label_tl { \l_@@_label_viii_tl }
-    \tl_if_blank:VF \l_@@_keyans_tmpb_tl
-      {
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_keyans_tmpb_tl }
-      }
     \@@_store_addto_prop:V \l_@@_store_keyans_label_tl
     \@@_keyans_store_ref:
     \tl_put_left:Ne \l_@@_store_keyans_label_tl { \item }
     \@@_keyans_addto_seq_link:
     \bool_if:NT \l_@@_show_answer_bool
       {
-        \tl_if_blank:VF \l_@@_keyans_tmpa_tl
-          {
-            \tl_put_right:Ne \l_@@_label_viii_tl { \l_@@_keyans_tmpa_tl }
-            \@@_label_width_by_box:Nn \l_@@_keyans_tmpa_dim { \l_@@_keyans_tmpa_tl }
-            \dim_add:Nn \l_@@_fake_item_indent_viii_dim { \l_@@_keyans_tmpa_dim }
-          }
         \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
       }
     \bool_if:NT \l_@@_show_position_bool
@@ -10550,12 +10544,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 }
                ]
             \group_end:
-          }
-        \tl_if_blank:VF \l_@@_keyans_tmpa_tl
-          {
-            \tl_put_right:Ne \l_@@_label_viii_tl { \l_@@_keyans_tmpa_tl }
-            \@@_label_width_by_box:Nn \l_@@_keyans_tmpa_dim { \l_@@_keyans_tmpa_tl }
-            \dim_add:Nn \l_@@_fake_item_indent_viii_dim { \l_@@_keyans_tmpa_dim }
           }
         \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
       }
@@ -10618,7 +10606,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_minipage:w [ t ]{ \l_@@_joined_width_viii_dim  }
           \skip_set_eq:NN \parindent \l_@@_listparindent_viii_dim
           \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
-          \tl_use:N \l_@@_fake_item_indent_viii_tl
+          \bool_if:NT \l_@@_item_starred_viii_bool
+            {
+              \tl_use:N \l_@@_fake_item_indent_viii_tl \@@_keyans_show_item_opt:
+            }
+            {
+              \tl_use:N \l_@@_fake_item_indent_viii_tl
+            }
    }
 %    \end{macrocode}
 % \end{macro}
