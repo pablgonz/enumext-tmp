@@ -6431,8 +6431,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \mykey{resume}, this will activate the entire \emph{\enquote{storage
 % system}} in the \mypkg*{enumext} package.
 %
-% \begin{macro}[int]{save-ans, resume, resume*}
-%     We define the keys \mykey{save-ans} and \mykey{resume} only for the
+% \begin{macro}[int]{save-ans, resume, resume*, series}
+%     We define the keys \mykey{save-ans}, \mykey{resume}, \mykey{resume*} and \mykey{series} only for the
 %     \emph{\enquote{first level}} of \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
 %% Add |save-ans|, |resume| and |resume*| keys only on first level of |enumext|.
@@ -6444,8 +6444,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     save-ans .value_required:n = true,
     resume   .code:n = \@@_resume_counter:,
     resume   .value_forbidden:n = true,
-    resume*  .code:n = \@@_resume_counter_star:,
-    resume*  .value_forbidden:n = true,
+    resume*  .code:n = \@@_resume_starred:n {#1},
+    resume*  .value_required:n = true,
+    series   .code:n = \@@_keyval_series:n {#1},
+    series   .value_required:n = true,
   }
 %    \end{macrocode}
 %
@@ -6534,6 +6536,25 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \bool_set_true:N \l_@@_resume_vii_bool
+  }
+%    \end{macrocode}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_keyval_series:n #1
+  {
+    \str_case:nnT { #1 }
+      {
+        {series}
+          {
+            % code for series
+          }
+        {resume*}
+          {
+            % code for resume*
+          }
+      }
+      {
+        \typeout{WORKING ON SERIeCODE}
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8465,11 +8486,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_keys:n #1
   {
+    \@@_parse_keys_aux:n {#1}
     \exp_args:Ne \keys_set:nn
       { enumext / level-\int_use:N \l_@@_level_int } {#1}
     \bool_if:NT \l_@@_store_active_bool
       {
         \@@_parse_store_keys:n {#1}
+      }
+  }
+%    \end{macrocode}
+% NUEVOOOOOOOOOOO
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_parse_keys_aux:n #1
+  {
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \g_@@_standar_bool }
+      { \int_compare_p:nNn { \l_@@_level_int } = { \c_one_int } }
+      {
+         \typeout{AUXILIAAAAAAAAAAAAAAAARRRRRRRRRRR}
       }
   }
 %    \end{macrocode}

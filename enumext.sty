@@ -6,21 +6,21 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%% 
+%%
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%% 
+%%
 %%  https://www.latex-project.org/lppl.txt
-%% 
+%%
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%% 
+%%
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%% 
+%%
 %% This work consists of the files enumext.dtx and enumext.sty.
-%% 
+%%
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
@@ -1442,21 +1442,26 @@
     \skip_if_eq:nnF { \l__enumext_vspace_below_viii_skip } { \c_zero_skip }
       {
         \bool_if:NTF \l__enumext_vspace_b_star_viii_bool
-          {
+          {resume
             \vspace*{ \l__enumext_vspace_below_viii_skip }
           }
           { \vspace { \l__enumext_vspace_below_viii_skip } }
       }
   }
 %% Add |save-ans|, |resume| and |resume*| keys only on first level of |enumext|.
+\cs_new_protected:Npn \__enumext_resume_starred:n #1 { }
 \keys_define:nn { enumext / level-1 }
   {
     save-ans .code:n = \__enumext_storing_set:n {#1},
     save-ans .value_required:n = true,
     resume   .code:n = \__enumext_resume_counter:,
     resume   .value_forbidden:n = true,
-    resume*  .code:n = \__enumext_resume_counter_star:,
-    resume*  .value_forbidden:n = true,
+    resume*  .code:n = \__enumext_resume_starred:n {#1},
+    resume*  .initial:n = WORLD,
+    resume*  .default:n = World,
+    %%resume*  .value_required:n = false,
+    series   .code:n = \__enumext_keyval_series:n {#1},
+    series   .value_required:n = true,
   }
 %% Add |resume| and |save-ans| keys only on first level of |enumext*|.
 \keys_define:nn { enumext / enumext* }
@@ -1507,6 +1512,23 @@
           }
       }
     \bool_set_true:N \l__enumext_resume_vii_bool
+  }
+\cs_new_protected:Npn \__enumext_keyval_series:n #1
+  {
+    \str_case:nnT { #1 }
+      {
+        {series}
+          {
+            % code for series
+          }
+        {resume*}
+          {
+            % code for resume*
+          }
+      }
+      {
+        \typeout{WORKING ON SERIeCODE}
+      }
   }
 %% Add |check-ans| and |no-store| keys.
 \cs_set_protected:Npn \__enumext_tmp:n #1
@@ -2532,11 +2554,36 @@
 %% Parse |key=val| and store keys for \printkeyans.
 \cs_new_protected:Npn \__enumext_parse_keys:n #1
   {
+    \__enumext_parse_keys_aux:n {#1}
     \exp_args:Ne \keys_set:nn
       { enumext / level-\int_use:N \l__enumext_level_int } {#1}
     \bool_if:NT \l__enumext_store_active_bool
       {
         \__enumext_parse_store_keys:n {#1}
+      }
+  }
+\cs_generate_variant:Nn \keys_precompile:nnN { nV }
+\cs_generate_variant:Nn \prop_set_from_keyval:Nn { NV, Ne }
+\cs_new_protected:Npn \__enumext_parse_keys_aux:n #1
+  {
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \g__enumext_standar_bool }
+      { \int_compare_p:nNn { \l__enumext_level_int } = { \c_one_int } }
+      {
+        % Primero guardamos en un variable seq, luego quitamos duplicados y pasamos a clist
+        % (clist remove duplicates falla aquí), luego volvemos a tl_var y aplicamos regex para las
+        % claves que deseamos eliminar. Si las llaves tan pasada con \par o cosas como el estilo, clist_remove fallará al igual que seq
+        % en el caso de clist no se puede quitar un item con valor =algo...solo queda regex.
+        \clist_gset:Nn \g__mylastkeys_clist { #1 }
+        \seq_gset_from_clist:NN \g__enumext_last_keyval_seq \g__mylastkeys_clist
+        \seq_gremove_duplicates:N \g__enumext_last_keyval_seq
+        \seq_show:N \g__enumext_last_keyval_seq
+        \clist_set_from_seq:NN \g__mylastkeys_clist \g__enumext_last_keyval_seq
+        \clist_show:N \g__mylastkeys_clist
+        \tl_set:NV \l_tmpb_tl { \g__mylastkeys_clist }
+        % Ahora vamos con las regex :D
+        \tl_show:N \l_tmpb_tl
+       % \typeout{AUXILIAAAAAAAAAAAAAAAARRRRRRRRRRR}
       }
   }
 %% Set |key=val| (store keys) for \printkeyans.
@@ -4066,6 +4113,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%% 
+%%
 %%
 %% End of file `enumext.sty'.
