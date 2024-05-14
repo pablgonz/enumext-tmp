@@ -6530,7 +6530,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_if:NT \l_@@_store_active_bool
       {
-        \int_gset:Nn \g_@@_resume_int
+        \int_gset:Nn \g_@@_resume_vii_int
           {
             \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
           }
@@ -9390,10 +9390,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_keyans_pic_above_int + 1 }
       { \l_@@_keyans_pic_below_int }
       {
-         \@@_minipage:w [ b ]{ \l_@@_keyans_pic_width_dim }
-           \centering
-           \seq_item:Nn \l_@@_keyans_pic_body_seq { ##1 }
-         \@@_endminipage:
+        \@@_minipage:w [ b ]{ \l_@@_keyans_pic_width_dim }
+          \centering
+          \seq_item:Nn \l_@@_keyans_pic_body_seq { ##1 }
+        \@@_endminipage:
       }
     \par
   }
