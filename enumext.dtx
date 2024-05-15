@@ -3549,7 +3549,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-14}
+  {2024-05-15}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -6431,45 +6431,79 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \mykey{resume}, this will activate the entire \emph{\enquote{storage
 % system}} in the \mypkg*{enumext} package.
 %
-% \begin{macro}[int]{save-ans, resume, resume*, series}
-%     We define the keys \mykey{save-ans}, \mykey{resume}, \mykey{resume*} and \mykey{series} only for the
+% \begin{macro}[int]{save-ans, series, resume, resume*, }
+%     We define the keys \mykey{save-ans}, \mykey{series}, \mykey{resume} and \mykey{resume*} only for the
 %     \emph{\enquote{first level}} of \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
-%% Add |save-ans|, |resume| and |resume*| keys only on first level of |enumext|.
+%% Add |save-ans|, |resume*|,  |resume| and |series| keys only on first level.
 % \fi
 %    \begin{macrocode}
 \keys_define:nn { enumext / level-1 }
   {
     save-ans .code:n = \@@_storing_set:n {#1},
     save-ans .value_required:n = true,
-    resume*  .code:n =\@@_resume_starred:,
-    resume*  .value_forbidden:n = true,
-    resume   .code:n = \@@_resume_counter_series:n {#1},
     series   .str_set:N = \l_@@_series_str,
     series   .value_required:n = true,
+    resume   .code:n = \@@_resume_counter_series:n {#1},
+    resume*  .code:n =\@@_resume_starred:,
+    resume*  .value_forbidden:n = true,
   }
-%    \end{macrocode}
-%
-% \iffalse
-%% Add |resume| and |save-ans| keys only on first level of |enumext*|.
-% \fi
-%    \begin{macrocode}
 \keys_define:nn { enumext / enumext* }
   {
     save-ans .code:n = \@@_storing_set:n {#1},
     save-ans .value_required:n = true,
-    resume*  .code:n =\@@_resume_starred_vii:,
-    resume*  .value_forbidden:n = true,
-    resume   .code:n = \@@_resume_counter_series_vii:n {#1},
     series   .str_set:N = \l_@@_series_str,
     series   .value_required:n = true,
+    resume   .code:n = \@@_resume_counter_series_vii:n {#1},
+    resume*  .code:n =\@@_resume_starred_vii:,
+    resume*  .value_forbidden:n = true,
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_resume_counter:n, \@@_resume_only_counter:,\@@_resume_counter_vii:}
-%    The functions \cs{@@_resume_only_counter:} and
-%    \cs{@@_resume_only_counter_vii:} used by \mykey{resume} key in
+% \begin{macro}{\@@_storing_set:n}
+%    The function \cs{@@_storing_set:n} executed by the
+%    \mykey{save-ans} key sets the parameters for the operation of
+%    \ics*{anskey}, \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}.
+%    The variable \cs{l_@@_store_name_tl} will have the \emph{\enquote{store name}} with
+%    which the \mymeta{sequence} and \mymeta{prop list} will be created, if it does not exist it will
+%    create it globally.
+%
+%    The boolean var \cs{l_@@_store_active_bool} will be set to
+%    true activating the entire internal \emph{storage mechanism}, then
+%    the integer variable for the \mykey{resume} key will be created (if not exist),
+%    finally the function \cs{@@_check_ans_int:n} will be called
+%    to activate the internal mechanism for checking the answers if the
+%    boolean variable \cs{l_@@_check_ans_bool} set by \mykey{check-ans}
+%    key are active.
+% \iffalse
+%% Function to activate ALL "storing" (and |check-ans|, |resume|) used by |save-ans| key.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_storing_set:n #1
+  {
+    \tl_set:Ne \l_@@_store_name_tl {#1}
+    \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
+      {
+        \prop_new:c { g_@@_ \l_@@_store_name_tl _prop }
+      }
+    \seq_if_exist:cF { g_@@_ \l_@@_store_name_tl _seq }
+      {
+        \seq_new:c { g_@@_ \l_@@_store_name_tl _seq }
+      }
+    \bool_set_true:N \l_@@_store_active_bool
+    \bool_set_true:N \l_@@_store_ans_bool
+    \int_if_exist:cF { g_@@_resume_#1_int }
+      {
+        \int_new:c { g_@@_resume_#1_int }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_resume_counter:, \@@_resume_counter_vii:}
+%    The functions \cs{@@_resume_counter:} and \cs{@@_resume_counter_vii:}
+%     used by \mykey{resume} key if not value is passed in
 %    \myenv*{enumext} and \myenv*{enumext*}.
 %    If \mykey{save-ans} key present then set the start value from
 %    integer created by \cs{@@_storing_set:n}.
@@ -6504,7 +6538,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_resume_counter_series:n,\@@_filter_series:n, \@@_filter_series_key:n, \@@_filter_series_pair:nn, \@@_parse_series_resume:n}
+% \begin{macro}{\@@_resume_starred:, \@@_resume_starred_vii:,\@@_filter_series:n, \@@_filter_series_key:n, \@@_filter_series_pair:nn, \@@_parse_series_resume:n}
 % \iffalse
 %% Internal code for |series| key.
 % \fi
@@ -6580,6 +6614,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { series } {}
         { resume } {}
         { columns* } {}
+        { save-key } {}
         { columns-sep* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
@@ -6598,7 +6633,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Npn \@@_resume_series_default:n #1
   {
-    % Only if enumext not nested in enumext*
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \g_@@_standar_bool }
@@ -6610,7 +6644,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_gclear:N \g_@@_series_standar_default_tl
         \tl_gset:Ne \g_@@_series_standar_default_tl { \@@_filter_series:n {#1} }
       }
-    % Only if enumext* not nested in enumext.
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \g_@@_starred_bool }
@@ -6621,46 +6654,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
         \tl_gclear:N \g_@@_series_starred_default_tl
         \tl_gset:Ne \g_@@_series_starred_default_tl { \@@_filter_series:n {#1} }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_storing_set:n}
-%    The function \cs{@@_storing_set:n} executed by the
-%    \mykey{save-ans} key sets the parameters for the operation of
-%    \ics*{anskey}, \myenv*{keyans} and \myenv*{keyanspic}.
-%    The variable \cs{l_@@_store_name_tl} will have the \emph{\enquote{store name}} with
-%    which the \mymeta{sequence} and \mymeta{prop list} will be created, if it does not exist it will
-%    create it globally.
-%
-%    The boolean var \cs{l_@@_store_active_bool} will be set to
-%    true activating the entire internal \emph{storage mechanism}, then
-%    the integer variable for the \mykey{resume} key will be created (if not exist),
-%    finally the function \cs{@@_check_ans_int:n} will be called
-%    to activate the internal mechanism for checking the answers if the
-%    boolean variable \cs{l_@@_check_ans_bool} set by \mykey{check-ans}
-%    key are active.
-% \iffalse
-%% Function to activate ALL storing (and check) used by |save-ans| key.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_storing_set:n #1
-  {
-    \tl_set:Ne \l_@@_store_name_tl {#1}
-    \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
-      {
-        \prop_new:c { g_@@_ \l_@@_store_name_tl _prop }
-      }
-    \seq_if_exist:cF { g_@@_ \l_@@_store_name_tl _seq }
-      {
-        \seq_new:c { g_@@_ \l_@@_store_name_tl _seq }
-      }
-    \bool_set_true:N \l_@@_store_active_bool
-    \bool_set_true:N \l_@@_store_ans_bool
-    \int_if_exist:cF { g_@@_resume_#1_int }
-      {
-        \int_new:c { g_@@_resume_#1_int }
       }
   }
 %    \end{macrocode}
