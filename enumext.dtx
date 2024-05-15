@@ -3549,7 +3549,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-12}
+  {2024-05-14}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -3632,9 +3632,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\l_@@_resume_bool, \g_@@_resume_int,
-%                  \l_@@_resume_vii_bool, \g_@@_resume_vii_int,
-%                  \g_@@_item_symbol_tl}
+% \begin{variable}{\g_@@_resume_int, \g_@@_resume_vii_int,
+%                  \g_@@_item_symbol_tl, \g_@@_series_standar_default_tl,
+%                  \g_@@_series_starred_default_tl,}
 %
 %    The boolean variable \cs{l_@@_resume_bool} is used by \mykey{resume} key,
 %    the value from which the environment's will start is stored in the
@@ -3645,11 +3645,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Variables used by |resume| and |item-sym*| key implementation.
 % \fi
 %    \begin{macrocode}
-\bool_new:N \l_@@_resume_bool
-\int_new:N  \g_@@_resume_int
-\bool_new:N \l_@@_resume_vii_bool
-\int_new:N  \g_@@_resume_vii_int
-\tl_new:N   \g_@@_item_symbol_tl
+\int_new:N \g_@@_resume_int
+\int_new:N \g_@@_resume_vii_int
+\tl_new:N  \g_@@_item_symbol_tl
+\tl_new:N  \g_@@_series_standar_default_tl
+\tl_new:N  \g_@@_series_starred_default_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -6442,11 +6442,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     save-ans .code:n = \@@_storing_set:n {#1},
     save-ans .value_required:n = true,
-    resume   .code:n = \@@_resume_counter:,
-    resume   .value_forbidden:n = true,
-    resume*  .code:n = \@@_resume_starred:n {#1},
-    resume*  .value_required:n = true,
-    series   .code:n = \@@_keyval_series:n {#1},
+    resume*  .code:n =\@@_resume_starred:,
+    resume*  .value_forbidden:n = true,
+    resume   .code:n = \@@_resume_counter_series:n {#1},
+    series   .str_set:N = \l_@@_series_str,
     series   .value_required:n = true,
   }
 %    \end{macrocode}
@@ -6459,8 +6458,170 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     save-ans .code:n = \@@_storing_set:n {#1},
     save-ans .value_required:n = true,
-    resume   .code:n = \@@_resume_counter_vii:,
-    resume   .value_forbidden:n = true,
+    resume*  .code:n =\@@_resume_starred_vii:,
+    resume*  .value_forbidden:n = true,
+    resume   .code:n = \@@_resume_counter_series_vii:n {#1},
+    series   .str_set:N = \l_@@_series_str,
+    series   .value_required:n = true,
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_resume_counter:n, \@@_resume_only_counter:,\@@_resume_counter_vii:}
+%    The functions \cs{@@_resume_only_counter:} and
+%    \cs{@@_resume_only_counter_vii:} used by \mykey{resume} key in
+%    \myenv*{enumext} and \myenv*{enumext*}.
+%    If \mykey{save-ans} key present then set the start value from
+%    integer created by \cs{@@_storing_set:n}.
+% \iffalse
+%% Internal function used by |resume| key.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_resume_counter:
+  {
+    \bool_if:NT \l_@@_store_active_bool
+      {
+        \int_gset:Nn \g_@@_resume_int
+          {
+            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
+          }
+      }
+    \int_gincr:N \g_@@_resume_int
+    \int_set_eq:NN \l_@@_start_i_int \g_@@_resume_int
+  }
+\cs_new_protected:Nn \@@_resume_counter_vii:
+  {
+    \bool_if:NT \l_@@_store_active_bool
+      {
+        \int_gset:Nn \g_@@_resume_vii_int
+          {
+            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
+          }
+      }
+    \int_gincr:N \g_@@_resume_vii_int
+    \int_set_eq:NN \l_@@_start_vii_int \g_@@_resume_vii_int
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_resume_counter_series:n,\@@_filter_series:n, \@@_filter_series_key:n, \@@_filter_series_pair:nn, \@@_parse_series_resume:n}
+% \iffalse
+%% Internal code for |series| key.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_resume_starred:
+  {
+    \tl_if_empty:NF \g_@@_series_standar_default_tl
+      {
+        \@@_resume_counter:
+        \keys_set:nV { enumext / level-1 } \g_@@_series_standar_default_tl
+      }
+  }
+\cs_new_protected:Npn \@@_resume_counter_series:n #1
+  {
+    \tl_if_empty:nTF {#1}
+      {
+        \@@_resume_counter:
+      }
+      {
+        \tl_if_exist:cTF { g_@@_series_ \tl_to_str:n {#1} _tl }
+          {
+            \keys_set:nv { enumext / level-1 }
+              { g_@@_series_ \tl_to_str:n {#1} _tl }
+          }
+        { \msg_error:nnn { enumext } { unknown-series } {#1} }
+      }
+  }
+\cs_new_protected:Nn \@@_resume_starred_vii:
+  {
+    \tl_if_empty:NF \g_@@_series_starred_default_tl
+      {
+        \@@_resume_counter_vii:
+        \keys_set:nV { enumext / enumext* } \g_@@_series_starred_default_tl
+      }
+  }
+\cs_new_protected:Npn \@@_resume_counter_series_vii:n #1
+  {
+    \tl_if_empty:nTF {#1}
+      {
+        \@@_resume_counter_vii:
+      }
+      {
+        \tl_if_exist:cTF { g_@@_series_ \tl_to_str:n {#1} _tl }
+          {
+            \keys_set:nv { enumext / enumext* }
+              { g_@@_series_ \tl_to_str:n {#1} _tl }
+          }
+        { \msg_error:nnn { enumext } { unknown-series } {#1} }
+      }
+  }
+\cs_new:Npn \@@_filter_series:n #1
+  {
+    \use:e
+      {
+        \keyval_parse:NNn
+          \@@_filter_series_key:n
+          \@@_filter_series_pair:nn {#1}
+      }
+  }
+\cs_new:Npn \@@_filter_series_key:n #1
+  {
+    \str_case:nnF {#1}
+      {
+        { resume } {}
+        { resume* } {}
+      }
+      { , { \exp_not:n {#1} } }
+  }
+\cs_new:Npn \@@_filter_series_pair:nn #1#2
+  {
+    \str_case:nnF {#1}
+      {
+        { series } {}
+        { resume } {}
+        { columns* } {}
+        { columns-sep* } {}
+      }
+      { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
+  }
+\cs_new_protected:Npn \@@_parse_series_resume:n #1
+  {
+    \str_if_empty:NTF \l_@@_series_str
+      {
+        \@@_resume_series_default:n {#1}
+      }
+      {
+        \tl_gclear_new:c { g_@@_series_ \l_@@_series_str _tl }
+        \tl_gset:ce { g_@@_series_ \l_@@_series_str _tl }
+          { \@@_filter_series:n {#1} }
+      }
+  }
+\cs_new_protected:Npn \@@_resume_series_default:n #1
+  {
+    % Only if enumext not nested in enumext*
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \g_@@_standar_bool }
+        { \int_compare_p:nNn { \l_@@_level_int } = { 1 } }
+        { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
+      }
+      {
+        \typeout{[[ON-LEVEL-ONE-ENUMEXT]]}
+        \tl_gclear:N \g_@@_series_standar_default_tl
+        \tl_gset:Ne \g_@@_series_standar_default_tl { \@@_filter_series:n {#1} }
+      }
+    % Only if enumext* not nested in enumext.
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \g_@@_starred_bool }
+        { \int_compare_p:nNn { \l_@@_level_h_int } = { 1 } }
+        { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
+      }
+      {
+        \typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
+        \tl_gclear:N \g_@@_series_starred_default_tl
+        \tl_gset:Ne \g_@@_series_starred_default_tl { \@@_filter_series:n {#1} }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6500,60 +6661,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_if_exist:cF { g_@@_resume_#1_int }
       {
         \int_new:c { g_@@_resume_#1_int }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_resume_counter:,\@@_resume_counter_vii:}
-%    The functions \cs{@@_resume_counter:} and
-%    \cs{@@_resume_counter_vii:} used by \mykey{resume} key in
-%    \myenv*{enumext} and \myenv*{enumext*}.
-%    If \mykey{save-ans} key present then set the start value from
-%    integer created by \cs{@@_storing_set:n}.
-% \iffalse
-%% Internal function used by |resume| key.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_resume_counter:
-  {
-    \bool_if:NT \l_@@_store_active_bool
-      {
-        \int_gset:Nn \g_@@_resume_int
-          {
-            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
-          }
-      }
-    \bool_set_true:N \l_@@_resume_bool
-  }
-\cs_new_protected:Nn \@@_resume_counter_vii:
-  {
-    \bool_if:NT \l_@@_store_active_bool
-      {
-        \int_gset:Nn \g_@@_resume_vii_int
-          {
-            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
-          }
-      }
-    \bool_set_true:N \l_@@_resume_vii_bool
-  }
-%    \end{macrocode}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_keyval_series:n #1
-  {
-    \str_case:nnT { #1 }
-      {
-        {series}
-          {
-            % code for series
-          }
-        {resume*}
-          {
-            % code for resume*
-          }
-      }
-      {
-        \typeout{WORKING ON SERIeCODE}
       }
   }
 %    \end{macrocode}
@@ -6662,7 +6769,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                \bool_lazy_all:nT
                  {
                    { \bool_if_p:N \g_@@_starred_bool }
-                   { \int_compare_p:nNn { \l_@@_level_h_int } = { \c_one_int } }
+                   { \int_compare_p:nNn { \l_@@_level_h_int } = { 1 } }
                  }
                  {
                    \int_gdecr:N \g_@@_count_item_number_int
@@ -8334,14 +8441,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \clist_map_inline:nn { topsep, parsep, partopsep, itemsep }
           { \skip_set_eq:cc {####1} { l_@@_####1_#1_skip } }
         \usecounter { enumX#1 }
-        \bool_lazy_and:nnTF
-          { \str_if_eq_p:nn {#1} { i } }
-          { \bool_if_p:N \l_@@_resume_bool }
-          { \setcounter { enumXi  } { \int_eval:n { \g_@@_resume_int } } }
-          {
-            \setcounter { enumX#1 }
-              { \int_eval:n { \int_use:c { l_@@_start_#1_int } - 1 } }
-          }
+        \setcounter { enumX#1 } { \int_eval:n { \int_use:c { l_@@_start_#1_int } - 1 } }
         \str_if_eq:nnTF {#1} { v }
           {
             \@@_keyans_redefine_item:
@@ -8397,13 +8497,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \skip_set_eq:Nc \parsep  { l_@@_itemsep_#1_skip }
         \skip_zero:N \partopsep
         \usecounter { enumX#1 }
-        \bool_lazy_and:nnTF
-          { \str_if_eq_p:nn {#1} { vii } } { \bool_if_p:N \l_@@_resume_vii_bool }
-          { \setcounter { enumXvii } { \int_eval:n { \g_@@_resume_vii_int } } }
-          {
-            \setcounter { enumX#1 }
-              { \int_eval:n { \int_use:c { l_@@_start_#1_int } - 1 } }
-          }
+        \setcounter { enumX#1 } { \int_eval:n { \int_use:c { l_@@_start_#1_int } - 1 } }
         \@@_use_key_ref_h:
         \str_if_eq:nnTF {#1} { vii }
           {
@@ -8486,24 +8580,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_keys:n #1
   {
-    \@@_parse_keys_aux:n {#1}
-    \exp_args:Ne \keys_set:nn
-      { enumext / level-\int_use:N \l_@@_level_int } {#1}
-    \bool_if:NT \l_@@_store_active_bool
+    \tl_if_novalue:nF {#1}
       {
-        \@@_parse_store_keys:n {#1}
-      }
-  }
-%    \end{macrocode}
-% NUEVOOOOOOOOOOO
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_parse_keys_aux:n #1
-  {
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \g_@@_standar_bool }
-      { \int_compare_p:nNn { \l_@@_level_int } = { \c_one_int } }
-      {
-         \typeout{AUXILIAAAAAAAAAAAAAAAARRRRRRRRRRR}
+        \str_clear:N \l_@@_series_str
+        \int_compare:nNnTF { \l_@@_level_int } = { 1 }
+          {
+            \keys_set:nn { enumext / level-1 } {#1}
+            \@@_parse_series_resume:n {#1}
+          }
+          {
+            \exp_args:Ne \keys_set:nn
+              { enumext / level-\int_use:N \l_@@_level_int } {#1}
+          }
+        \bool_if:NT \l_@@_store_active_bool
+          {
+            \@@_parse_store_keys:n {#1}
+          }
       }
   }
 %    \end{macrocode}
@@ -9670,7 +9762,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_if_novalue:nF {#1}
       {
+        \str_clear:N \l_@@_series_str
         \keys_set:nn { enumext / enumext* } {#1}
+        \@@_parse_series_resume:n {#1}
         \bool_if:NT \l_@@_store_active_bool
           {
             \@@_parse_store_keys_vii:n {#1}
