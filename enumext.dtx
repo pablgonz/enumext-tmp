@@ -3576,8 +3576,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{\l_@@_level_int, \l_@@_level_h_int, \l_@@_keyans_level_int,
 %                       \l_@@_keyans_level_h_int, \l_@@_keyans_pic_level_int,
-%                       \l_@@_starred_bool, \g_@@_starred_bool, \l_@@_standar_bool,
-%                       \g_@@_standar_bool, \l_@@_keyans_env_bool,}
+%                       \l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_first_bool,
+%                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_first_bool,
+%                       \l_@@_keyans_env_bool,}
 %
 %    Integer variables will control the nesting levels of the environments
 %    and boolean variables will be used to determine if they are present
@@ -3597,8 +3598,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N  \l_@@_keyans_pic_level_int
 \bool_new:N \l_@@_starred_bool
 \bool_new:N \g_@@_starred_bool
+\bool_new:N \l_@@_starred_first_bool
 \bool_new:N \l_@@_standar_bool
 \bool_new:N \g_@@_standar_bool
+\bool_new:N \l_@@_standar_first_bool
 \bool_new:N \l_@@_keyans_env_bool
 %    \end{macrocode}
 % \end{variable}
@@ -6397,8 +6400,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_vspace_below_vii:, \@@_vspace_below_viii:}
-%    The functions \cs{@@_vspace_below_vii:} and \cs{@@_vspace_below_viii:} apply the \emph{vertical space below}
-%    the \myenv*{enumext*} and \myenv*{keyans*} environments set by the \mykey{below*} and \mykey{below} keys.
+%    The functions \cs{@@_vspace_below_vii:} and  \cs{@@_vspace_below_viii:}
+%    apply the \emph{vertical space below} the \myenv*{enumext*} and
+%    \myenv*{keyans*} environments set by the \mykey{below*} and \mykey{below} keys.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_vspace_below_vii:
   {
@@ -6432,8 +6436,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % system}} in the \mypkg*{enumext} package.
 %
 % \begin{macro}[int]{save-ans, series, resume, resume*, }
-%     We define the keys \mykey{save-ans}, \mykey{series}, \mykey{resume} and \mykey{resume*} only for the
-%     \emph{\enquote{first level}} of \myenv*{enumext} and \myenv*{enumext*}.
+%     We define the keys \mykey{save-ans}, \mykey{series}, \mykey{resume}
+%     and \mykey{resume*} only for the \emph{\enquote{first level}}
+%     of \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
 %% Add |save-ans|, |resume*|,  |resume| and |series| keys only on first level.
 % \fi
@@ -6445,23 +6450,25 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     series   .str_set:N = \l_@@_series_str,
     series   .value_required:n = true,
     resume   .code:n = \@@_resume_counter_series:n {#1},
-    resume*  .code:n =\@@_resume_starred:,
+    resume*  .code:n = \@@_resume_starred:,
     resume*  .value_forbidden:n = true,
   }
 \keys_define:nn { enumext / enumext* }
   {
-    save-ans .code:n = \@@_storing_set:n {#1},
+    save-ans .code:n = \@@_storing_set_vii:n {#1},
     save-ans .value_required:n = true,
     series   .str_set:N = \l_@@_series_str,
     series   .value_required:n = true,
     resume   .code:n = \@@_resume_counter_series_vii:n {#1},
-    resume*  .code:n =\@@_resume_starred_vii:,
+    resume*  .code:n = \@@_resume_starred_vii:,
     resume*  .value_forbidden:n = true,
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_storing_set:n}
+% \subsubsection{Internal function for \texttt{save-ans} key}
+%
+% \begin{macro}{\@@_storing_set:n, \@@_storing_exec:}
 %    The function \cs{@@_storing_set:n} executed by the
 %    \mykey{save-ans} key sets the parameters for the operation of
 %    \ics*{anskey}, \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}.
@@ -6471,11 +6478,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %    The boolean var \cs{l_@@_store_active_bool} will be set to
 %    true activating the entire internal \emph{storage mechanism}, then
-%    the integer variable for the \mykey{resume} key will be created (if not exist),
-%    finally the function \cs{@@_check_ans_int:n} will be called
-%    to activate the internal mechanism for checking the answers if the
-%    boolean variable \cs{l_@@_check_ans_bool} set by \mykey{check-ans}
-%    key are active.
+%    the integer variable for the \mykey{resume} key will be created (if not exist).
 % \iffalse
 %% Function to activate ALL "storing" (and |check-ans|, |resume|) used by |save-ans| key.
 % \fi
@@ -6483,6 +6486,47 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_storing_set:n #1
   {
     \tl_set:Ne \l_@@_store_name_tl {#1}
+    \tl_if_empty:NTF \l_@@_store_name_tl
+      {
+        \msg_error:nnn { enumext } { save-ans-empty } { enumext }
+      }
+      {
+        \@@_storing_standar:
+      }
+  }
+\cs_new_protected:Npn \@@_storing_set_vii:n #1
+  {
+    \tl_set:Ne \l_@@_store_name_tl {#1}
+    \tl_if_empty:NTF \l_@@_store_name_tl
+      {
+        \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
+      }
+      {
+        \@@_storing_starred:
+      }
+  }
+\cs_new_protected:Nn \@@_storing_standar:
+  {
+    \bool_if:NTF \l_@@_standar_first_bool
+      {
+        \@@_storing_exec:
+      }
+      {
+        \msg_warning:nnn { enumext } { save-ans-nested } { enumext }
+      }
+  }
+\cs_new_protected:Nn \@@_storing_starred:
+  {
+    \bool_if:NTF \l_@@_starred_first_bool
+      {
+        \@@_storing_exec:
+      }
+      {
+        \msg_warning:nnn { enumext } { save-ans-nested } { enumext* }
+      }
+  }
+\cs_new_protected:Nn \@@_storing_exec:
+  {
     \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
       {
         \prop_new:c { g_@@_ \l_@@_store_name_tl _prop }
@@ -6493,102 +6537,30 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \bool_set_true:N \l_@@_store_active_bool
     \bool_set_true:N \l_@@_store_ans_bool
-    \int_if_exist:cF { g_@@_resume_#1_int }
+    \int_if_exist:cF { g_@@_resume_ \l_@@_store_name_tl _int }
       {
-        \int_new:c { g_@@_resume_#1_int }
+        \int_new:c { g_@@_resume_ \l_@@_store_name_tl _int }
       }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_resume_counter:, \@@_resume_counter_vii:}
-%    The functions \cs{@@_resume_counter:} and \cs{@@_resume_counter_vii:}
-%     used by \mykey{resume} key if not value is passed in
-%    \myenv*{enumext} and \myenv*{enumext*}.
-%    If \mykey{save-ans} key present then set the start value from
-%    integer created by \cs{@@_storing_set:n}.
-% \iffalse
-%% Internal function used by |resume| key.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_resume_counter:
-  {
-    \bool_if:NT \l_@@_store_active_bool
-      {
-        \int_gset:Nn \g_@@_resume_int
-          {
-            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
-          }
-      }
-    \int_gincr:N \g_@@_resume_int
-    \int_set_eq:NN \l_@@_start_i_int \g_@@_resume_int
-  }
-\cs_new_protected:Nn \@@_resume_counter_vii:
-  {
-    \bool_if:NT \l_@@_store_active_bool
-      {
-        \int_gset:Nn \g_@@_resume_vii_int
-          {
-            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
-          }
-      }
-    \int_gincr:N \g_@@_resume_vii_int
-    \int_set_eq:NN \l_@@_start_vii_int \g_@@_resume_vii_int
-  }
-%    \end{macrocode}
-% \end{macro}
+% \subsubsection{Internal function for \texttt{series} key}
 %
-% \begin{macro}{\@@_resume_starred:, \@@_resume_starred_vii:,\@@_filter_series:n, \@@_filter_series_key:n, \@@_filter_series_pair:nn, \@@_parse_series_resume:n}
+% The \mykey{series} key is responsible for the whole process of the
+% \mykey{resume} and \mykey{resume*} keys. The idea behind this is to be
+% able to absorb the \mymeta{keys} passed to the optional argument of the
+% first level of the environments, but, discarding some specific
+% \mymeta{keys}.
+%
+% \begin{macro}{\@@_filter_series:n, \@@_filter_series_key:n, \@@_filter_series_pair:nn}
+%   The function \cs{@@_filter_series:n} will be in charge of filtering the
+%   \mymeta{keys} we want to store where |{#1}| represents the optional
+%   value passed to the environment.
 % \iffalse
-%% Internal code for |series| key.
+%% Internal function used by |series| key.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_resume_starred:
-  {
-    \tl_if_empty:NF \g_@@_series_standar_default_tl
-      {
-        \@@_resume_counter:
-        \keys_set:nV { enumext / level-1 } \g_@@_series_standar_default_tl
-      }
-  }
-\cs_new_protected:Npn \@@_resume_counter_series:n #1
-  {
-    \tl_if_empty:nTF {#1}
-      {
-        \@@_resume_counter:
-      }
-      {
-        \tl_if_exist:cTF { g_@@_series_ \tl_to_str:n {#1} _tl }
-          {
-            \keys_set:nv { enumext / level-1 }
-              { g_@@_series_ \tl_to_str:n {#1} _tl }
-          }
-        { \msg_error:nnn { enumext } { unknown-series } {#1} }
-      }
-  }
-\cs_new_protected:Nn \@@_resume_starred_vii:
-  {
-    \tl_if_empty:NF \g_@@_series_starred_default_tl
-      {
-        \@@_resume_counter_vii:
-        \keys_set:nV { enumext / enumext* } \g_@@_series_starred_default_tl
-      }
-  }
-\cs_new_protected:Npn \@@_resume_counter_series_vii:n #1
-  {
-    \tl_if_empty:nTF {#1}
-      {
-        \@@_resume_counter_vii:
-      }
-      {
-        \tl_if_exist:cTF { g_@@_series_ \tl_to_str:n {#1} _tl }
-          {
-            \keys_set:nv { enumext / enumext* }
-              { g_@@_series_ \tl_to_str:n {#1} _tl }
-          }
-        { \msg_error:nnn { enumext } { unknown-series } {#1} }
-      }
-  }
 \cs_new:Npn \@@_filter_series:n #1
   {
     \use:e
@@ -6598,6 +6570,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \@@_filter_series_pair:nn {#1}
       }
   }
+%    \end{macrocode}
+%   The function \cs{@@_filter_series_key:n} will be responsible for
+%   filtering the \mymeta{keys} that are passed \emph{without value} by
+%   excluding the \mykey{resume} and \mykey{resume*} keys.
+%    \begin{macrocode}
 \cs_new:Npn \@@_filter_series_key:n #1
   {
     \str_case:nnF {#1}
@@ -6607,6 +6584,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       { , { \exp_not:n {#1} } }
   }
+%    \end{macrocode}
+%   The function \cs{@@_filter_series_pair:nn} will be responsible for
+%   filtering the \mymeta{keys} that are passed \emph{with value} by
+%   excluding the \mykey{series}, \mykey{resume}, \mykey{save-ans} and
+%   \mykey{save-key} keys.
+%    \begin{macrocode}
 \cs_new:Npn \@@_filter_series_pair:nn #1#2
   {
     \str_case:nnF {#1}
@@ -6615,10 +6598,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { resume } {}
         { columns* } {}
         { save-key } {}
+        { save-ans } {}
         { columns-sep* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\@@_parse_series_resume:n, \@@_resume_series_default:n}
+%   The function \cs{@@_parse_series_resume:n} will be in charge of
+%   saving the filtered \mymeta{keys} in a global variable \myvarenv{g__@@_series_\mymeta{series name}_tl}
+%   created globally when using the key \mykey{series}, otherwise it will call
+%   the function \cs{@@_resume_series_default:n}.
+%   This function is passed to the function \cs{@@_parse_keys_parse_keys:n}
+%   in the \myenv*{enumext} environment definition (\S\ref{env:enumext})
+%   and to the function \cs{@@_parse_keys_vii:n} in the \myenv*{enumext*}
+%   environment definition (\S\ref{env:starred}).
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_series_resume:n #1
   {
     \str_if_empty:NTF \l_@@_series_str
@@ -6631,6 +6627,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           { \@@_filter_series:n {#1} }
       }
   }
+%    \end{macrocode}
+%   The function \cs{@@_resumext_series_default:n} will be in charge
+%   of saving the filtering \mymeta{keys} when the \mykey{series} key is
+%   not used and will save them in the variable \myvarenv{g__@@_series_standar_default_tl} for the
+%   \myenv*{enumext} environment and in the variable
+%   \myvarenv{g__@@_series_starred_default_tl} for the \myenv*{enumext*} environment.
+%   Here we must use |\bool_lazy_all:nT| to make sure that the default
+%   values are not overwritten when the environment is nested and the
+%   \mykey{series} key is not being used.
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_resume_series_default:n #1
   {
     \bool_lazy_all:nT
@@ -6654,6 +6660,121 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
         \tl_gclear:N \g_@@_series_starred_default_tl
         \tl_gset:Ne \g_@@_series_starred_default_tl { \@@_filter_series:n {#1} }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Internal function for \texttt{resume} and \texttt{resume*} keys}
+%
+% The keys \mykey{resume} without assigned value and \mykey{resume*}
+% reset the \emph{counter} of the list according to the last value of the
+% counter of the previous list, the first one only the \emph{counter} and
+% the second one with the optional values filtered from the last
+% non-nested list in which the key \mykey{series} is not present. When
+% assigning value to \mykey{resume}|=|\mymarg{series name} it will use
+% the previous values of the list in which the \mykey{series}|=|\mymarg{series name} key was
+% executed.
+%
+% \begin{macro}{\@@_resume_counter_series:n, \@@_resume_counter:, \@@_resume_starred:}
+%   The function \cs{@@_resume_counter_series:n} will handle the argument
+%   passed to the \mykey{resume} key in the \myenv*{enumext} environment.
+%   If the key is passed \emph{without value} the function
+%   \cs{@@_resume_counter:} is executed which will set the counter
+%   according to the numbering of the last \myenv*{enumext} environment in
+%   which the \mykey{series}|=|\mymarg{series name} key is not present, if
+%   the \mykey{save-ans} key is active it will set the counter according to
+%   the value of the integer variable created by that key, otherwise it
+%   will verify that the \myvarenv{g__@@_series_\mymeta{series name}_tl}
+%   variable set by the \mykey{series} key exists, if so it will pass these
+%   keys to the \emph{first level} of the environment, otherwise it will
+%   return an error.
+% \iffalse
+%% Internal code for |resume| and |resume*| keys for |enumext|.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_resume_counter_series:n #1
+  {
+    \tl_if_empty:nTF {#1}
+      {
+        \@@_resume_counter:
+      }
+      {
+        \tl_if_exist:cTF { g_@@_series_ \tl_to_str:n {#1} _tl }
+          {
+            \@@_resume_counter:
+            \keys_set:nv { enumext / level-1 }
+              { g_@@_series_ \tl_to_str:n {#1} _tl }
+          }
+        { \msg_error:nnn { enumext } { unknown-series } {#1} }
+      }
+  }
+\cs_new_protected:Nn \@@_resume_counter:
+  {
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l_@@_standar_first_bool }
+      { \bool_if_p:N \l_@@_store_active_bool }
+      {
+        \int_gset:Nn \g_@@_resume_int
+          {
+            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
+          }
+      }
+    \int_gincr:N \g_@@_resume_int
+    \int_set_eq:NN \l_@@_start_i_int \g_@@_resume_int
+  }
+\cs_new_protected:Nn \@@_resume_starred:
+  {
+    \tl_if_empty:NF \g_@@_series_standar_default_tl
+      {
+        \@@_resume_counter:
+        \keys_set:nV { enumext / level-1 } \g_@@_series_standar_default_tl
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_resume_counter_series_vii:n, \@@_resume_counter_vii:, \@@_resume_starred_vii:}
+% \iffalse
+%% Internal code for |resume| and |resume*| keys for |enumext*|.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_resume_counter_series_vii:n #1
+  {
+    \tl_if_empty:nTF {#1}
+      {
+        \@@_resume_counter_vii:
+      }
+      {
+        \tl_if_exist:cTF { g_@@_series_ \tl_to_str:n {#1} _tl }
+          {
+            \@@_resume_counter_vii:
+            \keys_set:nv { enumext / enumext* }
+              { g_@@_series_ \tl_to_str:n {#1} _tl }
+          }
+        { \msg_error:nnn { enumext } { unknown-series } {#1} }
+      }
+  }
+\cs_new_protected:Nn \@@_resume_counter_vii:
+  {
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l_@@_starred_first_bool }
+      { \bool_if_p:N \l_@@_store_active_bool }
+      {
+        \int_gset:Nn \g_@@_resume_vii_int
+          {
+            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
+          }
+      }
+    \int_gincr:N \g_@@_resume_vii_int
+    \int_set_eq:NN \l_@@_start_vii_int \g_@@_resume_vii_int
+  }
+\cs_new_protected:Nn \@@_resume_starred_vii:
+  {
+    \tl_if_empty:NF \g_@@_series_starred_default_tl
+      {
+        \@@_resume_counter_vii:
+        \keys_set:nV { enumext / enumext* } \g_@@_series_starred_default_tl
       }
   }
 %    \end{macrocode}
@@ -8544,7 +8665,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_safe_exec:}
 %    First check the maximum nesting level for the \myenv*{enumext}
 %    environment and set the state of the booleans vars
-%    \myvarenv{l__@@_standar_bool} and \myvarenv{g__@@_standar_bool} to
+%    \myvarenv{l__@@_standar_bool} and \myvarenv{l__@@_standar_first_bool} to
 %    \emph{\enquote{true}}, the latter only if the environment is NOT nested
 %    in the \myenv*{enumext*} environment.
 % \iffalse
@@ -8557,6 +8678,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_compare:nNnT { \l_@@_level_int } > { 4 }
       { \msg_fatal:nn { enumext } { list-too-deep } }
     \bool_set_true:N \l_@@_standar_bool
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \g_@@_standar_bool }
+        { \int_compare_p:nNn { \l_@@_level_int } = { 1 } }
+        { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
+      }
+      {
+        \typeout{[[ON-FIRST-LEVEL-ENUMEXT-NOT-NESTED]]}
+        \bool_set_true:N \l_@@_standar_first_bool
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9485,7 +9616,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{The \env{enumext*} environment}\label{env:starred}
+% \subsection{The environment \env{enumext*}}\label{env:starred}
 %
 % Generating horizontal list environments is NOT as simple as standard
 % \hologo{LaTeX} list environments. The fundamental part of the code is adapted
@@ -9737,6 +9868,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_error:nn { enumext } { nested }
       }
     \bool_set_true:N \l_@@_starred_bool
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \g_@@_starred_bool }
+        { \int_compare_p:nNn { \l_@@_level_h_int } = { 1 } }
+        { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
+      }
+      {
+        \typeout{[[ON-FIRST-LEVEL-ENUMEXT*-NOT-NESTED]]}
+        \bool_set_true:N \l_@@_starred_first_bool
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11161,6 +11302,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
+% Messages used by \mykey{save-ans} key.
+%    \begin{macrocode}
+\msg_new:nnn { enumext } { save-ans-empty }
+  {
+    The ~ 'save-ans' ~ key ~ cannot ~ be ~ empty~ in ~ '#1'. ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { save-ans-nested }
+  {
+    The ~ 'save-ans' ~ key ~ cannot ~ be ~ used ~ in ~ nested ~ '#1'. ~ \msg_line_context:.
+  }
+%    \end{macrocode}
+%
 %  Messages used by the internal system to check answer used by
 % \mykey{check-ans} key.
 %    \begin{macrocode}
@@ -11237,6 +11390,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     The ~ environment ~ 'keyans' ~ can ~ only ~ be ~ in ~ the ~ first ~ level.
   }
 %    \end{macrocode}
+%
 % Messages used by \ics*{getkeyans} command.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { undefined-storage-anskey }
@@ -11244,6 +11398,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     Storage ~ named ~ '#1' ~ is ~ not ~ defined ~ \msg_line_context:.
   }
 %    \end{macrocode}
+%
 % Messages used by \ics*{miniright} command.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { missing-miniright }
