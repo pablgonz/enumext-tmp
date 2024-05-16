@@ -60,6 +60,7 @@
 %% Variables used by |resume| and |item-sym*| key implementation.
 \int_new:N \g__enumext_resume_int
 \int_new:N \g__enumext_resume_vii_int
+\tl_new:N  \l__enumext_resume_name_tl
 \tl_new:N  \g__enumext_item_symbol_tl
 \tl_new:N  \g__enumext_series_standar_default_tl
 \tl_new:N  \g__enumext_series_starred_default_tl
@@ -258,8 +259,8 @@
       }
     \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {##1} }
   }
-%% Function to check current environment for |enumext| and |enumext*|.
-\cs_new_protected:Nn \__enumext_current_env:
+%% Function to check/set current environment for |enumext| and |enumext*|.
+\cs_new_protected:Nn \__enumext_current_env_set_bool:
   {
     \str_case:en { \@currenvir }
       {
@@ -1559,13 +1560,11 @@
         { columns* } {}
         { save-key } {}
         { save-ans } {}
-        { columns-sep* } {}
-      }
+       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
 \cs_new_protected:Npn \__enumext_parse_series_resume:n #1
   {
-    \bool_set_false:N \l__enumext_resume_name_bool
     \str_if_empty:NTF \l__enumext_series_str
       {
         \__enumext_resume_series_default:n {#1}
@@ -1582,23 +1581,13 @@
   }
 \cs_new_protected:Npn \__enumext_resume_series_default:n #1
   {
-    \bool_lazy_all:nT
-      {
-        { \bool_if_p:N \g__enumext_standar_bool }
-        { \int_compare_p:nNn { \l__enumext_level_int } = { 1 } }
-        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
-      }
+    \bool_if:NT \l__enumext_standar_level_one_bool
       {
         %%\typeout{[[ON-LEVEL-ONE-ENUMEXT]]}
         \tl_gclear:N \g__enumext_series_standar_default_tl
         \tl_gset:Ne \g__enumext_series_standar_default_tl { \__enumext_filter_series:n {#1} }
       }
-    \bool_lazy_all:nT
-      {
-        { \bool_if_p:N \g__enumext_starred_bool }
-        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 1 } }
-        { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
-      }
+    \bool_if:NT \l__enumext_starred_level_one_bool
       {
         %%\typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
         \tl_gclear:N \g__enumext_series_starred_default_tl
@@ -1610,42 +1599,20 @@
   {
     \tl_if_empty:nTF {#1}
       {
-        %%\__enumext_resume_counter:
-        \__enumext_resume_counter_new:n {#1}
+        \__enumext_resume_counter:n { }
       }
       {
         \tl_if_exist:cTF { g__enumext_series_ \tl_to_str:n {#1} _tl }
           {
-            %\__enumext_resume_counter:
-            \__enumext_resume_counter_new:n {#1}
+            \__enumext_resume_counter:n {#1}
             \keys_set:nv { enumext / level-1 }
               { g__enumext_series_ \tl_to_str:n {#1} _tl }
-            %\__enumext_resume_counter_new:n {#1}
           }
         { \msg_error:nnn { enumext } { unknown-series } {#1} }
       }
   }
-\cs_new_protected:Nn \__enumext_resume_counter:
+\cs_new_protected:Npn \__enumext_resume_counter:n #1
   {
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_standar_level_one_bool }
-      { \bool_if_p:N \l__enumext_store_active_bool }
-      {
-        \int_gset:Nn \g__enumext_resume_int
-          {
-            \int_use:c { g__enumext_resume_ \l__enumext_store_name_tl _int }
-          }
-      }
-    \int_gincr:N \g__enumext_resume_int
-    \int_set_eq:NN \l__enumext_start_i_int \g__enumext_resume_int
-  }
-\bool_new:N \l__enumext_resume_name_bool
-\tl_new:N \l__enumext_resume_name_tl
-\cs_new_protected:Npn \__enumext_resume_counter_new:n #1
-  {
-   % Primero incremento
-   % \int_gincr:N \g__enumext_resume_int
-   % Ahora chequeo
     \tl_if_empty:nTF {#1}
       {
         \int_gincr:N \g__enumext_resume_int
@@ -1653,35 +1620,28 @@
       }
       {
         \tl_set:Nn \l__enumext_resume_name_tl {#1}
-        %\bool_set_true:N \l__enumext_resume_name_bool
-        %\int_if_exist:cF { g__enumext_series_ \tl_to_str:n {#1} _int }
-        % {
-        % }
         \int_set:Nn \l_tmpa_int
           {
             \int_use:c { g__enumext_series_ \l__enumext_resume_name_tl _int } + 1
           }
         \int_set_eq:NN \l__enumext_start_i_int \l_tmpa_int
       }
-    % Si está la llave save-ans
+    % Si está la llave save-ans=activa
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_standar_level_one_bool }
       { \bool_if_p:N \l__enumext_store_active_bool }
       {
-        %\int_gset:Nn \g__enumext_resume_int
         \int_set:Nn \l__enumext_start_i_int
           {
             \int_use:c { g__enumext_resume_ \l__enumext_store_name_tl _int } + 1
           }
       }
-    %\int_gincr:N \g__enumext_resume_int
-    %\int_set_eq:NN \l__enumext_start_i_int \g__enumext_resume_int
   }
 \cs_new_protected:Nn \__enumext_resume_starred:
   {
     \tl_if_empty:NF \g__enumext_series_standar_default_tl
       {
-        \__enumext_resume_counter:
+        \__enumext_resume_counter:n { }
         \keys_set:nV { enumext / level-1 } \g__enumext_series_standar_default_tl
       }
   }
@@ -2706,7 +2666,6 @@
 %% Definition of |enumext| environment.
 \NewDocumentEnvironment{enumext}{ O{} }
   {
-    \__enumext_current_env:
     \__enumext_safe_exec:
     \__enumext_parse_keys:n {#1}
     \__enumext_before_list:
@@ -2727,6 +2686,7 @@
 %% Increment deep-level for |enumext|.
 \cs_new_protected:Nn \__enumext_safe_exec:
   {
+    \__enumext_current_env_set_bool:
     \int_incr:N \l__enumext_level_int
     \int_compare:nNnT { \l__enumext_level_int } > { 4 }
       { \msg_fatal:nn { enumext } { list-too-deep } }
@@ -2920,11 +2880,10 @@
     \__enumext_after_stop_list:
     \__enumext_vspace_below:
     \bool_set_false:N \l__enumext_standar_bool
-    \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
     % Quizas aquí pueda incrementar directo y luego pasar todo con \g__enumext_resume_int
     \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
       {
-        \int_gset_eq:cN { g__enumext_resume_ \l__enumext_store_name_tl _int } \g__enumext_resume_int
+        \int_gset_eq:cN { g__enumext_resume_ \l__enumext_store_name_tl _int } \value{enumXi}
       }
     % Si se ejecuta la llave series, establecemos el valor solo cuando se ejecuta
     \tl_if_empty:NF \l__enumext_series_str
@@ -2932,9 +2891,18 @@
         \int_gset_eq:cN { g__enumext_series_ \l__enumext_series_str _int } \value{enumXi}
       }
     % Si ejecutamos resume=name (\l__enumext_resume_name_tl), la variable entera ya está y la guardamos
-    \int_if_exist:cT { g__enumext_series_ \l__enumext_resume_name_tl _int }
+    \tl_if_empty:NTF \l__enumext_resume_name_tl
       {
-        \int_gset_eq:cN { g__enumext_series_ \l__enumext_resume_name_tl _int } \value{enumXi}
+        \str_if_empty:NT \l__enumext_series_str
+          {
+             \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
+          }
+      }
+      {
+        \int_if_exist:cT { g__enumext_series_ \l__enumext_resume_name_tl _int }
+          {
+            \int_gset_eq:cN { g__enumext_series_ \l__enumext_resume_name_tl _int } \value{enumXi}
+          }
       }
   }
 %% Execute |check-ans| key out of |enumext|.
@@ -3313,7 +3281,6 @@
 %% Define |enumext*|
 \NewDocumentEnvironment{enumext*}{ o }
   {
-    \__enumext_current_env:
     \__enumext_safe_exec_vii:
     \__enumext_parse_keys_vii:n {#1}
     \__enumext_before_list_vii:
@@ -3338,6 +3305,7 @@
 %% Test deep-level for |enumext*| and set bool vars.
 \cs_new_protected:Nn \__enumext_safe_exec_vii:
   {
+    \__enumext_current_env_set_bool:
     \int_incr:N \l__enumext_level_h_int
     \int_compare:nNnT { \l__enumext_level_h_int } > { 1 }
       {
