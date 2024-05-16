@@ -3576,8 +3576,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{\l_@@_level_int, \l_@@_level_h_int, \l_@@_keyans_level_int,
 %                       \l_@@_keyans_level_h_int, \l_@@_keyans_pic_level_int,
-%                       \l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_first_bool,
-%                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_first_bool,
+%                       \l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_level_one_bool,
+%                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_level_one_bool,
 %                       \l_@@_keyans_env_bool,}
 %
 %    Integer variables will control the nesting levels of the environments
@@ -3598,10 +3598,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N  \l_@@_keyans_pic_level_int
 \bool_new:N \l_@@_starred_bool
 \bool_new:N \g_@@_starred_bool
-\bool_new:N \l_@@_starred_first_bool
+\bool_new:N \l_@@_starred_level_one_bool
 \bool_new:N \l_@@_standar_bool
 \bool_new:N \g_@@_standar_bool
-\bool_new:N \l_@@_standar_first_bool
+\bool_new:N \l_@@_standar_level_one_bool
 \bool_new:N \l_@@_keyans_env_bool
 %    \end{macrocode}
 % \end{variable}
@@ -6507,7 +6507,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_storing_standar:
   {
-    \bool_if:NTF \l_@@_standar_first_bool
+    \bool_if:NTF \l_@@_standar_level_one_bool
       {
         \@@_storing_exec:
       }
@@ -6517,7 +6517,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_storing_starred:
   {
-    \bool_if:NTF \l_@@_starred_first_bool
+    \bool_if:NTF \l_@@_starred_level_one_bool
       {
         \@@_storing_exec:
       }
@@ -6617,6 +6617,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_series_resume:n #1
   {
+    \bool_set_false:N \l_@@_resume_name_bool
     \str_if_empty:NTF \l_@@_series_str
       {
         \@@_resume_series_default:n {#1}
@@ -6625,6 +6626,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_gclear_new:c { g_@@_series_ \l_@@_series_str _tl }
         \tl_gset:ce { g_@@_series_ \l_@@_series_str _tl }
           { \@@_filter_series:n {#1} }
+        \int_if_exist:cF { g_@@_series_ \l_@@_series_str _int }
+          {
+            \int_new:c { g_@@_series_ \l_@@_series_str _int }
+          }
       }
   }
 %    \end{macrocode}
@@ -6646,7 +6651,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
       }
       {
-        \typeout{[[ON-LEVEL-ONE-ENUMEXT]]}
+        %%\typeout{[[ON-LEVEL-ONE-ENUMEXT]]}
         \tl_gclear:N \g_@@_series_standar_default_tl
         \tl_gset:Ne \g_@@_series_standar_default_tl { \@@_filter_series:n {#1} }
       }
@@ -6657,7 +6662,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
       }
       {
-        \typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
+        %%\typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
         \tl_gclear:N \g_@@_series_starred_default_tl
         \tl_gset:Ne \g_@@_series_starred_default_tl { \@@_filter_series:n {#1} }
       }
@@ -6697,14 +6702,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_if_empty:nTF {#1}
       {
-        \@@_resume_counter:
+        %%\@@_resume_counter:
+        \@@_resume_counter_new:n {#1}
       }
       {
         \tl_if_exist:cTF { g_@@_series_ \tl_to_str:n {#1} _tl }
           {
-            \@@_resume_counter:
+            %\@@_resume_counter:
+            \@@_resume_counter_new:n {#1}
             \keys_set:nv { enumext / level-1 }
               { g_@@_series_ \tl_to_str:n {#1} _tl }
+            %\@@_resume_counter_new:n {#1}
           }
         { \msg_error:nnn { enumext } { unknown-series } {#1} }
       }
@@ -6712,7 +6720,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_resume_counter:
   {
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_standar_first_bool }
+      { \bool_if_p:N \l_@@_standar_level_one_bool }
       { \bool_if_p:N \l_@@_store_active_bool }
       {
         \int_gset:Nn \g_@@_resume_int
@@ -6722,6 +6730,44 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \int_gincr:N \g_@@_resume_int
     \int_set_eq:NN \l_@@_start_i_int \g_@@_resume_int
+  }
+\bool_new:N \l_@@_resume_name_bool
+\tl_new:N \l_@@_resume_name_tl
+\cs_new_protected:Npn \@@_resume_counter_new:n #1
+  {
+   % Primero incremento
+   % \int_gincr:N \g_@@_resume_int
+   % Ahora chequeo
+    \tl_if_empty:nTF {#1}
+      {
+        \int_gincr:N \g_@@_resume_int
+        \int_set_eq:NN \l_@@_start_i_int \g_@@_resume_int
+      }
+      {
+        \tl_set:Nn \l_@@_resume_name_tl {#1}
+        %\bool_set_true:N \l_@@_resume_name_bool
+        %\int_if_exist:cF { g_@@_series_ \tl_to_str:n {#1} _int }
+        % {
+        % }
+        \int_set:Nn \l_tmpa_int
+          {
+            \int_use:c { g_@@_series_ \l_@@_resume_name_tl _int } + 1
+          }
+        \int_set_eq:NN \l_@@_start_i_int \l_tmpa_int
+      }
+    % Si está la llave save-ans
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l_@@_standar_level_one_bool }
+      { \bool_if_p:N \l_@@_store_active_bool }
+      {
+        %\int_gset:Nn \g_@@_resume_int
+        \int_set:Nn \l_@@_start_i_int
+          {
+            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int } + 1
+          }
+      }
+    %\int_gincr:N \g_@@_resume_int
+    %\int_set_eq:NN \l_@@_start_i_int \g_@@_resume_int
   }
 \cs_new_protected:Nn \@@_resume_starred:
   {
@@ -6758,7 +6804,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_resume_counter_vii:
   {
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_starred_first_bool }
+      { \bool_if_p:N \l_@@_starred_level_one_bool }
       { \bool_if_p:N \l_@@_store_active_bool }
       {
         \int_gset:Nn \g_@@_resume_vii_int
@@ -8686,7 +8732,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       {
         \typeout{[[ON-FIRST-LEVEL-ENUMEXT-NOT-NESTED]]}
-        \bool_set_true:N \l_@@_standar_first_bool
+        \bool_set_true:N \l_@@_standar_level_one_bool
       }
   }
 %    \end{macrocode}
@@ -9007,11 +9053,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
     \bool_set_false:N \l_@@_standar_bool
     \int_gset_eq:NN \g_@@_resume_int \value{enumXi}
+    % Quizas aquí pueda incrementar directo y luego pasar todo con \g_@@_resume_int
     \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
       {
-        \int_gset_eq:cN
-          { g_@@_resume_ \l_@@_store_name_tl _int }
-          { \value{enumXi} }
+        \int_gset_eq:cN { g_@@_resume_ \l_@@_store_name_tl _int } \g_@@_resume_int
+      }
+    % Si se ejecuta la llave series, establecemos el valor solo cuando se ejecuta
+    \tl_if_empty:NF \l_@@_series_str
+      {
+        \int_gset_eq:cN { g_@@_series_ \l_@@_series_str _int } \value{enumXi}
+      }
+    % Si ejecutamos resume=name (\l_@@_resume_name_tl), la variable entera ya está y la guardamos
+    \int_if_exist:cT { g_@@_series_ \l_@@_resume_name_tl _int }
+      {
+        \int_gset_eq:cN { g_@@_series_ \l_@@_resume_name_tl _int } \value{enumXi}
       }
   }
 %    \end{macrocode}
@@ -9038,7 +9093,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%
 %
 % \subsection{The environment \env{keyans}}\label{env:keyans}
 %
@@ -9876,7 +9930,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       {
         \typeout{[[ON-FIRST-LEVEL-ENUMEXT*-NOT-NESTED]]}
-        \bool_set_true:N \l_@@_starred_first_bool
+        \bool_set_true:N \l_@@_starred_level_one_bool
       }
   }
 %    \end{macrocode}

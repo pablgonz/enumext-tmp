@@ -6,21 +6,21 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%%
+%% 
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%%
+%% 
 %%  https://www.latex-project.org/lppl.txt
-%%
+%% 
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%%
+%% 
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%%
+%% 
 %% This work consists of the files enumext.dtx and enumext.sty.
-%%
+%% 
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
@@ -46,10 +46,10 @@
 \int_new:N  \l__enumext_keyans_pic_level_int
 \bool_new:N \l__enumext_starred_bool
 \bool_new:N \g__enumext_starred_bool
-\bool_new:N \l__enumext_starred_first_bool
+\bool_new:N \l__enumext_starred_level_one_bool
 \bool_new:N \l__enumext_standar_bool
 \bool_new:N \g__enumext_standar_bool
-\bool_new:N \l__enumext_standar_first_bool
+\bool_new:N \l__enumext_standar_level_one_bool
 \bool_new:N \l__enumext_keyans_env_bool
 %% Variable for counters
 \cs_set_protected:Npn \__enumext_tmp:n #1
@@ -1496,7 +1496,7 @@
   }
 \cs_new_protected:Nn \__enumext_storing_standar:
   {
-    \bool_if:NTF \l__enumext_standar_first_bool
+    \bool_if:NTF \l__enumext_standar_level_one_bool
       {
         \__enumext_storing_exec:
       }
@@ -1506,7 +1506,7 @@
   }
 \cs_new_protected:Nn \__enumext_storing_starred:
   {
-    \bool_if:NTF \l__enumext_starred_first_bool
+    \bool_if:NTF \l__enumext_starred_level_one_bool
       {
         \__enumext_storing_exec:
       }
@@ -1559,12 +1559,13 @@
         { columns* } {}
         { save-key } {}
         { save-ans } {}
-        { start } {}
+        { columns-sep* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
 \cs_new_protected:Npn \__enumext_parse_series_resume:n #1
   {
+    \bool_set_false:N \l__enumext_resume_name_bool
     \str_if_empty:NTF \l__enumext_series_str
       {
         \__enumext_resume_series_default:n {#1}
@@ -1573,6 +1574,10 @@
         \tl_gclear_new:c { g__enumext_series_ \l__enumext_series_str _tl }
         \tl_gset:ce { g__enumext_series_ \l__enumext_series_str _tl }
           { \__enumext_filter_series:n {#1} }
+        \int_if_exist:cF { g__enumext_series_ \l__enumext_series_str _int }
+          {
+            \int_new:c { g__enumext_series_ \l__enumext_series_str _int }
+          }
       }
   }
 \cs_new_protected:Npn \__enumext_resume_series_default:n #1
@@ -1584,7 +1589,7 @@
         { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
       }
       {
-        \typeout{[[ON-LEVEL-ONE-ENUMEXT]]}
+        %%\typeout{[[ON-LEVEL-ONE-ENUMEXT]]}
         \tl_gclear:N \g__enumext_series_standar_default_tl
         \tl_gset:Ne \g__enumext_series_standar_default_tl { \__enumext_filter_series:n {#1} }
       }
@@ -1595,7 +1600,7 @@
         { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
       }
       {
-        \typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
+        %%\typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
         \tl_gclear:N \g__enumext_series_starred_default_tl
         \tl_gset:Ne \g__enumext_series_starred_default_tl { \__enumext_filter_series:n {#1} }
       }
@@ -1605,14 +1610,17 @@
   {
     \tl_if_empty:nTF {#1}
       {
-        \__enumext_resume_counter:
+        %%\__enumext_resume_counter:
+        \__enumext_resume_counter_new:n {#1}
       }
       {
         \tl_if_exist:cTF { g__enumext_series_ \tl_to_str:n {#1} _tl }
           {
+            %\__enumext_resume_counter:
+            \__enumext_resume_counter_new:n {#1}
             \keys_set:nv { enumext / level-1 }
               { g__enumext_series_ \tl_to_str:n {#1} _tl }
-            \__enumext_resume_counter:
+            %\__enumext_resume_counter_new:n {#1}
           }
         { \msg_error:nnn { enumext } { unknown-series } {#1} }
       }
@@ -1620,7 +1628,7 @@
 \cs_new_protected:Nn \__enumext_resume_counter:
   {
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_standar_first_bool }
+      { \bool_if_p:N \l__enumext_standar_level_one_bool }
       { \bool_if_p:N \l__enumext_store_active_bool }
       {
         \int_gset:Nn \g__enumext_resume_int
@@ -1630,14 +1638,51 @@
       }
     \int_gincr:N \g__enumext_resume_int
     \int_set_eq:NN \l__enumext_start_i_int \g__enumext_resume_int
-    %\int_incr:N \l__enumext_start_i_int
+  }
+\bool_new:N \l__enumext_resume_name_bool
+\tl_new:N \l__enumext_resume_name_tl
+\cs_new_protected:Npn \__enumext_resume_counter_new:n #1
+  {
+   % Primero incremento
+   % \int_gincr:N \g__enumext_resume_int
+   % Ahora chequeo
+    \tl_if_empty:nTF {#1}
+      {
+        \int_gincr:N \g__enumext_resume_int
+        \int_set_eq:NN \l__enumext_start_i_int \g__enumext_resume_int
+      }
+      {
+        \tl_set:Nn \l__enumext_resume_name_tl {#1}
+        %\bool_set_true:N \l__enumext_resume_name_bool
+        %\int_if_exist:cF { g__enumext_series_ \tl_to_str:n {#1} _int }
+        % {
+        % }
+        \int_set:Nn \l_tmpa_int
+          {
+            \int_use:c { g__enumext_series_ \l__enumext_resume_name_tl _int } + 1
+          }
+        \int_set_eq:NN \l__enumext_start_i_int \l_tmpa_int
+      }
+    % Si está la llave save-ans
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l__enumext_standar_level_one_bool }
+      { \bool_if_p:N \l__enumext_store_active_bool }
+      {
+        %\int_gset:Nn \g__enumext_resume_int
+        \int_set:Nn \l__enumext_start_i_int
+          {
+            \int_use:c { g__enumext_resume_ \l__enumext_store_name_tl _int } + 1
+          }
+      }
+    %\int_gincr:N \g__enumext_resume_int
+    %\int_set_eq:NN \l__enumext_start_i_int \g__enumext_resume_int
   }
 \cs_new_protected:Nn \__enumext_resume_starred:
   {
     \tl_if_empty:NF \g__enumext_series_standar_default_tl
       {
-        \keys_set:nV { enumext / level-1 } \g__enumext_series_standar_default_tl
         \__enumext_resume_counter:
+        \keys_set:nV { enumext / level-1 } \g__enumext_series_standar_default_tl
       }
   }
 %% Internal code for |resume| and |resume*| keys for |enumext*|.
@@ -1660,7 +1705,7 @@
 \cs_new_protected:Nn \__enumext_resume_counter_vii:
   {
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_starred_first_bool }
+      { \bool_if_p:N \l__enumext_starred_level_one_bool }
       { \bool_if_p:N \l__enumext_store_active_bool }
       {
         \int_gset:Nn \g__enumext_resume_vii_int
@@ -2694,7 +2739,7 @@
       }
       {
         \typeout{[[ON-FIRST-LEVEL-ENUMEXT-NOT-NESTED]]}
-        \bool_set_true:N \l__enumext_standar_first_bool
+        \bool_set_true:N \l__enumext_standar_level_one_bool
       }
   }
 %% Parse |key=val| and store keys for \printkeyans.
@@ -2875,13 +2920,21 @@
     \__enumext_after_stop_list:
     \__enumext_vspace_below:
     \bool_set_false:N \l__enumext_standar_bool
-    \str_if_empty:NT \l__enumext_series_str
-      {
-        \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
-      }
+    \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
+    % Quizas aquí pueda incrementar directo y luego pasar todo con \g__enumext_resume_int
     \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
       {
-        \int_gset_eq:cN { g__enumext_resume_ \l__enumext_store_name_tl _int } \value{enumXi}
+        \int_gset_eq:cN { g__enumext_resume_ \l__enumext_store_name_tl _int } \g__enumext_resume_int
+      }
+    % Si se ejecuta la llave series, establecemos el valor solo cuando se ejecuta
+    \tl_if_empty:NF \l__enumext_series_str
+      {
+        \int_gset_eq:cN { g__enumext_series_ \l__enumext_series_str _int } \value{enumXi}
+      }
+    % Si ejecutamos resume=name (\l__enumext_resume_name_tl), la variable entera ya está y la guardamos
+    \int_if_exist:cT { g__enumext_series_ \l__enumext_resume_name_tl _int }
+      {
+        \int_gset_eq:cN { g__enumext_series_ \l__enumext_resume_name_tl _int } \value{enumXi}
       }
   }
 %% Execute |check-ans| key out of |enumext|.
@@ -3299,7 +3352,7 @@
       }
       {
         \typeout{[[ON-FIRST-LEVEL-ENUMEXT*-NOT-NESTED]]}
-        \bool_set_true:N \l__enumext_starred_first_bool
+        \bool_set_true:N \l__enumext_starred_level_one_bool
       }
   }
 %% Parse |key=val| and store keys for |enumext*|.
@@ -4266,6 +4319,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%%
+%% 
 %%
 %% End of file `enumext.sty'.
