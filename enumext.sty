@@ -58,12 +58,13 @@
   }
 \clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
 %% Variables used by |resume| and |item-sym*| key implementation.
-\int_new:N \g__enumext_resume_int
-\int_new:N \g__enumext_resume_vii_int
-\tl_new:N  \l__enumext_resume_name_tl
-\tl_new:N  \g__enumext_item_symbol_tl
-\tl_new:N  \g__enumext_standar_series_tl
-\tl_new:N  \g__enumext_starred_series_tl
+\int_new:N  \g__enumext_resume_int
+\int_new:N  \g__enumext_resume_vii_int
+\tl_new:N   \l__enumext_resume_name_tl
+\bool_new:N \l__enumext_resume_name_bool
+\tl_new:N   \g__enumext_item_symbol_tl
+\tl_new:N   \g__enumext_standar_series_tl
+\tl_new:N   \g__enumext_starred_series_tl
 %% Variables used by |label|, |ref| and |widest| keys.
 \dim_new:N \l__enumext_current_widest_dim
 \tl_new:N  \g__enumext_counter_styles_tl
@@ -1569,7 +1570,10 @@
   {
     \str_if_empty:NTF \l__enumext_series_str
       {
-        \__enumext_resume_last:n {#1}
+        \bool_if:NF \l__enumext_resume_name_bool
+          {
+            \__enumext_resume_last:n {#1}
+          }
       }
       {
         \tl_gclear_new:c { g__enumext_series_ \l__enumext_series_str _tl }
@@ -1623,36 +1627,49 @@
   }
 \cs_new_protected:Npn \__enumext_resume_counter:n #1
   {
-    \tl_if_empty:nTF {#1}
+    \bool_set_true:N \l__enumext_resume_name_bool
+    \tl_set:Nn \l__enumext_resume_name_tl {#1}
+    \tl_if_empty:NTF \l__enumext_resume_name_tl
       {
-        \bool_if:NT \g__enumext_standar_bool
-          {
-            \int_gincr:N \g__enumext_resume_int
-            \int_set_eq:NN \l__enumext_start_i_int \g__enumext_resume_int
-          }
-        \bool_if:NT \g__enumext_starred_bool
-          {
-            \int_gincr:N \g__enumext_resume_vii_int
-            \int_set_eq:NN \l__enumext_start_vii_int \g__enumext_resume_vii_int
-          }
+        \__enumext_resume_counter:
       }
       {
-        \tl_set:Nn \l__enumext_resume_name_tl {#1}
-        \bool_if:NT \g__enumext_standar_bool
+        \__enumext_resume_counter_name:
+      }
+    \__enumext_resume_counter_store:
+  }
+\cs_new_protected:Nn \__enumext_resume_counter:
+  {
+    \bool_if:NT \g__enumext_standar_bool
+      {
+        \int_gincr:N \g__enumext_resume_int
+        \int_set_eq:NN \l__enumext_start_i_int \g__enumext_resume_int
+      }
+    \bool_if:NT \g__enumext_starred_bool
+      {
+        \int_gincr:N \g__enumext_resume_vii_int
+        \int_set_eq:NN \l__enumext_start_vii_int \g__enumext_resume_vii_int
+      }
+  }
+\cs_new_protected:Nn \__enumext_resume_counter_name:
+  {
+    \bool_if:NT \g__enumext_standar_bool
+      {
+        \int_set:Nn \l__enumext_start_i_int
           {
-            \int_set:Nn \l__enumext_start_i_int
-              {
-                \int_use:c { g__enumext_series_ \l__enumext_resume_name_tl _int } + 1
-              }
-          }
-        \bool_if:NT \g__enumext_starred_bool
-          {
-            \int_set:Nn \l__enumext_start_vii_int
-              {
-                \int_use:c { g__enumext_series_ \l__enumext_resume_name_tl _int } + 1
-              }
+            \int_use:c { g__enumext_series_ \l__enumext_resume_name_tl _int } + 1
           }
       }
+    \bool_if:NT \g__enumext_starred_bool
+      {
+        \int_set:Nn \l__enumext_start_vii_int
+          {
+            \int_use:c { g__enumext_series_ \l__enumext_resume_name_tl _int } + 1
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_resume_counter_store:
+  {
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_standar_level_one_bool }
       { \bool_if_p:N \l__enumext_store_active_bool }
@@ -1684,7 +1701,7 @@
       }
     \bool_if:NT \g__enumext_starred_bool
       {
-        \tl_if_empty:NF \g__enumext_standar_series_tl
+        \tl_if_empty:NF \g__enumext_starred_series_tl
           {
             \__enumext_resume_counter:n { }
             \keys_set:nV { enumext / enumext* } \g__enumext_starred_series_tl

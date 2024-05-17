@@ -477,8 +477,8 @@ After enumext.
 \section{KEYANS}
 
 Before
-\setenumext[keyans]{show-ans}
-\begin{enumext}[nosep,itemsep=0pt,align=center,save-ans=mytest,check-ans=true,columns=2,save-ref,widest=99,] %show-ans
+\setenumext[keyans]{show-ans=true}
+\begin{enumext}[nosep,itemsep=0pt,align=center,save-ans=mytest,check-ans=true,columns=2,save-ref=true,widest=99,] %show-ans
 \item Fourth type of question, a problem with numerical response \anskey{$\sqrt{2}$} % 4
 
 \item* Fourth type of question, a problem with numerical response \anskey{$\sqrt{3}$} % 5
@@ -595,7 +595,7 @@ Before
 \section{Common layout for images or tables XXX}
 
 
-\begin{enumext}[save-ans=new,show-ans,check-ans, save-ref,nosep,,ref={[\S\Roman*]},before=\setenumext[keyans]{font=\small,list-offset=0cm,wrap-label={\textcolor{gray}{##1}},nosep}]
+\begin{enumext}[save-ans=new,show-ans=true,check-ans=true, save-ref=true,nosep,,ref={[\S\Roman*]},before=\setenumext[keyans]{font=\small,list-offset=0cm,wrap-label={\textcolor{gray}{##1}},nosep}]
 
 \item Third type of questions
 
@@ -697,7 +697,7 @@ The ref \ref{HOLA} to \ref{new:6} and the answer is \getkeyans{new:6}\par
 
 \section{List of exercises}
 
-\begin{enumext}[wrap-label={\tikz[scale=0.4]\duck[signpost=\scalebox{0.6}{#1}];},save-ans=Worksheet,check-ans,columns=2,nosep,save-ref]%
+\begin{enumext}[wrap-label={\tikz[scale=0.4]\duck[signpost=\scalebox{0.6}{#1}];},save-ans=Worksheet,check-ans=true,columns=2,nosep,save-ref=true]%
 \item Factor $x^{2}-2x+1$  \anskey{$\left(x-1\right)^{2}$}
 \item Factor $3x+3y+3z$    \anskey{$3(x+y+z)$}
 \item True False
@@ -726,7 +726,7 @@ The answer of exercises \ref{Worksheet:8} is  \getkeyans{Worksheet:8}
 \printkeyans{Worksheet}
 
 
-\begin{enumext}[wrap-label={\tikz[scale=0.4]\duck[signpost=\scalebox{0.6}{#1}];},save-ans=Worksheet,resume,check-ans,columns=2,nosep,save-ref]%
+\begin{enumext}[wrap-label={\tikz[scale=0.4]\duck[signpost=\scalebox{0.6}{#1}];},save-ans=Worksheet,resume,check-ans=true,columns=2,nosep,save-ref=true]%
 \item Factor $x^{2}-2x+1$  \anskey{$\left(x-1\right)^{2}$}
 \item Factor $3x+3y+3z$    \anskey{$3(x+y+z)$}
 \item True False
@@ -750,7 +750,7 @@ The answer of exercises \ref{Worksheet:8} is  \getkeyans{Worksheet:8}
 
 \section{continue}
 
-\begin{enumext}[save-ans=mytest,resume, check-ans,save-ref]
+\begin{enumext}[save-ans=mytest,resume, check-ans=true,save-ref=true]
 
 \item Third type of questions XXXX
 
