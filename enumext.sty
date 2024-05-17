@@ -1451,26 +1451,16 @@
           { \vspace { \l__enumext_vspace_below_viii_skip } }
       }
   }
-%% Add |save-ans|, |resume*|,  |resume| and |series| keys only on first level.
+%% Add |save-ans| key only on first level off |enumext| and |enumext*|.
 \keys_define:nn { enumext / level-1 }
   {
     save-ans .code:n = \__enumext_storing_set:n {#1},
     save-ans .value_required:n = true,
-    series   .str_set:N = \l__enumext_series_str,
-    series   .value_required:n = true,
-    resume   .code:n = \__enumext_resume_series:n {#1},
-    resume*  .code:n = \__enumext_resume_starred:,
-    resume*  .value_forbidden:n = true,
   }
 \keys_define:nn { enumext / enumext* }
   {
     save-ans .code:n = \__enumext_storing_set_vii:n {#1},
     save-ans .value_required:n = true,
-    series   .str_set:N = \l__enumext_series_str,
-    series   .value_required:n = true,
-    resume   .code:n = \__enumext_resume_counter_series_vii:n {#1},
-    resume*  .code:n = \__enumext_resume_starred_vii:,
-    resume*  .value_forbidden:n = true,
   }
 %% Function to activate ALL "storing" (and |check-ans|, |resume|) used by |save-ans| key.
 \cs_new_protected:Npn \__enumext_storing_set:n #1
@@ -1532,6 +1522,19 @@
         \int_new:c { g__enumext_resume_ \l__enumext_store_name_tl _int }
       }
   }
+%% Add |series|, |resume| and |resume*| keys only on first level off |enumext| and |enumext*|.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        series  .str_set:N = \l__enumext_series_str,
+        series  .value_required:n = true,
+        resume  .code:n = \__enumext_resume_series:n {##1},
+        resume* .code:n = \__enumext_resume_starred:,
+        resume* .value_forbidden:n = true,
+     }
+  }
+\clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
 %% Internal function used by |series| key.
 \cs_new:Npn \__enumext_filter_series:n #1
   {
@@ -1688,43 +1691,55 @@
           }
       }
   }
-%% Internal code for |resume| and |resume*| keys for |enumext*|.
-\cs_new_protected:Npn \__enumext_resume_counter_series_vii:n #1
+\cs_new_protected:Nn \__enumext_resume_counter_set:
   {
-    \tl_if_empty:nTF {#1}
+    \bool_if:NT \g__enumext_standar_bool
       {
-        \__enumext_resume_counter_vii:
-      }
-      {
-        \tl_if_exist:cTF { g__enumext_series_ \tl_to_str:n {#1} _tl }
+        \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
           {
-            \__enumext_resume_counter_vii:
-            \keys_set:nv { enumext / enumext* }
-              { g__enumext_series_ \tl_to_str:n {#1} _tl }
+            \int_gset_eq:cN { g__enumext_resume_ \l__enumext_store_name_tl _int } \value{enumXi}
           }
-        { \msg_error:nnn { enumext } { unknown-series } {#1} }
-      }
-  }
-\cs_new_protected:Nn \__enumext_resume_counter_vii:
-  {
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_starred_level_one_bool }
-      { \bool_if_p:N \l__enumext_store_active_bool }
-      {
-        \int_gset:Nn \g__enumext_resume_vii_int
+        \tl_if_empty:NF \l__enumext_series_str
           {
-            \int_use:c { g__enumext_resume_ \l__enumext_store_name_tl _int }
+            \int_gset_eq:cN { g__enumext_series_ \l__enumext_series_str _int } \value{enumXi}
+          }
+        \tl_if_empty:NTF \l__enumext_resume_name_tl
+          {
+            \str_if_empty:NT \l__enumext_series_str
+              {
+                 \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
+              }
+          }
+          {
+            \int_if_exist:cT { g__enumext_series_ \l__enumext_resume_name_tl _int }
+              {
+                \int_gset_eq:cN { g__enumext_series_ \l__enumext_resume_name_tl _int } \value{enumXi}
+              }
           }
       }
-    \int_gincr:N \g__enumext_resume_vii_int
-    \int_set_eq:NN \l__enumext_start_vii_int \g__enumext_resume_vii_int
-  }
-\cs_new_protected:Nn \__enumext_resume_starred_vii:
-  {
-    \tl_if_empty:NF \g__enumext_starred_series_tl
+    \bool_if:NT \g__enumext_starred_bool
       {
-        \__enumext_resume_counter_vii:
-        \keys_set:nV { enumext / enumext* } \g__enumext_starred_series_tl
+        \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
+          {
+            \int_gset_eq:cN { g__enumext_resume_ \l__enumext_store_name_tl _int } \value{enumXvii}
+          }
+        \tl_if_empty:NF \l__enumext_series_str
+          {
+            \int_gset_eq:cN { g__enumext_series_ \l__enumext_series_str _int } \value{enumXvii}
+          }
+        \tl_if_empty:NTF \l__enumext_resume_name_tl
+          {
+            \str_if_empty:NT \l__enumext_series_str
+              {
+                 \int_gset_eq:NN \g__enumext_resume_vii_int \value{enumXvii}
+              }
+          }
+          {
+            \int_if_exist:cT { g__enumext_series_ \l__enumext_resume_name_tl _int }
+              {
+                \int_gset_eq:cN { g__enumext_series_ \l__enumext_resume_name_tl _int } \value{enumXvii}
+              }
+          }
       }
   }
 %% Add |check-ans| and |no-store| keys.
@@ -2923,30 +2938,7 @@
     \__enumext_after_stop_list:
     \__enumext_vspace_below:
     \bool_set_false:N \l__enumext_standar_bool
-    % Quizas aquí pueda incrementar directo y luego pasar todo con \g__enumext_resume_int
-    \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
-      {
-        \int_gset_eq:cN { g__enumext_resume_ \l__enumext_store_name_tl _int } \value{enumXi}
-      }
-    % Si se ejecuta la llave series, establecemos el valor solo cuando se ejecuta
-    \tl_if_empty:NF \l__enumext_series_str
-      {
-        \int_gset_eq:cN { g__enumext_series_ \l__enumext_series_str _int } \value{enumXi}
-      }
-    % Si ejecutamos resume=name (\l__enumext_resume_name_tl), la variable entera ya está y la guardamos
-    \tl_if_empty:NTF \l__enumext_resume_name_tl
-      {
-        \str_if_empty:NT \l__enumext_series_str
-          {
-             \int_gset_eq:NN \g__enumext_resume_int \value{enumXi}
-          }
-      }
-      {
-        \int_if_exist:cT { g__enumext_series_ \l__enumext_resume_name_tl _int }
-          {
-            \int_gset_eq:cN { g__enumext_series_ \l__enumext_resume_name_tl _int } \value{enumXi}
-          }
-      }
+    \__enumext_resume_counter_set:
   }
 %% Execute |check-ans| key out of |enumext|.
 \__enumext_after_env:nn {enumext}
@@ -3320,6 +3312,7 @@
     \bool_gset_true:N \g__enumext_minipage_center_vii_bool
     \tl_gclear:N \g__enumext_miniright_code_vii_tl
     \dim_gzero:N \g__enumext_minipage_right_vii_dim
+    \bool_gset_false:N \g__enumext_starred_bool
   }
 %% Define |enumext*|
 \NewDocumentEnvironment{enumext*}{ o }
@@ -3422,22 +3415,9 @@
     \__enumext_stop_mini_vii:
     \__enumext_after_stop_list_vii:
     \__enumext_vspace_below_vii:
-    \int_gset_eq:NN \g__enumext_resume_vii_int \value{enumXvii}
-    \int_if_exist:cT { g__enumext_resume_ \l__enumext_store_name_tl _int }
-      {
-        \int_gset_eq:cN
-          { g__enumext_resume_ \l__enumext_store_name_tl _int }
-          { \value{enumXvii} }
-      }
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \g__enumext_starred_bool }
-      { \bool_if_p:N \l__enumext_check_ans_bool }
-      {
-        \bool_gset_true:N \g__enumext_check_ans_show_h_bool
-        \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
-      }
     %\bool_gset_false:N \g__enumext_starred_bool
     \bool_set_false:N \l__enumext_starred_bool
+    \__enumext_resume_counter_set:
   }
 \cs_new_protected:Nn \__enumext_start_store_level_vii:
   {

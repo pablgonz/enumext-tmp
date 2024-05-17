@@ -6435,44 +6435,33 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Setting \texttt{save-ans} and \texttt{resume} keys}\label{key:resume}
+% \subsection{Setting \texttt{save-ans} key}\label{key:save-ans}
 %
 % The key \mykey{save-ans} is directly associated with the key
 % \mykey{resume}, this will activate the entire \emph{\enquote{storage
 % system}} in the \mypkg*{enumext} package.
 %
-% \begin{macro}[int]{save-ans, series, resume, resume*, }
-%     We define the keys \mykey{save-ans}, \mykey{series}, \mykey{resume}
-%     and \mykey{resume*} only for the \emph{\enquote{first level}}
+% \begin{macro}[int]{save-ans }
+%     We define the keys \mykey{save-ans} only for the \emph{\enquote{first level}}
 %     of \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
-%% Add |save-ans|, |resume*|,  |resume| and |series| keys only on first level.
+%% Add |save-ans| key only on first level off |enumext| and |enumext*|.
 % \fi
 %    \begin{macrocode}
 \keys_define:nn { enumext / level-1 }
   {
     save-ans .code:n = \@@_storing_set:n {#1},
     save-ans .value_required:n = true,
-    series   .str_set:N = \l_@@_series_str,
-    series   .value_required:n = true,
-    resume   .code:n = \@@_resume_series:n {#1},
-    resume*  .code:n = \@@_resume_starred:,
-    resume*  .value_forbidden:n = true,
   }
 \keys_define:nn { enumext / enumext* }
   {
     save-ans .code:n = \@@_storing_set_vii:n {#1},
     save-ans .value_required:n = true,
-    series   .str_set:N = \l_@@_series_str,
-    series   .value_required:n = true,
-    resume   .code:n = \@@_resume_counter_series_vii:n {#1},
-    resume*  .code:n = \@@_resume_starred_vii:,
-    resume*  .value_forbidden:n = true,
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Internal function for \texttt{save-ans} key}
+% \subsubsection{Internal functions for \texttt{save-ans} key}
 %
 % \begin{macro}{\@@_storing_set:n, \@@_storing_exec:}
 %    The function \cs{@@_storing_set:n} executed by the
@@ -6551,13 +6540,38 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Internal function for \texttt{series} key}
+% \subsection{Setting \texttt{series} and \texttt{resume} keys}\label{key:resume}
 %
 % The \mykey{series} key is responsible for the whole process of the
 % \mykey{resume} and \mykey{resume*} keys. The idea behind this is to be
 % able to absorb the \mymeta{keys} passed to the optional argument of the
 % first level of the environments, but, discarding some specific
 % \mymeta{keys}.
+%
+% \begin{macro}[int]{series, resume, resume*, }
+%     We define the keys \mykey{series}, \mykey{resume}
+%     and \mykey{resume*} only for the \emph{\enquote{first level}}
+%     of \myenv*{enumext} and \myenv*{enumext*}.
+% \iffalse
+%% Add |series|, |resume| and |resume*| keys only on first level off |enumext| and |enumext*|.
+% \fi
+%    \begin{macrocode}
+\cs_set_protected:Npn \@@_tmp:n #1
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        series  .str_set:N = \l_@@_series_str,
+        series  .value_required:n = true,
+        resume  .code:n = \@@_resume_series:n {##1},
+        resume* .code:n = \@@_resume_starred:,
+        resume* .value_forbidden:n = true,
+     }
+  }
+\clist_map_inline:nn { level-1, enumext* } { \@@_tmp:n {#1} }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Internal functions for \texttt{series} key}
 %
 % \begin{macro}{\@@_filter_series:n, \@@_filter_series_key:n, \@@_filter_series_pair:nn}
 %   The function \cs{@@_filter_series:n} will be in charge of filtering the
@@ -6637,7 +6651,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%   The function \cs{@@_resumext_series_default:n} will be in charge
+%   The function \cs{@@_resume_last:n} will be in charge
 %   of saving the filtering \mymeta{keys} when the \mykey{series} key is
 %   \emph{not used} and will save them in the variable \myvarenv{g__@@_standar_series_tl} for the
 %   \myenv*{enumext} environment and in the variable \myvarenv{g__@@_starred_series_tl}
@@ -6675,7 +6689,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % the previous values of the list in which the \mykey{series}|=|\mymarg{series name} key was
 % executed.
 %
-% \begin{macro}{\@@_resume_series:n, \@@_resume_counter:n, \@@_resume_starred:}
+% \begin{macro}{\@@_resume_series:n, \@@_resume_counter:n, \@@_resume_starred:, \@@_resume_counter_set:}
 %   The function \cs{@@_resume_series:n} will handle the argument
 %   passed to the \mykey{resume} key in the \myenv*{enumext} environment.
 %   If the key is passed \emph{without value} the function
@@ -6716,6 +6730,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { \msg_error:nnn { enumext } { unknown-series } {#1} }
       }
   }
+%    \end{macrocode}
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_resume_counter:n #1
   {
     \tl_if_empty:nTF {#1}
@@ -6767,6 +6783,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
   }
+%    \end{macrocode}
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_resume_starred:
   {
     \bool_if:NT \g_@@_standar_bool
@@ -6787,49 +6805,56 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_resume_counter_series_vii:n, \@@_resume_counter_vii:, \@@_resume_starred_vii:}
-% \iffalse
-%% Internal code for |resume| and |resume*| keys for |enumext*|.
-% \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_resume_counter_series_vii:n #1
+\cs_new_protected:Nn \@@_resume_counter_set:
   {
-    \tl_if_empty:nTF {#1}
+    \bool_if:NT \g_@@_standar_bool
       {
-        \@@_resume_counter_vii:
-      }
-      {
-        \tl_if_exist:cTF { g_@@_series_ \tl_to_str:n {#1} _tl }
+        \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
           {
-            \@@_resume_counter_vii:
-            \keys_set:nv { enumext / enumext* }
-              { g_@@_series_ \tl_to_str:n {#1} _tl }
+            \int_gset_eq:cN { g_@@_resume_ \l_@@_store_name_tl _int } \value{enumXi}
           }
-        { \msg_error:nnn { enumext } { unknown-series } {#1} }
-      }
-  }
-\cs_new_protected:Nn \@@_resume_counter_vii:
-  {
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_starred_level_one_bool }
-      { \bool_if_p:N \l_@@_store_active_bool }
-      {
-        \int_gset:Nn \g_@@_resume_vii_int
+        \tl_if_empty:NF \l_@@_series_str
           {
-            \int_use:c { g_@@_resume_ \l_@@_store_name_tl _int }
+            \int_gset_eq:cN { g_@@_series_ \l_@@_series_str _int } \value{enumXi}
+          }
+        \tl_if_empty:NTF \l_@@_resume_name_tl
+          {
+            \str_if_empty:NT \l_@@_series_str
+              {
+                 \int_gset_eq:NN \g_@@_resume_int \value{enumXi}
+              }
+          }
+          {
+            \int_if_exist:cT { g_@@_series_ \l_@@_resume_name_tl _int }
+              {
+                \int_gset_eq:cN { g_@@_series_ \l_@@_resume_name_tl _int } \value{enumXi}
+              }
           }
       }
-    \int_gincr:N \g_@@_resume_vii_int
-    \int_set_eq:NN \l_@@_start_vii_int \g_@@_resume_vii_int
-  }
-\cs_new_protected:Nn \@@_resume_starred_vii:
-  {
-    \tl_if_empty:NF \g_@@_starred_series_tl
+    \bool_if:NT \g_@@_starred_bool
       {
-        \@@_resume_counter_vii:
-        \keys_set:nV { enumext / enumext* } \g_@@_starred_series_tl
+        \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
+          {
+            \int_gset_eq:cN { g_@@_resume_ \l_@@_store_name_tl _int } \value{enumXvii}
+          }
+        \tl_if_empty:NF \l_@@_series_str
+          {
+            \int_gset_eq:cN { g_@@_series_ \l_@@_series_str _int } \value{enumXvii}
+          }
+        \tl_if_empty:NTF \l_@@_resume_name_tl
+          {
+            \str_if_empty:NT \l_@@_series_str
+              {
+                 \int_gset_eq:NN \g_@@_resume_vii_int \value{enumXvii}
+              }
+          }
+          {
+            \int_if_exist:cT { g_@@_series_ \l_@@_resume_name_tl _int }
+              {
+                \int_gset_eq:cN { g_@@_series_ \l_@@_resume_name_tl _int } \value{enumXvii}
+              }
+          }
       }
   }
 %    \end{macrocode}
@@ -9061,30 +9086,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   value of the current counter.
 %    \begin{macrocode}
     \bool_set_false:N \l_@@_standar_bool
-    % Quizas aquí pueda incrementar directo y luego pasar todo con \g_@@_resume_int
-    \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
-      {
-        \int_gset_eq:cN { g_@@_resume_ \l_@@_store_name_tl _int } \value{enumXi}
-      }
-    % Si se ejecuta la llave series, establecemos el valor solo cuando se ejecuta
-    \tl_if_empty:NF \l_@@_series_str
-      {
-        \int_gset_eq:cN { g_@@_series_ \l_@@_series_str _int } \value{enumXi}
-      }
-    % Si ejecutamos resume=name (\l_@@_resume_name_tl), la variable entera ya está y la guardamos
-    \tl_if_empty:NTF \l_@@_resume_name_tl
-      {
-        \str_if_empty:NT \l_@@_series_str
-          {
-             \int_gset_eq:NN \g_@@_resume_int \value{enumXi}
-          }
-      }
-      {
-        \int_if_exist:cT { g_@@_series_ \l_@@_resume_name_tl _int }
-          {
-            \int_gset_eq:cN { g_@@_series_ \l_@@_resume_name_tl _int } \value{enumXi}
-          }
-      }
+    \@@_resume_counter_set:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9884,6 +9886,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_gset_true:N \g_@@_minipage_center_vii_bool
     \tl_gclear:N \g_@@_miniright_code_vii_tl
     \dim_gzero:N \g_@@_minipage_right_vii_dim
+    \bool_gset_false:N \g_@@_starred_bool
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10057,22 +10060,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_stop_mini_vii:
     \@@_after_stop_list_vii:
     \@@_vspace_below_vii:
-    \int_gset_eq:NN \g_@@_resume_vii_int \value{enumXvii}
-    \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
-      {
-        \int_gset_eq:cN
-          { g_@@_resume_ \l_@@_store_name_tl _int }
-          { \value{enumXvii} }
-      }
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \g_@@_starred_bool }
-      { \bool_if_p:N \l_@@_check_ans_bool }
-      {
-        \bool_gset_true:N \g_@@_check_ans_show_h_bool
-        \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
-      }
     %\bool_gset_false:N \g_@@_starred_bool
     \bool_set_false:N \l_@@_starred_bool
+    \@@_resume_counter_set:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10430,7 +10420,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-% \subsection{The \env{keyans*} environment}\label{env:keyans-starred}
+% \subsection{The environment \env{keyans*}}\label{env:keyans-starred}
 %
 % \subsubsection{Functions for item box width}
 %
