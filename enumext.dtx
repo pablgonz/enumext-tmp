@@ -3636,8 +3636,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}{\g_@@_resume_int, \g_@@_resume_vii_int, \l_@@_resume_name_tl
-%                  \g_@@_item_symbol_tl, \g_@@_series_standar_default_tl,
-%                  \g_@@_series_starred_default_tl,}
+%                  \g_@@_item_symbol_tl, \g_@@_standar_series_tl,
+%                  \g_@@_starred_series_tl,}
 %
 %    The boolean variable \cs{l_@@_resume_bool} is used by \mykey{resume} key,
 %    the value from which the environment's will start is stored in the
@@ -3652,8 +3652,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N \g_@@_resume_vii_int
 \tl_new:N  \l_@@_resume_name_tl
 \tl_new:N  \g_@@_item_symbol_tl
-\tl_new:N  \g_@@_series_standar_default_tl
-\tl_new:N  \g_@@_series_starred_default_tl
+\tl_new:N  \g_@@_standar_series_tl
+\tl_new:N  \g_@@_starred_series_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -6455,7 +6455,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     save-ans .value_required:n = true,
     series   .str_set:N = \l_@@_series_str,
     series   .value_required:n = true,
-    resume   .code:n = \@@_resume_counter_series:n {#1},
+    resume   .code:n = \@@_resume_series:n {#1},
     resume*  .code:n = \@@_resume_starred:,
     resume*  .value_forbidden:n = true,
   }
@@ -6602,7 +6602,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         { series } {}
         { resume } {}
-        { columns* } {}
         { save-key } {}
         { save-ans } {}
        }
@@ -6611,21 +6610,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_parse_series_resume:n, \@@_resume_series_default:n}
-%   The function \cs{@@_parse_series_resume:n} will be in charge of
+% \begin{macro}{\@@_parse_series_name:n, \@@_resume_last:n}
+%   The function \cs{@@_parse_series_name:n} will be in charge of
 %   saving the filtered \mymeta{keys} in a global variable \myvarenv{g__@@_series_\mymeta{series name}_tl}
 %   created globally when using the key \mykey{series}, otherwise it will call
-%   the function \cs{@@_resume_series_default:n}.
+%   the function \cs{@@_resume_last:n}.
 %   This function is passed to the function \cs{@@_parse_keys_parse_keys:n}
 %   in the \myenv*{enumext} environment definition (\S\ref{env:enumext})
 %   and to the function \cs{@@_parse_keys_vii:n} in the \myenv*{enumext*}
 %   environment definition (\S\ref{env:starred}).
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_parse_series_resume:n #1
+\cs_new_protected:Npn \@@_parse_series_name:n #1
   {
     \str_if_empty:NTF \l_@@_series_str
       {
-        \@@_resume_series_default:n {#1}
+        \@@_resume_last:n {#1}
       }
       {
         \tl_gclear_new:c { g_@@_series_ \l_@@_series_str _tl }
@@ -6640,26 +6639,26 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   The function \cs{@@_resumext_series_default:n} will be in charge
 %   of saving the filtering \mymeta{keys} when the \mykey{series} key is
-%   \emph{not used} and will save them in the variable \myvarenv{g__@@_series_standar_default_tl} for the
-%   \myenv*{enumext} environment and in the variable \myvarenv{g__@@_series_starred_default_tl}
+%   \emph{not used} and will save them in the variable \myvarenv{g__@@_standar_series_tl} for the
+%   \myenv*{enumext} environment and in the variable \myvarenv{g__@@_starred_series_tl}
 %   for the \myenv*{enumext*} environment.
 %   Here we must use |\bool_lazy_all:nT| to make sure that the default
 %   values are not overwritten when the environment is nested and the
 %   \mykey{series} key is not being used.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_resume_series_default:n #1
+\cs_new_protected:Npn \@@_resume_last:n #1
   {
     \bool_if:NT \l_@@_standar_level_one_bool
       {
         %%\typeout{[[ON-LEVEL-ONE-ENUMEXT]]}
-        \tl_gclear:N \g_@@_series_standar_default_tl
-        \tl_gset:Ne \g_@@_series_standar_default_tl { \@@_filter_series:n {#1} }
+        \tl_gclear:N \g_@@_standar_series_tl
+        \tl_gset:Ne \g_@@_standar_series_tl { \@@_filter_series:n {#1} }
       }
     \bool_if:NT \l_@@_starred_level_one_bool
       {
         %%\typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
-        \tl_gclear:N \g_@@_series_starred_default_tl
-        \tl_gset:Ne \g_@@_series_starred_default_tl { \@@_filter_series:n {#1} }
+        \tl_gclear:N \g_@@_starred_series_tl
+        \tl_gset:Ne \g_@@_starred_series_tl { \@@_filter_series:n {#1} }
       }
   }
 %    \end{macrocode}
@@ -6676,8 +6675,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % the previous values of the list in which the \mykey{series}|=|\mymarg{series name} key was
 % executed.
 %
-% \begin{macro}{\@@_resume_counter_series:n, \@@_resume_counter:n, \@@_resume_starred:}
-%   The function \cs{@@_resume_counter_series:n} will handle the argument
+% \begin{macro}{\@@_resume_series:n, \@@_resume_counter:n, \@@_resume_starred:}
+%   The function \cs{@@_resume_series:n} will handle the argument
 %   passed to the \mykey{resume} key in the \myenv*{enumext} environment.
 %   If the key is passed \emph{without value} the function
 %   \cs{@@_resume_counter:} is executed which will set the counter
@@ -6693,7 +6692,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal code for |resume| and |resume*| keys for |enumext|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_resume_counter_series:n #1
+\cs_new_protected:Npn \@@_resume_series:n #1
   {
     \tl_if_empty:nTF {#1}
       {
@@ -6718,11 +6717,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       {
         \tl_set:Nn \l_@@_resume_name_tl {#1}
-        \int_set:Nn \l_tmpa_int
+        \int_set:Nn \l_@@_start_i_int
           {
             \int_use:c { g_@@_series_ \l_@@_resume_name_tl _int } + 1
           }
-        \int_set_eq:NN \l_@@_start_i_int \l_tmpa_int
       }
     % Si está la llave save-ans=activa
     \bool_lazy_and:nnT
@@ -6737,10 +6735,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_resume_starred:
   {
-    \tl_if_empty:NF \g_@@_series_standar_default_tl
+    \tl_if_empty:NF \g_@@_standar_series_tl
       {
         \@@_resume_counter:n { }
-        \keys_set:nV { enumext / level-1 } \g_@@_series_standar_default_tl
+        \keys_set:nV { enumext / level-1 } \g_@@_standar_series_tl
       }
   }
 %    \end{macrocode}
@@ -6783,10 +6781,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_resume_starred_vii:
   {
-    \tl_if_empty:NF \g_@@_series_starred_default_tl
+    \tl_if_empty:NF \g_@@_starred_series_tl
       {
         \@@_resume_counter_vii:
-        \keys_set:nV { enumext / enumext* } \g_@@_series_starred_default_tl
+        \keys_set:nV { enumext / enumext* } \g_@@_starred_series_tl
       }
   }
 %    \end{macrocode}
@@ -8722,7 +8720,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \int_compare:nNnTF { \l_@@_level_int } = { 1 }
           {
             \keys_set:nn { enumext / level-1 } {#1}
-            \@@_parse_series_resume:n {#1}
+            \@@_parse_series_name:n {#1}
           }
           {
             \exp_args:Ne \keys_set:nn
@@ -9926,7 +9924,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \str_clear:N \l_@@_series_str
         \keys_set:nn { enumext / enumext* } {#1}
-        \@@_parse_series_resume:n {#1}
+        \@@_parse_series_name:n {#1}
         \bool_if:NT \l_@@_store_active_bool
           {
             \@@_parse_store_keys_vii:n {#1}
