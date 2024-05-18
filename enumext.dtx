@@ -1483,12 +1483,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{important}*
 % It should be kept in mind that using any \mymeta{key} that sets
-% a \emph{rubber or rigid lengths} for vertical or horizontal space on
+% a \emph{rubber lengths} or \emph{rigid lengths} for vertical or horizontal space on
 % a level will influence the vertical and horizontal
 % space for \emph{inners levels} and \myenv*{keyans} and \myenv*{keyanspic} environments.
 % All \mymeta{keys} related to vertical or horizontal spacing accept a \emph{\enquote{skip}} or \emph{\enquote{dim}}
 % expression if passed between braces, i.e. you do not need to use
-% |\dimexpr| or |\dimeval| to perform calculations.
+% |\dimeval| or |\dimexpr| to perform calculations.
 %
 % \end{important}
 %
@@ -1510,7 +1510,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{important}*
 % This key is intended to give the basic structure with which the
-% \mymeta{label} will be displayed, and the and the form in which it is
+% \mymeta{label} will be displayed, and the form in which it is
 % used by standard \emph{\enquote{label and ref}} and the \emph{\enquote{internal reference}} system with the
 % \mykey{save-ref} key. You cannot use commands with \mymeta{label} as an
 % argument, for example |\emph|\mymarg[type=tt]{\textnormal{\ilabel{alph*}}} will return an
@@ -3549,7 +3549,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-15}
+  {2024-05-17}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
