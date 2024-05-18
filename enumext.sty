@@ -2949,13 +2949,6 @@
             \par\addvspace{ \skip_use:c { l__enumext_multicols_below_ \__enumext_level: _skip } }
           }
       }
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_check_ans_bool }
-      { \bool_not_p:n { \g__enumext_starred_bool } }
-      {
-        \bool_gset_true:N \g__enumext_check_ans_show_bool
-        \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
-      }
   }
 \cs_new_protected:Nn \__enumext_after_list:
   {
@@ -2971,6 +2964,13 @@
         \par\addvspace { \l__enumext_minipage_after_skip }
       }
       { \__enumext_multicols_stop: }
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l__enumext_check_ans_bool }
+      { \bool_not_p:n { \g__enumext_starred_bool } }
+      {
+        \bool_gset_true:N \g__enumext_check_ans_show_bool
+        \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
+      }
     \__enumext_after_stop_list:
     \__enumext_vspace_below:
     \bool_set_false:N \l__enumext_standar_bool

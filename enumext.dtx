@@ -6624,10 +6624,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{important}*
 %   The variables \cs{l_@@_series_str} and \cs{l_@@__resume_name_tl}
 %   contain the same \mymarg{series name} but are executed at different
-%   moments. The integer variable with \cs{l_@@_series_str} sets the value
-%   when we execute the \mykey{series}|=|\mymarg{series name} and the
+%   moments, the integer variable with \cs{l_@@_series_str} sets the value
+%   when execute \mykey{series}|=|\mymarg{series name} and the
 %   integer variable with \cs{l_@@__resume_name_tl} sets the subsequent
-%   values when we use the \mykey{resume}|=|\mymarg{series name}.
+%   values when use \mykey{resume}|=|\mymarg{series name}.
 %   This function is passed to the \myenv*{enumext} environment definition (\S\ref{env:enumext})
 %   and the \myenv*{enumext*} environment definition (\S\ref{env:starred}).
 % \end{important}
@@ -8892,11 +8892,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_safe_exec:}\label{fun:enumext:safe-exe}
-%    First check the maximum nesting level for the \myenv*{enumext}
-%    environment and set the state of the booleans vars
-%    \myvarenv{l__@@_standar_bool} and \myvarenv{l__@@_standar_first_bool} to
-%    \emph{\enquote{true}}, the latter only if the environment is NOT nested
-%    in the \myenv*{enumext*} environment.
+%    First we will execute the function \cs{@@_current_env_set_bool:} which
+%    will set the variable \cs{g_@@_standard_bool} to \emph{\enquote{true}}
+%    if the environment is not nested in \myenv*{enumext*}, we increment the
+%    variable \cs{l_@@_level_int} for the nesting levels and set the
+%    \cs{l_@@_standard_bool} variable to \emph{\enquote{true}}. Finally we
+%    set the variable \cs{l_@@_standar_level_one_bool} to
+%    \emph{\enquote{true}} only if the environment is not nested and we are
+%    at the first level of it.
+%^^A    First check the maximum nesting level for the \myenv*{enumext}
+%^^A    environment and set the state of the booleans vars
+%^^A    \myvarenv{l__@@_standar_bool} and \myvarenv{l__@@_standar_level_one_bool} to
+%^^A    \emph{\enquote{true}}, the latter only if the environment is NOT nested
+%^^A    in the \myenv*{enumext*} environment.
 % \iffalse
 %% Increment deep-level for |enumext|.
 % \fi
@@ -9179,20 +9187,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \par\addvspace{ \skip_use:c { l_@@_multicols_below_ \@@_level: _skip } }
           }
       }
-%    \end{macrocode}
-%    If the \mykey{check-ans} key is active, we set the boolean variable
-%    \cs{g_@@_check_ans_show_bool} to true and copy the stored name to
-%    the variable \cs{g_@@_store_name_tl}. These variables will be used
-%    by the function \cs{@@_after_env:n} to display the result of the
-%    internal check answer mechanism in the terminal.
-%    \begin{macrocode}
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_check_ans_bool }
-      { \bool_not_p:n { \g_@@_starred_bool } }
-      {
-        \bool_gset_true:N \g_@@_check_ans_show_bool
-        \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
-      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9222,19 +9216,26 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       { \@@_multicols_stop: }
 %    \end{macrocode}
+%    If the \mykey{check-ans} key is active, we set the boolean variable
+%    \cs{g_@@_check_ans_show_bool} to true and copy the \emph{\enquote{store name}} to
+%    the variable \cs{g_@@_store_name_tl}.
+%    \begin{macrocode}
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l_@@_check_ans_bool }
+      { \bool_not_p:n { \g_@@_starred_bool } }
+      {
+        \bool_gset_true:N \g_@@_check_ans_show_bool
+        \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
+      }
+%    \end{macrocode}
 %    Now apply the \mymarg[type=tt]{code} handled by the \mykey{after} key
 %    together with the \emph{vertical space} handled by the \mykey{below} key if
-%    they are present.
+%    they are present, set \cs{l_@@_standar_bool} to false and save the
+%    \emph{current value} of the counter for \mykey{series}, \mykey{resume}
+%    and \mykey{resume*} keys.
 %    \begin{macrocode}
     \@@_after_stop_list:
     \@@_vspace_below:
-%    \end{macrocode}
-%   Finally save the \emph{current value} of the counter in
-%   \cs{g_@@_resume_int} for the \mykey{resume} key. If the
-%   \mykey{save-ans} key is active, it will create the integer variable
-%   for the \mykey{resume} key, we only have to assign it the
-%   value of the current counter.
-%    \begin{macrocode}
     \bool_set_false:N \l_@@_standar_bool
     \@@_resume_save_counter:
   }
