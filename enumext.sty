@@ -2777,7 +2777,7 @@
     \__enumext_stop_store_level:
     \__enumext_after_list:
   }
-%% Increment deep-level for |enumext|.
+%% Safe exec for |enumext|.
 \cs_new_protected:Nn \__enumext_safe_exec:
   {
     \__enumext_current_env_set_bool:
@@ -2792,7 +2792,7 @@
         { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
       }
       {
-        \typeout{[[ON-FIRST-LEVEL-ENUMEXT-NOT-NESTED]]}
+        %%\typeout{[[ON-FIRST-LEVEL-ENUMEXT-NOT-NESTED]]}
         \bool_set_true:N \l__enumext_standar_level_one_bool
       }
   }

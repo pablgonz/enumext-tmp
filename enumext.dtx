@@ -1841,7 +1841,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Execute \mymarg[type=tt]{code} \emph{\enquote{after}} finishing the
 % environment. The \mymarg[type=tt]{code} must be passed between braces.
 %
-% \subsection{Keys for \texttt{start} and \texttt{resume}}
+% \subsection{Keys for \texttt{start}, \texttt{series} and \texttt{resume}}
 %
 % \keyexamp{start}{integer \textnormal{\textcolor{lightgray}{\textbar}} string}{\mydim{1}}
 % Sets the \emph{start value} of the numbering on the current level.
@@ -1849,7 +1849,22 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \mykey{label} key on the current level, i.e. it is equivalent to enter
 % |start=5|, |start=E| or |start=v|.
 %
-% \keyexamp*{resume}{value forbidden}{not used}
+% \keyexamp{series}{series name}{not used}
+% Stores the \mymeta{keys} of the optional argument of the \emph{first
+% level} of the environment in which it is executed in \mymarg{series
+% name} which is used as an argument in the key \mykey{resume}. The \mymeta{keys}
+% stored in \mymarg{series name} are not cumulative and are overwritten
+% if the same value is used again, this key is only available for the
+% \myenv*{enumext} and \myenv*{enumext*} environments that are not nested
+% within each other.
+%
+% \keyexamp{resume}{series name}{not used}
+% Sets the \emph{start value} of the numbering on the current level.
+% Internally \mymeta{string} is passed as value to the counter defined by
+% \mykey{label} key on the current level, i.e. it is equivalent to enter
+% |start=5|, |start=E| or |start=v|.
+%
+% \keyexamp*{resume*}{value forbidden}{not used}
 % Sets the \emph{start} to value from the previous of the counter
 % defined by \mykey{label} key for the \emph{\enquote{first level}}. This
 % \mymeta{key} does not receive an argument. The \mymeta{key} can be
@@ -8900,13 +8915,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    set the variable \cs{l_@@_standar_level_one_bool} to
 %    \emph{\enquote{true}} only if the environment is not nested and we are
 %    at the first level of it.
-%^^A    First check the maximum nesting level for the \myenv*{enumext}
-%^^A    environment and set the state of the booleans vars
-%^^A    \myvarenv{l__@@_standar_bool} and \myvarenv{l__@@_standar_level_one_bool} to
-%^^A    \emph{\enquote{true}}, the latter only if the environment is NOT nested
-%^^A    in the \myenv*{enumext*} environment.
 % \iffalse
-%% Increment deep-level for |enumext|.
+%% Safe exec for |enumext|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec:
@@ -8923,7 +8933,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
       }
       {
-        \typeout{[[ON-FIRST-LEVEL-ENUMEXT-NOT-NESTED]]}
+        %%\typeout{[[ON-FIRST-LEVEL-ENUMEXT-NOT-NESTED]]}
         \bool_set_true:N \l_@@_standar_level_one_bool
       }
   }
