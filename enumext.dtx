@@ -6639,6 +6639,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_resume_counter:n, \@@_resume_counter:, \@@_resume_counter_name:, \@@_resume_counter_store:}
+%   The function \cs{@@_resume_counter:n} will set the variable
+%   \cs{l_@@_resume_name_bool} to true and pass the value of the key
+%   \mykey{resume} to the variable \cs{l_@@_series_name_tl} which will
+%   contain the \mymarg{series name}. If the variable \cs{l_@@_series_name_tl} is
+%   empty, that is, we are passing the key \mykey{resume} \emph{without value}, we
+%   will execute the function \cs{@@_resume_counter:} otherwise, when we
+%   pass \mykey{resume}|=|\mymarg{series name} we will execute the function
+%   \cs{@@_resume_counter_name:}, finally we will execute the function
+%   \cs{@@_resume_counter_store:} which is associated with the key
+%   \mykey{save-ans}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_resume_counter:n #1
   {
@@ -6654,6 +6664,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_resume_counter_store:
   }
 %    \end{macrocode}
+%   The \cs{@@_resume_counter:} function is executed when the
+%   \mykey{resume} key is used \emph{without value}, only the counters for
+%   the \emph{\enquote{first level}} of the environments will be set.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_resume_counter:
   {
@@ -6669,6 +6682,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
+%   The function \cs{@@_resume_counter_name:} will be executed when the
+%   \mykey{resume}|=|\mymarg{series name} key is active, setting the
+%   counters for the \emph{\enquote{first level}} of the environments
+%   according to the value of the integer variables created by the
+%   \mykey{series} key.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_resume_counter_name:
   {
@@ -6688,6 +6706,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
+%   The function \cs{@@_resume_counter_store:} will be executed when the
+%   \mykey{save-ans} key is active along with the \mykey{resume} key,
+%   setting the counters for the \emph{\enquote{first level}} of the
+%   environments according to the value of the integer variables created by
+%   the \mykey{save-ans} key.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_resume_counter_store:
   {
