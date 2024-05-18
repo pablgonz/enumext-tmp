@@ -6436,117 +6436,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Setting \texttt{save-ans} key}\label{key:save-ans}
-%
-% The key \mykey{save-ans} is directly associated with the key
-% \mykey{resume}, this will activate the entire \emph{\enquote{storage
-% system}} in the \mypkg*{enumext} package.
-%
-% \begin{macro}[int]{save-ans }
-%     We define the keys \mykey{save-ans} only for the \emph{\enquote{first level}}
-%     of \myenv*{enumext} and \myenv*{enumext*}.
-% \iffalse
-%% Add |save-ans| key only on first level off |enumext| and |enumext*|.
-% \fi
-%    \begin{macrocode}
-\keys_define:nn { enumext / level-1 }
-  {
-    save-ans .code:n = \@@_storing_set:n {#1},
-    save-ans .value_required:n = true,
-  }
-\keys_define:nn { enumext / enumext* }
-  {
-    save-ans .code:n = \@@_storing_set_vii:n {#1},
-    save-ans .value_required:n = true,
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \subsubsection{Internal functions for \texttt{save-ans} key}
-%
-% \begin{macro}{\@@_storing_set:n, \@@_storing_exec:}
-%    The function \cs{@@_storing_set:n} executed by the
-%    \mykey{save-ans} key sets the parameters for the operation of
-%    \ics*{anskey}, \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}.
-%    The variable \cs{l_@@_store_name_tl} will have the \emph{\enquote{store name}} with
-%    which the \mymeta{sequence} and \mymeta{prop list} will be created, if it does not exist it will
-%    create it globally.
-%
-%    The boolean var \cs{l_@@_store_active_bool} will be set to
-%    true activating the entire internal \emph{storage mechanism}, then
-%    the integer variable for the \mykey{resume} key will be created (if not exist).
-% \iffalse
-%% Function to activate ALL "storing" (and |check-ans|, |resume|) used by |save-ans| key.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_storing_set:n #1
-  {
-    \tl_set:Ne \l_@@_store_name_tl {#1}
-    \tl_if_empty:NTF \l_@@_store_name_tl
-      {
-        \msg_error:nnn { enumext } { save-ans-empty } { enumext }
-      }
-      {
-        \@@_storing_standar:
-      }
-  }
-\cs_new_protected:Npn \@@_storing_set_vii:n #1
-  {
-    \tl_set:Ne \l_@@_store_name_tl {#1}
-    \tl_if_empty:NTF \l_@@_store_name_tl
-      {
-        \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
-      }
-      {
-        \@@_storing_starred:
-      }
-  }
-\cs_new_protected:Nn \@@_storing_standar:
-  {
-    \bool_if:NTF \l_@@_standar_level_one_bool
-      {
-        \@@_storing_exec:
-      }
-      {
-        \msg_warning:nnn { enumext } { save-ans-nested } { enumext }
-      }
-  }
-\cs_new_protected:Nn \@@_storing_starred:
-  {
-    \bool_if:NTF \l_@@_starred_level_one_bool
-      {
-        \@@_storing_exec:
-      }
-      {
-        \msg_warning:nnn { enumext } { save-ans-nested } { enumext* }
-      }
-  }
-\cs_new_protected:Nn \@@_storing_exec:
-  {
-    \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
-      {
-        \prop_new:c { g_@@_ \l_@@_store_name_tl _prop }
-      }
-    \seq_if_exist:cF { g_@@_ \l_@@_store_name_tl _seq }
-      {
-        \seq_new:c { g_@@_ \l_@@_store_name_tl _seq }
-      }
-    \bool_set_true:N \l_@@_store_active_bool
-    \bool_set_true:N \l_@@_store_ans_bool
-    \int_if_exist:cF { g_@@_resume_ \l_@@_store_name_tl _int }
-      {
-        \int_new:c { g_@@_resume_ \l_@@_store_name_tl _int }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
 %
 % \subsection{Setting \texttt{series} and \texttt{resume} keys}\label{key:resume}
 %
 % The \mykey{series} key is responsible for the whole process of the
 % \mykey{resume} and \mykey{resume*} keys. The idea behind this is to be
 % able to absorb the \mymeta{keys} passed to the optional argument of the
-% first level of the environments, but, discarding some specific
+% \emph{\enquote{first level}} of the environments \myenv*{enumext} and \myenv*{enumext*}, but, discarding some specific
 % \mymeta{keys}.
 %
 % \begin{macro}[int]{series, resume, resume*, }
@@ -6593,7 +6489,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The function \cs{@@_filter_series_key:n} will be responsible for
-%   filtering the \mymeta{keys} that are passed \emph{without value} by
+%   filtering the \mymeta{keys} that are passed \emph{\enquote{without value}} by
 %   excluding the \mykey{resume} and \mykey{resume*} keys.
 %    \begin{macrocode}
 \cs_new:Npn \@@_filter_series_key:n #1
@@ -6607,7 +6503,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The function \cs{@@_filter_series_pair:nn} will be responsible for
-%   filtering the \mymeta{keys} that are passed \emph{with value} by
+%   filtering the \mymeta{keys} that are passed \emph{\enquote{with value}} by
 %   excluding the \mykey{series}, \mykey{resume}, \mykey{save-ans} and
 %   \mykey{save-key} keys.
 %    \begin{macrocode}
@@ -6617,25 +6513,30 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         { series } {}
         { resume } {}
-        { save-key } {}
         { save-ans } {}
+        { save-key } {}
        }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_parse_series_name:n, \@@_resume_last:n}
-%   The function \cs{@@_parse_series_name:n} will be in charge of
-%   saving the filtered \mymeta{keys} in a global variable \myvarenv{g__@@_series_\mymeta{series name}_tl}
-%   created globally when using the key \mykey{series}, otherwise it will call
-%   the function \cs{@@_resume_last:n}.
-%   This function is passed to the function \cs{@@_parse_keys_parse_keys:n}
+% \begin{macro}{\@@_parse_series:n, \@@_resume_last:n}
+%   The function \cs{@@_parse_series:n} will be responsible for
+%   storing the filtered \mymeta{keys} in the global variable
+%   \myvarenv{g__@@_series_\mymeta[cf=gray]{series name}_tl} along with the
+%   creation of the integer variable
+%   \myvarenv{g__@@_series_\mymeta[cf=gray]{series name}_int} when the key
+%   is passed as an argument; otherwise, it will check the state of the
+%   boolean variable \cs{l_@@_resume_name_bool} set by the keys
+%   \mykey{resume} and  \mykey{resume*} and will call the function
+%   \cs{@@_resume_last:n}.
+%   This function is passed to the function \cs{@@_parse_keys:n}
 %   in the \myenv*{enumext} environment definition (\S\ref{env:enumext})
 %   and to the function \cs{@@_parse_keys_vii:n} in the \myenv*{enumext*}
 %   environment definition (\S\ref{env:starred}).
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_parse_series_name:n #1
+\cs_new_protected:Npn \@@_parse_series:n #1
   {
     \str_if_empty:NTF \l_@@_series_str
       {
@@ -6887,6 +6788,133 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 \int_gset_eq:cN { g_@@_series_ \l_@@_resume_name_tl _int } \value{enumXvii}
               }
           }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Setting \texttt{save-ans} key}\label{key:save-ans}
+%
+% The key \mykey{save-ans} is directly associated with the keys
+% \mykey{resume} and \mykey{resume*}, this will activate the entire \emph{\enquote{storage
+% system}} in the \mypkg*{enumext} package.
+%
+% \begin{macro}[int]{save-ans }
+%     We define the keys \mykey{save-ans} only for the \emph{\enquote{first level}}
+%     of \myenv*{enumext} and \myenv*{enumext*}.
+% \iffalse
+%% Add |save-ans| key only on first level off |enumext| and |enumext*|.
+% \fi
+%    \begin{macrocode}
+\keys_define:nn { enumext / level-1 }
+  {
+    save-ans .code:n = \@@_storing_set:n {#1},
+    save-ans .value_required:n = true,
+  }
+\keys_define:nn { enumext / enumext* }
+  {
+    save-ans .code:n = \@@_storing_set_vii:n {#1},
+    save-ans .value_required:n = true,
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Internal functions for \texttt{save-ans} key}
+%
+% \begin{macro}{\@@_storing_set:n, \@@_storing_set_vii:n,
+%               \@@_storing_standar:, \@@_storing_starred:,
+%               \@@_storing_exec:,}
+%   The functions \cs{@@_storing_set:n} and \cs{@@_storing_set_vii:n}
+%   first pass the value of the \mykey{save-ans} key to the
+%   variable \cs{l_@@_store_name_tl} which will contain the \emph{“store
+%   name”} of the \mymeta{sequence} and \mymeta{prop list} we will use. If
+%   \cs{l_@@_store_name_tl} is empty we return an error message, otherwise
+%   we proceed to execute the functions \cs{@@_storing_standar:} for the
+%   \myenv*{enumext} environment and \cs{@@_storing_starred:} for the
+%   \myenv*{enumext*} environment.
+%
+% \iffalse
+%% Function to activate ALL "storing" (and |check-ans|, |no-store|, |resume|) used by |save-ans| key.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_storing_set:n #1
+  {
+    \tl_set:Ne \l_@@_store_name_tl {#1}
+    \tl_if_empty:NTF \l_@@_store_name_tl
+      {
+        \msg_error:nnn { enumext } { save-ans-empty } { enumext }
+      }
+      {
+        \@@_storing_standar:
+      }
+  }
+\cs_new_protected:Npn \@@_storing_set_vii:n #1
+  {
+    \tl_set:Ne \l_@@_store_name_tl {#1}
+    \tl_if_empty:NTF \l_@@_store_name_tl
+      {
+        \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
+      }
+      {
+        \@@_storing_starred:
+      }
+  }
+%    \end{macrocode}
+%   The functions \cs{@@_storing_standar:} and \cs{@@_storing_starred:}
+%   will verify the state of the variables \cs{g_@@_standar_level_one_bool}
+%   and \cs{g_@@_starred_level_one_bool}, if this is true we execute the
+%   function \cs{@@_storing_exec:} otherwise we return an warning message.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_storing_standar:
+  {
+    \bool_if:NTF \l_@@_standar_level_one_bool
+      {
+        \@@_storing_exec:
+      }
+      {
+        \msg_warning:nnn { enumext } { save-ans-nested } { enumext }
+      }
+  }
+\cs_new_protected:Nn \@@_storing_starred:
+  {
+    \bool_if:NTF \l_@@_starred_level_one_bool
+      {
+        \@@_storing_exec:
+      }
+      {
+        \msg_warning:nnn { enumext } { save-ans-nested } { enumext* }
+      }
+  }
+%    \end{macrocode}
+%   The function \cs{@@_storing_exec:} will set to true the variable
+%   \cs{l_@@_store_active_bool} which activates the use of the
+%   \ics*{anskey} command and the \myenv*{keyans}, \myenv*{keyans*} and
+%   \myenv*{keyanspic} environments and will set to true the variable
+%   \cs{l_@@_store_ans_bool} used for checking answers by the
+%   \mykey{check-ans} and \mykey{no-store} keys.
+%   The \mymeta{prop list} \myvarenv{g__@@_series_\mymeta[cf=gray]{store
+%   name}_prop} and the \mymeta{sequence}
+%   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_seq} will be
+%   created globally to \emph{\enquote{store content}} in case they do not
+%   exist together with the integer variable
+%   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_int} used by the
+%   \mykey{resume} and  \mykey{resume*} keys.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_storing_exec:
+  {
+    \bool_set_true:N \l_@@_store_active_bool
+    \bool_set_true:N \l_@@_store_ans_bool
+    \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
+      {
+        \prop_new:c { g_@@_ \l_@@_store_name_tl _prop }
+      }
+    \seq_if_exist:cF { g_@@_ \l_@@_store_name_tl _seq }
+      {
+        \seq_new:c { g_@@_ \l_@@_store_name_tl _seq }
+      }
+    \int_if_exist:cF { g_@@_resume_ \l_@@_store_name_tl _int }
+      {
+        \int_new:c { g_@@_resume_ \l_@@_store_name_tl _int }
       }
   }
 %    \end{macrocode}
@@ -8822,7 +8850,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \int_compare:nNnTF { \l_@@_level_int } = { 1 }
           {
             \keys_set:nn { enumext / level-1 } {#1}
-            \@@_parse_series_name:n {#1}
+            \@@_parse_series:n {#1}
           }
           {
             \exp_args:Ne \keys_set:nn
@@ -10004,7 +10032,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \str_clear:N \l_@@_series_str
         \keys_set:nn { enumext / enumext* } {#1}
-        \@@_parse_series_name:n {#1}
+        \@@_parse_series:n {#1}
         \bool_if:NT \l_@@_store_active_bool
           {
             \@@_parse_store_keys_vii:n {#1}

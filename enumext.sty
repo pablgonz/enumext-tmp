@@ -1452,77 +1452,6 @@
           { \vspace { \l__enumext_vspace_below_viii_skip } }
       }
   }
-%% Add |save-ans| key only on first level off |enumext| and |enumext*|.
-\keys_define:nn { enumext / level-1 }
-  {
-    save-ans .code:n = \__enumext_storing_set:n {#1},
-    save-ans .value_required:n = true,
-  }
-\keys_define:nn { enumext / enumext* }
-  {
-    save-ans .code:n = \__enumext_storing_set_vii:n {#1},
-    save-ans .value_required:n = true,
-  }
-%% Function to activate ALL "storing" (and |check-ans|, |resume|) used by |save-ans| key.
-\cs_new_protected:Npn \__enumext_storing_set:n #1
-  {
-    \tl_set:Ne \l__enumext_store_name_tl {#1}
-    \tl_if_empty:NTF \l__enumext_store_name_tl
-      {
-        \msg_error:nnn { enumext } { save-ans-empty } { enumext }
-      }
-      {
-        \__enumext_storing_standar:
-      }
-  }
-\cs_new_protected:Npn \__enumext_storing_set_vii:n #1
-  {
-    \tl_set:Ne \l__enumext_store_name_tl {#1}
-    \tl_if_empty:NTF \l__enumext_store_name_tl
-      {
-        \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
-      }
-      {
-        \__enumext_storing_starred:
-      }
-  }
-\cs_new_protected:Nn \__enumext_storing_standar:
-  {
-    \bool_if:NTF \l__enumext_standar_level_one_bool
-      {
-        \__enumext_storing_exec:
-      }
-      {
-        \msg_warning:nnn { enumext } { save-ans-nested } { enumext }
-      }
-  }
-\cs_new_protected:Nn \__enumext_storing_starred:
-  {
-    \bool_if:NTF \l__enumext_starred_level_one_bool
-      {
-        \__enumext_storing_exec:
-      }
-      {
-        \msg_warning:nnn { enumext } { save-ans-nested } { enumext* }
-      }
-  }
-\cs_new_protected:Nn \__enumext_storing_exec:
-  {
-    \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
-      {
-        \prop_new:c { g__enumext_ \l__enumext_store_name_tl _prop }
-      }
-    \seq_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _seq }
-      {
-        \seq_new:c { g__enumext_ \l__enumext_store_name_tl _seq }
-      }
-    \bool_set_true:N \l__enumext_store_active_bool
-    \bool_set_true:N \l__enumext_store_ans_bool
-    \int_if_exist:cF { g__enumext_resume_ \l__enumext_store_name_tl _int }
-      {
-        \int_new:c { g__enumext_resume_ \l__enumext_store_name_tl _int }
-      }
-  }
 %% Add |series|, |resume| and |resume*| keys only on first level off |enumext| and |enumext*|.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
@@ -1561,12 +1490,12 @@
       {
         { series } {}
         { resume } {}
-        { save-key } {}
         { save-ans } {}
+        { save-key } {}
        }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
-\cs_new_protected:Npn \__enumext_parse_series_name:n #1
+\cs_new_protected:Npn \__enumext_parse_series:n #1
   {
     \str_if_empty:NTF \l__enumext_series_str
       {
@@ -1757,6 +1686,77 @@
                 \int_gset_eq:cN { g__enumext_series_ \l__enumext_resume_name_tl _int } \value{enumXvii}
               }
           }
+      }
+  }
+%% Add |save-ans| key only on first level off |enumext| and |enumext*|.
+\keys_define:nn { enumext / level-1 }
+  {
+    save-ans .code:n = \__enumext_storing_set:n {#1},
+    save-ans .value_required:n = true,
+  }
+\keys_define:nn { enumext / enumext* }
+  {
+    save-ans .code:n = \__enumext_storing_set_vii:n {#1},
+    save-ans .value_required:n = true,
+  }
+%% Function to activate ALL "storing" (and |check-ans|, |no-store|, |resume|) used by |save-ans| key.
+\cs_new_protected:Npn \__enumext_storing_set:n #1
+  {
+    \tl_set:Ne \l__enumext_store_name_tl {#1}
+    \tl_if_empty:NTF \l__enumext_store_name_tl
+      {
+        \msg_error:nnn { enumext } { save-ans-empty } { enumext }
+      }
+      {
+        \__enumext_storing_standar:
+      }
+  }
+\cs_new_protected:Npn \__enumext_storing_set_vii:n #1
+  {
+    \tl_set:Ne \l__enumext_store_name_tl {#1}
+    \tl_if_empty:NTF \l__enumext_store_name_tl
+      {
+        \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
+      }
+      {
+        \__enumext_storing_starred:
+      }
+  }
+\cs_new_protected:Nn \__enumext_storing_standar:
+  {
+    \bool_if:NTF \l__enumext_standar_level_one_bool
+      {
+        \__enumext_storing_exec:
+      }
+      {
+        \msg_warning:nnn { enumext } { save-ans-nested } { enumext }
+      }
+  }
+\cs_new_protected:Nn \__enumext_storing_starred:
+  {
+    \bool_if:NTF \l__enumext_starred_level_one_bool
+      {
+        \__enumext_storing_exec:
+      }
+      {
+        \msg_warning:nnn { enumext } { save-ans-nested } { enumext* }
+      }
+  }
+\cs_new_protected:Nn \__enumext_storing_exec:
+  {
+    \bool_set_true:N \l__enumext_store_active_bool
+    \bool_set_true:N \l__enumext_store_ans_bool
+    \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
+      {
+        \prop_new:c { g__enumext_ \l__enumext_store_name_tl _prop }
+      }
+    \seq_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _seq }
+      {
+        \seq_new:c { g__enumext_ \l__enumext_store_name_tl _seq }
+      }
+    \int_if_exist:cF { g__enumext_resume_ \l__enumext_store_name_tl _int }
+      {
+        \int_new:c { g__enumext_resume_ \l__enumext_store_name_tl _int }
       }
   }
 %% Add |check-ans| and |no-store| keys.
@@ -2786,7 +2786,7 @@
         \int_compare:nNnTF { \l__enumext_level_int } = { 1 }
           {
             \keys_set:nn { enumext / level-1 } {#1}
-            \__enumext_parse_series_name:n {#1}
+            \__enumext_parse_series:n {#1}
           }
           {
             \exp_args:Ne \keys_set:nn
@@ -3383,7 +3383,7 @@
       {
         \str_clear:N \l__enumext_series_str
         \keys_set:nn { enumext / enumext* } {#1}
-        \__enumext_parse_series_name:n {#1}
+        \__enumext_parse_series:n {#1}
         \bool_if:NT \l__enumext_store_active_bool
           {
             \__enumext_parse_store_keys_vii:n {#1}
