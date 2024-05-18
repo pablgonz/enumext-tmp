@@ -3636,7 +3636,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}{\g_@@_resume_int, \g_@@_resume_vii_int, \l_@@_resume_name_tl,
-%                  \l_@@_resume_name_bool, \g_@@_item_symbol_tl, \g_@@_standar_series_tl,
+%                  \l_@@_resume_active_bool, \g_@@_item_symbol_tl, \g_@@_standar_series_tl,
 %                  \g_@@_starred_series_tl,}
 %
 %    The boolean variable \cs{l_@@_resume_bool} is used by \mykey{resume} key,
@@ -3651,7 +3651,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N  \g_@@_resume_int
 \int_new:N  \g_@@_resume_vii_int
 \tl_new:N   \l_@@_resume_name_tl
-\bool_new:N \l_@@_resume_name_bool
+\bool_new:N \l_@@_resume_active_bool
 \tl_new:N   \g_@@_item_symbol_tl
 \tl_new:N   \g_@@_standar_series_tl
 \tl_new:N   \g_@@_starred_series_tl
@@ -6437,7 +6437,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 %
-% \subsection{Setting \texttt{series} and \texttt{resume} keys}\label{key:resume}
+% \subsection{Setting \texttt{series}, \texttt{resume} and \texttt{resume*} keys}\label{key:series}
 %
 % The \mykey{series} key is responsible for the whole process of the
 % \mykey{resume} and \mykey{resume*} keys. The idea behind this is to be
@@ -6475,7 +6475,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mymeta{keys} we want to store where |{#1}| represents the optional
 %   value passed to the environment.
 % \iffalse
-%% Internal function used by |series| key.
+%% Internal function for filter keys.
 % \fi
 %    \begin{macrocode}
 \cs_new:Npn \@@_filter_series:n #1
@@ -6528,19 +6528,29 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   creation of the integer variable
 %   \myvarenv{g__@@_series_\mymeta[cf=gray]{series name}_int} when the key
 %   is passed as an argument; otherwise, it will check the state of the
-%   boolean variable \cs{l_@@_resume_name_bool} set by the keys
+%   boolean variable \cs{l_@@_resume_active_bool} set by the keys
 %   \mykey{resume} and  \mykey{resume*} and will call the function
 %   \cs{@@_resume_last:n}.
+% \begin{important}*
+%   The value of boolean variable \cs{l_@@_resume_active_bool} is set to
+%   true by the function \cs{@@_resume_counter:n} which is used by the keys
+%   \mykey{resume} and \mykey{resume*}, in this case we must Make sure it
+%   is set to false so that it does not overwrite the default filtered
+%   \mymeta{keys}.
 %   This function is passed to the function \cs{@@_parse_keys:n}
 %   in the \myenv*{enumext} environment definition (\S\ref{env:enumext})
 %   and to the function \cs{@@_parse_keys_vii:n} in the \myenv*{enumext*}
 %   environment definition (\S\ref{env:starred}).
+% \end{important}
+% \iffalse
+%% Internal function for parse filter keys used by |series|, |resume| and |resume*| keys.
+% \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_series:n #1
   {
     \str_if_empty:NTF \l_@@_series_str
       {
-        \bool_if:NF \l_@@_resume_name_bool
+        \bool_if:NF \l_@@_resume_active_bool
           {
             \@@_resume_last:n {#1}
           }
@@ -6564,6 +6574,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   Here we must use |\bool_lazy_all:nT| to make sure that the default
 %   values are not overwritten when the environment is nested and the
 %   \mykey{series} key is not being used.
+% \iffalse
+%% Save keys for last environment wiyhout |series|, |resume| and |resume*| keys active.
+% \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_resume_last:n #1
   {
@@ -6583,32 +6596,122 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Internal function for \texttt{resume} and \texttt{resume*} keys}
+% \subsubsection{Internal function to save counter value}
 %
-% The keys \mykey{resume} without assigned value and \mykey{resume*}
-% reset the \emph{counter} of the list according to the last value of the
-% counter of the previous list, the first one only the \emph{counter} and
-% the second one with the optional values filtered from the last
-% non-nested list in which the key \mykey{series} is not present. When
-% assigning value to \mykey{resume}|=|\mymarg{series name} it will use
-% the previous values of the list in which the \mykey{series}|=|\mymarg{series name} key was
-% executed.
+%^^A The keys \mykey{resume} without assigned value and \mykey{resume*}
+%^^A reset the \emph{counter} of the list according to the last value of the
+%^^A counter of the previous list, the first one only the \emph{counter} and
+%^^A the second one with the optional values filtered from the last
+%^^A non-nested list in which the key \mykey{series} is not present. When
+%^^A assigning value to \mykey{resume}|=|\mymarg{series name} it will use
+%^^A the previous values of the list in which the \mykey{series}|=|\mymarg{series name} key was
+%^^A executed.
+%
+% \begin{macro}{\@@_resume_save_counter:}
+%
+%   The \cs{@@_resume_save_counter:} function will save the last counter
+%   value to \myvarenv{g__@@_series_\mymeta[cf=gray]{series name}_int} if
+%   the \mykey{series}|=|\mymarg{series name} key has been passed, to
+%   \myvarenv{g__@@_resume_int} if it has passed the key \mykey{resume}
+%   \emph{without value} and the key \mykey{series} is not active, in
+%   \myvarenv{g__@@_series_\mymeta[cf=gray]{series name}_int} if the key
+%   \mykey{resume}|=|\mymarg{series name} has been passed and in
+%   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_int} if the key has
+%   been passed \mykey{save-ans}|=|\mymarg{store name}.
+%
+%   \smallskip
+%
+% \begin{important}*
+%   The variables \cs{l_@@_series_str} and \cs{l_@@__resume_name_tl}
+%   contain the same \mymarg{series name} but are executed at different
+%   moments. The integer variable with \cs{l_@@_series_str} sets the value
+%   when we execute the \mykey{series}|=|\mymarg{series name} and the
+%   integer variable with \cs{l_@@__resume_name_tl} sets the subsequent
+%   values when we use the \mykey{resume}|=|\mymarg{series name}.
+%   This function is passed to the \myenv*{enumext} environment definition (\S\ref{env:enumext})
+%   and the \myenv*{enumext*} environment definition (\S\ref{env:starred}).
+% \end{important}
+% \iffalse
+%% Internal function to save counter value and set int vars for |series|, |resume| and |resume*| keys.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_resume_save_counter:
+  {
+    \bool_if:NT \g_@@_standar_bool
+      {
+        \tl_if_empty:NF \l_@@_series_str
+          {
+            \int_gset_eq:cN
+              { g_@@_series_ \l_@@_series_str _int } \value{enumXi}
+          }
+        \tl_if_empty:NTF \l_@@_resume_name_tl
+          {
+            \str_if_empty:NT \l_@@_series_str
+              {
+                \int_gset_eq:NN \g_@@_resume_int \value{enumXi}
+              }
+          }
+          {
+            \int_if_exist:cT { g_@@_series_ \l_@@_resume_name_tl _int }
+              {
+                \int_gset_eq:cN
+                  { g_@@_series_ \l_@@_resume_name_tl _int } \value{enumXi}
+              }
+          }
+        \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
+          {
+            \int_gset_eq:cN
+              { g_@@_resume_ \l_@@_store_name_tl _int } \value{enumXi}
+          }
+      }
+    \bool_if:NT \g_@@_starred_bool
+      {
+        \tl_if_empty:NF \l_@@_series_str
+          {
+            \int_gset_eq:cN
+              { g_@@_series_ \l_@@_series_str _int } \value{enumXvii}
+          }
+        \tl_if_empty:NTF \l_@@_resume_name_tl
+          {
+            \str_if_empty:NT \l_@@_series_str
+              {
+                \int_gset_eq:NN \g_@@_resume_vii_int \value{enumXvii}
+              }
+          }
+          {
+            \int_if_exist:cT { g_@@_series_ \l_@@_resume_name_tl _int }
+              {
+                \int_gset_eq:cN
+                  { g_@@_series_ \l_@@_resume_name_tl _int } \value{enumXvii}
+              }
+          }
+        \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
+          {
+            \int_gset_eq:cN
+              { g_@@_resume_ \l_@@_store_name_tl _int } \value{enumXvii}
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Internal functions for \texttt{resume} key}
 %
 % \begin{macro}{\@@_resume_series:n}
 %   The function \cs{@@_resume_series:n} will handle the argument
-%   passed to the \mykey{resume} key in the \myenv*{enumext} environment.
+%   passed to the \mykey{resume} key in \myenv*{enumext} and \myenv*{enumext*} environments.
 %   If the key is passed \emph{without value} the function
 %   \cs{@@_resume_counter:} is executed which will set the counter
-%   according to the numbering of the last \myenv*{enumext} environment in
-%   which the \mykey{series}|=|\mymarg{series name} key is not present, if
+%   according to the numbering of the last \myenv*{enumext} or \myenv*{enumext*} environments in
+%   which \mykey{series}|=|\mymarg{series name} key is not present, if
 %   the \mykey{save-ans} key is active it will set the counter according to
 %   the value of the integer variable created by that key, otherwise it
-%   will verify that the \myvarenv{g__@@_series_\mymeta{series name}_tl}
+%   will verify that the \myvarenv{g__@@_series_\mymeta[cf=gray]{series name}_tl}
 %   variable set by the \mykey{series} key exists, if so it will pass these
 %   keys to the \emph{first level} of the environment, otherwise it will
 %   return an error.
 % \iffalse
-%% Internal code for |resume| and |resume*| keys for |enumext|.
+%% Internal function for |resume| key.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_resume_series:n #1
@@ -6632,36 +6735,45 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                   { g_@@_series_ \tl_to_str:n {#1} _tl }
               }
           }
-        { \msg_error:nnn { enumext } { unknown-series } {#1} }
+          {
+            \bool_if:NT \g_@@_standar_bool
+              {
+                \msg_error:nnn { enumext } { unknown-series } {#1}
+              }
+            \bool_if:NT \g_@@_starred_bool
+              {
+                \msg_error:nnn { enumext } { unknown-series } {#1}
+              }
+          }
       }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_resume_counter:n, \@@_resume_counter:, \@@_resume_counter_name:, \@@_resume_counter_store:}
+% \begin{macro}{\@@_resume_counter:n, \@@_resume_counter:, \@@_resume_counter_series:, \@@_resume_counter_save_ans:}
 %   The function \cs{@@_resume_counter:n} will set the variable
-%   \cs{l_@@_resume_name_bool} to true and pass the value of the key
+%   \cs{l_@@_resume_active_bool} to true and pass the value of the key
 %   \mykey{resume} to the variable \cs{l_@@_series_name_tl} which will
 %   contain the \mymarg{series name}. If the variable \cs{l_@@_series_name_tl} is
 %   empty, that is, we are passing the key \mykey{resume} \emph{without value}, we
 %   will execute the function \cs{@@_resume_counter:} otherwise, when we
 %   pass \mykey{resume}|=|\mymarg{series name} we will execute the function
-%   \cs{@@_resume_counter_name:}, finally we will execute the function
-%   \cs{@@_resume_counter_store:} which is associated with the key
+%   \cs{@@_resume_counter_series:}, finally we will execute the function
+%   \cs{@@_resume_counter_save_ans:} which is associated with the key
 %   \mykey{save-ans}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_resume_counter:n #1
   {
-    \bool_set_true:N \l_@@_resume_name_bool
+    \bool_set_true:N \l_@@_resume_active_bool
     \tl_set:Nn \l_@@_resume_name_tl {#1}
     \tl_if_empty:NTF \l_@@_resume_name_tl
       {
         \@@_resume_counter:
       }
       {
-        \@@_resume_counter_name:
+        \@@_resume_counter_series:
       }
-    \@@_resume_counter_store:
+    \@@_resume_counter_save_ans:
   }
 %    \end{macrocode}
 %   The \cs{@@_resume_counter:} function is executed when the
@@ -6682,13 +6794,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%   The function \cs{@@_resume_counter_name:} will be executed when the
+%   The function \cs{@@_resume_counter_series:} will be executed when the
 %   \mykey{resume}|=|\mymarg{series name} key is active, setting the
 %   counters for the \emph{\enquote{first level}} of the environments
 %   according to the value of the integer variables created by the
 %   \mykey{series} key.
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_resume_counter_name:
+\cs_new_protected:Nn \@@_resume_counter_series:
   {
     \bool_if:NT \g_@@_standar_bool
       {
@@ -6706,13 +6818,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%   The function \cs{@@_resume_counter_store:} will be executed when the
+%   The function \cs{@@_resume_counter_save_ans:} will be executed when the
 %   \mykey{save-ans} key is active along with the \mykey{resume} key,
 %   setting the counters for the \emph{\enquote{first level}} of the
 %   environments according to the value of the integer variables created by
 %   the \mykey{save-ans} key.
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_resume_counter_store:
+\cs_new_protected:Nn \@@_resume_counter_save_ans:
   {
     \bool_lazy_and:nnT
       { \bool_if_p:N \l_@@_standar_level_one_bool }
@@ -6736,7 +6848,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsubsection{Internal function for \texttt{resume*} key}
+%
 % \begin{macro}{\@@_resume_starred:}
+%   The function \cs{@@_resume_starred:} will handle the \mykey{resume*}
+%   key in the \myenv*{enumext} and \myenv*{enumext*} environments. This
+%   function will execute the filtered keys in the last one and will
+%   continue with the numbering according to the last execution of the
+%   environment \myenv*{enumext} or \myenv*{enumext*} in which the keys
+%   \mykey{resume}|=|\mymarg{series name} or \mykey{series}|=|\mymarg{series name} were not active.
+% \iffalse
+%% Internal function for |resume*| key.
+% \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_resume_starred:
   {
@@ -6754,62 +6877,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \@@_resume_counter:n { }
             \keys_set:nV { enumext / enumext* } \g_@@_starred_series_tl
-          }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\@@_resume_counter_set:}
-%
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_resume_counter_set:
-  {
-    \bool_if:NT \g_@@_standar_bool
-      {
-        \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
-          {
-            \int_gset_eq:cN { g_@@_resume_ \l_@@_store_name_tl _int } \value{enumXi}
-          }
-        \tl_if_empty:NF \l_@@_series_str
-          {
-            \int_gset_eq:cN { g_@@_series_ \l_@@_series_str _int } \value{enumXi}
-          }
-        \tl_if_empty:NTF \l_@@_resume_name_tl
-          {
-            \str_if_empty:NT \l_@@_series_str
-              {
-                 \int_gset_eq:NN \g_@@_resume_int \value{enumXi}
-              }
-          }
-          {
-            \int_if_exist:cT { g_@@_series_ \l_@@_resume_name_tl _int }
-              {
-                \int_gset_eq:cN { g_@@_series_ \l_@@_resume_name_tl _int } \value{enumXi}
-              }
-          }
-      }
-    \bool_if:NT \g_@@_starred_bool
-      {
-        \int_if_exist:cT { g_@@_resume_ \l_@@_store_name_tl _int }
-          {
-            \int_gset_eq:cN { g_@@_resume_ \l_@@_store_name_tl _int } \value{enumXvii}
-          }
-        \tl_if_empty:NF \l_@@_series_str
-          {
-            \int_gset_eq:cN { g_@@_series_ \l_@@_series_str _int } \value{enumXvii}
-          }
-        \tl_if_empty:NTF \l_@@_resume_name_tl
-          {
-            \str_if_empty:NT \l_@@_series_str
-              {
-                 \int_gset_eq:NN \g_@@_resume_vii_int \value{enumXvii}
-              }
-          }
-          {
-            \int_if_exist:cT { g_@@_series_ \l_@@_resume_name_tl _int }
-              {
-                \int_gset_eq:cN { g_@@_series_ \l_@@_resume_name_tl _int } \value{enumXvii}
-              }
           }
       }
   }
@@ -9169,7 +9236,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   value of the current counter.
 %    \begin{macrocode}
     \bool_set_false:N \l_@@_standar_bool
-    \@@_resume_counter_set:
+    \@@_resume_save_counter:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10143,9 +10210,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_stop_mini_vii:
     \@@_after_stop_list_vii:
     \@@_vspace_below_vii:
-    %\bool_gset_false:N \g_@@_starred_bool
     \bool_set_false:N \l_@@_starred_bool
-    \@@_resume_counter_set:
+    \@@_resume_save_counter:
   }
 %    \end{macrocode}
 % \end{macro}
