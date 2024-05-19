@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-17}
+  {2024-05-19}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -1462,7 +1462,7 @@
         resume  .code:n = \__enumext_resume_series:n {##1},
         resume* .code:n = \__enumext_resume_starred:,
         resume* .value_forbidden:n = true,
-     }
+      }
   }
 \clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
 %% Internal function for filter keys.
@@ -1490,9 +1490,10 @@
       {
         { series } {}
         { resume } {}
+        { start } {}
         { save-ans } {}
         { save-key } {}
-       }
+      }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
 %% Internal function for parse filter keys used by |series|, |resume| and |resume*| keys.
@@ -1520,13 +1521,11 @@
   {
     \bool_if:NT \l__enumext_standar_level_one_bool
       {
-        %%\typeout{[[ON-LEVEL-ONE-ENUMEXT]]}
         \tl_gclear:N \g__enumext_standar_series_tl
         \tl_gset:Ne \g__enumext_standar_series_tl { \__enumext_filter_series:n {#1} }
       }
     \bool_if:NT \l__enumext_starred_level_one_bool
       {
-        %%\typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
         \tl_gclear:N \g__enumext_starred_series_tl
         \tl_gset:Ne \g__enumext_starred_series_tl { \__enumext_filter_series:n {#1} }
       }
@@ -1708,57 +1707,47 @@
       }
   }
 %% Add |save-ans| key only on first level off |enumext| and |enumext*|.
-\keys_define:nn { enumext / level-1 }
+\cs_set_protected:Npn \__enumext_tmp:n #1
   {
-    save-ans .code:n = \__enumext_storing_set:n {#1},
-    save-ans .value_required:n = true,
+    \keys_define:nn { enumext / #1 }
+      {
+        save-ans .code:n = \__enumext_storing_set:n {##1},
+        save-ans .value_required:n = true,
+      }
   }
-\keys_define:nn { enumext / enumext* }
-  {
-    save-ans .code:n = \__enumext_storing_set_vii:n {#1},
-    save-ans .value_required:n = true,
-  }
+\clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
 %% Function to activate ALL "storing" (and |check-ans|, |no-store|, |resume|) used by |save-ans| key.
 \cs_new_protected:Npn \__enumext_storing_set:n #1
   {
     \tl_set:Ne \l__enumext_store_name_tl {#1}
     \tl_if_empty:NTF \l__enumext_store_name_tl
       {
-        \msg_error:nnn { enumext } { save-ans-empty } { enumext }
+        \bool_if:NT \l__enumext_standar_level_one_bool
+          {
+            \msg_error:nnnV
+              { enumext } { save-ans-empty } { enumext } \g__enumext_standar_star_env_int
+          }
+        \bool_if:NT \l__enumext_starred_level_one_bool
+          {
+            \msg_error:nnnV
+              { enumext } { save-ans-empty } { enumext* } \g__enumext_starred_star_env_int
+          }
       }
       {
-        \__enumext_storing_standar:
-      }
-  }
-\cs_new_protected:Npn \__enumext_storing_set_vii:n #1
-  {
-    \tl_set:Ne \l__enumext_store_name_tl {#1}
-    \tl_if_empty:NTF \l__enumext_store_name_tl
-      {
-        \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
-      }
-      {
-        \__enumext_storing_starred:
-      }
-  }
-\cs_new_protected:Nn \__enumext_storing_standar:
-  {
-    \bool_if:NTF \l__enumext_standar_level_one_bool
-      {
-        \__enumext_storing_exec:
-      }
-      {
-        \msg_warning:nnn { enumext } { save-ans-nested } { enumext }
-      }
-  }
-\cs_new_protected:Nn \__enumext_storing_starred:
-  {
-    \bool_if:NTF \l__enumext_starred_level_one_bool
-      {
-        \__enumext_storing_exec:
-      }
-      {
-        \msg_warning:nnn { enumext } { save-ans-nested } { enumext* }
+        \bool_if:NT \l__enumext_standar_level_one_bool
+          {
+            \msg_note:nnnee
+              { enumext } { save-ans-ok } { enumext }
+              { \l__enumext_store_name_tl } { \int_use:N \g__enumext_standar_star_env_int }
+            \__enumext_storing_exec:
+          }
+        \bool_if:NT \l__enumext_starred_level_one_bool
+          {
+            \msg_note:nnnee
+              { enumext } { save-ans-ok } { enumext* }
+              { \l__enumext_store_name_tl } { \int_use:N \g__enumext_starred_star_env_int }
+            \__enumext_storing_exec:
+          }
       }
   }
 \cs_new_protected:Nn \__enumext_storing_exec:
@@ -4248,11 +4237,11 @@
   }
 \msg_new:nnn { enumext } { save-ans-empty }
   {
-    The ~ 'save-ans' ~ key ~ cannot ~ be ~ empty~ in ~ '#1'. ~ \msg_line_context:.
+    Key ~ 'save-ans' ~ need ~ a ~ value ~ in ~ '#1' ~ on ~ line ~ #2.
   }
-\msg_new:nnn { enumext } { save-ans-nested }
+\msg_new:nnn { enumext } { save-ans-ok }
   {
-    The ~ 'save-ans' ~ key ~ cannot ~ be ~ used ~ in ~ nested ~ '#1'. ~ \msg_line_context:.
+    Set ~ 'save-ans=#2' ~ in ~'#1' ~ on ~ line ~ #3.
   }
 \msg_new:nnn { enumext } { items-same-answer }
   {

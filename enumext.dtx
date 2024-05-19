@@ -1849,29 +1849,60 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \mykey{label} key on the current level, i.e. it is equivalent to enter
 % |start=5|, |start=E| or |start=v|.
 %
+% \smallskip
+%
+% \begin{important}*
+% The following \mymeta{keys} are \emph{\enquote{only}} available for the
+% \emph{\enquote{first level}} of \myenv*{enumext} and \myenv*{enumext*}
+% and are ignored if set when nested inside each other.
+% \end{important}
+%
 % \keyexamp{series}{series name}{not used}
-% Stores the \mymeta{keys} of the optional argument of the \emph{first
-% level} of the environment in which it is executed in \mymarg{series
+% Stores the \emph{keys} of the optional argument of the \emph{\enquote{first level}}
+% of the environment in which it is executed in \mymarg{series
 % name} which is used as an argument in the key \mykey{resume}. The \mymeta{keys}
 % stored in \mymarg{series name} are not cumulative and are overwritten
-% if the same value is used again, this key is only available for the
-% \myenv*{enumext} and \myenv*{enumext*} environments that are not nested
-% within each other.
+% if the same \mymarg{series name} is used again.
 %
 % \keyexamp{resume}{series name}{not used}
-% Sets the \emph{start value} of the numbering on the current level.
-% Internally \mymeta{string} is passed as value to the counter defined by
-% \mykey{label} key on the current level, i.e. it is equivalent to enter
-% |start=5|, |start=E| or |start=v|.
+% Sets the \emph{start value} and \emph{options} for the \emph{\enquote{first
+% level}} continuing the numbering of the environment in which the
+% \mykey{series}|=|\mymarg{series name} key was executed. If passed
+% \emph{without value} this will only set \emph{start value} continue the
+% numbering from the last environment in which \mykey{series}|=|\mymarg{series name}
+% or \mykey{resume}|=|\mymarg{series name} is not present and if the
+% \mykey{save-ans} key is active it will continue the numbering from the
+% last environment in which it was executed. The \emph{start value} can be
+% overwritten using the \mykey{start} key.
 %
 % \keyexamp*{resume*}{value forbidden}{not used}
-% Sets the \emph{start} to value from the previous of the counter
-% defined by \mykey{label} key for the \emph{\enquote{first level}}. This
-% \mymeta{key} does not receive an argument. The \mymeta{key} can be
-% overwritten using the \mykey{start} key. If the \mykey{save-ans} key is
-% present and \mymarg[type=tt]{store name} exist, the numbering will
-% continue according to this key. This key is \emph{\enquote{only}}
-% available for the \emph{\enquote{first level}} of \myenv*{enumext}.
+% Sets the \emph{start value} and \emph{options} for the
+% \emph{\enquote{first level}} continuing the numbering of the
+% environment in which the \mykey{series}|=|\mymarg{series name} or
+% \mykey{resume}|=|\mymarg{series name} keys are NOT present, if the
+% \mykey{save-ans} key is active it will continue the numbering from the
+% last environment in which it was executed. The \emph{start value}
+% can be overwritten using the \mykey{start} key.
+%
+% \smallskip
+%
+% \begin{important}*
+% For security reasons the \mykey{series} key will never save in
+% \mymarg{series name} the keys \mykey{series}, \mykey{resume},
+% \mykey{resume*}, \mykey{save-ans}, \mykey{save-key} and \mykey{start}.
+% When using the key \mykey{resume}|=|\mymarg{series name} it will
+% have hierarchy in the \mymeta{keys} that are saved in \mymarg{series
+% name}, in order to establish the value of a \mymeta{key} already saved
+% in \mymarg{series name} it must be placed to the \emph{\enquote{right}}
+% of \mykey{resume}|=|\mymarg{series name}, the same thing happens with
+% the \mykey{resume*} key, the exception is the \mykey{save-ans} key
+% that must be placed on the \emph{\enquote{left}} if you want to start
+% the numbering with its value.
+% The \mykey{resume} key passed \emph{\enquote{without value}} must be
+% exactly \emph{\enquote{without value}}, i.e. \mykey{resume}|=| cannot
+% be used and if executed before \mykey{resume*} it will affect the
+% \emph{start value}.
+% \end{important}
 %
 % \subsection{Keys for \env{multicols}}\label{key:multi}
 %
@@ -1948,19 +1979,20 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{miniright}{code for drawing or tabular}{not used}
 % Set the \emph{code} for the drawing or tabular to be placed in the
 % \myenv{minipage} environment on the \emph{\enquote{right side}} by
-% starting it with the command |\centering|.
+% starting it with |\centering|.
 %
 % \keyexamp{miniright\textcolor{MediumOrchid}{*}}{code for drawing or tabular}{not used}
-% Same as above, but \emph{without} starting with the |\centering| command.
+% Same as above, but \emph{without} starting with |\centering|.
 %
 % \section{The storage system}\label{sec:storage system}
 %
 % The entire mechanism for \emph{\enquote{storing content}} it is
 % activated according to \mykey{save-ans} key on the
-% \emph{\enquote{first level}} of \myenv*{enumext} environment. Only
-% when this \mymeta{key} is \emph{\enquote{active}} the \ics*{anskey}
-% command and the environments \myenv*{keyans} and \myenv*{keyanspic} are
-% available.
+% \emph{\enquote{first level}} of \myenv*{enumext} or \myenv*{enumext*}
+% environments and it is ignored if they are established when they are
+% nested inside each other. Only when this \mymeta{key} is \emph{\enquote{active}}
+% the \ics*{anskey} command and the environments \myenv*{keyans}, \myenv*{keyans*}
+% and \myenv*{keyanspic} are available.
 %
 % \iffalse
 %<*example>
@@ -1996,10 +2028,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{save-ans}{store name}{not set}
 % Sets the \emph{name} of the \mymeta{sequence} and
 % \mymeta{prop list} in which the contents will be \emph{\enquote{stored}} by
-% \ics*{anskey} in \myenv*{enumext} environment, \ics*{item*} in
+% \ics*{anskey} in \myenv*{enumext} and \myenv*{enumext*} environments, \ics*{item*} in
 % \myenv*{keyans} and \myenv*{keyans*} environments and \ics*{anspic*} in \myenv*{keyanspic}
 % environment. If the \mymeta{sequence} or \mymeta{prop list} does not
-% exist, it will be created globally.
+% exist, it will be created globally and will not be overwritten if the key is used again..
 %
 % \smallskip
 %
@@ -3564,7 +3596,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-17}
+  {2024-05-19}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -6477,7 +6509,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         resume  .code:n = \@@_resume_series:n {##1},
         resume* .code:n = \@@_resume_starred:,
         resume* .value_forbidden:n = true,
-     }
+      }
   }
 \clist_map_inline:nn { level-1, enumext* } { \@@_tmp:n {#1} }
 %    \end{macrocode}
@@ -6519,7 +6551,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   The function \cs{@@_filter_series_pair:nn} will be responsible for
 %   filtering the \mymeta{keys} that are passed \emph{\enquote{with value}} by
-%   excluding the \mykey{series}, \mykey{resume}, \mykey{save-ans} and
+%   excluding the \mykey{series}, \mykey{resume}, \mykey{start}, \mykey{save-ans} and
 %   \mykey{save-key} keys.
 %    \begin{macrocode}
 \cs_new:Npn \@@_filter_series_pair:nn #1#2
@@ -6528,9 +6560,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         { series } {}
         { resume } {}
+        { start } {}
         { save-ans } {}
         { save-key } {}
-       }
+      }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
 %    \end{macrocode}
@@ -6597,13 +6630,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_if:NT \l_@@_standar_level_one_bool
       {
-        %%\typeout{[[ON-LEVEL-ONE-ENUMEXT]]}
         \tl_gclear:N \g_@@_standar_series_tl
         \tl_gset:Ne \g_@@_standar_series_tl { \@@_filter_series:n {#1} }
       }
     \bool_if:NT \l_@@_starred_level_one_bool
       {
-        %%\typeout{[[ON-LEVEL-ONE-ENUMEXT*]]}
         \tl_gclear:N \g_@@_starred_series_tl
         \tl_gset:Ne \g_@@_starred_series_tl { \@@_filter_series:n {#1} }
       }
@@ -6612,15 +6643,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \subsubsection{Internal function to save counter value}
-%
-%^^A The keys \mykey{resume} without assigned value and \mykey{resume*}
-%^^A reset the \emph{counter} of the list according to the last value of the
-%^^A counter of the previous list, the first one only the \emph{counter} and
-%^^A the second one with the optional values filtered from the last
-%^^A non-nested list in which the key \mykey{series} is not present. When
-%^^A assigning value to \mykey{resume}|=|\mymarg{series name} it will use
-%^^A the previous values of the list in which the \mykey{series}|=|\mymarg{series name} key was
-%^^A executed.
 %
 % \begin{macro}{\@@_resume_save_counter:}
 %
@@ -6868,7 +6890,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_resume_starred:}
 %   The function \cs{@@_resume_starred:} will handle the \mykey{resume*}
 %   key in the \myenv*{enumext} and \myenv*{enumext*} environments. This
-%   function will execute the filtered keys in the last one and will
+%   function will execute the filtered \mymeta{keys} in the last one and will
 %   continue with the numbering according to the last execution of the
 %   environment \myenv*{enumext} or \myenv*{enumext*} in which the keys
 %   \mykey{resume}|=|\mymarg{series name} or \mykey{series}|=|\mymarg{series name} were not active.
@@ -6911,32 +6933,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Add |save-ans| key only on first level off |enumext| and |enumext*|.
 % \fi
 %    \begin{macrocode}
-\keys_define:nn { enumext / level-1 }
+\cs_set_protected:Npn \@@_tmp:n #1
   {
-    save-ans .code:n = \@@_storing_set:n {#1},
-    save-ans .value_required:n = true,
+    \keys_define:nn { enumext / #1 }
+      {
+        save-ans .code:n = \@@_storing_set:n {##1},
+        save-ans .value_required:n = true,
+      }
   }
-\keys_define:nn { enumext / enumext* }
-  {
-    save-ans .code:n = \@@_storing_set_vii:n {#1},
-    save-ans .value_required:n = true,
-  }
+\clist_map_inline:nn { level-1, enumext* } { \@@_tmp:n {#1} }
 %    \end{macrocode}
 % \end{macro}
 %
 % \subsubsection{Internal functions for \texttt{save-ans} key}
 %
-% \begin{macro}{\@@_storing_set:n, \@@_storing_set_vii:n,
-%               \@@_storing_standar:, \@@_storing_starred:,
-%               \@@_storing_exec:,}
-%   The functions \cs{@@_storing_set:n} and \cs{@@_storing_set_vii:n}
-%   first pass the value of the \mykey{save-ans} key to the
-%   variable \cs{l_@@_store_name_tl} which will contain the \emph{“store
-%   name”} of the \mymeta{sequence} and \mymeta{prop list} we will use. If
-%   \cs{l_@@_store_name_tl} is empty we return an error message, otherwise
-%   we proceed to execute the functions \cs{@@_storing_standar:} for the
-%   \myenv*{enumext} environment and \cs{@@_storing_starred:} for the
-%   \myenv*{enumext*} environment.
+% \begin{macro}{\@@_storing_set:n, \@@_storing_exec:,}
+%    The function \cs{@@_storing_set:n} first pass the value of the
+%    \mykey{save-ans} key to the variable \cs{l_@@_store_name_tl}
+%    which will contain the \emph{“store name”} of the \mymeta{sequence}
+%    and \mymeta{prop list} we will use. If \cs{l_@@_store_name_tl} is
+%    empty we return an error message, otherwise we proceed to execute
+%    the function \cs{@@_storing_exec:} for \myenv*{enumext} and \myenv*{enumext*} environments.
 %
 % \iffalse
 %% Function to activate ALL "storing" (and |check-ans|, |no-store|, |resume|) used by |save-ans| key.
@@ -6947,47 +6964,32 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_set:Ne \l_@@_store_name_tl {#1}
     \tl_if_empty:NTF \l_@@_store_name_tl
       {
-        \msg_error:nnn { enumext } { save-ans-empty } { enumext }
+        \bool_if:NT \l_@@_standar_level_one_bool
+          {
+            \msg_error:nnnV
+              { enumext } { save-ans-empty } { enumext } \g_@@_standar_star_env_int
+          }
+        \bool_if:NT \l_@@_starred_level_one_bool
+          {
+            \msg_error:nnnV
+              { enumext } { save-ans-empty } { enumext* } \g_@@_starred_star_env_int
+          }
       }
       {
-        \@@_storing_standar:
-      }
-  }
-\cs_new_protected:Npn \@@_storing_set_vii:n #1
-  {
-    \tl_set:Ne \l_@@_store_name_tl {#1}
-    \tl_if_empty:NTF \l_@@_store_name_tl
-      {
-        \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
-      }
-      {
-        \@@_storing_starred:
-      }
-  }
-%    \end{macrocode}
-%   The functions \cs{@@_storing_standar:} and \cs{@@_storing_starred:}
-%   will verify the state of the variables \cs{g_@@_standar_level_one_bool}
-%   and \cs{g_@@_starred_level_one_bool}, if this is true we execute the
-%   function \cs{@@_storing_exec:} otherwise we return an warning message.
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_storing_standar:
-  {
-    \bool_if:NTF \l_@@_standar_level_one_bool
-      {
-        \@@_storing_exec:
-      }
-      {
-        \msg_warning:nnn { enumext } { save-ans-nested } { enumext }
-      }
-  }
-\cs_new_protected:Nn \@@_storing_starred:
-  {
-    \bool_if:NTF \l_@@_starred_level_one_bool
-      {
-        \@@_storing_exec:
-      }
-      {
-        \msg_warning:nnn { enumext } { save-ans-nested } { enumext* }
+        \bool_if:NT \l_@@_standar_level_one_bool
+          {
+            \msg_note:nnnee
+              { enumext } { save-ans-ok } { enumext }
+              { \l_@@_store_name_tl } { \int_use:N \g_@@_standar_star_env_int }
+            \@@_storing_exec:
+          }
+        \bool_if:NT \l_@@_starred_level_one_bool
+          {
+            \msg_note:nnnee
+              { enumext } { save-ans-ok } { enumext* }
+              { \l_@@_store_name_tl } { \int_use:N \g_@@_starred_star_env_int }
+            \@@_storing_exec:
+          }
       }
   }
 %    \end{macrocode}
@@ -7002,8 +7004,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_seq} will be
 %   created globally to \emph{\enquote{store content}} in case they do not
 %   exist together with the integer variable
-%   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_int} used by the
-%   \mykey{resume} and  \mykey{resume*} keys.
+%   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_int} used by the keys
+%   \mykey{resume} and \mykey{resume*}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_storing_exec:
   {
@@ -11527,11 +11529,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { save-ans-empty }
   {
-    The ~ 'save-ans' ~ key ~ cannot ~ be ~ empty~ in ~ '#1'. ~ \msg_line_context:.
+    Key ~ 'save-ans' ~ need ~ a ~ value ~ in ~ '#1' ~ on ~ line ~ #2.
   }
-\msg_new:nnn { enumext } { save-ans-nested }
+\msg_new:nnn { enumext } { save-ans-ok }
   {
-    The ~ 'save-ans' ~ key ~ cannot ~ be ~ used ~ in ~ nested ~ '#1'. ~ \msg_line_context:.
+    Set ~ 'save-ans=#2' ~ in ~'#1' ~ on ~ line ~ #3.
   }
 %    \end{macrocode}
 %
