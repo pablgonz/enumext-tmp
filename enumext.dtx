@@ -4691,6 +4691,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{Setting \texttt{label} and \texttt{ref} keys}\label{key:label-ref}
 %
+% The implementation of the keys \mykey{label} and \mykey{ref} are part
+% of the core of the package \mypkg*{enumext}, here the default values
+% for \mymeta{label}, the value of the variables \myvarenv{l__@@_label_X_tl},
+% the default values for |\labelwidth| and the \emph{\enquote{label and ref}} system.
+%
 % \subsubsection{Define and set \texttt{label} and \texttt{ref} keys for \env{enumext} environment}
 %
 % \begin{macro}[int]{label,ref,\l_@@_label_i_tl,\l_@@_label_ii_tl, \l_@@_label_iii_tl, \l_@@_label_iv_tl}
@@ -4725,16 +4730,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_standar_ref:n, \@@_standar_ref:,}
-%    The \cs{@@_standar_ref:n} first we will pass the key argument to the variable
+%    The \cs{@@_standar_ref:n} first we will pass the key argument to
 %    \cs{l_@@_ref_key_arg_tl} and we will analyze its state, if it is not
-%    empty we will make a copy of the current counter in the variable
-%    \cs{l_@@ _ref_the_count_tl} and we will execute the function
-%    \cs{@@_regex_counter_style:} which will return the modified variable
-%    \cs{l_@@_ref_key_arg_tl} and we make the value of the variable
-%    \cs{l_@@_ref_the_count_tl} the same as that of the variable
-%    \myvarenv{l__@@_the_counter_X_tl} which contains |\theenumX| and
-%    finally we set \myvarenv{l__@@_renew_the_count_X_tl} with the
-%    renewed command.
+%    \emph{empty} we will make a copy of the current counter in \cs{l_@@ _ref_the_count_tl}
+%    and we will execute the function \cs{@@_regex_counter_style:} which
+%    will return the modified \cs{l_@@_ref_key_arg_tl} and we make the
+%    value of \cs{l_@@_ref_the_count_tl} the same as that \myvarenv{l__@@_the_counter_X_tl}
+%    which contains |\theenumX| and finally we set \myvarenv{l__@@_renew_the_count_X_tl}
+%    with the renewed command.
 % \iffalse
 %% Internal function used by |ref| key in enumext environment.
 % \fi
@@ -4776,7 +4779,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
-%
 %
 % \subsubsection{Define and set \texttt{label} and \texttt{ref} keys for \env{enumext*} and \env{keyans*} environments}
 %
