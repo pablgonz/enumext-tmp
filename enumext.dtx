@@ -1290,7 +1290,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \ics{label} and \ics{ref} commands work as usual.
 % It also provides an \emph{\enquote{internal reference}} system for the
 % \emph{\enquote{stored content}} by means of the key \mykey{save-ref}
-% (\S\ref{subsec:label-ref}) when the key \mykey{save-ans}(\S\ref{subsec:storage-keys}) is active.
+% (\S\ref{subsec:label-ref}) when the key \mykey{save-ans} (\S\ref{subsec:storage-keys}) is active.
 %
 % \begin{important}*
 % The implementation of  \ics{label} and \ics{ref} together with the
@@ -3668,8 +3668,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    by \myenv*{enumext*} and \myenv*{keyans*} environments.
 %
 %    The initial values of these variables are set by the function
-%    \cs{@@_define_counters:Nn} and then modified by the function
-%    \cs{@@_label_style:Nnn} used by \mykey{label} key (\S\ref{int:counters}).
+%    \cs{@@_define_counters:Nn} (\S\ref{int:counters}) and then modified by the function
+%    \cs{@@_label_style:Nnn} used by \mykey{label} key (\S\ref{key:label-ref}).
 % \iffalse
 %% Variable for counters
 % \fi
@@ -3677,6 +3677,28 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_set_protected:Npn \@@_tmp:n #1
   {
     \tl_new:c { l_@@_counter_#1_tl }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \@@_tmp:n {#1} }
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}[int]{\c_@@_counter_style_tl, \l_@@_ref_key_arg_tl,
+%                       \l_@@_ref_the_count_tl, \l_@@_the_counter_X_tl,
+%                       \l_@@_renew_the_count_X_tl, }
+%    Internal variables used by \mykey{ref} key (\S\ref{key:label-ref}).
+% \iffalse
+%% Variables used by |ref| key.
+% \fi
+%    \begin{macrocode}
+\tl_const:Nn \c_@@_counter_style_tl
+  { { arabic } { roman } { Roman } { alph } { Alph } }
+\tl_new:N \l_@@_ref_key_arg_tl
+\tl_new:N \l_@@_ref_the_count_tl
+\cs_set_protected:Npn \@@_tmp:n #1
+  {
+    \tl_new:c  { l_@@_renew_the_count_#1_tl }
+    \tl_new:c  { l_@@_the_counter_#1_tl }
+    \tl_set:ce { l_@@_the_counter_#1_tl } { \exp_not:c { theenumX#1 } }
   }
 \clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \@@_tmp:n {#1} }
 %    \end{macrocode}
@@ -4035,28 +4057,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}[int]{\c_@@_counter_style_tl, \l_@@_ref_key_arg_tl,
-%                       \l_@@_ref_aux_tl, \l_@@_the_counter_X_tl,
-%                       \l_@@_counter_style_for_ref_X_tl, }
-%    Internal variables used by \mykey{ref} key (\S\ref{key:mini-multi}, \S\ref{vspace:multi}).
-% \iffalse
-%% Variables used by |ref| key.
-% \fi
-%    \begin{macrocode}
-\tl_const:Nn \c_@@_counter_style_tl
-  { { arabic } { roman } { Roman } { alph } { Alph } }
-\tl_new:N \l_@@_ref_key_arg_tl
-\tl_new:N \l_@@_ref_aux_tl
-\cs_set_protected:Npn \@@_tmp:n #1
-  {
-    \tl_new:c  { l_@@_counter_style_for_ref_#1_tl }
-    \tl_new:c  { l_@@_the_counter_#1_tl }
-    \tl_set:ce { l_@@_the_counter_#1_tl } { \exp_not:c { theenumX#1 } }
-  }
-\clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \@@_tmp:n {#1} }
-%    \end{macrocode}
-% \end{variable}
-%
 % \begin{variable}[int]{\l_@@_item_starred_X_bool, l_@@_item_column_pos_X_int,
 %                       \g_@@_item_count_all_X_int, \l_@@_joined_item_X_int,
 %                       \l_@@_joined_item_aux_X_int, \l_@@_tmpa_X_int,
@@ -4161,6 +4161,29 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \regex_match:nnTF { ^[\+\-]?[\d]+$ } {#1} % $
       { \prg_return_true: }
       { \prg_return_false: }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_regex_counter_syle:}
+%    The internal function \cs{@@_regex_counter_syle:} replace the ‘|*|’
+%    with the actual counter of the running level and is used by
+%    the \mykey{ref} key.
+%    It loops through the defined counter styles in \cs{c_@@_counter_style_tl}
+%    and replace ‘|*|’ by real command, for example, looking for \ilabel{arabic*}
+%    and replacing that by \ics{arabic}\mymarg[type=tt]{counter} defined
+%    on the current level.
+% \iffalse
+%% Regex for replace * for |ref| key.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_regex_counter_syle:
+  {
+    \tl_map_inline:Nn \c_@@_counter_style_tl
+      {
+        \regex_replace_once:nnN { \c{##1}\* }
+          { \c{##1}\cB{\u{l_@@_ref_the_count_tl}\cE} } \l_@@_ref_key_arg_tl
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -4646,8 +4669,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
   { \@@_tmp:nn #1 }
 %    \end{macrocode}
-%    Definition of \mykey{align} key for \myenv*{enumext*} and
-%    \myenv*{keyans*} environments.
 % \iffalse
 %% Add |align| key for enummext* and keyans*.
 % \fi
@@ -4670,158 +4691,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{Setting \texttt{label} and \texttt{ref} keys}\label{key:label-ref}
 %
-% \begin{macro}[int]{\@@_regex_label_ref_key:}
-%    The internal function \cs{@@_regex_label_ref_key:} replace the
-%    |*| with the actual counter of the running level and is used by
-%    the \cs{@@_set_label_ref:n} function.
-%
-%    It loops through the defined counter styles in \cs{c_@@_counter_style_tl}
-%    and replace |*| by real command, for example, looking for \ilabel{arabic*}
-%    and replacing that by \ics{arabic}\mymarg[type=tt]{counter} defined
-%    on the current level.
-% \iffalse
-%% Regex for replace * for |ref| key.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_regex_label_ref_key:
-  {
-    \tl_map_inline:Nn \c_@@_counter_style_tl
-      {
-        \regex_replace_once:nnN { \c{##1}\* }
-          { \c{##1}\cB{\u{l_@@_ref_aux_tl}\cE} } \l_@@_ref_key_arg_tl
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{\@@_set_label_ref:n}
-%    The \cs{@@_set_label_ref:n} function controlled by the \mykey{ref}
-%    key is in charge of handling the customization of the reference system.
-%
-%    First we will set the variable \myvarenv{l__@@_the_counter_X_tl}
-%    according to the command created for \emph{each counter}, apply the
-%    \emph{regex} function \cs{@@_regex_label_ref_key:} and then renew the
-%    command and save it in the variable
-%    \myvarenv{l__@@_counter_style_for_ref_X_tl}.
-% \iffalse
-%% Internal function used by |ref| key in enumext environment.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_set_label_ref:n #1
-  {
-    \tl_set:Nn \l_@@_ref_key_arg_tl {#1}
-    \tl_set_eq:Nc \l_@@_ref_aux_tl { l_@@_counter_ \@@_level: _tl }
-    \@@_regex_label_ref_key:
-    \tl_set_eq:Nc \l_@@_ref_aux_tl { l_@@_the_counter_ \@@_level: _tl }
-    \tl_put_right:ce { l_@@_counter_style_for_ref_ \@@_level: _tl }
-      {
-        \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_aux_tl }
-          { \exp_not:V \l_@@_ref_key_arg_tl }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{\@@_use_key_ref:}
-%    Finally the function \cs{@@_use_key_ref:} will execute the
-%    modification for the reference system in the second argument of the
-%    environment definition \myenv*{enumext}.
-% \iffalse
-%% Activate |ref| key in second arg of list for enumext environment.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_use_key_ref:
-  {
-    \tl_if_empty:cF { l_@@_counter_style_for_ref_ \@@_level: _tl }
-      {
-        \tl_use:c { l_@@_counter_style_for_ref_ \@@_level: _tl }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% For \myenv*{enumext*} and \myenv*{keyans*} environments the situation is
-% a bit different since \mypkg{hyperref} interferes here (I am not clear why), so
-% we will define a new function to execute the task.
-%
-% To handle that we will look at the nesting level of the starred
-% environments, later I will run the constraint functions to make
-% everything OK.
-%
-%
-% \begin{macro}[int]{\@@_set_label_ref_h:n}
-%    The \cs{@@_set_label_ref_h:n} function controlled by the \mykey{ref}
-%    key is in charge of handling the customization of the reference system.
-%
-%    First we will set the variable \myvarenv{l__@@_the_counter_X_tl}
-%    according to the command created for \emph{each counter}, apply the
-%    \emph{regex} function \cs{@@_regex_label_ref_key:} and then renew the
-%    command and save it in the variable \myvarenv{l__@@_counter_style_for_ref_X_tl}.
-% \iffalse
-%% Internal function used by |ref| key in enumext* and keyans* environment.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_set_label_ref_h:n #1
-  {
-    \tl_set:Nn \l_@@_ref_key_arg_tl {#1}
-    \int_compare:nNnTF { \l_@@_level_h_int } = { 1 }
-      {
-        \tl_set_eq:NN \l_@@_ref_aux_tl \l_@@_counter_vii_tl
-        \@@_regex_label_ref_key:
-        \tl_set_eq:NN \l_@@_ref_aux_tl \l_@@_the_counter_vii_tl
-        \tl_put_right:Ne \l_@@_counter_style_for_ref_vii_tl
-          {
-            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_aux_tl }
-              { \exp_not:V \l_@@_ref_key_arg_tl }
-          }
-      }
-      {
-        \tl_set_eq:NN \l_@@_ref_aux_tl \l_@@_counter_viii_tl
-        \@@_regex_label_ref_key:
-        \tl_set_eq:NN \l_@@_ref_aux_tl \l_@@_the_counter_viii_tl
-        \tl_put_right:Ne \l_@@_counter_style_for_ref_vii_tl
-          {
-            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_aux_tl }
-              { \exp_not:V \l_@@_ref_key_arg_tl }
-          }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{\@@_use_key_ref_h:}
-%    Finally the function \cs{@@_use_key_ref_h:} will execute the
-%    modification for the reference system in the second argument of the
-%    environment definition \myenv*{enumext*} and \myenv*{keyans*}.
-% \iffalse
-%% Activate |ref| key in second arg of list for starred* environments.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_use_key_ref_h:
-  {
-    \int_compare:nNnTF { \l_@@_level_h_int } = { 1 }
-      {
-        \tl_if_empty:NF \l_@@_counter_style_for_ref_vii_tl
-          {
-            \tl_use:N \l_@@_counter_style_for_ref_vii_tl
-          }
-      }
-      {
-        \tl_if_empty:NF \l_@@_counter_style_for_ref_viii_tl
-          {
-            \tl_use:N \l_@@_counter_style_for_ref_viii_tl
-          }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \subsubsection{Define and set \texttt{label} key for \env{enumext} environment}
+% \subsubsection{Define and set \texttt{label} and \texttt{ref} keys for \env{enumext} environment}
 %
 % \begin{macro}[int]{label,ref,\l_@@_label_i_tl,\l_@@_label_ii_tl, \l_@@_label_iii_tl, \l_@@_label_iv_tl}
-%    Here we set the default \mymeta{labels} of the four levels of
+%    Here we set the default \mymeta{labels} of the \emph{four levels} of
 %    \myenv*{enumext} environment, along with the default value for
-%    \mykey{labelwidth} key.
+%    \mykey{labelwidth} key and \mykey{ref} key.
 % \iffalse
 %% Define and set |label| and |ref| keys for |enumext|.
 % \fi
@@ -4838,7 +4713,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                            },
         label .initial:n = #3,
         label .value_required:n = true,
-        ref   .code:n    = \@@_set_label_ref:n {##1},
+        ref   .code:n    = \@@_standar_ref:n {##1},
         ref   .value_required:n = true,
       }
   }
@@ -4849,12 +4724,66 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Define and set \texttt{label} key for \env{enumext*} and \env{keyans*} environments}
+% \begin{macro}[int]{\@@_standar_ref:n, \@@_standar_ref:,}
+%    The \cs{@@_standar_ref:n} first we will pass the key argument to the variable
+%    \cs{l_@@_ref_key_arg_tl} and we will analyze its state, if it is not
+%    empty we will make a copy of the current counter in the variable
+%    \cs{l_@@ _ref_the_count_tl} and we will execute the function
+%    \cs{@@_regex_counter_syle:} which will return the modified variable
+%    \cs{l_@@_ref_key_arg_tl} and we make the value of the variable
+%    \cs{l_@@_ref_the_count_tl} the same as that of the variable
+%    \myvarenv{l__@@_the_counter_X_tl} which contains |\theenumX| and
+%    finally we set \myvarenv{l__@@_renew_the_count_X_tl} with the
+%    renewed command.
+% \iffalse
+%% Internal function used by |ref| key in enumext environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_standar_ref:n #1
+  {
+    \tl_set:Nn \l_@@_ref_key_arg_tl {#1}
+    \tl_if_empty:NTF \l_@@_ref_key_arg_tl
+      {
+        \typeout{EMPTY}
+      }
+      {
+        \tl_set_eq:Nc
+          \l_@@_ref_the_count_tl { l_@@_counter_ \@@_level: _tl }
+        \@@_regex_counter_syle:
+        \tl_set_eq:Nc
+          \l_@@_ref_the_count_tl { l_@@_the_counter_ \@@_level: _tl }
+        \tl_put_right:ce { l_@@_renew_the_count_ \@@_level: _tl }
+          {
+            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
+              { \exp_not:V \l_@@_ref_key_arg_tl }
+          }
+      }
+  }
+%    \end{macrocode}
+%    Finally the function \cs{@@_standar_ref:} will execute the
+%    modification for the reference system in the second argument of the
+%    environment definition \myenv*{enumext}.
+% \iffalse
+%% Activate |ref| key in second arg of list for enumext environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_standar_ref:
+  {
+    \tl_if_empty:cF { l_@@_renew_the_count_ \@@_level: _tl }
+      {
+        \tl_use:c { l_@@_renew_the_count_ \@@_level: _tl }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
 %
-% \begin{macro}[int]{label,ref,\l_@@_label_vii_tl,\l_@@_label_viii_tl}
+%
+% \subsubsection{Define and set \texttt{label} and \texttt{ref} keys for \env{enumext*} and \env{keyans*} environments}
+%
+% \begin{macro}[int]{label,ref, \l_@@_label_vii_tl, \l_@@_label_viii_tl}
 %    Here we set the default \mymeta{labels} for \myenv*{enumext*} and
 %    \myenv*{keyans*} environments, along with the default value for
-%    \mykey{labelwidth} key.
+%    \mykey{labelwidth} key and \mykey{ref} key.
 % \iffalse
 %% Define and set |label| and |ref| keys for starred environments.
 % \fi
@@ -4871,7 +4800,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                            },
         label .initial:n = #3,
         label .value_required:n = true,
-        ref   .code:n    = \@@_set_label_ref_h:n {##1},
+        ref   .code:n    = \@@_starred_ref:n {##1},
         ref   .value_required:n = true,
       }
   }
@@ -4880,18 +4809,75 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Define and set \texttt{label} key for \env{keyans} and \env{keyanspic} environment}
+% \begin{macro}[int]{\@@_starred_ref:n, \@@_starred_ref:}
+%   The implementation of \cs{@@_starred_ref:n} is the same as that
+%   used for the environment \myenv*{enumext}.
+% \iffalse
+%% Internal function used by |ref| key in |enumext*| and |keyans*| environments.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_starred_ref:n #1
+  {
+    \tl_set:Nn \l_@@_ref_key_arg_tl {#1}
+    \int_compare:nNnTF { \l_@@_level_h_int } = { 1 }
+      {
+        \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_vii_tl
+        \@@_regex_counter_syle:
+        \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_vii_tl
+        \tl_put_right:Ne \l_@@_renew_the_count_vii_tl
+          {
+            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
+              { \exp_not:V \l_@@_ref_key_arg_tl }
+          }
+      }
+      {
+        \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_viii_tl
+        \@@_regex_counter_syle:
+        \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_viii_tl
+        \tl_put_right:Ne \l_@@_renew_the_count_vii_tl
+          {
+            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
+              { \exp_not:V \l_@@_ref_key_arg_tl }
+          }
+      }
+  }
+%    \end{macrocode}
+%    Finally the function \cs{@@_starred_ref:} will execute the
+%    modification for the reference system in the second argument of the
+%    \myenv*{enumext*} and \myenv*{keyans*} environment definition.
+% \iffalse
+%% Activate |ref| key in second arg of list for starred* environments.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_starred_ref:
+  {
+    \int_compare:nNnTF { \l_@@_level_h_int } = { 1 }
+      {
+        \tl_if_empty:NF \l_@@_renew_the_count_vii_tl
+          {
+            \tl_use:N \l_@@_renew_the_count_vii_tl
+          }
+      }
+      {
+        \tl_if_empty:NF \l_@@_renew_the_count_viii_tl
+          {
+            \tl_use:N \l_@@_renew_the_count_viii_tl
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
 %
-% \begin{macro}[int]{label}
+% \subsubsection{Define and set \texttt{label} and \texttt{ref} keys for \env{keyans} and \env{keyanspic} environments}
+%
+% \begin{macro}[int]{label, ref}
 % \begin{macro}{\l_@@_label_v_tl,\l_@@_label_vi_tl,}
 %    Here we set the default \mymeta{label} for \myenv*{keyans}
 %    and \myenv*{keyanspic} environment, along with the default value for
-%    \mykey{labelwidth}. The \myenv*{keyanspic} environment use the same
+%    \mykey{labelwidth} and \mykey{ref} key. The \myenv*{keyanspic} environment use the same
 %    \mymeta{label} as the \myenv*{keyans} environment.
-%
-% Define and set \mykey{label} key for \myenv*{keyans} environment.
 % \iffalse
-%% Define and set |label| key for |keyans| and |keyanspic|.
+%% Define and set |label| and |ref| keys for |keyans| and |keyanspic|.
 % \fi
 %    \begin{macrocode}
 \keys_define:nn { enumext / keyans }
@@ -4908,9 +4894,49 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                        },
     label .initial:n = (\Alph*),
     label .value_required:n = true,
+    ref   .code:n    = \@@_keyans_ref:n {#1},
+    ref   .value_required:n = true,
   }
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_keyans_ref:n, \@@_keyans_ref:}
+%   The implementation of \cs{@@_keyans_ref:n} is the same as that
+%   used for the environment \myenv*{enumext}.
+% \iffalse
+%% Internal function used by |ref| key in |keyans| environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_keyans_ref:n #1
+  {
+    \tl_set:Nn \l_@@_ref_key_arg_tl {#1}
+        \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_v_tl
+        \@@_regex_counter_syle:
+        \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_v_tl
+        \tl_put_right:Ne \l_@@_renew_the_count_v_tl
+          {
+            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
+              { \exp_not:V \l_@@_ref_key_arg_tl }
+          }
+
+  }
+%    \end{macrocode}
+%    Finally the function \cs{@@_keyans_ref:} will execute the
+%    modification for the reference system in the second argument of the
+%    \myenv*{keyans*} environment definition.
+% \iffalse
+%% Activate |ref| key in second arg of list for |keyans| environments.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_keyans_ref:
+  {
+    \tl_if_empty:NF \l_@@_renew_the_count_vi_tl
+      {
+        \tl_use:N \l_@@_renew_the_count_v_tl
+      }
+  }
+%    \end{macrocode}
 % \end{macro}
 %
 % \subsection{Setting \texttt{start} and \texttt{widest} keys}\label{key:start-widest}
@@ -7257,11 +7283,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{mark-pos, show-ans}
+% \begin{macro}[int]{mark-pos, show-ans, show-pos}
 %    For the \myenv*{keyans} and \myenv*{keyans*} environments we will only add the keys
 %    \mykey{mark-pos}, \mykey{show-ans} and \mykey{show-pos}.
 % \iffalse
-%% Add keys |mark-pos| and |show-ans| for |keyans| and |keyans*|.
+%% Add keys |mark-pos|, |show-pos| and |show-ans| for |keyans| and |keyans*|.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:n #1
@@ -8606,7 +8632,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Calculation of \cs{leftmargin} and \cs{itemindent}}\label{int:leftmargin}
+% \subsection{Second argument of the lists}\label{ltx:second-arg}
+%
+%    At this point of the code we have already programmed most the necessary
+%    tools to create a custom \myenv{list} environment, remember that the function
+%    \cs{@@_start_list:nn} takes two arguments, the first one we have
+%    ready, the second one we will define for all the levels of the
+%    environment \myenv*{enumext} and the environment \myenv*{keyans}.
+%
+% \subsubsection{Calculation of \cs{leftmargin} and \cs{itemindent}}\label{int:leftmargin}
 %
 % Consider the figure \ref{fig:eight} where the default margins (on the
 % left) of a list are represented.
@@ -8764,21 +8798,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Setting second argument of the lists}\label{ltx:second-arg}
-%
-%    At this point of the code we have already programmed the necessary
-%    tools to create a custom \myenv{list} environment, remember that the function
-%    \cs{@@_start_list:nn} takes two arguments, the first one we have
-%    ready, the second one we will define for all the levels of the
-%    environment \myenv*{enumext} and the environment \myenv*{keyans}.
-%
+% \subsubsection{Setting second argument of the lists}\label{ltx:second-arg}
 %
 % \begin{macro}{\@@_list_arg_two_i:,\@@_list_arg_two_ii:,\@@_list_arg_two_iii:,
 %               \@@_list_arg_two_iv:,\@@_list_arg_two_v:,}
-%    In this function for the second list argument we will implement the
-%    keys \mykey{start}, \mykey{resume} and \mykey{show-length} together
-%    with the redefinition of |\item| for \myenv*{enumext} and
-%    \myenv*{keyans} environments.
+%^^A    In this function for the second list argument we will implement the
+%^^A    keys \mykey{start}, \mykey{resume} and \mykey{show-length} together
+%^^A    with the redefinition of |\item| for \myenv*{enumext} and
+%^^A    \myenv*{keyans} environments.
 %
 %    We will \enquote{not set} |\leftmargini|, |\leftmarginii|, |\leftmarginiii| or
 %    |\leftmarginiv|, in this case, we will directly set the parameters
@@ -8807,6 +8834,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \@@_keyans_redefine_item:
             \@@_keyans_make_label:
+            \@@_keyans_ref:
             \@@_keyans_fake_item:
             \bool_if:cT { l_@@_show_length_#1_bool }
               {
@@ -8816,7 +8844,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \@@_redefine_item:
             \@@_make_label:
-            \@@_use_key_ref:
+            \@@_standar_ref:
             \@@_fake_item:
             \bool_if:cT { l_@@_show_length_#1_bool }
               {
@@ -8859,7 +8887,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \skip_zero:N \partopsep
         \usecounter { enumX#1 }
         \setcounter { enumX#1 } { \int_eval:n { \int_use:c { l_@@_start_#1_int } - 1 } }
-        \@@_use_key_ref_h:
+        \@@_starred_ref:
         \str_if_eq:nnTF {#1} { vii }
           {
             \@@_fake_item_vii:
@@ -8909,7 +8937,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_safe_exec:}\label{fun:enumext:safe-exe}
-%    First we will execute the function \cs{@@_current_env_set_bool:} which
+%    The \cs{@@_safe_exec:} function first execute the function \cs{@@_current_env_set_bool:} which
 %    will set the variable \cs{g_@@_standard_bool} to \emph{\enquote{true}}
 %    if the environment is not nested in \myenv*{enumext*}, we increment the
 %    variable \cs{l_@@_level_int} for the nesting levels and set the
@@ -8943,13 +8971,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_parse_keys:n}
-%    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
-%    by levels in \myenv*{enumext}. If the variable
-%    \cs{l_@@_store_active_bool} is true it will call the function
-%    \cs{@@_parse_store_keys:n} and reprocess the \mymeta{keys} to pass them to the
-%    storage sequence.
+%    The \cs{@@_parse_store_keys:n} function will parse the \mymeta{keys}
+%    passed to the optional environment argument \myenv*{enumext} by levels
+%    only if present. First we clear the variable \cs{l_@@_series_str} and
+%    then we check if we are at the first level, if so we process the
+%    \mymeta{keys} and then execute the function \cs{@@_parse_series:n} used
+%    by the key \mykey{series}, otherwise we will pass the \mymeta{keys} to
+%    the inner levels of the environment and finally if the variable
+%    \cs{l_@@_store_active_bool} established by the key \mykey{save-ans} is
+%    true we execute \cs{@@_parse_store_keys:n} used by the key \mykey{save-key}.
 % \iffalse
-%% Parse |key=val| and store keys for \printkeyans.
+%% Parse |key=val| for enumext: Set default series and store keys in seq-name for \printkeyans.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_keys:n #1

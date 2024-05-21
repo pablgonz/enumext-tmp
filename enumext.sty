@@ -57,6 +57,18 @@
     \tl_new:c { l__enumext_counter_#1_tl }
   }
 \clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
+%% Variables used by |ref| key.
+\tl_const:Nn \c__enumext_counter_style_tl
+  { { arabic } { roman } { Roman } { alph } { Alph } }
+\tl_new:N \l__enumext_ref_key_arg_tl
+\tl_new:N \l__enumext_ref_the_count_tl
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \tl_new:c  { l__enumext_renew_the_count_#1_tl }
+    \tl_new:c  { l__enumext_the_counter_#1_tl }
+    \tl_set:ce { l__enumext_the_counter_#1_tl } { \exp_not:c { theenumX#1 } }
+  }
+\clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
 %% Variables used by |resume| and |item-sym*| key implementation.
 \int_new:N  \g__enumext_resume_int
 \int_new:N  \g__enumext_resume_vii_int
@@ -185,18 +197,6 @@
 \int_new:N \g__enumext_footnote_int
 \seq_new:N \g__enumext_footnote_arg_seq
 \seq_new:N \g__enumext_footnote_int_seq
-%% Variables used by |ref| key.
-\tl_const:Nn \c__enumext_counter_style_tl
-  { { arabic } { roman } { Roman } { alph } { Alph } }
-\tl_new:N \l__enumext_ref_key_arg_tl
-\tl_new:N \l__enumext_ref_aux_tl
-\cs_set_protected:Npn \__enumext_tmp:n #1
-  {
-    \tl_new:c  { l__enumext_counter_style_for_ref_#1_tl }
-    \tl_new:c  { l__enumext_the_counter_#1_tl }
-    \tl_set:ce { l__enumext_the_counter_#1_tl } { \exp_not:c { theenumX#1 } }
-  }
-\clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
 %% Variables used by |enumext*| and |keyans*| environments.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
@@ -243,6 +243,15 @@
     \regex_match:nnTF { ^[\+\-]?[\d]+$ } {#1} % $
       { \prg_return_true: }
       { \prg_return_false: }
+  }
+%% Regex for replace * for |ref| key.
+\cs_new_protected:Nn \__enumext_regex_counter_syle:
+  {
+    \tl_map_inline:Nn \c__enumext_counter_style_tl
+      {
+        \regex_replace_once:nnN { \c{##1}\* }
+          { \c{##1}\cB{\u{l__enumext_ref_the_count_tl}\cE} } \l__enumext_ref_key_arg_tl
+      }
   }
 %% Function to show list lengths used by |show-length| key.
 \cs_new:Npn \__enumext_show_length:nnn #1 #2 #3
@@ -478,79 +487,6 @@
       }
   }
 \clist_map_inline:nn { {enumext*}{vii}, {keyans*}{viii} } { \__enumext_tmp:nn #1 }
-%% Regex for replace * for |ref| key.
-\cs_new_protected:Nn \__enumext_regex_label_ref_key:
-  {
-    \tl_map_inline:Nn \c__enumext_counter_style_tl
-      {
-        \regex_replace_once:nnN { \c{##1}\* }
-          { \c{##1}\cB{\u{l__enumext_ref_aux_tl}\cE} } \l__enumext_ref_key_arg_tl
-      }
-  }
-%% Internal function used by |ref| key in enumext environment.
-\cs_new_protected:Npn \__enumext_set_label_ref:n #1
-  {
-    \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
-    \tl_set_eq:Nc \l__enumext_ref_aux_tl { l__enumext_counter_ \__enumext_level: _tl }
-    \__enumext_regex_label_ref_key:
-    \tl_set_eq:Nc \l__enumext_ref_aux_tl { l__enumext_the_counter_ \__enumext_level: _tl }
-    \tl_put_right:ce { l__enumext_counter_style_for_ref_ \__enumext_level: _tl }
-      {
-        \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_aux_tl }
-          { \exp_not:V \l__enumext_ref_key_arg_tl }
-      }
-  }
-%% Activate |ref| key in second arg of list for enumext environment.
-\cs_new_protected:Nn \__enumext_use_key_ref:
-  {
-    \tl_if_empty:cF { l__enumext_counter_style_for_ref_ \__enumext_level: _tl }
-      {
-        \tl_use:c { l__enumext_counter_style_for_ref_ \__enumext_level: _tl }
-      }
-  }
-%% Internal function used by |ref| key in enumext* and keyans* environment.
-\cs_new_protected:Npn \__enumext_set_label_ref_h:n #1
-  {
-    \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
-    \int_compare:nNnTF { \l__enumext_level_h_int } = { 1 }
-      {
-        \tl_set_eq:NN \l__enumext_ref_aux_tl \l__enumext_counter_vii_tl
-        \__enumext_regex_label_ref_key:
-        \tl_set_eq:NN \l__enumext_ref_aux_tl \l__enumext_the_counter_vii_tl
-        \tl_put_right:Ne \l__enumext_counter_style_for_ref_vii_tl
-          {
-            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_aux_tl }
-              { \exp_not:V \l__enumext_ref_key_arg_tl }
-          }
-      }
-      {
-        \tl_set_eq:NN \l__enumext_ref_aux_tl \l__enumext_counter_viii_tl
-        \__enumext_regex_label_ref_key:
-        \tl_set_eq:NN \l__enumext_ref_aux_tl \l__enumext_the_counter_viii_tl
-        \tl_put_right:Ne \l__enumext_counter_style_for_ref_vii_tl
-          {
-            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_aux_tl }
-              { \exp_not:V \l__enumext_ref_key_arg_tl }
-          }
-      }
-  }
-%% Activate |ref| key in second arg of list for starred* environments.
-\cs_new_protected:Nn \__enumext_use_key_ref_h:
-  {
-    \int_compare:nNnTF { \l__enumext_level_h_int } = { 1 }
-      {
-        \tl_if_empty:NF \l__enumext_counter_style_for_ref_vii_tl
-          {
-            \tl_use:N \l__enumext_counter_style_for_ref_vii_tl
-          }
-      }
-      {
-        \tl_if_empty:NF \l__enumext_counter_style_for_ref_viii_tl
-          {
-            \tl_use:N \l__enumext_counter_style_for_ref_viii_tl
-          }
-      }
-  }
 %% Define and set |label| and |ref| keys for |enumext|.
 \cs_set_protected:Npn \__enumext_tmp:nnn #1 #2 #3
   {
@@ -564,7 +500,7 @@
                            },
         label .initial:n = #3,
         label .value_required:n = true,
-        ref   .code:n    = \__enumext_set_label_ref:n {##1},
+        ref   .code:n    = \__enumext_standar_ref:n {##1},
         ref   .value_required:n = true,
       }
   }
@@ -572,6 +508,35 @@
 \__enumext_tmp:nnn { level-2 } {  ii } { (\alph*) }
 \__enumext_tmp:nnn { level-3 } { iii } { \roman*. }
 \__enumext_tmp:nnn { level-4 } {  iv } { \Alph*.  }
+%% Internal function used by |ref| key in enumext environment.
+\cs_new_protected:Npn \__enumext_standar_ref:n #1
+  {
+    \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
+    \tl_if_empty:NTF \l__enumext_ref_key_arg_tl
+      {
+        \typeout{EMPTY}
+      }
+      {
+        \tl_set_eq:Nc
+          \l__enumext_ref_the_count_tl { l__enumext_counter_ \__enumext_level: _tl }
+        \__enumext_regex_counter_syle:
+        \tl_set_eq:Nc
+          \l__enumext_ref_the_count_tl { l__enumext_the_counter_ \__enumext_level: _tl }
+        \tl_put_right:ce { l__enumext_renew_the_count_ \__enumext_level: _tl }
+          {
+            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
+              { \exp_not:V \l__enumext_ref_key_arg_tl }
+          }
+      }
+  }
+%% Activate |ref| key in second arg of list for enumext environment.
+\cs_new_protected:Nn \__enumext_standar_ref:
+  {
+    \tl_if_empty:cF { l__enumext_renew_the_count_ \__enumext_level: _tl }
+      {
+        \tl_use:c { l__enumext_renew_the_count_ \__enumext_level: _tl }
+      }
+  }
 %% Define and set |label| and |ref| keys for starred environments.
 \cs_set_protected:Npn \__enumext_tmp:nnn #1 #2 #3
   {
@@ -585,13 +550,56 @@
                            },
         label .initial:n = #3,
         label .value_required:n = true,
-        ref   .code:n    = \__enumext_set_label_ref_h:n {##1},
+        ref   .code:n    = \__enumext_starred_ref:n {##1},
         ref   .value_required:n = true,
       }
   }
 \__enumext_tmp:nnn { enumext* } {  vii } { \arabic*.}
 \__enumext_tmp:nnn { keyans*  } { viii } { (\Alph*) }
-%% Define and set |label| key for |keyans| and |keyanspic|.
+%% Internal function used by |ref| key in |enumext*| and |keyans*| environments.
+\cs_new_protected:Npn \__enumext_starred_ref:n #1
+  {
+    \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
+    \int_compare:nNnTF { \l__enumext_level_h_int } = { 1 }
+      {
+        \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_counter_vii_tl
+        \__enumext_regex_counter_syle:
+        \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_vii_tl
+        \tl_put_right:Ne \l__enumext_renew_the_count_vii_tl
+          {
+            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
+              { \exp_not:V \l__enumext_ref_key_arg_tl }
+          }
+      }
+      {
+        \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_counter_viii_tl
+        \__enumext_regex_counter_syle:
+        \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_viii_tl
+        \tl_put_right:Ne \l__enumext_renew_the_count_vii_tl
+          {
+            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
+              { \exp_not:V \l__enumext_ref_key_arg_tl }
+          }
+      }
+  }
+%% Activate |ref| key in second arg of list for starred* environments.
+\cs_new_protected:Nn \__enumext_starred_ref:
+  {
+    \int_compare:nNnTF { \l__enumext_level_h_int } = { 1 }
+      {
+        \tl_if_empty:NF \l__enumext_renew_the_count_vii_tl
+          {
+            \tl_use:N \l__enumext_renew_the_count_vii_tl
+          }
+      }
+      {
+        \tl_if_empty:NF \l__enumext_renew_the_count_viii_tl
+          {
+            \tl_use:N \l__enumext_renew_the_count_viii_tl
+          }
+      }
+  }
+%% Define and set |label| and |ref| keys for |keyans| and |keyanspic|.
 \keys_define:nn { enumext / keyans }
   {
     label .code:n    = {
@@ -606,6 +614,30 @@
                        },
     label .initial:n = (\Alph*),
     label .value_required:n = true,
+    ref   .code:n    = \__enumext_keyans_ref:n {#1},
+    ref   .value_required:n = true,
+  }
+%% Internal function used by |ref| key in |keyans| environment.
+\cs_new_protected:Npn \__enumext_keyans_ref:n #1
+  {
+    \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
+        \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_counter_v_tl
+        \__enumext_regex_counter_syle:
+        \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_v_tl
+        \tl_put_right:Ne \l__enumext_renew_the_count_v_tl
+          {
+            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
+              { \exp_not:V \l__enumext_ref_key_arg_tl }
+          }
+
+  }
+%% Activate |ref| key in second arg of list for |keyans| environments.
+\cs_new_protected:Nn \__enumext_keyans_ref:
+  {
+    \tl_if_empty:NF \l__enumext_renew_the_count_vi_tl
+      {
+        \tl_use:N \l__enumext_renew_the_count_v_tl
+      }
   }
 %% Internal function for |start| key.
 %% #1 \l_enumext_label_X_tl
@@ -1882,7 +1914,7 @@
       }
   }
 \clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
-%% Add keys |mark-pos| and |show-ans| for |keyans| and |keyans*|.
+%% Add keys |mark-pos|, |show-pos| and |show-ans| for |keyans| and |keyans*|.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \keys_define:nn { enumext / #1 }
@@ -2693,6 +2725,7 @@
           {
             \__enumext_keyans_redefine_item:
             \__enumext_keyans_make_label:
+            \__enumext_keyans_ref:
             \__enumext_keyans_fake_item:
             \bool_if:cT { l__enumext_show_length_#1_bool }
               {
@@ -2702,7 +2735,7 @@
           {
             \__enumext_redefine_item:
             \__enumext_make_label:
-            \__enumext_use_key_ref:
+            \__enumext_standar_ref:
             \__enumext_fake_item:
             \bool_if:cT { l__enumext_show_length_#1_bool }
               {
@@ -2731,7 +2764,7 @@
         \skip_zero:N \partopsep
         \usecounter { enumX#1 }
         \setcounter { enumX#1 } { \int_eval:n { \int_use:c { l__enumext_start_#1_int } - 1 } }
-        \__enumext_use_key_ref_h:
+        \__enumext_starred_ref:
         \str_if_eq:nnTF {#1} { vii }
           {
             \__enumext_fake_item_vii:
@@ -2785,7 +2818,7 @@
         \bool_set_true:N \l__enumext_standar_level_one_bool
       }
   }
-%% Parse |key=val| and store keys for \printkeyans.
+%% Parse |key=val| for enumext: Set default series and store keys in seq-name for \printkeyans.
 \cs_new_protected:Npn \__enumext_parse_keys:n #1
   {
     \tl_if_novalue:nF {#1}
