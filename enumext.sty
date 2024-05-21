@@ -514,7 +514,7 @@
     \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
     \tl_if_empty:NTF \l__enumext_ref_key_arg_tl
       {
-        \typeout{EMPTY}
+        \msg_error:nnn { enumext } { key-ref-empty } { enumext }
       }
       {
         \tl_set_eq:Nc
@@ -560,38 +560,52 @@
 \cs_new_protected:Npn \__enumext_starred_ref:n #1
   {
     \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
-    \int_compare:nNnTF { \l__enumext_level_h_int } = { 1 }
+    \int_compare:nNnT { \l__enumext_level_h_int } = { 1 }
       {
-        \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_counter_vii_tl
-        \__enumext_regex_counter_style:
-        \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_vii_tl
-        \tl_put_right:Ne \l__enumext_renew_the_count_vii_tl
+        \tl_if_empty:NTF \l__enumext_ref_key_arg_tl
           {
-            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
-              { \exp_not:V \l__enumext_ref_key_arg_tl }
+            \msg_error:nnn { enumext } { key-ref-empty } { enumext* }
+          }
+          {
+            \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_counter_vii_tl
+            \__enumext_regex_counter_style:
+            \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_vii_tl
+            \tl_put_right:Ne \l__enumext_renew_the_count_vii_tl
+              {
+                \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
+                  { \exp_not:V \l__enumext_ref_key_arg_tl }
+              }
           }
       }
+    \int_compare:nNnT { \l__enumext_keyans_level_h_int } = { 1 }
       {
-        \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_counter_viii_tl
-        \__enumext_regex_counter_style:
-        \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_viii_tl
-        \tl_put_right:Ne \l__enumext_renew_the_count_vii_tl
+        \tl_if_empty:NTF \l__enumext_ref_key_arg_tl
           {
-            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
-              { \exp_not:V \l__enumext_ref_key_arg_tl }
+            \msg_error:nnn { enumext } { key-ref-empty } { keyans* }
+          }
+          {
+            \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_counter_viii_tl
+            \__enumext_regex_counter_style:
+            \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_viii_tl
+            \tl_put_right:Ne \l__enumext_renew_the_count_vii_tl
+              {
+                \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
+                  { \exp_not:V \l__enumext_ref_key_arg_tl }
+              }
           }
       }
   }
-%% Activate |ref| key in second arg of list for starred* environments.
+%% Activate |ref| key in second arg of list for |enumext*| and  |keyans*| environments.
 \cs_new_protected:Nn \__enumext_starred_ref:
   {
-    \int_compare:nNnTF { \l__enumext_level_h_int } = { 1 }
+    \int_compare:nNnT { \l__enumext_level_h_int } = { 1 }
       {
         \tl_if_empty:NF \l__enumext_renew_the_count_vii_tl
           {
             \tl_use:N \l__enumext_renew_the_count_vii_tl
           }
       }
+    \int_compare:nNnT { \l__enumext_keyans_level_h_int } = { 1 }
       {
         \tl_if_empty:NF \l__enumext_renew_the_count_viii_tl
           {
@@ -621,6 +635,11 @@
 \cs_new_protected:Npn \__enumext_keyans_ref:n #1
   {
     \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
+    \tl_if_empty:NTF \l__enumext_ref_key_arg_tl
+      {
+        \msg_error:nnn { enumext } { key-ref-empty } { keyans }
+      }
+      {
         \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_counter_v_tl
         \__enumext_regex_counter_style:
         \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_v_tl
@@ -629,7 +648,7 @@
             \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
               { \exp_not:V \l__enumext_ref_key_arg_tl }
           }
-
+      }
   }
 %% Activate |ref| key in second arg of list for |keyans| environments.
 \cs_new_protected:Nn \__enumext_keyans_ref:
@@ -1756,28 +1775,24 @@
       {
         \bool_if:NT \l__enumext_standar_level_one_bool
           {
-            \msg_error:nnnV
-              { enumext } { save-ans-empty } { enumext } \g__enumext_standar_star_env_int
+            \msg_error:nnn { enumext } { save-ans-empty } { enumext }
           }
         \bool_if:NT \l__enumext_starred_level_one_bool
           {
-            \msg_error:nnnV
-              { enumext } { save-ans-empty } { enumext* } \g__enumext_starred_star_env_int
+            \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
           }
       }
       {
         \bool_if:NT \l__enumext_standar_level_one_bool
           {
-            \msg_note:nnnee
-              { enumext } { save-ans-ok } { enumext }
-              { \l__enumext_store_name_tl } { \int_use:N \g__enumext_standar_star_env_int }
+            \msg_note:nnnV
+              { enumext } { save-ans-ok } { enumext } \l__enumext_store_name_tl
             \__enumext_storing_exec:
           }
         \bool_if:NT \l__enumext_starred_level_one_bool
           {
-            \msg_note:nnnee
-              { enumext } { save-ans-ok } { enumext* }
-              { \l__enumext_store_name_tl } { \int_use:N \g__enumext_starred_star_env_int }
+            \msg_note:nnnV
+              { enumext } { save-ans-ok } { enumext* } \l__enumext_store_name_tl
             \__enumext_storing_exec:
           }
       }
@@ -4268,13 +4283,18 @@
     \__enumext_show_length:nnn { skip } { itemsep   } {#1}
     ****************************************************
   }
+\msg_new:nnn { enumext } { key-ref-empty }
+  {
+    Key ~ 'ref' ~ need ~ a ~ value ~ in ~ '#1'~ \msg_line_context:.
+  }
 \msg_new:nnn { enumext } { save-ans-empty }
   {
-    Key ~ 'save-ans' ~ need ~ a ~ value ~ in ~ '#1' ~ on ~ line ~ #2.
+    Key ~ 'save-ans' ~ need ~ a ~ value ~ in ~ '#1'~ \msg_line_context:.
   }
+
 \msg_new:nnn { enumext } { save-ans-ok }
   {
-    Set ~ 'save-ans=#2' ~ in ~'#1' ~ on ~ line ~ #3.
+    Set ~ 'save-ans=#2' ~ in ~'#1' ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { items-same-answer }
   {

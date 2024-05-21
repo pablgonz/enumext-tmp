@@ -4744,7 +4744,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_set:Nn \l_@@_ref_key_arg_tl {#1}
     \tl_if_empty:NTF \l_@@_ref_key_arg_tl
       {
-        \typeout{EMPTY}
+        \msg_error:nnn { enumext } { key-ref-empty } { enumext }
       }
       {
         \tl_set_eq:Nc
@@ -4819,25 +4819,38 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_starred_ref:n #1
   {
     \tl_set:Nn \l_@@_ref_key_arg_tl {#1}
-    \int_compare:nNnTF { \l_@@_level_h_int } = { 1 }
+    \int_compare:nNnT { \l_@@_level_h_int } = { 1 }
       {
-        \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_vii_tl
-        \@@_regex_counter_style:
-        \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_vii_tl
-        \tl_put_right:Ne \l_@@_renew_the_count_vii_tl
+        \tl_if_empty:NTF \l_@@_ref_key_arg_tl
           {
-            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
-              { \exp_not:V \l_@@_ref_key_arg_tl }
+            \msg_error:nnn { enumext } { key-ref-empty } { enumext* }
+          }
+          {
+            \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_vii_tl
+            \@@_regex_counter_style:
+            \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_vii_tl
+            \tl_put_right:Ne \l_@@_renew_the_count_vii_tl
+              {
+                \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
+                  { \exp_not:V \l_@@_ref_key_arg_tl }
+              }
           }
       }
+    \int_compare:nNnT { \l_@@_keyans_level_h_int } = { 1 }
       {
-        \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_viii_tl
-        \@@_regex_counter_style:
-        \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_viii_tl
-        \tl_put_right:Ne \l_@@_renew_the_count_vii_tl
+        \tl_if_empty:NTF \l_@@_ref_key_arg_tl
           {
-            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
-              { \exp_not:V \l_@@_ref_key_arg_tl }
+            \msg_error:nnn { enumext } { key-ref-empty } { keyans* }
+          }
+          {
+            \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_viii_tl
+            \@@_regex_counter_style:
+            \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_viii_tl
+            \tl_put_right:Ne \l_@@_renew_the_count_vii_tl
+              {
+                \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
+                  { \exp_not:V \l_@@_ref_key_arg_tl }
+              }
           }
       }
   }
@@ -4846,18 +4859,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    modification for the reference system in the second argument of the
 %    \myenv*{enumext*} and \myenv*{keyans*} environment definition.
 % \iffalse
-%% Activate |ref| key in second arg of list for starred* environments.
+%% Activate |ref| key in second arg of list for |enumext*| and  |keyans*| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_starred_ref:
   {
-    \int_compare:nNnTF { \l_@@_level_h_int } = { 1 }
+    \int_compare:nNnT { \l_@@_level_h_int } = { 1 }
       {
         \tl_if_empty:NF \l_@@_renew_the_count_vii_tl
           {
             \tl_use:N \l_@@_renew_the_count_vii_tl
           }
       }
+    \int_compare:nNnT { \l_@@_keyans_level_h_int } = { 1 }
       {
         \tl_if_empty:NF \l_@@_renew_the_count_viii_tl
           {
@@ -4911,6 +4925,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_keyans_ref:n #1
   {
     \tl_set:Nn \l_@@_ref_key_arg_tl {#1}
+    \tl_if_empty:NTF \l_@@_ref_key_arg_tl
+      {
+        \msg_error:nnn { enumext } { key-ref-empty } { keyans }
+      }
+      {
         \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_v_tl
         \@@_regex_counter_style:
         \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_v_tl
@@ -4919,7 +4938,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
               { \exp_not:V \l_@@_ref_key_arg_tl }
           }
-
+      }
   }
 %    \end{macrocode}
 %    Finally the function \cs{@@_keyans_ref:} will execute the
@@ -4931,7 +4950,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_ref:
   {
-    \tl_if_empty:NF \l_@@_renew_the_count_vi_tl
+    \tl_if_empty:NF \l_@@_renew_the_count_v_tl
       {
         \tl_use:N \l_@@_renew_the_count_v_tl
       }
@@ -6992,28 +7011,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \bool_if:NT \l_@@_standar_level_one_bool
           {
-            \msg_error:nnnV
-              { enumext } { save-ans-empty } { enumext } \g_@@_standar_star_env_int
+            \msg_error:nnn { enumext } { save-ans-empty } { enumext }
           }
         \bool_if:NT \l_@@_starred_level_one_bool
           {
-            \msg_error:nnnV
-              { enumext } { save-ans-empty } { enumext* } \g_@@_starred_star_env_int
+            \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
           }
       }
       {
         \bool_if:NT \l_@@_standar_level_one_bool
           {
-            \msg_note:nnnee
-              { enumext } { save-ans-ok } { enumext }
-              { \l_@@_store_name_tl } { \int_use:N \g_@@_standar_star_env_int }
+            \msg_note:nnnV
+              { enumext } { save-ans-ok } { enumext } \l_@@_store_name_tl
             \@@_storing_exec:
           }
         \bool_if:NT \l_@@_starred_level_one_bool
           {
-            \msg_note:nnnee
-              { enumext } { save-ans-ok } { enumext* }
-              { \l_@@_store_name_tl } { \int_use:N \g_@@_starred_star_env_int }
+            \msg_note:nnnV
+              { enumext } { save-ans-ok } { enumext* } \l_@@_store_name_tl
             \@@_storing_exec:
           }
       }
@@ -7962,11 +7977,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \ics{ref}\mymarg[type=tt]{store name \textcolor{red}{:} position} and
 % will return |1.(A)|.
 %
-%^^A    First we will remove the dots \enquote{\textcolor{red}{\texttt{.}}}
-%^^A    from the current \mymeta{labels}, we do not want to get
-%^^A    double dots in our references, then we will place this in the
-%^^A    variable \cs{l_@@_newlabel_arg_two_tl}.
-%
 % \begin{macro}{\@@_keyans_store_ref:, \@@_keyans_store_ref_aux_i:,\@@_keyans_store_ref_aux_ii:}
 %    The function \cs{@@_keyans_store_ref:} handles the internal \emph{\enquote{label and ref}}
 %    system used by the \mykey{save-ref} key for \ics*{item*} and \ics*{anspic*}
@@ -8802,11 +8812,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_list_arg_two_i:,\@@_list_arg_two_ii:,\@@_list_arg_two_iii:,
 %               \@@_list_arg_two_iv:,\@@_list_arg_two_v:,}
-%^^A    In this function for the second list argument we will implement the
-%^^A    keys \mykey{start}, \mykey{resume} and \mykey{show-length} together
-%^^A    with the redefinition of |\item| for \myenv*{enumext} and
-%^^A    \myenv*{keyans} environments.
-%
 %    We will \enquote{not set} |\leftmargini|, |\leftmarginii|, |\leftmarginiii| or
 %    |\leftmarginiv|, in this case, we will directly set the parameters
 %    for vertical and horizontal list spacing per level.
@@ -11557,15 +11562,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
+% Messages used by \mykey{ref} key.
+%    \begin{macrocode}
+\msg_new:nnn { enumext } { key-ref-empty }
+  {
+    Key ~ 'ref' ~ need ~ a ~ value ~ in ~ '#1'~ \msg_line_context:.
+  }
+%    \end{macrocode}
+%
 % Messages used by \mykey{save-ans} key.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { save-ans-empty }
   {
-    Key ~ 'save-ans' ~ need ~ a ~ value ~ in ~ '#1' ~ on ~ line ~ #2.
+    Key ~ 'save-ans' ~ need ~ a ~ value ~ in ~ '#1'~ \msg_line_context:.
   }
+
 \msg_new:nnn { enumext } { save-ans-ok }
   {
-    Set ~ 'save-ans=#2' ~ in ~'#1' ~ on ~ line ~ #3.
+    Set ~ 'save-ans=#2' ~ in ~'#1' ~ \msg_line_context:.
   }
 %    \end{macrocode}
 %
