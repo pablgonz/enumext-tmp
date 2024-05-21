@@ -3596,7 +3596,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-19}
+  {2024-05-21}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4165,8 +4165,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_regex_counter_syle:}
-%    The internal function \cs{@@_regex_counter_syle:} replace the ‘|*|’
+% \begin{macro}[int]{\@@_regex_counter_style:}
+%    The internal function \cs{@@_regex_counter_style:} replace the ‘|*|’
 %    with the actual counter of the running level and is used by
 %    the \mykey{ref} key.
 %    It loops through the defined counter styles in \cs{c_@@_counter_style_tl}
@@ -4177,7 +4177,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Regex for replace * for |ref| key.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_regex_counter_syle:
+\cs_new_protected:Nn \@@_regex_counter_style:
   {
     \tl_map_inline:Nn \c_@@_counter_style_tl
       {
@@ -4729,7 +4729,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \cs{l_@@_ref_key_arg_tl} and we will analyze its state, if it is not
 %    empty we will make a copy of the current counter in the variable
 %    \cs{l_@@ _ref_the_count_tl} and we will execute the function
-%    \cs{@@_regex_counter_syle:} which will return the modified variable
+%    \cs{@@_regex_counter_style:} which will return the modified variable
 %    \cs{l_@@_ref_key_arg_tl} and we make the value of the variable
 %    \cs{l_@@_ref_the_count_tl} the same as that of the variable
 %    \myvarenv{l__@@_the_counter_X_tl} which contains |\theenumX| and
@@ -4749,7 +4749,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \tl_set_eq:Nc
           \l_@@_ref_the_count_tl { l_@@_counter_ \@@_level: _tl }
-        \@@_regex_counter_syle:
+        \@@_regex_counter_style:
         \tl_set_eq:Nc
           \l_@@_ref_the_count_tl { l_@@_the_counter_ \@@_level: _tl }
         \tl_put_right:ce { l_@@_renew_the_count_ \@@_level: _tl }
@@ -4822,7 +4822,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_compare:nNnTF { \l_@@_level_h_int } = { 1 }
       {
         \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_vii_tl
-        \@@_regex_counter_syle:
+        \@@_regex_counter_style:
         \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_vii_tl
         \tl_put_right:Ne \l_@@_renew_the_count_vii_tl
           {
@@ -4832,7 +4832,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       {
         \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_viii_tl
-        \@@_regex_counter_syle:
+        \@@_regex_counter_style:
         \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_viii_tl
         \tl_put_right:Ne \l_@@_renew_the_count_vii_tl
           {
@@ -4912,7 +4912,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_set:Nn \l_@@_ref_key_arg_tl {#1}
         \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_v_tl
-        \@@_regex_counter_syle:
+        \@@_regex_counter_style:
         \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_v_tl
         \tl_put_right:Ne \l_@@_renew_the_count_v_tl
           {
