@@ -3985,7 +3985,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    (\S\ref{int:check-answer}) used by the \mykey{check-ans} and
 %    \mykey{no-store} keys and check for starred commands \ics*{item*}
 %    in \myenv*{keyans} ans \myenv*{keyans} environments and \ics*{anspic*}
-%    in \myenv*{keyanspoc} environment.
+%    in \myenv*{keyanspic} environment.
 % \iffalse
 %% Variables used by check-answer mechanism, |check-ans| and |no-store| keys.
 % \fi
@@ -3995,6 +3995,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \g_@@_check_ans_show_bool
 \bool_new:N \g_@@_check_ans_show_h_bool
 \tl_new:N   \g_@@_check_ans_item_tl
+\tl_new:N   \l_@@_check_start_line_env_tl
 \int_new:N  \l_@@_check_starred_cmd_int
 \int_new:N  \g_@@_check_starred_cmd_int
 \int_new:N  \g_@@_count_item_anskey_int
@@ -4303,6 +4304,48 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   (pag~\pageref{fun:enumext:safe-exe}) and to the \cs{@@_safe_exec_vii:}
 %   function in the definition of the \myenv*{enumext*} environment
 %   (pag~\pageref{fun:starred:safe-exe}).
+%
+% \begin{macro}{\@@_keyans_save_start_line:}
+%   The function \cs{@@_keyans_save_start_line:} will set the global variables
+%   \cs{g_@@_standar_bool} and \cs{g_@@_starred_bool} with which we will
+%   distinguish whether the environments \myenv*{enumext} and
+%   \myenv*{enumext*} are nested in each other.
+% \iffalse
+%% Function to save the current environment start line for |keyans|, |keyans*| and |keyanspic|.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_keyans_save_start_line:
+  {
+    \str_case:en { \@currenvir }
+      {
+        {keyans}
+          {
+            \tl_set:Ne \l_@@_check_start_line_env_tl
+              {
+                in ~ 'keyans' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+              }
+            \typeout{working-on-keyans}
+          }
+        {keyans*}
+          {
+            \tl_set:Ne \l_@@_check_start_line_env_tl
+              {
+                in ~ 'keyans*' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+              }
+            \typeout{working-on-keyans*}
+          }
+        {keyanspic}
+          {
+            \tl_set:Ne \l_@@_check_start_line_env_tl
+              {
+                in ~ 'keyanspic' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+              }
+            \typeout{working-on-keyanspic}
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
 %
 % \subsection{Copying \env{list} and \env{minipage} environments}
 %
@@ -4884,7 +4927,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_counter_viii_tl
             \@@_regex_counter_style:
             \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_viii_tl
-            \tl_put_right:Ne \l_@@_renew_the_count_vii_tl
+            \tl_put_right:Ne \l_@@_renew_the_count_viii_tl
               {
                 \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
                   { \exp_not:V \l_@@_ref_key_arg_tl }
@@ -7287,8 +7330,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Check for \cs{item*} and \cs{anspic*} commands}
 %
-% \begin{macro}{\@@_check_starred_cmd:nn,}
-%    The function \cs{@@_check_starred_cmd:nn} performs an extra
+% \begin{macro}{\@@_check_starred_cmd:n,}
+%    The function \cs{@@_check_starred_cmd:n} performs an extra
 %    check for the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} environments.
 %    Unlike the check executed by \mykey{check-ans} key this one is not
 %    controlled by any key, it is intended to prevent the forgetting of
@@ -7297,13 +7340,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function for check \item* and \anspic* commands.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_check_starred_cmd:nn #1 #2
+\cs_new_protected:Npn \@@_check_starred_cmd:n #1
   {
-    \tl_if_empty:NTF \g_@@_check_ans_item_tl
+    \int_compare:nNnT
+      { \l_@@_check_starred_cmd_int } = { 0 }
       {
-        \msg_warning:nnnn { enumext } { missing-starred }{ #1 }{ #2 }
+        \msg_warning:nnnV { enumext } { missing-starred }{ #1 } \l_@@_check_start_line_env_tl
       }
-      { \tl_gclear:N \g_@@_check_ans_item_tl }
+    \int_compare:nNnT
+      { \l_@@_check_starred_cmd_int } > { 1 }
+      {
+        \msg_warning:nnnV { enumext } { many-starred }{ #1 } \l_@@_check_start_line_env_tl
+      }
+    \tl_clear:N \l_@@_check_start_line_env_tl
+%%    \tl_if_empty:NTF \g_@@_check_ans_item_tl
+%%      {
+%%        \msg_warning:nnnn { enumext } { missing-starred }{ #1 }{ #2 }
+%%      }
+%%      { \tl_gclear:N \g_@@_check_ans_item_tl }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8158,7 +8212,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \cs{@@_store_addto_seq:V} function.
 %    Finally, copy the contents of the variable \cs{l_@@_store_keyans_label_tl}
 %    into the global variable \cs{g_@@_check_ans_item_tl} to be used
-%    by the function \cs{@@_check_starred_cmd:nn} and increment
+%    by the function \cs{@@_check_starred_cmd:n} and increment
 %    the value of the integer variable \cs{g_@@_count_item_anskey_int} handled
 %    by the \mykey{check-ans} key.
 %    \begin{macrocode}
@@ -8935,11 +8989,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \str_if_eq:nnTF {#1} { vii }
           {
             \@@_fake_item_vii:
+            %\@@_starred_ref:
             \bool_if:cT { l_@@_show_length_vii_bool }
               { \msg_term:nnnn { enumext } { list-lengths-not-nested } { vii } { enumext* } }
           }
           {
             \@@_fake_item_viii:
+            %\@@_starred_ref:
             \bool_if:cT { l_@@_show_length_#1_bool }
               { \msg_term:nnnn { enumext } { list-lengths-not-nested } { #1 } { keyans* } }
           }
@@ -9370,7 +9426,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_after_args_exec_v:
   }
   {
-    \@@_check_starred_cmd:nn { item }{ keyans }
+    \@@_check_starred_cmd:n { item }
     \@@_stop_list:
     \@@_after_list_v:
   }
@@ -9395,6 +9451,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \int_incr:N \l_@@_keyans_level_int
     \bool_set_true:N \l_@@_keyans_env_bool
+    \@@_keyans_save_start_line:
     % Set false for interfering with enumext nested in keyans (yes, its possible and crayze)
     \bool_set_false:N \l_@@_store_active_bool
     \int_compare:nNnT { \l_@@_keyans_level_int } > { 1 }
@@ -9794,7 +9851,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       { \@@_keyans_pic_do:n { #1 } }
     \@@_stop_list:
-    \@@_check_starred_cmd:nn { anspic } { keyanspic }
+    \@@_check_starred_cmd:n { anspic }
     \setcounter { enumXvi } { 0 }
     \vspace { \l_@@_topsep_v_skip }
     %\bool_set_false:N \l_@@_store_active_bool
@@ -9816,6 +9873,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nn { enumext } { keyanspic-nested }
       }
+    \__enumext_keyans_save_start_line:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10821,7 +10879,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \@@_stop_item_tmp_viii:
     \@@_remove_extra_parsep_viii:
-    \@@_check_starred_cmd:nn { item }{ keyans* }
+    \@@_check_starred_cmd:n { item }
     \@@_stop_list:
     \@@_after_list_viii:
   }
@@ -10842,6 +10900,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nn { enumext } { nested }
       }
+    \__enumext_keyans_save_start_line:
     % Set false for interfering with enumext nested in keyans* (yes, its possible and crayze)
     \bool_set_false:N \l_@@_store_active_bool
     \int_compare:nNnT { \l_@@_level_int } > { 1 }
@@ -11622,11 +11681,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %  Messages used by the internal system to check for
-%  \emph{\enquote{starred}} |\item*| commands.
+%  \emph{\enquote{starred}} |\item*| and |\anspic*| commands.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { missing-starred }
   {
-    Missing ~ '\c_backslash_str #1*' ~ in ~ '#2' ~ \msg_line_context:.
+    Missing ~ '\c_backslash_str #1*' ~ #2.
+  }
+\msg_new:nnn { enumext } { many-starred }
+  {
+    Many ~ '\c_backslash_str #1*' ~ #2.
   }
 %    \end{macrocode}
 % Message for the nesting depth of the environment \myenv*{enumext}.

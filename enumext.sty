@@ -174,6 +174,7 @@
 \bool_new:N \g__enumext_check_ans_show_bool
 \bool_new:N \g__enumext_check_ans_show_h_bool
 \tl_new:N   \g__enumext_check_ans_item_tl
+\tl_new:N   \l__enumext_check_start_line_env_tl
 \int_new:N  \l__enumext_check_starred_cmd_int
 \int_new:N  \g__enumext_check_starred_cmd_int
 \int_new:N  \g__enumext_count_item_anskey_int
@@ -320,6 +321,37 @@
       }
       {
          \bool_set_true:N \l__enumext_starred_level_one_bool
+      }
+  }
+%% Function to save the current environment start line for |keyans|, |keyans*| and |keyanspic|.
+\cs_new_protected:Nn \__enumext_keyans_save_start_line:
+  {
+    \str_case:en { \@currenvir }
+      {
+        {keyans}
+          {
+            \tl_set:Ne \l__enumext_check_start_line_env_tl
+              {
+                in ~ 'keyans' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+              }
+            \typeout{working-on-keyans}
+          }
+        {keyans*}
+          {
+            \tl_set:Ne \l__enumext_check_start_line_env_tl
+              {
+                in ~ 'keyans*' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+              }
+            \typeout{working-on-keyans*}
+          }
+        {keyanspic}
+          {
+            \tl_set:Ne \l__enumext_check_start_line_env_tl
+              {
+                in ~ 'keyanspic' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+              }
+            \typeout{working-on-keyanspic}
+          }
       }
   }
 %% Copy list tools.
@@ -611,7 +643,7 @@
             \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_counter_viii_tl
             \__enumext_regex_counter_style:
             \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_viii_tl
-            \tl_put_right:Ne \l__enumext_renew_the_count_vii_tl
+            \tl_put_right:Ne \l__enumext_renew_the_count_viii_tl
               {
                 \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
                   { \exp_not:V \l__enumext_ref_key_arg_tl }
@@ -1917,13 +1949,24 @@
     \int_gzero:N \g__enumext_count_item_anskey_int
   }
 %% Function for check \item* and \anspic* commands.
-\cs_new_protected:Npn \__enumext_check_starred_cmd:nn #1 #2
+\cs_new_protected:Npn \__enumext_check_starred_cmd:n #1
   {
-    \tl_if_empty:NTF \g__enumext_check_ans_item_tl
+    \int_compare:nNnT
+      { \l__enumext_check_starred_cmd_int } = { 0 }
       {
-        \msg_warning:nnnn { enumext } { missing-starred }{ #1 }{ #2 }
+        \msg_warning:nnnV { enumext } { missing-starred }{ #1 } \l__enumext_check_start_line_env_tl
       }
-      { \tl_gclear:N \g__enumext_check_ans_item_tl }
+    \int_compare:nNnT
+      { \l__enumext_check_starred_cmd_int } > { 1 }
+      {
+        \msg_warning:nnnV { enumext } { many-starred }{ #1 } \l__enumext_check_start_line_env_tl
+      }
+    \tl_clear:N \l__enumext_check_start_line_env_tl
+%%    \tl_if_empty:NTF \g_@@_check_ans_item_tl
+%%      {
+%%        \msg_warning:nnnn { enumext } { missing-starred }{ #1 }{ #2 }
+%%      }
+%%      { \tl_gclear:N \g_@@_check_ans_item_tl }
   }
 %% Add keys associated with storage on first level of |enumext| and |enumext*|.
 \cs_set_protected:Npn \__enumext_tmp:n #1
@@ -2808,11 +2851,13 @@
         \str_if_eq:nnTF {#1} { vii }
           {
             \__enumext_fake_item_vii:
+            %\__enumext_starred_ref:
             \bool_if:cT { l__enumext_show_length_vii_bool }
               { \msg_term:nnnn { enumext } { list-lengths-not-nested } { vii } { enumext* } }
           }
           {
             \__enumext_fake_item_viii:
+            %\__enumext_starred_ref:
             \bool_if:cT { l__enumext_show_length_#1_bool }
               { \msg_term:nnnn { enumext } { list-lengths-not-nested } { #1 } { keyans* } }
           }
@@ -3058,7 +3103,7 @@
     \__enumext_after_args_exec_v:
   }
   {
-    \__enumext_check_starred_cmd:nn { item }{ keyans }
+    \__enumext_check_starred_cmd:n { item }
     \__enumext_stop_list:
     \__enumext_after_list_v:
   }
@@ -3071,6 +3116,7 @@
       }
     \int_incr:N \l__enumext_keyans_level_int
     \bool_set_true:N \l__enumext_keyans_env_bool
+    \__enumext_keyans_save_start_line:
     % Set false for interfering with enumext nested in keyans (yes, its possible and crayze)
     \bool_set_false:N \l__enumext_store_active_bool
     \int_compare:nNnT { \l__enumext_keyans_level_int } > { 1 }
@@ -3223,7 +3269,7 @@
       }
       { \__enumext_keyans_pic_do:n { #1 } }
     \__enumext_stop_list:
-    \__enumext_check_starred_cmd:nn { anspic } { keyanspic }
+    \__enumext_check_starred_cmd:n { anspic }
     \setcounter { enumXvi } { 0 }
     \vspace { \l__enumext_topsep_v_skip }
     %\bool_set_false:N \l__enumext_store_active_bool
@@ -3236,6 +3282,7 @@
       {
         \msg_error:nn { enumext } { keyanspic-nested }
       }
+    \__enumext_keyans_save_start_line:
   }
 \cs_new_protected:Npn \__enumext_keyans_pic_skip_abs:N #1
   {
@@ -3838,7 +3885,7 @@
   {
     \__enumext_stop_item_tmp_viii:
     \__enumext_remove_extra_parsep_viii:
-    \__enumext_check_starred_cmd:nn { item }{ keyans* }
+    \__enumext_check_starred_cmd:n { item }
     \__enumext_stop_list:
     \__enumext_after_list_viii:
   }
@@ -3850,6 +3897,7 @@
       {
         \msg_error:nn { enumext } { nested }
       }
+    \__enumext_keyans_save_start_line:
     % Set false for interfering with enumext nested in keyans* (yes, its possible and crayze)
     \bool_set_false:N \l__enumext_store_active_bool
     \int_compare:nNnT { \l__enumext_level_int } > { 1 }
@@ -4319,7 +4367,11 @@
   }
 \msg_new:nnn { enumext } { missing-starred }
   {
-    Missing ~ '\c_backslash_str #1*' ~ in ~ '#2' ~ \msg_line_context:.
+    Missing ~ '\c_backslash_str #1*' ~ #2.
+  }
+\msg_new:nnn { enumext } { many-starred }
+  {
+    Many ~ '\c_backslash_str #1*' ~ #2.
   }
 \msg_new:nnn { enumext } { list-too-deep }
   {
