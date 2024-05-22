@@ -4223,16 +4223,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_current_env_set_bool:}
+% \begin{macro}{\@@_current_env_set_bool:, \@@_check_first_level:}
 %   The function \cs{@@_current_env_set_bool:} will set the global variables
 %   \cs{g_@@_standar_bool} and \cs{g_@@_starred_bool} with which we will
 %   distinguish whether the environments \myenv*{enumext} and
 %   \myenv*{enumext*} are nested in each other.
-%   This function is passed to the \cs{@@_safe_exec:} function in the
-%   definition of the \myenv*{enumext} environment
-%   (pag~\pageref{fun:enumext:safe-exe}) and to the \cs{@@_safe_exec_vii:}
-%   function in the definition of the \myenv*{enumext*} environment
-%   (pag~\pageref{fun:starred:safe-exe}).
 % \iffalse
 %% Function to check/set current environment for |enumext| and |enumext*|.
 % \fi
@@ -4266,7 +4261,43 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
+%   The function \cs{@@_check_first_level:} will set the variables
+%   \cs{l_@@_standar_level_one_bool} and \cs{l_@@_standar_level_one_bool}
+%   to \emph{\enquote{true}} only if the environment is not nested and
+%   we are at the \emph{\enquote{first level}} of it.
+% \iffalse
+%% Function to check/set first level for |enumext| and |enumext*|.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_check_first_level:
+  {
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \g_@@_standar_bool }
+        { \int_compare_p:nNn { \l_@@_level_int } = { 1 } }
+        { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
+      }
+      {
+        \bool_set_true:N \l_@@_standar_level_one_bool
+      }
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \g_@@_starred_bool }
+        { \int_compare_p:nNn { \l_@@_level_h_int } = { 1 } }
+        { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
+      }
+      {
+         \bool_set_true:N \l_@@_starred_level_one_bool
+      }
+  }
+%    \end{macrocode}
 % \end{macro}
+%
+%   This functions is passed to the \cs{@@_safe_exec:} function in the
+%   definition of the \myenv*{enumext} environment
+%   (pag~\pageref{fun:enumext:safe-exe}) and to the \cs{@@_safe_exec_vii:}
+%   function in the definition of the \myenv*{enumext*} environment
+%   (pag~\pageref{fun:starred:safe-exe}).
 %
 % \subsection{Copying \env{list} and \env{minipage} environments}
 %
@@ -8951,7 +8982,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \cs{l_@@_standard_bool} variable to \emph{\enquote{true}}. Finally we
 %    set the variable \cs{l_@@_standar_level_one_bool} to
 %    \emph{\enquote{true}} only if the environment is not nested and we are
-%    at the first level of it.
+%    at the \emph{\enquote{first level}} of it using the function \cs{@@_check_first_level:}.
 % \iffalse
 %% Safe exec for |enumext|.
 % \fi
@@ -8963,16 +8994,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_compare:nNnT { \l_@@_level_int } > { 4 }
       { \msg_fatal:nn { enumext } { list-too-deep } }
     \bool_set_true:N \l_@@_standar_bool
-    \bool_lazy_all:nT
-      {
-        { \bool_if_p:N \g_@@_standar_bool }
-        { \int_compare_p:nNn { \l_@@_level_int } = { 1 } }
-        { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
-      }
-      {
-        %%\typeout{[[ON-FIRST-LEVEL-ENUMEXT-NOT-NESTED]]}
-        \bool_set_true:N \l_@@_standar_level_one_bool
-      }
+    \@@_check_first_level:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10144,16 +10166,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_error:nn { enumext } { nested }
       }
     \bool_set_true:N \l_@@_starred_bool
-    \bool_lazy_all:nT
-      {
-        { \bool_if_p:N \g_@@_starred_bool }
-        { \int_compare_p:nNn { \l_@@_level_h_int } = { 1 } }
-        { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
-      }
-      {
-        \typeout{[[ON-FIRST-LEVEL-ENUMEXT*-NOT-NESTED]]}
-        \bool_set_true:N \l_@@_starred_level_one_bool
-      }
+    \@@_check_first_level:
   }
 %    \end{macrocode}
 % \end{macro}

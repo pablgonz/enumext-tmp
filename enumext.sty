@@ -298,6 +298,28 @@
           }
       }
   }
+%% Function to check/set first level for |enumext| and |enumext*|.
+\cs_new_protected:Nn \__enumext_check_first_level:
+  {
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \g__enumext_standar_bool }
+        { \int_compare_p:nNn { \l__enumext_level_int } = { 1 } }
+        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
+      }
+      {
+        \bool_set_true:N \l__enumext_standar_level_one_bool
+      }
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \g__enumext_starred_bool }
+        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 1 } }
+        { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
+      }
+      {
+         \bool_set_true:N \l__enumext_starred_level_one_bool
+      }
+  }
 %% Copy list tools.
 \__enumext_at_begin_document:n
   {
@@ -2822,16 +2844,7 @@
     \int_compare:nNnT { \l__enumext_level_int } > { 4 }
       { \msg_fatal:nn { enumext } { list-too-deep } }
     \bool_set_true:N \l__enumext_standar_bool
-    \bool_lazy_all:nT
-      {
-        { \bool_if_p:N \g__enumext_standar_bool }
-        { \int_compare_p:nNn { \l__enumext_level_int } = { 1 } }
-        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
-      }
-      {
-        %%\typeout{[[ON-FIRST-LEVEL-ENUMEXT-NOT-NESTED]]}
-        \bool_set_true:N \l__enumext_standar_level_one_bool
-      }
+    \__enumext_check_first_level:
   }
 %% Parse |key=val| for enumext: Set default series and store keys in seq-name for \printkeyans.
 \cs_new_protected:Npn \__enumext_parse_keys:n #1
@@ -3421,16 +3434,7 @@
         \msg_error:nn { enumext } { nested }
       }
     \bool_set_true:N \l__enumext_starred_bool
-    \bool_lazy_all:nT
-      {
-        { \bool_if_p:N \g__enumext_starred_bool }
-        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 1 } }
-        { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
-      }
-      {
-        \typeout{[[ON-FIRST-LEVEL-ENUMEXT*-NOT-NESTED]]}
-        \bool_set_true:N \l__enumext_starred_level_one_bool
-      }
+    \__enumext_check_first_level:
   }
 %% Parse |key=val| and store keys for |enumext*|.
 \cs_new_protected:Npn \__enumext_parse_keys_vii:n #1
