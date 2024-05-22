@@ -174,6 +174,8 @@
 \bool_new:N \g__enumext_check_ans_show_bool
 \bool_new:N \g__enumext_check_ans_show_h_bool
 \tl_new:N   \g__enumext_check_ans_item_tl
+\int_new:N  \l__enumext_check_starred_cmd_int
+\int_new:N  \g__enumext_check_starred_cmd_int
 \int_new:N  \g__enumext_count_item_anskey_int
 \int_new:N  \g__enumext_count_item_number_int
 \int_new:N  \g__enumext_standar_star_env_int
@@ -1914,6 +1916,15 @@
     \int_gzero:N \g__enumext_count_item_number_int
     \int_gzero:N \g__enumext_count_item_anskey_int
   }
+%% Function for check \item* and \anspic* commands.
+\cs_new_protected:Npn \__enumext_check_starred_cmd:nn #1 #2
+  {
+    \tl_if_empty:NTF \g__enumext_check_ans_item_tl
+      {
+        \msg_warning:nnnn { enumext } { missing-starred }{ #1 }{ #2 }
+      }
+      { \tl_gclear:N \g__enumext_check_ans_item_tl }
+  }
 %% Add keys associated with storage on first level of |enumext| and |enumext*|.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
@@ -2436,15 +2447,6 @@
         \int_gincr:N \g__enumext_count_item_anskey_int
       }
   }
-%% Function for check starred command in |keyans| and |keyanspic|.
-\cs_new_protected:Npn \__enumext_keyans_check_ans:nn #1 #2
-  {
-    \tl_if_empty:NTF \g__enumext_check_ans_item_tl
-      {
-        \msg_warning:nnnn { enumext } { missing-starred }{ #1 }{ #2 }
-      }
-      { \tl_gclear:N \g__enumext_check_ans_item_tl }
-  }
 %% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_show_left:n #1
   {
@@ -2644,6 +2646,7 @@
     \__enumext_keyans_addto_prop:n { #1 }
     \__enumext_keyans_store_ref:
     \__enumext_keyans_addto_seq:n { #1 }
+    \int_incr:N \l__enumext_check_starred_cmd_int
   }
 %% Redefine |\item| for |keyans|.
 \cs_new_protected:Nn \__enumext_keyans_redefine_item:
@@ -3055,7 +3058,7 @@
     \__enumext_after_args_exec_v:
   }
   {
-    \__enumext_keyans_check_ans:nn { item }{ keyans }
+    \__enumext_check_starred_cmd:nn { item }{ keyans }
     \__enumext_stop_list:
     \__enumext_after_list_v:
   }
@@ -3189,6 +3192,7 @@
         \__enumext_keyans_addto_prop:n { #2 }
         \__enumext_keyans_store_ref:
         \__enumext_keyans_addto_seq:n { #2 }
+        \int_incr:N \l__enumext_check_starred_cmd_int
         \bool_lazy_or:nnT
           { \bool_if_p:N \l__enumext_show_answer_bool }
           { \bool_if_p:N \l__enumext_show_position_bool }
@@ -3219,7 +3223,7 @@
       }
       { \__enumext_keyans_pic_do:n { #1 } }
     \__enumext_stop_list:
-    \__enumext_keyans_check_ans:nn { anspic } { keyanspic }
+    \__enumext_check_starred_cmd:nn { anspic } { keyanspic }
     \setcounter { enumXvi } { 0 }
     \vspace { \l__enumext_topsep_v_skip }
     %\bool_set_false:N \l__enumext_store_active_bool
@@ -3834,7 +3838,7 @@
   {
     \__enumext_stop_item_tmp_viii:
     \__enumext_remove_extra_parsep_viii:
-    \__enumext_keyans_check_ans:nn { item }{ keyans* }
+    \__enumext_check_starred_cmd:nn { item }{ keyans* }
     \__enumext_stop_list:
     \__enumext_after_list_viii:
   }
@@ -3949,6 +3953,7 @@
     \__enumext_keyans_store_ref:
     \tl_put_left:Ne \l__enumext_store_keyans_label_tl { \item }
     \__enumext_keyans_addto_seq_link:
+    \int_incr:N \l__enumext_check_starred_cmd_int
     \bool_if:NT \l__enumext_show_answer_bool
       {
         \__enumext_print_keyans_box:NN \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
