@@ -3006,7 +3006,7 @@ Test keys
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\begin{enumext}[save-ans=simplews,columns=2,check-ans,show-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
+\begin{enumext}[save-ans=simplews,columns=2,check-ans=true,show-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
   \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
   \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
   \item True False
@@ -3039,7 +3039,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % A \emph{\enquote{simple worksheet}} using ducks :) \textattachfile[color=red,print=false]{enumext-exa-4.tex}{\faFile*[regular]}.
 %
-% \begin{enumext}[save-ans=simplews,columns=1,check-ans,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
+% \begin{enumext}[save-ans=simplews,columns=1,check-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
 %  \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
 %  \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
 %  \item[] The following questions need to be cuaqtified :)
@@ -3623,8 +3623,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{\l_@@_level_int, \l_@@_level_h_int, \l_@@_keyans_level_int,
 %                       \l_@@_keyans_level_h_int, \l_@@_keyans_pic_level_int,
-%                       \l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_level_one_bool,
-%                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_level_one_bool,
+%                       \l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_first_level_bool,
+%                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_first_level_bool,
 %                       \l_@@_keyans_env_bool,}
 %
 %    Integer variables will control the nesting levels of the environments
@@ -3645,10 +3645,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N  \l_@@_keyans_pic_level_int
 \bool_new:N \l_@@_starred_bool
 \bool_new:N \g_@@_starred_bool
-\bool_new:N \l_@@_starred_level_one_bool
+\bool_new:N \l_@@_starred_first_level_bool
 \bool_new:N \l_@@_standar_bool
 \bool_new:N \g_@@_standar_bool
-\bool_new:N \l_@@_standar_level_one_bool
+\bool_new:N \l_@@_standar_first_level_bool
 \bool_new:N \l_@@_keyans_env_bool
 %    \end{macrocode}
 % \end{variable}
@@ -3978,8 +3978,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}{\l_@@_store_ans_bool,\l_@@_check_ans_bool,
 %                  \g_@@_check_ans_show_bool, \g_@@_check_ans_show_h_bool,
-%                  \g_@@_check_ans_item_tl, \l_@@_check_starred_cmd_int,
-%                  \g_@@_check_starred_cmd_int, \g_@@_count_item_anskey_int,
+%                  \l_@@_check_start_line_env_tl, \g_@@_check_start_line_env_tl,
+%                  \g_@@_check_starred_cmd_int,  \g_@@_count_item_anskey_int,
 %                  \g_@@_count_item_number_int,}
 %    Internal variables used by \emph{\enquote{check answer}} mechanism
 %    (\S\ref{int:check-answer}) used by the \mykey{check-ans} and
@@ -3994,17 +3994,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \l_@@_check_ans_bool
 \bool_new:N \g_@@_check_ans_show_bool
 \bool_new:N \g_@@_check_ans_show_h_bool
-\tl_new:N   \g_@@_check_ans_item_tl
 \tl_new:N   \l_@@_check_start_line_env_tl
-\int_new:N  \l_@@_check_starred_cmd_int
+\tl_new:N   \g_@@_check_start_line_env_tl
 \int_new:N  \g_@@_check_starred_cmd_int
 \int_new:N  \g_@@_count_item_anskey_int
 \int_new:N  \g_@@_count_item_number_int
-\int_new:N  \g_@@_standar_star_env_int
-\int_new:N  \g_@@_starred_star_env_int
-\int_new:N  \g_@@_starred_keyans_star_env_int
-\int_new:N  \g_@@_standar_keyans_star_env_int
-\int_new:N  \g_@@_standar_keyans_pic_star_env_int
 %    \end{macrocode}
 % \end{variable}
 %
@@ -4229,16 +4223,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_current_env_set_bool:, \@@_check_first_level:}
-%   The function \cs{@@_current_env_set_bool:} will set the global variables
-%   \cs{g_@@_standar_bool} and \cs{g_@@_starred_bool} with which we will
-%   distinguish whether the environments \myenv*{enumext} and
-%   \myenv*{enumext*} are nested in each other.
+% \begin{macro}{\@@_is_not_nested:, \@@_is_on_first_level:}
+%   The function \cs{@@_is_not_nested:} set the variables \cs{g_@@_standar_bool} and
+%   \cs{g_@@_starred_bool} to \emph{\enquote{true}} only if the environments
+%   \myenv*{enumext} and \myenv*{enumext*} are nested in each other.
 % \iffalse
 %% Function to check/set current environment for |enumext| and |enumext*|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_current_env_set_bool:
+\cs_new_protected:Nn \@@_is_not_nested:
   {
     \str_case:en { \@currenvir }
       {
@@ -4246,10 +4239,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \bool_lazy_and:nnT
               { \bool_not_p:n { \g_@@_standar_bool } }
-              { \int_compare_p:nNn { \l_@@_level_h_int } = { \c_zero_int } }
+              { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
               {
                 \bool_gset_true:N \g_@@_standar_bool
-                \int_gset:Nn \g_@@_standar_star_env_int { \inputlineno }
                 \typeout{working-on-enumext}
               }
           }
@@ -4257,25 +4249,26 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \bool_lazy_and:nnT
               { \bool_not_p:n { \g_@@_starred_bool } }
-              { \int_compare_p:nNn { \l_@@_level_int } = { \c_zero_int } }
+              { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
               {
                 \bool_gset_true:N \g_@@_starred_bool
-                \int_gset:Nn \g_@@_starred_star_env_int { \inputlineno }
                 \typeout{working-on-enumext*}
               }
           }
       }
   }
 %    \end{macrocode}
-%   The function \cs{@@_check_first_level:} will set the variables
-%   \cs{l_@@_standar_level_one_bool} and \cs{l_@@_standar_level_one_bool}
-%   to \emph{\enquote{true}} only if the environment is not nested and
-%   we are at the \emph{\enquote{first level}} of it.
+%   The function \cs{@@_is_on_first_level:} will set the variables
+%   \cs{l_@@_standard_first_level_bool} and \cs{l_@@_standard_first_level_bool}
+%   to \emph{\enquote{true}} only if the environment is not nested and we
+%   are in the \emph{\enquote{first level}} of it . We will also save the
+%   start line number of each environment in the variable \cs{g_@@_check_start_line_env_tl}
+%   to use in messages related to the \mykey{check-ans} key.
 % \iffalse
-%% Function to check/set first level for |enumext| and |enumext*|.
+%% Function to check/set first level vars for |enumext| and |enumext*|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_check_first_level:
+\cs_new_protected:Nn \@@_is_on_first_level:
   {
     \bool_lazy_all:nT
       {
@@ -4284,7 +4277,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
       }
       {
-        \bool_set_true:N \l_@@_standar_level_one_bool
+        \bool_set_true:N \l_@@_standar_first_level_bool
+        \tl_gset:Ne \g_@@_check_start_line_env_tl
+          {
+            in ~ 'enumext' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+          }
       }
     \bool_lazy_all:nT
       {
@@ -4293,23 +4290,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
       }
       {
-         \bool_set_true:N \l_@@_starred_level_one_bool
+        \bool_set_true:N \l_@@_starred_first_level_bool
+        \tl_gset:Ne \g_@@_check_start_line_env_tl
+          {
+            in ~ 'enumext*' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+          }
       }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-%   This functions is passed to the \cs{@@_safe_exec:} function in the
-%   definition of the \myenv*{enumext} environment
-%   (pag~\pageref{fun:enumext:safe-exe}) and to the \cs{@@_safe_exec_vii:}
-%   function in the definition of the \myenv*{enumext*} environment
-%   (pag~\pageref{fun:starred:safe-exe}).
+%^^A   This functions is passed to the \cs{@@_safe_exec:} function in the
+%^^A   definition of the \myenv*{enumext} environment
+%^^A   (pag~\pageref{fun:enumext:safe-exe}) and to the \cs{@@_safe_exec_vii:}
+%^^A   function in the definition of the \myenv*{enumext*} environment
+%^^A   (pag~\pageref{fun:starred:safe-exe}).
 %
 % \begin{macro}{\@@_keyans_save_start_line:}
-%   The function \cs{@@_keyans_save_start_line:} will set the global variables
-%   \cs{g_@@_standar_bool} and \cs{g_@@_starred_bool} with which we will
-%   distinguish whether the environments \myenv*{enumext} and
-%   \myenv*{enumext*} are nested in each other.
+%   The function \cs{@@_keyans_save_start_line:} will save the start line
+%   number of the environments \myenv*{keyans}, \myenv*{keyans*} and
+%   \myenv*{keyanspic} in the variable \cs{l_@@ _check_start_line_env_tl}
+%   to use in the \cs{@@_check_starred_cmd:n} function.
 % \iffalse
 %% Function to save the current environment start line for |keyans|, |keyans*| and |keyanspic|.
 % \fi
@@ -6754,12 +6755,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_resume_last:n #1
   {
-    \bool_if:NT \l_@@_standar_level_one_bool
+    \bool_if:NT \l_@@_standar_first_level_bool
       {
         \tl_gclear:N \g_@@_standar_series_tl
         \tl_gset:Ne \g_@@_standar_series_tl { \@@_filter_series:n {#1} }
       }
-    \bool_if:NT \l_@@_starred_level_one_bool
+    \bool_if:NT \l_@@_starred_first_level_bool
       {
         \tl_gclear:N \g_@@_starred_series_tl
         \tl_gset:Ne \g_@@_starred_series_tl { \@@_filter_series:n {#1} }
@@ -6990,7 +6991,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_resume_counter_save_ans:
   {
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_standar_level_one_bool }
+      { \bool_if_p:N \l_@@_standar_first_level_bool }
       { \bool_if_p:N \l_@@_store_active_bool }
       {
         \int_set:Nn \l_@@_start_i_int
@@ -6999,7 +7000,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_starred_level_one_bool }
+      { \bool_if_p:N \l_@@_starred_first_level_bool }
       { \bool_if_p:N \l_@@_store_active_bool }
       {
         \int_set:Nn \l_@@_start_vii_int
@@ -7090,23 +7091,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_set:Ne \l_@@_store_name_tl {#1}
     \tl_if_empty:NTF \l_@@_store_name_tl
       {
-        \bool_if:NT \l_@@_standar_level_one_bool
+        \bool_if:NT \l_@@_standar_first_level_bool
           {
             \msg_error:nnn { enumext } { save-ans-empty } { enumext }
           }
-        \bool_if:NT \l_@@_starred_level_one_bool
+        \bool_if:NT \l_@@_starred_first_level_bool
           {
             \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
           }
       }
       {
-        \bool_if:NT \l_@@_standar_level_one_bool
+        \bool_if:NT \l_@@_standar_first_level_bool
           {
             \msg_note:nnnV
               { enumext } { save-ans-ok } { enumext } \l_@@_store_name_tl
             \@@_storing_exec:
           }
-        \bool_if:NT \l_@@_starred_level_one_bool
+        \bool_if:NT \l_@@_starred_first_level_bool
           {
             \msg_note:nnnV
               { enumext } { save-ans-ok } { enumext* } \l_@@_store_name_tl
@@ -7218,6 +7219,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         check-ans .bool_set:N = \l_@@_check_ans_bool,
         check-ans .initial:n  = false,
+        check-ans .value_required:n = true,
         no-store  .code:n = {
                               \bool_set_false:N \l_@@_store_ans_bool
                               \bool_set_false:N \l_@@_check_ans_bool
@@ -7235,8 +7237,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Set-up check answer mechanism}\label{int:set-check-answer}
 %
-% \begin{macro}{\@@_check_ans_set:,}
-%   The function \cs{@@_check_ans_set:} will adjust the
+% \begin{macro}{\@@_check_ans_gdecr:,}
+%   The function \cs{@@_check_ans_gdecr:} will adjust the
 %   value of the variable \myvarenv{g__@@_count_item_number_int} by
 %   decrementing its value by one each time you open a nested level
 %   \myenv*{enumext} environment.
@@ -7244,7 +7246,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Decrementing \g_@@_count_item_number_int for nested level off |enumext|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_check_ans_set:
+\cs_new_protected:Nn \@@_check_ans_gdecr:
   {
     \int_case:nn { \l_@@_level_int }
       {
@@ -7298,7 +7300,48 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_if:NT \l_@@_check_ans_bool
       {
-        \@@_check_ans_set:
+        \tl_if_empty:NTF \l_@@_store_name_tl
+          {
+            \bool_if:NT \l_@@_standar_first_level_bool
+              {
+                \msg_error:nnnn { enumext } { need-save-ans }{ check-ans } { enumext }
+              }
+            \bool_if:NT \l_@@_starred_first_level_bool
+              {
+                \msg_error:nnnn { enumext } { need-save-ans }{ check-ans } { enumext* }
+              }
+          }
+          {
+            \@@_check_ans_gdecr:
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_check_ans_to_hook:}
+%    The function \cs{@@_check_ans_to_hook:} will count the number of
+%    times the |\item| and |\item*| commands appears per level within the
+%    \myenv*{enumext} environment.
+% \iffalse
+%% Function to count |\item| for internal checking answer mechanism in |enumext|.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_check_ans_to_hook:
+  {
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l_@@_check_ans_bool }
+      { \bool_if_p:N \g_@@_standar_bool }
+      {
+        \bool_gset_true:N \g_@@_check_ans_show_bool
+        \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
+      }
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l_@@_check_ans_bool }
+      { \bool_if_p:N \g_@@_starred_bool }
+      {
+        \bool_gset_true:N \g_@@_check_ans_show_h_bool
+        \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
       }
   }
 %    \end{macrocode}
@@ -7320,10 +7363,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_term:nnV { enumext } { items-same-answer } \g_@@_store_name_tl
       }
       {
-        \msg_warning:nnV { enumext } { item-different-answer } \g_@@_store_name_tl
+        \msg_warning:nnVV
+          { enumext } { item-different-answer } \g_@@_store_name_tl \g_@@_check_start_line_env_tl
       }
     \int_gzero:N \g_@@_count_item_number_int
     \int_gzero:N \g_@@_count_item_anskey_int
+    %\tl_gclear:N \g_@@_check_start_line_env_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7343,21 +7388,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_check_starred_cmd:n #1
   {
     \int_compare:nNnT
-      { \l_@@_check_starred_cmd_int } = { 0 }
+      { \g_@@_check_starred_cmd_int } = { 0 }
       {
-        \msg_warning:nnnV { enumext } { missing-starred }{ #1 } \l_@@_check_start_line_env_tl
+        \msg_warning:nnnV
+          { enumext } { missing-starred }{ #1 } \l_@@_check_start_line_env_tl
       }
     \int_compare:nNnT
-      { \l_@@_check_starred_cmd_int } > { 1 }
+      { \g_@@_check_starred_cmd_int } > { 1 }
       {
-        \msg_warning:nnnV { enumext } { many-starred }{ #1 } \l_@@_check_start_line_env_tl
+        \msg_warning:nnnV
+          { enumext } { many-starred }{ #1 } \l_@@_check_start_line_env_tl
       }
+    \int_gzero:N \g_@@_check_starred_cmd_int
     \tl_clear:N \l_@@_check_start_line_env_tl
-%%    \tl_if_empty:NTF \g_@@_check_ans_item_tl
-%%      {
-%%        \msg_warning:nnnn { enumext } { missing-starred }{ #1 }{ #2 }
-%%      }
-%%      { \tl_gclear:N \g_@@_check_ans_item_tl }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8232,7 +8275,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \@@_store_addto_seq:V \l_@@_store_keyans_label_tl
-    \tl_gset:NV \g_@@_check_ans_item_tl \l_@@_store_keyans_label_tl
     \bool_if:NT \l_@@_check_ans_bool
       {
         \int_gincr:N \g_@@_count_item_anskey_int
@@ -8610,7 +8652,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_addto_prop:n { #1 }
     \@@_keyans_store_ref:
     \@@_keyans_addto_seq:n { #1 }
-    \int_incr:N \l_@@_check_starred_cmd_int
+    \int_gincr:N \g_@@_check_starred_cmd_int
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8989,13 +9031,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \str_if_eq:nnTF {#1} { vii }
           {
             \@@_fake_item_vii:
-            %\@@_starred_ref:
             \bool_if:cT { l_@@_show_length_vii_bool }
               { \msg_term:nnnn { enumext } { list-lengths-not-nested } { vii } { enumext* } }
           }
           {
             \@@_fake_item_viii:
-            %\@@_starred_ref:
             \bool_if:cT { l_@@_show_length_#1_bool }
               { \msg_term:nnnn { enumext } { list-lengths-not-nested } { #1 } { keyans* } }
           }
@@ -9037,26 +9077,26 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_safe_exec:}\label{fun:enumext:safe-exe}
-%    The \cs{@@_safe_exec:} function first execute the function \cs{@@_current_env_set_bool:} which
+%    The \cs{@@_safe_exec:} function first execute the function \cs{@@_is_not_nested:} which
 %    will set the variable \cs{g_@@_standard_bool} to \emph{\enquote{true}}
 %    if the environment is not nested in \myenv*{enumext*}, we increment the
 %    variable \cs{l_@@_level_int} for the nesting levels and set the
 %    \cs{l_@@_standard_bool} variable to \emph{\enquote{true}}. Finally we
-%    set the variable \cs{l_@@_standar_level_one_bool} to
+%    set the variable \cs{l_@@_standar_first_level_bool} to
 %    \emph{\enquote{true}} only if the environment is not nested and we are
-%    at the \emph{\enquote{first level}} of it using the function \cs{@@_check_first_level:}.
+%    at the \emph{\enquote{first level}} of it using the function \cs{@@_is_on_first_level:}.
 % \iffalse
 %% Safe exec for |enumext|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec:
   {
-    \@@_current_env_set_bool:
+    \@@_is_not_nested:
     \int_incr:N \l_@@_level_int
     \int_compare:nNnT { \l_@@_level_int } > { 4 }
       { \msg_fatal:nn { enumext } { list-too-deep } }
     \bool_set_true:N \l_@@_standar_bool
-    \@@_check_first_level:
+    \@@_is_on_first_level:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9355,13 +9395,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \cs{g_@@_check_ans_show_bool} to true and copy the \emph{\enquote{store name}} to
 %    the variable \cs{g_@@_store_name_tl}.
 %    \begin{macrocode}
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_check_ans_bool }
-      { \bool_not_p:n { \g_@@_starred_bool } }
-      {
-        \bool_gset_true:N \g_@@_check_ans_show_bool
-        \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
-      }
+    %\bool_lazy_and:nnT
+    %  { \bool_if_p:N \l_@@_check_ans_bool }
+    %  { \bool_if_p:N \g_@@_standar_bool }
+    %  {
+    %    \bool_gset_true:N \g_@@_check_ans_show_bool
+    %    \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
+    %  }
+     \@@_check_ans_to_hook:
 %    \end{macrocode}
 %    Now apply the \mymarg[type=tt]{code} handled by the \mykey{after} key
 %    together with the \emph{vertical space} handled by the \mykey{below} key if
@@ -9796,7 +9837,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_keyans_addto_prop:n { #2 }
         \@@_keyans_store_ref:
         \@@_keyans_addto_seq:n { #2 }
-        \int_incr:N \l_@@_check_starred_cmd_int
+        \int_gincr:N \g_@@_check_starred_cmd_int
         \bool_lazy_or:nnT
           { \bool_if_p:N \l_@@_show_answer_bool }
           { \bool_if_p:N \l_@@_show_position_bool }
@@ -10224,14 +10265,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec_vii:
   {
-    \@@_current_env_set_bool:
+    \@@_is_not_nested:
     \int_incr:N \l_@@_level_h_int
     \int_compare:nNnT { \l_@@_level_h_int } > { 1 }
       {
         \msg_error:nn { enumext } { nested }
       }
     \bool_set_true:N \l_@@_starred_bool
-    \@@_check_first_level:
+    \@@_is_on_first_level:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10339,6 +10380,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \@@_stop_mini_vii:
     \@@_after_stop_list_vii:
+    \__enumext_check_ans_to_hook:
     \@@_vspace_below_vii:
     \bool_set_false:N \l_@@_starred_bool
     \@@_resume_save_counter:
@@ -11134,7 +11176,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_store_ref:
     \tl_put_left:Ne \l_@@_store_keyans_label_tl { \item }
     \@@_keyans_addto_seq_link:
-    \int_incr:N \l_@@_check_starred_cmd_int
+    \int_gincr:N \g_@@_check_starred_cmd_int
     \bool_if:NT \l_@@_show_answer_bool
       {
         \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
@@ -11657,7 +11699,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     Key ~ 'save-ans' ~ need ~ a ~ value ~ in ~ '#1'~ \msg_line_context:.
   }
-
 \msg_new:nnn { enumext } { save-ans-ok }
   {
     Set ~ 'save-ans=#2' ~ in ~'#1' ~ \msg_line_context:.
@@ -11665,8 +11706,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %
 %  Messages used by the internal system to check answer used by
-% \mykey{check-ans} key.
+%  \mykey{check-ans} key.
 %    \begin{macrocode}
+\msg_new:nnn { enumext } { need-save-ans }
+  {
+    Key ~ '#1'~ works ~ only ~ with ~ the ~ 'save-ans' ~ key ~ in ~ '#2'~ \msg_line_context:.
+  }
 \msg_new:nnn { enumext } { items-same-answer }
   {
     **********~Checking~answers~on~'#1'~OK~**********\\
@@ -11677,8 +11722,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \msg_new:nnn { enumext } { item-different-answer }
   {
     Number ~ of ~ items ~ different ~  of ~ number ~ of ~
-    answer ~ in ~ sequence ~ '#1'~ closed ~ \msg_line_context:.
+    answer ~ stored ~ in ~ '#1'~ #2.
   }
+%\msg_new:nnn { enumext } { item-different-answer }
+%  {
+%    Number ~ of ~ items ~ different ~  of ~ number ~ of ~
+%    answer ~ in ~ sequence ~ '#1'~ closed ~ \msg_line_context:.
+%  }
 %    \end{macrocode}
 %  Messages used by the internal system to check for
 %  \emph{\enquote{starred}} |\item*| and |\anspic*| commands.
