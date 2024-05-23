@@ -169,8 +169,10 @@
 %% Variables used by check-answer mechanism, |check-ans| and |no-store| keys.
 \bool_new:N \l__enumext_store_ans_bool
 \bool_new:N \l__enumext_check_ans_bool
+\bool_new:N \g__enumext_check_ans_bool
 \tl_new:N   \l__enumext_check_start_line_env_tl
 \tl_new:N   \g__enumext_check_start_line_env_tl
+\tl_new:N   \g__enumext_check_environment_name_tl
 \int_new:N  \g__enumext_check_starred_cmd_int
 \int_new:N  \g__enumext_count_item_anskey_int
 \int_new:N  \g__enumext_count_item_number_int
@@ -289,9 +291,11 @@
       }
       {
         \bool_set_true:N \l__enumext_standar_first_level_bool
+        \tl_gset:Nn \g__enumext_check_environment_name_tl { enumext }
         \tl_gset:Ne \g__enumext_check_start_line_env_tl
           {
-            in ~ 'enumext' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+            in ~ '\exp_not:V \g__enumext_check_environment_name_tl' ~
+            start ~ on ~ line ~ \exp_not:V \inputlineno
           }
       }
     \bool_lazy_all:nT
@@ -302,9 +306,11 @@
       }
       {
         \bool_set_true:N \l__enumext_starred_first_level_bool
+        \tl_gset:Nn \g__enumext_check_environment_name_tl { enumext* }
         \tl_gset:Ne \g__enumext_check_start_line_env_tl
           {
-            in ~ 'enumext*' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+            in ~ '\exp_not:V \g__enumext_check_environment_name_tl' ~
+            start ~ on ~ line ~ \exp_not:V \inputlineno
           }
       }
   }
@@ -334,6 +340,25 @@
                 in ~ 'keyanspic' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
               }
           }
+      }
+  }
+%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+\cs_new_protected:Nn \__enumext_execute_after_env:
+  {
+    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
+      {
+        \tl_if_empty:NF \g__enumext_store_name_tl
+          {
+
+          }
+        \int_gzero:N \g__enumext_count_item_number_int
+        \int_gzero:N \g__enumext_count_item_anskey_int
+        \bool_gset_false:N \g__enumext_check_ans_bool
+        \bool_gset_false:N \g__enumext_standar_bool
+        \bool_gset_false:N \g__enumext_starred_bool
+        \tl_gclear:N \g__enumext_store_name_tl
+        \tl_gclear:N \g__enumext_check_start_line_env_tl
+        \tl_gclear:N \g__enumext_check_environment_name_tl
       }
   }
 %% Copy list tools.
@@ -1839,16 +1864,20 @@
   {
     \bool_set_true:N \l__enumext_store_active_bool
     \bool_set_true:N \l__enumext_store_ans_bool
+    \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
     \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
       {
+        \msg_info:nnV { enumext } { store-prop } \l__enumext_store_name_tl
         \prop_new:c { g__enumext_ \l__enumext_store_name_tl _prop }
       }
     \seq_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _seq }
       {
+        \msg_info:nnV { enumext } { store-seq } \l__enumext_store_name_tl
         \seq_new:c { g__enumext_ \l__enumext_store_name_tl _seq }
       }
     \int_if_exist:cF { g__enumext_resume_ \l__enumext_store_name_tl _int }
       {
+        \msg_info:nnV { enumext } { store-int } \l__enumext_store_name_tl
         \int_new:c { g__enumext_resume_ \l__enumext_store_name_tl _int }
       }
   }
@@ -2071,7 +2100,6 @@
   }
   { \__enumext_tmp:nn #1 }
 %% Function for store content to prop list.
-%%\cs_generate_variant:Nn \prop_gput_if_not_in:Nnn { cen }
 \cs_new_protected:Npn \__enumext_store_addto_prop:n #1
   {
     \prop_gput_if_not_in:cen { g__enumext_ \l__enumext_store_name_tl _prop }
@@ -4282,6 +4310,18 @@
   {
     The ~ counter ~ '#1' ~ is ~ already ~ defined ~ by ~ some ~ \\
     package ~ or ~ macro, ~ it ~ cannot ~ be ~ continued.
+  }
+\msg_new:nnn { enumext } { store-prop }
+  {
+    Creating ~ the ~ 'prop~list' ~ '\c_backslash_str g__enumext_#1_prop' ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { store-seq }
+  {
+    Creating ~ the ~ 'sequence' ~ '\c_backslash_str g__enumext_#1_seq' ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { store-int }
+  {
+    Creating ~ the ~ 'integer' ~ '\c_backslash_str g__enumext_#1_int' ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { invalid-key }
   {

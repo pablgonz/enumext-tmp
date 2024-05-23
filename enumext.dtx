@@ -3971,7 +3971,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\l_@@_store_ans_bool,\l_@@_check_ans_bool,
+% \begin{variable}{\l_@@_store_ans_bool,\l_@@_check_ans_bool, \g_@@_check_ans_bool,
 %                  \l_@@_check_start_line_env_tl, \g_@@_check_start_line_env_tl,
 %                  \g_@@_check_starred_cmd_int,  \g_@@_count_item_anskey_int,
 %                  \g_@@_count_item_number_int,}
@@ -3986,8 +3986,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \bool_new:N \l_@@_store_ans_bool
 \bool_new:N \l_@@_check_ans_bool
+\bool_new:N \g_@@_check_ans_bool
 \tl_new:N   \l_@@_check_start_line_env_tl
 \tl_new:N   \g_@@_check_start_line_env_tl
+\tl_new:N   \g_@@_check_environment_name_tl
 \int_new:N  \g_@@_check_starred_cmd_int
 \int_new:N  \g_@@_count_item_anskey_int
 \int_new:N  \g_@@_count_item_number_int
@@ -4251,9 +4253,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       {
         \bool_set_true:N \l_@@_standar_first_level_bool
+        \tl_gset:Nn \g_@@_check_environment_name_tl { enumext }
         \tl_gset:Ne \g_@@_check_start_line_env_tl
           {
-            in ~ 'enumext' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+            in ~ '\exp_not:V \g_@@_check_environment_name_tl' ~
+            start ~ on ~ line ~ \exp_not:V \inputlineno
           }
       }
     \bool_lazy_all:nT
@@ -4264,9 +4268,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       {
         \bool_set_true:N \l_@@_starred_first_level_bool
+        \tl_gset:Nn \g_@@_check_environment_name_tl { enumext* }
         \tl_gset:Ne \g_@@_check_start_line_env_tl
           {
-            in ~ 'enumext*' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
+            in ~ '\exp_not:V \g_@@_check_environment_name_tl' ~
+            start ~ on ~ line ~ \exp_not:V \inputlineno
           }
       }
   }
@@ -4313,6 +4319,42 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 in ~ 'keyanspic' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
               }
           }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_execute_after_env:}
+%   The function \cs{@@_execute_after_env:} will perform the comparison
+%   between the |\item| in the environments and the |\item|'s with answers and
+%   return the appropriate message. As this function is passed to the
+%   function \cs{@@_after_env:nn} for the environments \myenv*{enumext} and
+%   \myenv*{enumext*} we must make sure that we are not nested at any level
+%   and finally reset our global variables.
+% \iffalse
+%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_execute_after_env:
+  {
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
+      {
+        \tl_if_empty:NF \g_@@_store_name_tl
+          {
+            \bool_if:NT \g_@@_check_ans_bool
+              {
+                % code for check-ans
+              }
+             % Aquí cargamos los mensajes para .log y terminal
+          }
+        \int_gzero:N \g_@@_count_item_number_int
+        \int_gzero:N \g_@@_count_item_anskey_int
+        \bool_gset_false:N \g_@@_check_ans_bool
+        \bool_gset_false:N \g_@@_standar_bool
+        \bool_gset_false:N \g_@@_starred_bool
+        \tl_gclear:N \g_@@_store_name_tl
+        \tl_gclear:N \g_@@_check_start_line_env_tl
+        \tl_gclear:N \g_@@_check_environment_name_tl
       }
   }
 %    \end{macrocode}
@@ -6580,7 +6622,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-%
 % \subsection{Setting \texttt{series}, \texttt{resume} and \texttt{resume*} keys}\label{key:series}
 %
 % The \mykey{series} key is responsible for the whole process of the
@@ -7104,16 +7145,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_set_true:N \l_@@_store_active_bool
     \bool_set_true:N \l_@@_store_ans_bool
+    \tl_gset:NV \g_@@_store_name_tl \l__enumext_store_name_tl
     \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
       {
+        \msg_info:nnV { enumext } { store-prop } \l_@@_store_name_tl
         \prop_new:c { g_@@_ \l_@@_store_name_tl _prop }
       }
     \seq_if_exist:cF { g_@@_ \l_@@_store_name_tl _seq }
       {
+        \msg_info:nnV { enumext } { store-seq } \l_@@_store_name_tl
         \seq_new:c { g_@@_ \l_@@_store_name_tl _seq }
       }
     \int_if_exist:cF { g_@@_resume_ \l_@@_store_name_tl _int }
       {
+        \msg_info:nnV { enumext } { store-int } \l_@@_store_name_tl
         \int_new:c { g_@@_resume_ \l_@@_store_name_tl _int }
       }
   }
@@ -11554,16 +11599,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     The ~ '#1' ~ package ~ is ~ already ~ loaded.
   }
-%    \end{macrocode}
-%
-%    \begin{macrocode}
 \msg_new:nnn { enumext } { package-not-load }
   {
     The ~ '#1' ~ package ~ will ~ be ~ loaded ~ as ~ a ~ dependency.
   }
-%    \end{macrocode}
-%
-%    \begin{macrocode}
 \msg_new:nnn { enumext } { package-load-foot }
   {
     The ~ '#1' ~ package ~ is ~ loaded ~ with ~ the ~ option ~ '#2'.
@@ -11578,6 +11617,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     package ~ or ~ macro, ~ it ~ cannot ~ be ~ continued.
   }
 %    \end{macrocode}
+%
+% Message used in the creation of \mymeta{prop list} by \mypkg*{enumext} package.
+%    \begin{macrocode}
+\msg_new:nnn { enumext } { store-prop }
+  {
+    Creating ~ the ~ 'prop~list' ~ '\c_backslash_str g__enumext_#1_prop' ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { store-seq }
+  {
+    Creating ~ the ~ 'sequence' ~ '\c_backslash_str g__enumext_#1_seq' ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { store-int }
+  {
+    Creating ~ the ~ 'integer' ~ '\c_backslash_str g__enumext_#1_int' ~ \msg_line_context:.
+  }
+%    \end{macrocode}
+%
 % Message used by \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 % system and \ics*{setenumext} command.
 %    \begin{macrocode}
