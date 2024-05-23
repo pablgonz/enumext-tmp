@@ -3596,7 +3596,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-21}
+  {2024-05-22}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -3708,10 +3708,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                  \l_@@_resume_active_bool, \g_@@_item_symbol_tl, \g_@@_standar_series_tl,
 %                  \g_@@_starred_series_tl,}
 %
-%    The boolean variable \cs{l_@@_resume_bool} is used by \mykey{resume} key,
-%    the value from which the environment's will start is stored in the
-%    integer variable \cs{g_@@_resume_int} (\S\ref{key:resume}). The
-%    global token list \cs{g_@@_item_symbol_tl} is used by \mykey{item-sym*} key
+%    Internal variables used by \mykey{resume}, \mykey{resume*} and \mykey{series} keys.
+%    The global token list \cs{g_@@_item_symbol_tl} is used by \mykey{item-sym*} key
 %    (\S\ref{key:item-starred}).
 % \iffalse
 %% Variables used by |resume| and |item-sym*| key implementation.
@@ -3854,8 +3852,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl,
 %                       \l_@@_store_columns_join_int, \l_@@_store_keyans_label_tl,
 %                       \l_@@_store_keyans_item_opt_tl, \l_@@_keyans_item_opt_tl,
-%                       \l_@@_keyans_tmpa_tl, \l_@@_keyans_tmpb_tl,
-%                       \l_@@_keyans_tmpa_dim,}
+%                       \l_@@_keyans_tmpa_tl,}
 %
 %    The boolean variable \cs{l_@@_store_active_bool} setting by
 %    \mykey{save-ans} key (\S\ref{key:resume}) activates all the
@@ -3892,8 +3889,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \tl_new:N   \l_@@_store_keyans_item_opt_tl
 \tl_new:N   \l_@@_keyans_item_opt_tl
 \tl_new:N   \l_@@_keyans_tmpa_tl
-\tl_new:N   \l_@@_keyans_tmpb_tl
-\dim_new:N  \l_@@_keyans_tmpa_dim
 %    \end{macrocode}
 % \end{variable}
 %
@@ -3977,14 +3972,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}{\l_@@_store_ans_bool,\l_@@_check_ans_bool,
-%                  \g_@@_check_ans_show_bool, \g_@@_check_ans_show_h_bool,
 %                  \l_@@_check_start_line_env_tl, \g_@@_check_start_line_env_tl,
 %                  \g_@@_check_starred_cmd_int,  \g_@@_count_item_anskey_int,
 %                  \g_@@_count_item_number_int,}
 %    Internal variables used by \emph{\enquote{check answer}} mechanism
 %    (\S\ref{int:check-answer}) used by the \mykey{check-ans} and
 %    \mykey{no-store} keys and check for starred commands \ics*{item*}
-%    in \myenv*{keyans} ans \myenv*{keyans} environments and \ics*{anspic*}
+%    in \myenv*{keyans} and \myenv*{keyans*} environments and \ics*{anspic*}
 %    in \myenv*{keyanspic} environment.
 % \iffalse
 %% Variables used by check-answer mechanism, |check-ans| and |no-store| keys.
@@ -3992,8 +3986,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \bool_new:N \l_@@_store_ans_bool
 \bool_new:N \l_@@_check_ans_bool
-\bool_new:N \g_@@_check_ans_show_bool
-\bool_new:N \g_@@_check_ans_show_h_bool
 \tl_new:N   \l_@@_check_start_line_env_tl
 \tl_new:N   \g_@@_check_start_line_env_tl
 \int_new:N  \g_@@_check_starred_cmd_int
@@ -4206,23 +4198,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_zero_count_level:}
-%    Internal function used by \mykey{check-ans} key.
-% \iffalse
-%% Function to zero count level used by |check-ans| key.
-% \fi
-%    \begin{macrocode}
-\cs_set_protected:Nn \@@_zero_count_level:
-  {
-    \cs_set_protected:Npn \@@_tmp:n ##1
-      {
-        \int_gzero:c { g_@@_count_level_##1_int }
-      }
-    \clist_map_inline:nn { i, ii, iii, iv, vii } { \@@_tmp:n {##1} }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\@@_is_not_nested:, \@@_is_on_first_level:}
 %   The function \cs{@@_is_not_nested:} set the variables \cs{g_@@_standar_bool} and
 %   \cs{g_@@_starred_bool} to \emph{\enquote{true}} only if the environments
@@ -4242,7 +4217,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
               {
                 \bool_gset_true:N \g_@@_standar_bool
-                \typeout{working-on-enumext}
               }
           }
         {enumext*}
@@ -4252,7 +4226,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
               {
                 \bool_gset_true:N \g_@@_starred_bool
-                \typeout{working-on-enumext*}
               }
           }
       }
@@ -4325,7 +4298,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               {
                 in ~ 'keyans' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
               }
-            \typeout{working-on-keyans}
           }
         {keyans*}
           {
@@ -4333,7 +4305,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               {
                 in ~ 'keyans*' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
               }
-            \typeout{working-on-keyans*}
           }
         {keyanspic}
           {
@@ -4341,7 +4312,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               {
                 in ~ 'keyanspic' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
               }
-            \typeout{working-on-keyanspic}
           }
       }
   }
@@ -7072,7 +7042,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Internal functions for \texttt{save-ans} key}
+% \subsubsection{Internal functions for \texttt{save-ans} key}\label{key:save-ans}
 %
 % \begin{macro}{\@@_storing_set:n, \@@_storing_exec:,}
 %    The function \cs{@@_storing_set:n} first pass the value of the
@@ -7237,16 +7207,49 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Set-up check answer mechanism}\label{int:set-check-answer}
 %
-% \begin{macro}{\@@_check_ans_gdecr:,}
-%   The function \cs{@@_check_ans_gdecr:} will adjust the
-%   value of the variable \myvarenv{g__@@_count_item_number_int} by
-%   decrementing its value by one each time you open a nested level
-%   \myenv*{enumext} environment.
+% \begin{macro}{\@@_check_ans:, \@@_check_ans_level:,}
+%    The function \cs{@@_check_ans:} will check the state of the variable
+%    \cs{l_@@_check_ans_bool} activated by the key \mykey{check-ans}, if
+%    this is \emph{\enquote{true}} it will check the variable \cs{l_@@_store_name_tl}
+%    is not empty, that is, the key \mykey{save-ans} is activated, if so
+%    it will execute the function \cs{@@_check_ans_level:} and otherwise
+%    it will return an appropriate error message.
 % \iffalse
-%% Decrementing \g_@@_count_item_number_int for nested level off |enumext|.
+%% Function |check-ans| key, start checking answer mechanism in |enumext| and |enumext|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_check_ans_gdecr:
+\cs_new_protected:Nn \@@_check_ans:
+  {
+    \bool_if:NT \l_@@_check_ans_bool
+      {
+        \tl_if_empty:NTF \l_@@_store_name_tl
+          {
+            \bool_if:NT \l_@@_standar_first_level_bool
+              {
+                \msg_error:nnnn { enumext } { need-save-ans }{ check-ans } { enumext }
+              }
+            \bool_if:NT \l_@@_starred_first_level_bool
+              {
+                \msg_error:nnnn { enumext } { need-save-ans }{ check-ans } { enumext* }
+              }
+          }
+          {
+            \@@_check_ans_level:
+          }
+      }
+  }
+%    \end{macrocode}
+%   The function \cs{@@_check_ans_level:} will decrement by
+%   \emph{\enquote{one}} the value of the variable
+%   \cs{g_@@_count_item_number_int} which keeps track of the executions of
+%   |\item| and |\item*| for each level of nesting of the environment
+%   \myenv*{enumext}, taking into account whether it is nested within
+%   \myenv*{enumext*} or the opposite.
+% \iffalse
+%% Decrementing \g_@@_count_item_number_int for nested level.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_check_ans_level:
   {
     \int_case:nn { \l_@@_level_int }
       {
@@ -7258,7 +7261,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                  }
                  {
                    \int_gdecr:N \g_@@_count_item_number_int
-                   \typeout{ENUMEXT ~ STANDAR ~ NEEEEEEEEEEEESTED}
                  }
              }
         { 2 }{
@@ -7277,7 +7279,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                \bool_if:NT \g_@@_standar_bool
                  {
                    \int_gdecr:N \g_@@_count_item_number_int
-                   \typeout{ENUMEXT ~ STARRED ~ NEEEEEEEEEEEESTED}
                  }
              }
       }
@@ -7285,46 +7286,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_check_ans_exec:}
-%    The function \cs{@@_check_ans_exec:} will count the number of
-%    times the |\item| and |\item*| commands appears per level within the
-%    \myenv*{enumext} environment. The boolean variable
-%    \myvarenv{l__@@_store_ans_bool} controlled by the \mykey{no-store} key will
-%    increment the integer variable of the level counter by |1| to preserve
-%    the equality that we will use in the final comparison of the process.
-% \iffalse
-%% Function to count |\item| for internal checking answer mechanism in |enumext|.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_check_ans_exec:
-  {
-    \bool_if:NT \l_@@_check_ans_bool
-      {
-        \tl_if_empty:NTF \l_@@_store_name_tl
-          {
-            \bool_if:NT \l_@@_standar_first_level_bool
-              {
-                \msg_error:nnnn { enumext } { need-save-ans }{ check-ans } { enumext }
-              }
-            \bool_if:NT \l_@@_starred_first_level_bool
-              {
-                \msg_error:nnnn { enumext } { need-save-ans }{ check-ans } { enumext* }
-              }
-          }
-          {
-            \@@_check_ans_gdecr:
-          }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\@@_check_ans_to_hook:}
-%    The function \cs{@@_check_ans_to_hook:} will count the number of
-%    times the |\item| and |\item*| commands appears per level within the
-%    \myenv*{enumext} environment.
+%    The function \cs{@@_check_ans_to_hook:} will \emph{export} the value of the
+%    local variable \cs{l_@@_store_name_tl} saving it to the global variable
+%    \cs{g_@@_store_name_tl} only if the key \mykey{check-ans} is active.
+%^^A  The function \cs{@@_check_ans_to_hook:} will count the number of
+%^^A  times the |\item| and |\item*| commands appears per level within the
+%^^A  \myenv*{enumext} environment.
 % \iffalse
-%% Function to count |\item| for internal checking answer mechanism in |enumext|.
+%% Function to export \g_@@_store_name_tl for |check-ans| key.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_check_ans_to_hook:
@@ -7333,14 +7303,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \bool_if_p:N \l_@@_check_ans_bool }
       { \bool_if_p:N \g_@@_standar_bool }
       {
-        \bool_gset_true:N \g_@@_check_ans_show_bool
         \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
       }
     \bool_lazy_and:nnT
       { \bool_if_p:N \l_@@_check_ans_bool }
       { \bool_if_p:N \g_@@_starred_bool }
       {
-        \bool_gset_true:N \g_@@_check_ans_show_h_bool
         \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
       }
   }
@@ -7348,27 +7316,40 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_check_ans_show:}
-%    The function \cs{@@_check_ans_show:} compares all executions of
-%    |\item| and |\item*| with the executions of |\anskey|. After the
-%    function is executed, we set the integer variables to zero.
+%   The function \cs{@@_check_ans_show:} will perform the comparison
+%   between the |\item| in the environments and the |\item|'s with answers and
+%   return the appropriate message. As this function is passed to the
+%   function \cs{@@_after_env:nn} for the environments \myenv*{enumext} and
+%   \myenv*{enumext*} we must make sure that we are not nested at any level
+%   and finally reset our global variables.
 % \iffalse
 %% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_check_ans_show:
   {
-    \int_compare:nNnTF
-      { \g_@@_count_item_number_int } = { \g_@@_count_item_anskey_int }
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
       {
-        \msg_term:nnV { enumext } { items-same-answer } \g_@@_store_name_tl
+        \tl_if_empty:NF \g_@@_store_name_tl
+          {
+            \int_compare:nNnTF
+              { \g_@@_count_item_number_int } = { \g_@@_count_item_anskey_int }
+              {
+                \msg_term:nnV { enumext } { items-same-answer } \g_@@_store_name_tl
+              }
+              {
+                \msg_warning:nnVV
+                  { enumext } { item-different-answer }
+                  \g_@@_store_name_tl \g_@@_check_start_line_env_tl
+              }
+          }
+        \int_gzero:N \g_@@_count_item_number_int
+        \int_gzero:N \g_@@_count_item_anskey_int
+        \bool_gset_false:N \g_@@_standar_bool
+        \bool_gset_false:N \g_@@_starred_bool
+        \tl_gclear:N \g_@@_store_name_tl
+        \tl_gclear:N \g_@@_check_start_line_env_tl
       }
-      {
-        \msg_warning:nnVV
-          { enumext } { item-different-answer } \g_@@_store_name_tl \g_@@_check_start_line_env_tl
-      }
-    \int_gzero:N \g_@@_count_item_number_int
-    \int_gzero:N \g_@@_count_item_anskey_int
-    %\tl_gclear:N \g_@@_check_start_line_env_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8242,7 +8223,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \tl_if_empty:NF \l_@@_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_store_keyans_item_opt_sep_tl }
+            \tl_put_right:Ne \l_@@_store_keyans_label_tl
+              {
+                \l_@@_store_keyans_item_opt_sep_tl
+              }
           }
         \tl_put_right:Ne \l_@@_store_keyans_label_tl { #1 }
       }
@@ -8291,7 +8275,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_keyans_show_left:n,\@@_keyans_show_ans:, \@@_keyans_show_pos:, \@@_keyans_show_item_opt:,}
 %    Common function to show \emph{starred commands} |\item*| and \mymeta{position} of
 %    stored content in \mymeta{prop list} for \myenv*{keyans} and
-%    \myenv*{keyanspic}. Need add |1| to \cs{g_@@_ \l_@@_store_name_tl _prop } for \mykey{show-pos} key.
+%    \myenv*{keyanspic}. Need add |1| to \myvarenv{g__@@_\mymeta[cf=gray]{store name}_prop} for \mykey{show-pos} key.
 % \iffalse
 %% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic|.
 % \fi
@@ -8327,7 +8311,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_put_left:Nn \l_@@_label_v_tl
       {
-        \@@_print_keyans_box:NN \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
+        \@@_print_keyans_box:NN
+          \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
       }
   }
 \cs_new_protected:Nn \@@_keyans_show_pos:
@@ -8362,8 +8347,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_put_left:Nn \l_@@_label_v_tl
       {
         \@@_print_keyans_box:NN
-          \l_@@_labelwidth_i_dim
-          \l_@@_labelsep_i_dim
+          \l_@@_labelwidth_i_dim \l_@@_labelsep_i_dim
       }
   }
 %    \end{macrocode}
@@ -9239,11 +9223,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_vspace_above:
     \@@_before_args_exec:
 %    \end{macrocode}
-%    The function \cs{@@_check_ans_exec:}  will handle the check
+%    The function \cs{@@_check_ans:}  will handle the check
 %    answer mechanism, which will be activated with the \mykey{check-ans}
 %    key.
 %    \begin{macrocode}
-    \@@_check_ans_exec:
+    \@@_check_ans:
 %    \end{macrocode}
 %    When the \mykey{mini-env} key is active it will set the value of the
 %    \myvarenv{l__@@_minipage_right_X_dim} to be the \emph{width} of the \myvarenv*{__@@_mini_env*}
@@ -9395,13 +9379,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \cs{g_@@_check_ans_show_bool} to true and copy the \emph{\enquote{store name}} to
 %    the variable \cs{g_@@_store_name_tl}.
 %    \begin{macrocode}
-    %\bool_lazy_and:nnT
-    %  { \bool_if_p:N \l_@@_check_ans_bool }
-    %  { \bool_if_p:N \g_@@_standar_bool }
-    %  {
-    %    \bool_gset_true:N \g_@@_check_ans_show_bool
-    %    \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
-    %  }
      \@@_check_ans_to_hook:
 %    \end{macrocode}
 %    Now apply the \mymarg[type=tt]{code} handled by the \mykey{after} key
@@ -9425,19 +9402,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Execute |check-ans| key out of |enumext|.
 % \fi
 %    \begin{macrocode}
-\@@_after_env:nn {enumext}
-  {
-    \int_compare:nNnT { \l_@@_level_int } = { 0 }
-      {
-        \bool_if:NT \g_@@_check_ans_show_bool
-          {
-            \@@_check_ans_show:
-          }
-        \bool_gset_false:N \g_@@_standar_bool
-        \bool_gset_false:N \g_@@_check_ans_show_bool
-        \tl_gclear:N \g_@@_store_name_tl
-      }
-  }
+\@@_after_env:nn {enumext} { \@@_check_ans_show: }
 %    \end{macrocode}
 %
 % \subsection{The environment \env{keyans}}\label{env:keyans}
@@ -10357,7 +10322,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_before_list_vii:
   {
     \@@_vspace_above_vii:
-    \@@_check_ans_exec: % need by chek-ans
+    \@@_check_ans: % need by chek-ans
     \@@_before_args_exec_vii:
     \@@_start_mini_vii:
   }
@@ -10726,19 +10691,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Execute |check-ans| key out of |enumext*|.
 % \fi
 %    \begin{macrocode}
-\@@_after_env:nn {enumext*}
-  {
-    \int_compare:nNnT { \l_@@_level_int } = { 0 }
-      {
-        \bool_if:NT \g_@@_check_ans_show_h_bool
-          {
-            \@@_check_ans_show:
-          }
-        \bool_gset_false:N \g_@@_starred_bool
-        \bool_gset_false:N \g_@@_check_ans_show_h_bool
-        \tl_gclear:N \g_@@_store_name_tl
-      }
-  }
+\@@_after_env:nn {enumext*} { \@@_check_ans_show: }
 %    \end{macrocode}
 %
 % \subsection{The environment \env{keyans*}}\label{env:keyans-starred}
@@ -11129,11 +11082,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \@@_starred_item_viii_aux_ii:w }
   }
 %    \end{macrocode}
-% The optional argument will be captured in the variables
-% \cs{l_@@_keyans_tmpa_tl} and \cs{l_@@_keyans_tmpb_tl} which we will use
-% later for the implementation of the \mykey{show-ans} and
-% \mykey{show-pos} keys together with the stored in \mymeta{sequence} and
-% \mymeta{prop list}.
+%   The function \cs{@@_starred_item_viii_aux_i:w} will save the optional
+%   argument to |\item*| in \cs{l_@@_keyans_item_opt_tl} and will save this
+%   argument along with the spacing set by the key \mykey{save-sep} in
+%   variable \cs{l_@@_store_keyans_label_tl} if present, then call the
+%   function \cs{@@_starred_item_viii_aux_ii:w}.
+%^^A The optional argument will be captured in the variables
+%^^A \cs{l_@@_keyans_tmpa_tl} and \cs{l_@@_keyans_tmpb_tl} which we will use
+%^^A later for the implementation of the \mykey{show-ans} and
+%^^A \mykey{show-pos} keys together with the stored in \mymeta{sequence} and
+%^^A \mymeta{prop list}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_item_viii_aux_i:w [#1]
   {
@@ -11714,21 +11672,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \msg_new:nnn { enumext } { items-same-answer }
   {
+    \\
     **********~Checking~answers~on~'#1'~OK~**********\\
     **~ All ~ items ~ stored ~ in ~ sequence ~ '#1' ~ have ~ an ~ answer. \\
     ****************************************
     \prg_replicate:nn { 7 + \str_count:n {#1} } { * }
+    \\
   }
 \msg_new:nnn { enumext } { item-different-answer }
   {
     Number ~ of ~ items ~ different ~  of ~ number ~ of ~
     answer ~ stored ~ in ~ '#1'~ #2.
   }
-%\msg_new:nnn { enumext } { item-different-answer }
-%  {
-%    Number ~ of ~ items ~ different ~  of ~ number ~ of ~
-%    answer ~ in ~ sequence ~ '#1'~ closed ~ \msg_line_context:.
-%  }
 %    \end{macrocode}
 %  Messages used by the internal system to check for
 %  \emph{\enquote{starred}} |\item*| and |\anspic*| commands.
