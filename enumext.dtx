@@ -7528,7 +7528,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function for store content to prop list.
 % \fi
 %    \begin{macrocode}
-\cs_generate_variant:Nn \prop_gput_if_not_in:Nnn { cen }
 \cs_new_protected:Npn \@@_store_addto_prop:n #1
   {
     \prop_gput_if_not_in:cen { g_@@_ \l_@@_store_name_tl _prop }
@@ -11672,12 +11671,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \msg_new:nnn { enumext } { items-same-answer }
   {
-    \\
     **********~Checking~answers~on~'#1'~OK~**********\\
     **~ All ~ items ~ stored ~ in ~ sequence ~ '#1' ~ have ~ an ~ answer. \\
     ****************************************
     \prg_replicate:nn { 7 + \str_count:n {#1} } { * }
-    \\
   }
 \msg_new:nnn { enumext } { item-different-answer }
   {

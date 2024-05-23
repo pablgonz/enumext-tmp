@@ -9,9 +9,9 @@
 \setlength{\columnseprule}{0.5pt}
 \usepackage{lua-visual-debug}
 \usepackage{hyperref}
-%\usepackage{footnotehyper}
-%\makesavenoteenv{enumext}
-%\makesavenoteenv{enumext*}
+\usepackage{footnotehyper}
+\makesavenoteenv{enumext}
+\makesavenoteenv{enumext*}
 \begin{document}
 \section{Test 0: \texttt{mini-env, columns=2, topsep=default} HORIZONTAL}
 
@@ -25,14 +25,14 @@ Before
 
 \item Using [columns=2] here below
 \begin{enumext}[columns=2]%,topsep=20pt,parsep=10pt
-     \item  P \item Q \item X  \item R \item S
+     \item  P \item Q \item X  \item R \item S\footnote{PRIMERA}
   \end{enumext}
 
 \columnbreak
 
 \item Using [columns=2,mini-env] here DOS
-  \begin{enumext}[columns=2,mini-env={0.4\linewidth},nosep,after={\footnotetext[3]{Some text}}]%,
-    \item  P \footnote{HOLA}\item Q \item M\label{X} \item R \item S\footnotemark[3]%\footnote{text}
+  \begin{enumext}[columns=2,mini-env={0.4\linewidth},nosep,after={\footnotetext[7]{Some text}}]%,
+    \item  P \footnote{HOLAXXXX}\item Q \item M\label{X}\footnote{CAHOXXX} \item R \item S\footnotemark[7]%\footnote{text}
     \miniright
     (a) P here
   \end{enumext}

@@ -2071,7 +2071,7 @@
   }
   { \__enumext_tmp:nn #1 }
 %% Function for store content to prop list.
-\cs_generate_variant:Nn \prop_gput_if_not_in:Nnn { cen }
+%%\cs_generate_variant:Nn \prop_gput_if_not_in:Nnn { cen }
 \cs_new_protected:Npn \__enumext_store_addto_prop:n #1
   {
     \prop_gput_if_not_in:cen { g__enumext_ \l__enumext_store_name_tl _prop }
@@ -4349,12 +4349,10 @@
   }
 \msg_new:nnn { enumext } { items-same-answer }
   {
-    \\
     **********~Checking~answers~on~'#1'~OK~**********\\
     **~ All ~ items ~ stored ~ in ~ sequence ~ '#1' ~ have ~ an ~ answer. \\
     ****************************************
     \prg_replicate:nn { 7 + \str_count:n {#1} } { * }
-    \\
   }
 \msg_new:nnn { enumext } { item-different-answer }
   {
