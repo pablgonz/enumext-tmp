@@ -3993,6 +3993,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N  \g_@@_check_starred_cmd_int
 \int_new:N  \g_@@_item_anskey_int
 \int_new:N  \g_@@_item_number_int
+\int_new:N  \g_@@_item_answer_diff_int
 %    \end{macrocode}
 % \end{variable}
 %
@@ -4331,6 +4332,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \int_gzero:N \g_@@_item_number_int
     \int_gzero:N \g_@@_item_anskey_int
+    \int_gzero:N \g_@@_item_answer_diff_int
     \bool_gset_false:N \g_@@_check_ans_bool
     \bool_gset_false:N \g_@@_standar_bool
     \bool_gset_false:N \g_@@_starred_bool
@@ -4382,12 +4384,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 % \fi
 %    \begin{macrocode}
+\cs_new_protected:Nn \@@_item_answer_diff:
+  {
+    \int_gset:Nn \g_@@_item_answer_diff_int
+      {
+        \int_sign:n { \g_@@_item_number_int - \g_@@_item_anskey_int }
+      }
+  }
 \cs_new_protected:Nn \@@_execute_after_env:
   {
     \int_compare:nNnT { \l_@@_level_int } = { 0 }
       {
         \tl_if_empty:NF \g_@@_store_name_tl
           {
+            \@@_item_answer_diff:
             \msg_term:nnVV
               { enumext } { save-ans-log-hook }
               \g_@@_envir_name_tl \g_@@_store_name_tl
@@ -4398,7 +4408,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 \@@_check_ans_show:
               }
           }
-         \@@_reset_global_vars:
+        \@@_reset_global_vars:
       }
   }
 %    \end{macrocode}
@@ -7411,26 +7421,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_check_ans_show:
   {
-    \int_compare:nNnT
-      { \g_@@_item_number_int } = { \g_@@_item_anskey_int }
+    \int_case:nn { \g_@@_item_answer_diff_int }
       {
-        \msg_term:nneee { enumext } { items-same-answer }
-          { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
+        { -1 }{ \@@_check_ans_msg_less:    }
+        {  0 }{ \@@_check_ans_msg_same_ok: }
+        {  1 }{ \@@_check_ans_msg_greater: }
       }
-     \int_compare:nNnT
-      { \g_@@_item_number_int } > { \g_@@_item_anskey_int }
-      {
-        \msg_warning:nneee
-          { enumext } { item-greater-answer }
-          { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
-      }
-     \int_compare:nNnT
-      { \g_@@_item_number_int } < { \g_@@_item_anskey_int }
-      {
-        \msg_warning:nneee
-          { enumext } { item-less-answer }
-          { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
-      }
+  }
+\cs_new_protected:Nn \@@_check_ans_msg_less:
+  {
+    \msg_warning:nneee { enumext } { item-less-answer }
+      { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
+  }
+\cs_new_protected:Nn \@@_check_ans_msg_same_ok:
+  {
+    \msg_term:nneee { enumext } { items-same-answer }
+      { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
+  }
+\cs_new_protected:Nn \@@_check_ans_msg_greater:
+  {
+    \msg_warning:nneee { enumext } { item-greater-answer }
+      { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
   }
 %    \end{macrocode}
 % \end{macro}
