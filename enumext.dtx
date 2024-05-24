@@ -4322,6 +4322,55 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\@@_reset_global_vars:}
+% \iffalse
+%% Reset all global vars after use in hook function.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_reset_global_vars:
+  {
+    \int_gzero:N \g_@@_item_number_int
+    \int_gzero:N \g_@@_item_anskey_int
+    \bool_gset_false:N \g_@@_check_ans_bool
+    \bool_gset_false:N \g_@@_standar_bool
+    \bool_gset_false:N \g_@@_starred_bool
+    \tl_gclear:N \g_@@_store_name_tl
+    \tl_gclear:N \g_@@_start_line_tl
+    \tl_gclear:N \g_@@_envir_name_tl
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_log_global_vars:}
+% \iffalse
+%% Reset all global vars after use in hook function.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_log_global_vars:
+  {
+    \msg_log:nneeee { enumext } { prop-seq-int-hook }
+      { \g_@@_store_name_tl } { \prop_count:c { g_@@_ \g_@@_store_name_tl _prop } }
+      { \seq_count:c { g_@@_ \g_@@_store_name_tl _seq } }
+      { \int_use:c { g_@@_resume_ \g_@@_store_name_tl _int } }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_log_answer_vars:}
+% \iffalse
+%% Reset all global vars after use in hook function.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_log_answer_vars:
+  {
+    \msg_log:nneee { enumext } { item-answer-hook }
+      { \int_use:N \g_@@_item_number_int }
+      { \int_use:N \g_@@_item_anskey_int }
+      { \int_eval:n { \g_@@_item_number_int - \g_@@_item_anskey_int} }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\@@_execute_after_env:}
 %   The function \cs{@@_execute_after_env:} will perform the comparison
 %   between the |\item| in the environments and the |\item|'s with answers and
@@ -4342,30 +4391,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \msg_term:nnVV
               { enumext } { save-ans-log-hook }
               \g_@@_envir_name_tl \g_@@_store_name_tl
-            \msg_log:nneeee
-              { enumext } { prop-seq-int-hook }
-              { \g_@@_store_name_tl }
-              { \prop_count:c { g_@@_ \g_@@_store_name_tl _prop } }
-              { \seq_count:c { g_@@_ \g_@@_store_name_tl _seq } }
-              { \int_use:c { g_@@_resume_ \g_@@_store_name_tl _int } }
-            \msg_log:nneee
-              { enumext } { item-answer-hook }
-              { \int_use:N \g_@@_item_number_int }
-              { \int_use:N \g_@@_item_anskey_int }
-              { \int_eval:n { \g_@@_item_number_int - \g_@@_item_anskey_int} }
+            \@@_log_global_vars:
+            \@@_log_answer_vars:
             \bool_if:NT \g_@@_check_ans_bool
               {
                 \@@_check_ans_show:
               }
           }
-        \int_gzero:N \g_@@_item_number_int
-        \int_gzero:N \g_@@_item_anskey_int
-        \bool_gset_false:N \g_@@_check_ans_bool
-        \bool_gset_false:N \g_@@_standar_bool
-        \bool_gset_false:N \g_@@_starred_bool
-        \tl_gclear:N \g_@@_store_name_tl
-        \tl_gclear:N \g_@@_start_line_tl
-        \tl_gclear:N \g_@@_envir_name_tl
+         \@@_reset_global_vars:
       }
   }
 %    \end{macrocode}

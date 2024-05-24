@@ -340,6 +340,34 @@
           }
       }
   }
+%% Reset all global vars after use in hook function.
+\cs_new_protected:Nn \__enumext_reset_global_vars:
+  {
+    \int_gzero:N \g__enumext_item_number_int
+    \int_gzero:N \g__enumext_item_anskey_int
+    \bool_gset_false:N \g__enumext_check_ans_bool
+    \bool_gset_false:N \g__enumext_standar_bool
+    \bool_gset_false:N \g__enumext_starred_bool
+    \tl_gclear:N \g__enumext_store_name_tl
+    \tl_gclear:N \g__enumext_start_line_tl
+    \tl_gclear:N \g__enumext_envir_name_tl
+  }
+%% Reset all global vars after use in hook function.
+\cs_new_protected:Nn \__enumext_log_global_vars:
+  {
+    \msg_log:nneeee { enumext } { prop-seq-int-hook }
+      { \g__enumext_store_name_tl } { \prop_count:c { g__enumext_ \g__enumext_store_name_tl _prop } }
+      { \seq_count:c { g__enumext_ \g__enumext_store_name_tl _seq } }
+      { \int_use:c { g__enumext_resume_ \g__enumext_store_name_tl _int } }
+  }
+%% Reset all global vars after use in hook function.
+\cs_new_protected:Nn \__enumext_log_answer_vars:
+  {
+    \msg_log:nneee { enumext } { item-answer-hook }
+      { \int_use:N \g__enumext_item_number_int }
+      { \int_use:N \g__enumext_item_anskey_int }
+      { \int_eval:n { \g__enumext_item_number_int - \g__enumext_item_anskey_int} }
+  }
 %% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_execute_after_env:
   {
@@ -350,30 +378,14 @@
             \msg_term:nnVV
               { enumext } { save-ans-log-hook }
               \g__enumext_envir_name_tl \g__enumext_store_name_tl
-            \msg_log:nneeee
-              { enumext } { prop-seq-int-hook }
-              { \g__enumext_store_name_tl }
-              { \prop_count:c { g__enumext_ \g__enumext_store_name_tl _prop } }
-              { \seq_count:c { g__enumext_ \g__enumext_store_name_tl _seq } }
-              { \int_use:c { g__enumext_resume_ \g__enumext_store_name_tl _int } }
-            \msg_log:nneee
-              { enumext } { item-answer-hook }
-              { \int_use:N \g__enumext_item_number_int }
-              { \int_use:N \g__enumext_item_anskey_int }
-              { \int_eval:n { \g__enumext_item_number_int - \g__enumext_item_anskey_int} }
+            \__enumext_log_global_vars:
+            \__enumext_log_answer_vars:
             \bool_if:NT \g__enumext_check_ans_bool
               {
                 \__enumext_check_ans_show:
               }
           }
-        \int_gzero:N \g__enumext_item_number_int
-        \int_gzero:N \g__enumext_item_anskey_int
-        \bool_gset_false:N \g__enumext_check_ans_bool
-        \bool_gset_false:N \g__enumext_standar_bool
-        \bool_gset_false:N \g__enumext_starred_bool
-        \tl_gclear:N \g__enumext_store_name_tl
-        \tl_gclear:N \g__enumext_start_line_tl
-        \tl_gclear:N \g__enumext_envir_name_tl
+         \__enumext_reset_global_vars:
       }
   }
 %% Copy list tools.
