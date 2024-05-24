@@ -375,10 +375,7 @@
   {
     \int_gset:Nn \g__enumext_item_answer_diff_int
       {
-        %\int_eval:n
-        %  {
-            \int_sign:n { \g__enumext_item_number_int - \g__enumext_item_anskey_int }
-        %  }
+        \int_sign:n { \g__enumext_item_number_int - \g__enumext_item_anskey_int }
       }
   }
 \cs_new_protected:Nn \__enumext_execute_after_env:
@@ -393,10 +390,11 @@
               \g__enumext_envir_name_tl \g__enumext_store_name_tl
             \__enumext_log_global_vars:
             \__enumext_log_answer_vars:
-            \bool_if:NT \g__enumext_check_ans_bool
+            \bool_if:NTF \g__enumext_check_ans_bool
               {
                 \__enumext_check_ans_show:
               }
+              { \__enumext_check_ans_log: }
           }
         \__enumext_reset_global_vars:
       }
@@ -1877,19 +1875,17 @@
     \tl_if_empty:NTF \l__enumext_store_name_tl
       {
         \bool_lazy_or:nnT
-          { \l__enumext_standar_first_level_bool }
-          { \l__enumext_starred_first_level_bool }
+          { \l__enumext_standar_first_level_bool } { \l__enumext_starred_first_level_bool }
           {
             \msg_error:nnV { enumext } { save-ans-empty } \g__enumext_envir_name_tl
           }
       }
       {
         \bool_lazy_or:nnT
-          { \l__enumext_standar_first_level_bool }
-          { \l__enumext_starred_first_level_bool }
+          { \l__enumext_standar_first_level_bool } { \l__enumext_starred_first_level_bool }
           {
-            \msg_term:nnVV
-              { enumext } { save-ans-log } \g__enumext_envir_name_tl \l__enumext_store_name_tl
+            \msg_term:nnVV { enumext } { save-ans-log }
+              \g__enumext_envir_name_tl \l__enumext_store_name_tl
             \__enumext_storing_exec:
           }
       }
@@ -2030,6 +2026,33 @@
 \cs_new_protected:Nn \__enumext_check_ans_msg_greater:
   {
     \msg_warning:nneee { enumext } { item-greater-answer }
+      { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cs_new_protected:Nn \__enumext_check_ans_log:
+  {
+    \int_case:nn { \g__enumext_item_answer_diff_int }
+      {
+        { -1 }{ \__enumext_check_ans_log_msg_less:    }
+        {  0 }{ \__enumext_check_ans_log_msg_same_ok: }
+        {  1 }{ \__enumext_check_ans_log_msg_greater: }
+      }
+  }
+\cs_new_protected:Nn \__enumext_check_ans_log_msg_less:
+  {
+    \msg_log:nneee { enumext } { item-less-answer }
+      { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+  }
+\cs_new_protected:Nn \__enumext_check_ans_log_msg_same_ok:
+  {
+    \msg_log:nneee { enumext } { items-same-answer }
+      { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+  }
+\cs_new_protected:Nn \__enumext_check_ans_log_msg_greater:
+  {
+    \msg_log:nneee { enumext } { item-greater-answer }
       { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
   }
 %% Function for check \item* and \anspic* commands.
@@ -2700,10 +2723,10 @@
   {
     \tl_if_novalue:nTF {#1}
       {
-        \bool_if:NT \l__enumext_check_ans_bool
-          {
+        %\bool_if:NT \l__enumext_check_ans_bool
+        %  {
             \int_gincr:N \g__enumext_item_number_int
-          }
+        %  }
         \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
         \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
       }
@@ -2731,10 +2754,10 @@
       {
         \dim_set:cn { l__enumext_item_symbol_sep_ \__enumext_level: _dim } {#2}
       }
-    \bool_if:NT \l__enumext_check_ans_bool
-      {
+    %\bool_if:NT \l__enumext_check_ans_bool
+    %  {
         \int_gincr:N \g__enumext_item_number_int
-      }
+    %  }
     \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
     \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
   }
@@ -3716,10 +3739,10 @@
                 \legacy_if_set_true:n { @hyper@item }
               }
             \refstepcounter{enumXvii}
-            \bool_if:NT \l__enumext_check_ans_bool
-              {
+            %\bool_if:NT \l__enumext_check_ans_bool
+            %  {
                 \int_gincr:N \g__enumext_item_number_int
-              }
+            %  }
           }
       }
     \group_begin:

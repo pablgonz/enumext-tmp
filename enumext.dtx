@@ -4403,10 +4403,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               \g_@@_envir_name_tl \g_@@_store_name_tl
             \@@_log_global_vars:
             \@@_log_answer_vars:
-            \bool_if:NT \g_@@_check_ans_bool
+            \bool_if:NTF \g_@@_check_ans_bool
               {
                 \@@_check_ans_show:
               }
+              { \@@_check_ans_log: }
           }
         \@@_reset_global_vars:
       }
@@ -7157,19 +7158,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_if_empty:NTF \l_@@_store_name_tl
       {
         \bool_lazy_or:nnT
-          { \l_@@_standar_first_level_bool }
-          { \l_@@_starred_first_level_bool }
+          { \l_@@_standar_first_level_bool } { \l_@@_starred_first_level_bool }
           {
             \msg_error:nnV { enumext } { save-ans-empty } \g_@@_envir_name_tl
           }
       }
       {
         \bool_lazy_or:nnT
-          { \l_@@_standar_first_level_bool }
-          { \l_@@_starred_first_level_bool }
+          { \l_@@_standar_first_level_bool } { \l_@@_starred_first_level_bool }
           {
-            \msg_term:nnVV
-              { enumext } { save-ans-log } \g_@@_envir_name_tl \l_@@_store_name_tl
+            \msg_term:nnVV { enumext } { save-ans-log }
+              \g_@@_envir_name_tl \l_@@_store_name_tl
             \__enumext_storing_exec:
           }
       }
@@ -7441,6 +7440,33 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_check_ans_msg_greater:
   {
     \msg_warning:nneee { enumext } { item-greater-answer }
+      { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cs_new_protected:Nn \@@_check_ans_log:
+  {
+    \int_case:nn { \g_@@_item_answer_diff_int }
+      {
+        { -1 }{ \@@_check_ans_log_msg_less:    }
+        {  0 }{ \@@_check_ans_log_msg_same_ok: }
+        {  1 }{ \@@_check_ans_log_msg_greater: }
+      }
+  }
+\cs_new_protected:Nn \@@_check_ans_log_msg_less:
+  {
+    \msg_log:nneee { enumext } { item-less-answer }
+      { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
+  }
+\cs_new_protected:Nn \@@_check_ans_log_msg_same_ok:
+  {
+    \msg_log:nneee { enumext } { items-same-answer }
+      { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
+  }
+\cs_new_protected:Nn \@@_check_ans_log_msg_greater:
+  {
+    \msg_log:nneee { enumext } { item-greater-answer }
       { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
   }
 %    \end{macrocode}
@@ -8565,10 +8591,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_if_novalue:nTF {#1}
       {
-        \bool_if:NT \l_@@_check_ans_bool
-          {
+        %\bool_if:NT \l_@@_check_ans_bool
+        %  {
             \int_gincr:N \g_@@_item_number_int
-          }
+        %  }
         \bool_set_true:c { l_@@_wrap_label_ \@@_level: _bool }
         \@@_item_std:w \tl_use:c { l_@@_fake_item_indent_ \@@_level: _tl }
       }
@@ -8639,10 +8665,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \dim_set:cn { l_@@_item_symbol_sep_ \@@_level: _dim } {#2}
       }
-    \bool_if:NT \l_@@_check_ans_bool
-      {
+    %\bool_if:NT \l_@@_check_ans_bool
+    %  {
         \int_gincr:N \g_@@_item_number_int
-      }
+    %  }
     \bool_set_true:c { l_@@_wrap_label_ \@@_level: _bool }
     \@@_item_std:w \tl_use:c { l_@@_fake_item_indent_ \@@_level: _tl }
   }
@@ -10653,10 +10679,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 \legacy_if_set_true:n { @hyper@item }
               }
             \refstepcounter{enumXvii}
-            \bool_if:NT \l_@@_check_ans_bool
-              {
+            %\bool_if:NT \l_@@_check_ans_bool
+            %  {
                 \int_gincr:N \g_@@_item_number_int
-              }
+            %  }
           }
       }
 %    \end{macrocode}
