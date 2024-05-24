@@ -7374,7 +7374,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_compare:nNnTF
       { \g_@@_item_number_int } = { \g_@@_item_anskey_int }
       {
-        \msg_term:nnV { enumext } { items-same-answer } \g_@@_store_name_tl
+        \msg_term:nneee { enumext } { items-same-answer }
+          { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
       }
       {
         \msg_warning:nnVV
@@ -11725,12 +11726,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     Key ~ '#1'~ works ~ only ~ with ~ the ~ 'save-ans' ~ key ~ in ~ '#2'~ \msg_line_context:.
   }
+%%%Checking answers in "test" for environment "enum ext" started on line 3 and closed on line 7
 \msg_new:nnn { enumext } { items-same-answer }
   {
-    **********~Checking~answers~on~'#1'~OK~**********\\
-    **~ All ~ items ~ stored ~ in ~ sequence ~ '#1' ~ have ~ an ~ answer. \\
+    ****************************************\\
+    * ~ Package ~ enumext: ~ Checking ~ answers ~ in ~ '#1' ~ for ~ \c_left_brace_str #2 \c_right_brace_str\\
+    * ~ started ~ #3 ~ and ~ close ~ \msg_line_context: : ~ OK, ~ all ~ items ~ with ~ answer.\\
     ****************************************
-    \prg_replicate:nn { 7 + \str_count:n {#1} } { * }
   }
 \msg_new:nnn { enumext } { item-different-answer }
   {
