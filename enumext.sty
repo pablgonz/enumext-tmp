@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-22}
+  {2024-05-24}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -347,15 +347,24 @@
       {
         \tl_if_empty:NF \g__enumext_store_name_tl
           {
-            \msg_note:nnV
-              { enumext } { save-ans-hook } \g__enumext_store_name_tl
-            \msg_log:nnVV
-              { enumext } { save-ans-log-hook } \g__enumext_envir_name_tl \g__enumext_store_name_tl
+            \msg_term:nnVV
+              { enumext } { save-ans-log-hook }
+              \g__enumext_envir_name_tl \g__enumext_store_name_tl
+            \msg_log:nneeee
+              { enumext } { prop-seq-int-hook }
+              { \g__enumext_store_name_tl }
+              { \prop_count:c { g__enumext_ \g__enumext_store_name_tl _prop } }
+              { \seq_count:c { g__enumext_ \g__enumext_store_name_tl _seq } }
+              { \int_use:c { g__enumext_resume_ \g__enumext_store_name_tl _int } }
+            \msg_log:nneee
+              { enumext } { item-answer-hook }
+              { \int_use:N \g__enumext_item_number_int }
+              { \int_use:N \g__enumext_item_anskey_int }
+              { \int_eval:n { \g__enumext_item_number_int - \g__enumext_item_anskey_int} }
             \bool_if:NT \g__enumext_check_ans_bool
               {
                 \__enumext_check_ans_show:
               }
-            % Aquí cargamos los mensajes para .log y terminal
           }
         \int_gzero:N \g__enumext_item_number_int
         \int_gzero:N \g__enumext_item_anskey_int
@@ -1854,9 +1863,7 @@
           { \l__enumext_standar_first_level_bool }
           { \l__enumext_starred_first_level_bool }
           {
-            \msg_note:nnV
-              { enumext } { save-ans-ok } \l__enumext_store_name_tl
-            \msg_log:nnVV
+            \msg_term:nnVV
               { enumext } { save-ans-log } \g__enumext_envir_name_tl \l__enumext_store_name_tl
             \__enumext_storing_exec:
           }
@@ -1978,16 +1985,25 @@
 %% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_show:
   {
-    \int_compare:nNnTF
+    \int_compare:nNnT
       { \g__enumext_item_number_int } = { \g__enumext_item_anskey_int }
       {
         \msg_term:nneee { enumext } { items-same-answer }
           { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
       }
+     \int_compare:nNnT
+      { \g__enumext_item_number_int } > { \g__enumext_item_anskey_int }
       {
-        \msg_warning:nnVV
-          { enumext } { item-different-answer }
-          \g__enumext_store_name_tl \g__enumext_start_line_tl
+        \msg_warning:nneee
+          { enumext } { item-greater-answer }
+          { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+      }
+     \int_compare:nNnT
+      { \g__enumext_item_number_int } < { \g__enumext_item_anskey_int }
+      {
+        \msg_warning:nneee
+          { enumext } { item-less-answer }
+          { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
       }
   }
 %% Function for check \item* and \anspic* commands.
@@ -4312,7 +4328,19 @@
   }
 \msg_new:nnn { enumext } { store-int }
   {
-    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g__enumext_#1_int ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g__enumext_resume_#1_int ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { prop-seq-int-hook }
+  {
+    * ~ Package ~ enumext: ~ Answers ~ in ~ \c_backslash_str g__enumext_#1_prop ~ = ~ #2.\\
+    * ~ Package ~ enumext: ~ Elements ~ in ~ \c_backslash_str g__enumext_#1_seq ~ = ~ #3.\\
+    * ~ Package ~ enumext: ~ Value ~ off ~ \c_backslash_str g__enumext_resume_#1_int ~ = ~ #4.
+  }
+\msg_new:nnn { enumext } { item-answer-hook }
+  {
+    * ~ Package ~ enumext: ~ Value ~ off ~ \c_backslash_str g__enumext_item_number_int ~ = ~ #1.\\
+    * ~ Package ~ enumext: ~ Value ~ off ~ \c_backslash_str g__enumext_item_anskey_int ~ = ~ #2.\\
+    * ~ Package ~ enumext: ~ Difference ~ item_number_int ~ - ~ item_anskey_int ~ = ~ #3.
   }
 \msg_new:nnn { enumext } { invalid-key }
   {
@@ -4370,17 +4398,13 @@
   {
     Key ~ 'save-ans' ~ need ~ a ~ value ~ in ~ '#1'~ \msg_line_context:.
   }
-\msg_new:nnn { enumext } { save-ans-ok }
-  {
-    Set ~ key~ 'save-ans=#1' ~ \msg_line_context:.
-  }
 \msg_new:nnn { enumext } { save-ans-log }
   {
-    * ~ Package ~ enumext: ~ Start ~ #1 ~ with ~ key ~ save-ans=#2 ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Begin ~ \c_left_brace_str#1\c_right_brace_str \c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { save-ans-log-hook }
   {
-    * ~ Package ~ enumext: ~ Stop ~ #1 ~ with ~ key ~ save-ans=#2 ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ End ~ \c_left_brace_str#1\c_right_brace_str \c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { save-ans-hook }
   {
@@ -4390,18 +4414,24 @@
   {
     Key ~ '#1'~ works ~ only ~ with ~ the ~ 'save-ans' ~ key ~ in ~ '#2'~ \msg_line_context:.
   }
-%%%Checking answers in "test" for environment "enum ext" started on line 3 and closed on line 7
 \msg_new:nnn { enumext } { items-same-answer }
   {
     ****************************************\\
     * ~ Package ~ enumext: ~ Checking ~ answers ~ in ~ '#1' ~ for ~ \c_left_brace_str #2 \c_right_brace_str\\
-    * ~ started ~ #3 ~ and ~ close ~ \msg_line_context: : ~ OK, ~ all ~ items ~ with ~ answer.\\
+    * ~ started ~ #3 ~ and ~ close ~ \msg_line_context: : ~ 'OK', ~ all ~ items ~ with ~ answer.\\
     ****************************************
   }
-\msg_new:nnn { enumext } { item-different-answer }
+\msg_new:nnn { enumext } { item-greater-answer }
   {
-    Number ~ of ~ items ~ different ~  of ~ number ~ of ~
-    answer ~ stored ~ in ~ '#1'~ #2.
+    Checking ~ answers ~ in ~ '#1' ~ for ~ \c_left_brace_str #2 \c_right_brace_str\\
+    started ~ #3 ~ and ~ close ~ \msg_line_context: : ~'NOT ~ OK'\\
+    Items ~ > ~ Answers.
+  }
+\msg_new:nnn { enumext } { item-less-answer }
+  {
+    Checking ~ answers ~ in ~ '#1' ~ for ~ \c_left_brace_str #2 \c_right_brace_str\\
+    started ~ #3 ~ and ~ close ~ \msg_line_context: : ~'NOT ~ OK'\\
+    Items ~ < ~ Answers.
   }
 \msg_new:nnn { enumext } { missing-starred }
   {

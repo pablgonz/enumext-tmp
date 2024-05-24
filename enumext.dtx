@@ -3596,7 +3596,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-22}
+  {2024-05-24}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4339,15 +4339,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \tl_if_empty:NF \g_@@_store_name_tl
           {
-            \msg_note:nnV
-              { enumext } { save-ans-hook } \g_@@_store_name_tl
-            \msg_log:nnVV
-              { enumext } { save-ans-log-hook } \g_@@_envir_name_tl \g_@@_store_name_tl
+            \msg_term:nnVV
+              { enumext } { save-ans-log-hook }
+              \g_@@_envir_name_tl \g_@@_store_name_tl
+            \msg_log:nneeee
+              { enumext } { prop-seq-int-hook }
+              { \g_@@_store_name_tl }
+              { \prop_count:c { g_@@_ \g_@@_store_name_tl _prop } }
+              { \seq_count:c { g_@@_ \g_@@_store_name_tl _seq } }
+              { \int_use:c { g_@@_resume_ \g_@@_store_name_tl _int } }
+            \msg_log:nneee
+              { enumext } { item-answer-hook }
+              { \int_use:N \g_@@_item_number_int }
+              { \int_use:N \g_@@_item_anskey_int }
+              { \int_eval:n { \g_@@_item_number_int - \g_@@_item_anskey_int} }
             \bool_if:NT \g_@@_check_ans_bool
               {
                 \@@_check_ans_show:
               }
-            % Aquí cargamos los mensajes para .log y terminal
           }
         \int_gzero:N \g_@@_item_number_int
         \int_gzero:N \g_@@_item_anskey_int
@@ -7116,9 +7125,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           { \l_@@_standar_first_level_bool }
           { \l_@@_starred_first_level_bool }
           {
-            \msg_note:nnV
-              { enumext } { save-ans-ok } \l_@@_store_name_tl
-            \msg_log:nnVV
+            \msg_term:nnVV
               { enumext } { save-ans-log } \g_@@_envir_name_tl \l_@@_store_name_tl
             \__enumext_storing_exec:
           }
@@ -7371,16 +7378,25 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_check_ans_show:
   {
-    \int_compare:nNnTF
+    \int_compare:nNnT
       { \g_@@_item_number_int } = { \g_@@_item_anskey_int }
       {
         \msg_term:nneee { enumext } { items-same-answer }
           { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
       }
+     \int_compare:nNnT
+      { \g_@@_item_number_int } > { \g_@@_item_anskey_int }
       {
-        \msg_warning:nnVV
-          { enumext } { item-different-answer }
-          \g_@@_store_name_tl \g_@@_start_line_tl
+        \msg_warning:nneee
+          { enumext } { item-greater-answer }
+          { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
+      }
+     \int_compare:nNnT
+      { \g_@@_item_number_int } < { \g_@@_item_anskey_int }
+      {
+        \msg_warning:nneee
+          { enumext } { item-less-answer }
+          { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
       }
   }
 %    \end{macrocode}
@@ -11606,6 +11622,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %
 % Message used in the creation of \mymeta{prop list} by \mypkg*{enumext} package.
+% los valores seria save-name, prop-count, -seqcount, y int-val
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { store-prop }
   {
@@ -11613,11 +11630,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \msg_new:nnn { enumext } { store-seq }
   {
-    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g__enumext_#1_seq ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g_@@_#1_seq ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { store-int }
   {
-    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g__enumext_#1_int ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g_@@_resume_#1_int ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { prop-seq-int-hook }
+  {
+    * ~ Package ~ enumext: ~ Answers ~ in ~ \c_backslash_str g_@@_#1_prop ~ = ~ #2.\\
+    * ~ Package ~ enumext: ~ Elements ~ in ~ \c_backslash_str g_@@_#1_seq ~ = ~ #3.\\
+    * ~ Package ~ enumext: ~ Value ~ off ~ \c_backslash_str g_@@_resume_#1_int ~ = ~ #4.
+  }
+\msg_new:nnn { enumext } { item-answer-hook }
+  {
+    * ~ Package ~ enumext: ~ Value ~ off ~ \c_backslash_str g_@@_item_number_int ~ = ~ #1.\\
+    * ~ Package ~ enumext: ~ Value ~ off ~ \c_backslash_str g_@@_item_anskey_int ~ = ~ #2.\\
+    * ~ Package ~ enumext: ~ Difference ~ item_number_int ~ - ~ item_anskey_int ~ = ~ #3.
   }
 %    \end{macrocode}
 %
@@ -11699,20 +11728,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     Key ~ 'save-ans' ~ need ~ a ~ value ~ in ~ '#1'~ \msg_line_context:.
   }
-\msg_new:nnn { enumext } { save-ans-ok }
-  {
-    Set ~ key~ 'save-ans=#1' ~ \msg_line_context:.
-  }
-% Start environment enumext with key save-ans=algo on line ddd
 \msg_new:nnn { enumext } { save-ans-log }
   {
-    * ~ Package ~ enumext: ~ Start ~ #1 ~ with ~ key ~ save-ans=#2 ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Begin ~ \c_left_brace_str#1\c_right_brace_str \c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { save-ans-log-hook }
   {
-    * ~ Package ~ enumext: ~ Stop ~ #1 ~ with ~ key ~ save-ans=#2 ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ End ~ \c_left_brace_str#1\c_right_brace_str \c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
   }
-% Stop ~ storing in 'test-1990' on line 15.
 \msg_new:nnn { enumext } { save-ans-hook }
   {
     Stop ~ storing ~ for ~ 'save-ans=#1' ~ \msg_line_context:.
@@ -11726,18 +11749,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     Key ~ '#1'~ works ~ only ~ with ~ the ~ 'save-ans' ~ key ~ in ~ '#2'~ \msg_line_context:.
   }
-%%%Checking answers in "test" for environment "enum ext" started on line 3 and closed on line 7
 \msg_new:nnn { enumext } { items-same-answer }
   {
     ****************************************\\
     * ~ Package ~ enumext: ~ Checking ~ answers ~ in ~ '#1' ~ for ~ \c_left_brace_str #2 \c_right_brace_str\\
-    * ~ started ~ #3 ~ and ~ close ~ \msg_line_context: : ~ OK, ~ all ~ items ~ with ~ answer.\\
+    * ~ started ~ #3 ~ and ~ close ~ \msg_line_context: : ~ 'OK', ~ all ~ items ~ with ~ answer.\\
     ****************************************
   }
-\msg_new:nnn { enumext } { item-different-answer }
+\msg_new:nnn { enumext } { item-greater-answer }
   {
-    Number ~ of ~ items ~ different ~  of ~ number ~ of ~
-    answer ~ stored ~ in ~ '#1'~ #2.
+    Checking ~ answers ~ in ~ '#1' ~ for ~ \c_left_brace_str #2 \c_right_brace_str\\
+    started ~ #3 ~ and ~ close ~ \msg_line_context: : ~'NOT ~ OK'\\
+    Items ~ > ~ Answers.
+  }
+\msg_new:nnn { enumext } { item-less-answer }
+  {
+    Checking ~ answers ~ in ~ '#1' ~ for ~ \c_left_brace_str #2 \c_right_brace_str\\
+    started ~ #3 ~ and ~ close ~ \msg_line_context: : ~'NOT ~ OK'\\
+    Items ~ < ~ Answers.
   }
 %    \end{macrocode}
 %  Messages used by the internal system to check for
