@@ -171,11 +171,11 @@
 \bool_new:N \l__enumext_check_ans_bool
 \bool_new:N \g__enumext_check_ans_bool
 \tl_new:N   \l__enumext_check_start_line_env_tl
-\tl_new:N   \g__enumext_check_start_line_env_tl
-\tl_new:N   \g__enumext_check_environment_name_tl
+\tl_new:N   \g__enumext_start_line_tl
+\tl_new:N   \g__enumext_envir_name_tl
 \int_new:N  \g__enumext_check_starred_cmd_int
-\int_new:N  \g__enumext_count_item_anskey_int
-\int_new:N  \g__enumext_count_item_number_int
+\int_new:N  \g__enumext_item_anskey_int
+\int_new:N  \g__enumext_item_number_int
 %% Variables used for hyperref detection.
 \bool_new:N \l__enumext_hyperref_bool
 \bool_new:N \l__enumext_footnotes_key_bool
@@ -291,11 +291,10 @@
       }
       {
         \bool_set_true:N \l__enumext_standar_first_level_bool
-        \tl_gset:Nn \g__enumext_check_environment_name_tl { enumext }
-        \tl_gset:Ne \g__enumext_check_start_line_env_tl
+        \tl_gset:Nn \g__enumext_envir_name_tl { enumext }
+        \tl_gset:Ne \g__enumext_start_line_tl
           {
-            in ~ '\exp_not:V \g__enumext_check_environment_name_tl' ~
-            start ~ on ~ line ~ \exp_not:V \inputlineno
+            on ~ line ~ \exp_not:V \inputlineno
           }
       }
     \bool_lazy_all:nT
@@ -306,11 +305,10 @@
       }
       {
         \bool_set_true:N \l__enumext_starred_first_level_bool
-        \tl_gset:Nn \g__enumext_check_environment_name_tl { enumext* }
-        \tl_gset:Ne \g__enumext_check_start_line_env_tl
+        \tl_gset:Nn \g__enumext_envir_name_tl { enumext* }
+        \tl_gset:Ne \g__enumext_start_line_tl
           {
-            in ~ '\exp_not:V \g__enumext_check_environment_name_tl' ~
-            start ~ on ~ line ~ \exp_not:V \inputlineno
+            on ~ line ~ \exp_not:V \inputlineno
           }
       }
   }
@@ -349,16 +347,24 @@
       {
         \tl_if_empty:NF \g__enumext_store_name_tl
           {
-
+            \msg_note:nnV
+              { enumext } { save-ans-hook } \g__enumext_store_name_tl
+            \msg_log:nnVV
+              { enumext } { save-ans-log-hook } \g__enumext_envir_name_tl \g__enumext_store_name_tl
+            \bool_if:NT \g__enumext_check_ans_bool
+              {
+                \__enumext_check_ans_show:
+              }
+            % Aquí cargamos los mensajes para .log y terminal
           }
-        \int_gzero:N \g__enumext_count_item_number_int
-        \int_gzero:N \g__enumext_count_item_anskey_int
+        \int_gzero:N \g__enumext_item_number_int
+        \int_gzero:N \g__enumext_item_anskey_int
         \bool_gset_false:N \g__enumext_check_ans_bool
         \bool_gset_false:N \g__enumext_standar_bool
         \bool_gset_false:N \g__enumext_starred_bool
         \tl_gclear:N \g__enumext_store_name_tl
-        \tl_gclear:N \g__enumext_check_start_line_env_tl
-        \tl_gclear:N \g__enumext_check_environment_name_tl
+        \tl_gclear:N \g__enumext_start_line_tl
+        \tl_gclear:N \g__enumext_envir_name_tl
       }
   }
 %% Copy list tools.
@@ -1836,26 +1842,22 @@
     \tl_set:Ne \l__enumext_store_name_tl {#1}
     \tl_if_empty:NTF \l__enumext_store_name_tl
       {
-        \bool_if:NT \l__enumext_standar_first_level_bool
+        \bool_lazy_or:nnT
+          { \l__enumext_standar_first_level_bool }
+          { \l__enumext_starred_first_level_bool }
           {
-            \msg_error:nnn { enumext } { save-ans-empty } { enumext }
-          }
-        \bool_if:NT \l__enumext_starred_first_level_bool
-          {
-            \msg_error:nnn { enumext } { save-ans-empty } { enumext* }
+            \msg_error:nnV { enumext } { save-ans-empty } \g__enumext_envir_name_tl
           }
       }
       {
-        \bool_if:NT \l__enumext_standar_first_level_bool
+        \bool_lazy_or:nnT
+          { \l__enumext_standar_first_level_bool }
+          { \l__enumext_starred_first_level_bool }
           {
-            \msg_note:nnnV
-              { enumext } { save-ans-ok } { enumext } \l__enumext_store_name_tl
-            \__enumext_storing_exec:
-          }
-        \bool_if:NT \l__enumext_starred_first_level_bool
-          {
-            \msg_note:nnnV
-              { enumext } { save-ans-ok } { enumext* } \l__enumext_store_name_tl
+            \msg_note:nnV
+              { enumext } { save-ans-ok } \l__enumext_store_name_tl
+            \msg_log:nnVV
+              { enumext } { save-ans-log } \g__enumext_envir_name_tl \l__enumext_store_name_tl
             \__enumext_storing_exec:
           }
       }
@@ -1867,17 +1869,17 @@
     \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
     \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
       {
-        \msg_info:nnV { enumext } { store-prop } \l__enumext_store_name_tl
+        \msg_log:nnV { enumext } { store-prop } \l__enumext_store_name_tl
         \prop_new:c { g__enumext_ \l__enumext_store_name_tl _prop }
       }
     \seq_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _seq }
       {
-        \msg_info:nnV { enumext } { store-seq } \l__enumext_store_name_tl
+        \msg_log:nnV { enumext } { store-seq } \l__enumext_store_name_tl
         \seq_new:c { g__enumext_ \l__enumext_store_name_tl _seq }
       }
     \int_if_exist:cF { g__enumext_resume_ \l__enumext_store_name_tl _int }
       {
-        \msg_info:nnV { enumext } { store-int } \l__enumext_store_name_tl
+        \msg_log:nnV { enumext } { store-int } \l__enumext_store_name_tl
         \int_new:c { g__enumext_resume_ \l__enumext_store_name_tl _int }
       }
   }
@@ -1922,7 +1924,7 @@
           }
       }
   }
-%% Decrementing \g_@@_count_item_number_int for nested level.
+%% Decrementing \g_@@_item_number_int for nested level.
 \cs_new_protected:Nn \__enumext_check_ans_level:
   {
     \int_case:nn { \l__enumext_level_int }
@@ -1934,17 +1936,17 @@
                    { \int_compare_p:nNn { \l__enumext_level_h_int } = { 1 } }
                  }
                  {
-                   \int_gdecr:N \g__enumext_count_item_number_int
+                   \int_gdecr:N \g__enumext_item_number_int
                  }
              }
         { 2 }{
-               \int_gdecr:N \g__enumext_count_item_number_int
+               \int_gdecr:N \g__enumext_item_number_int
              }
         { 3 }{
-               \int_gdecr:N \g__enumext_count_item_number_int
+               \int_gdecr:N \g__enumext_item_number_int
              }
         { 4 }{
-               \int_gdecr:N \g__enumext_count_item_number_int
+               \int_gdecr:N \g__enumext_item_number_int
              }
       }
     \int_case:nn { \l__enumext_level_h_int }
@@ -1952,51 +1954,39 @@
         { 1 }{
                \bool_if:NT \g__enumext_standar_bool
                  {
-                   \int_gdecr:N \g__enumext_count_item_number_int
+                   \int_gdecr:N \g__enumext_item_number_int
                  }
              }
       }
   }
-%% Function to export \g_@@_store_name_tl for |check-ans| key.
+%% Function to export \l_@@_check_ans_bool for |check-ans| key.
 \cs_new_protected:Nn \__enumext_check_ans_to_hook:
   {
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_check_ans_bool }
       { \bool_if_p:N \g__enumext_standar_bool }
       {
-        \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
+        \bool_gset_true:N \g__enumext_check_ans_bool
       }
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_check_ans_bool }
       { \bool_if_p:N \g__enumext_starred_bool }
       {
-        \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
+        \bool_gset_true:N \g__enumext_check_ans_bool
       }
   }
 %% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_show:
   {
-    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
+    \int_compare:nNnTF
+      { \g__enumext_item_number_int } = { \g__enumext_item_anskey_int }
       {
-        \tl_if_empty:NF \g__enumext_store_name_tl
-          {
-            \int_compare:nNnTF
-              { \g__enumext_count_item_number_int } = { \g__enumext_count_item_anskey_int }
-              {
-                \msg_term:nnV { enumext } { items-same-answer } \g__enumext_store_name_tl
-              }
-              {
-                \msg_warning:nnVV
-                  { enumext } { item-different-answer }
-                  \g__enumext_store_name_tl \g__enumext_check_start_line_env_tl
-              }
-          }
-        \int_gzero:N \g__enumext_count_item_number_int
-        \int_gzero:N \g__enumext_count_item_anskey_int
-        \bool_gset_false:N \g__enumext_standar_bool
-        \bool_gset_false:N \g__enumext_starred_bool
-        \tl_gclear:N \g__enumext_store_name_tl
-        \tl_gclear:N \g__enumext_check_start_line_env_tl
+        \msg_term:nnV { enumext } { items-same-answer } \g__enumext_store_name_tl
+      }
+      {
+        \msg_warning:nnVV
+          { enumext } { item-different-answer }
+          \g__enumext_store_name_tl \g__enumext_start_line_tl
       }
   }
 %% Function for check \item* and \anspic* commands.
@@ -2230,7 +2220,7 @@
         {
           \bool_if:NT \l__enumext_check_ans_bool
             {
-              \int_gincr:N \g__enumext_count_item_anskey_int
+              \int_gincr:N \g__enumext_item_anskey_int
             }
           \__enumext_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
         }
@@ -2537,7 +2527,7 @@
     \__enumext_store_addto_seq:V \l__enumext_store_keyans_label_tl
     \bool_if:NT \l__enumext_check_ans_bool
       {
-        \int_gincr:N \g__enumext_count_item_anskey_int
+        \int_gincr:N \g__enumext_item_anskey_int
       }
   }
 %% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic|.
@@ -2669,7 +2659,7 @@
       {
         \bool_if:NT \l__enumext_check_ans_bool
           {
-            \int_gincr:N \g__enumext_count_item_number_int
+            \int_gincr:N \g__enumext_item_number_int
           }
         \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
         \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
@@ -2700,7 +2690,7 @@
       }
     \bool_if:NT \l__enumext_check_ans_bool
       {
-        \int_gincr:N \g__enumext_count_item_number_int
+        \int_gincr:N \g__enumext_item_number_int
       }
     \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
     \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
@@ -3117,7 +3107,7 @@
     \__enumext_resume_save_counter:
   }
 %% Execute |check-ans| key out of |enumext|.
-\__enumext_after_env:nn {enumext} { \__enumext_check_ans_show: }
+\__enumext_after_env:nn {enumext} { \__enumext_execute_after_env: }
 %% Definition of |keyans| environment.
 \NewDocumentEnvironment{keyans}{ O{} }
   {
@@ -3685,7 +3675,7 @@
             \refstepcounter{enumXvii}
             \bool_if:NT \l__enumext_check_ans_bool
               {
-                \int_gincr:N \g__enumext_count_item_number_int
+                \int_gincr:N \g__enumext_item_number_int
               }
           }
       }
@@ -3766,7 +3756,7 @@
       }
   }
 %% Execute |check-ans| key out of |enumext*|.
-\__enumext_after_env:nn {enumext*} { \__enumext_check_ans_show: }
+\__enumext_after_env:nn {enumext*} { \__enumext_execute_after_env: }
 %% Define default columns width for |keyans*|
 \cs_new_protected:Nn \__enumext_starred_columns_set_viii:
   {
@@ -4313,15 +4303,15 @@
   }
 \msg_new:nnn { enumext } { store-prop }
   {
-    Creating ~ the ~ 'prop~list' ~ '\c_backslash_str g__enumext_#1_prop' ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g__enumext_#1_prop ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { store-seq }
   {
-    Creating ~ the ~ 'sequence' ~ '\c_backslash_str g__enumext_#1_seq' ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g__enumext_#1_seq ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { store-int }
   {
-    Creating ~ the ~ 'integer' ~ '\c_backslash_str g__enumext_#1_int' ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g__enumext_#1_int ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { invalid-key }
   {
@@ -4381,7 +4371,19 @@
   }
 \msg_new:nnn { enumext } { save-ans-ok }
   {
-    Set ~ 'save-ans=#2' ~ in ~'#1' ~ \msg_line_context:.
+    Set ~ key~ 'save-ans=#1' ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { save-ans-log }
+  {
+    * ~ Package ~ enumext: ~ Start ~ #1 ~ with ~ key ~ save-ans=#2 ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { save-ans-log-hook }
+  {
+    * ~ Package ~ enumext: ~ Stop ~ #1 ~ with ~ key ~ save-ans=#2 ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { save-ans-hook }
+  {
+    Stop ~ storing ~ for ~ 'save-ans=#1' ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { need-save-ans }
   {
