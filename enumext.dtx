@@ -3971,7 +3971,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\l_@@_store_ans_bool,\l_@@_check_ans_bool, \g_@@_check_ans_bool,
+% \begin{variable}{\l_@@_check_answer_bool,\l_@@_check_ans_key_bool, \g_@@_check_ans_bool,
 %                  \l_@@_check_start_line_env_tl, \g_@@_start_line_tl,
 %                  \g_@@_check_starred_cmd_int,  \g_@@_item_anskey_int,
 %                  \g_@@_item_number_int,}
@@ -3984,8 +3984,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Variables used by check-answer mechanism, |check-ans| and |no-store| keys.
 % \fi
 %    \begin{macrocode}
-\bool_new:N \l_@@_store_ans_bool
-\bool_new:N \l_@@_check_ans_bool
+\bool_new:N \l_@@_check_answer_bool
+\bool_new:N \l_@@_check_ans_key_bool
 \bool_new:N \g_@@_check_ans_bool
 \tl_new:N   \l_@@_check_start_line_env_tl
 \tl_new:N   \g_@@_start_line_tl
@@ -7178,7 +7178,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \cs{l_@@_store_active_bool} which activates the use of the
 %   \ics*{anskey} command and the \myenv*{keyans}, \myenv*{keyans*} and
 %   \myenv*{keyanspic} environments and will set to true the variable
-%   \cs{l_@@_store_ans_bool} used for checking answers by the
+%   \cs{l_@@_check_answer_bool} used for checking answers by the
 %   \mykey{check-ans} and \mykey{no-store} keys.
 %   The \mymeta{prop list} \myvarenv{g__@@_series_\mymeta[cf=gray]{store
 %   name}_prop} and the \mymeta{sequence}
@@ -7191,7 +7191,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_storing_exec:
   {
     \bool_set_true:N \l_@@_store_active_bool
-    \bool_set_true:N \l_@@_store_ans_bool
+    \bool_set_true:N \l_@@_check_answer_bool
     \tl_gset:NV \g_@@_store_name_tl \l__enumext_store_name_tl
     \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
       {
@@ -7279,12 +7279,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \keys_define:nn { enumext / #1 }
       {
-        check-ans .bool_set:N = \l_@@_check_ans_bool,
+        check-ans .bool_set:N = \l_@@_check_ans_key_bool,
         check-ans .initial:n  = false,
         check-ans .value_required:n = true,
         no-store  .code:n = {
-                              \bool_set_false:N \l_@@_store_ans_bool
-                              \bool_set_false:N \l_@@_check_ans_bool
+                              \bool_set_false:N \l_@@_check_answer_bool
+                              \bool_set_false:N \l_@@_check_ans_key_bool
                             },
         no-store  .value_forbidden:n = true,
       }
@@ -7301,7 +7301,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_check_ans_active:, \@@_check_ans_level:,}
 %    The function \cs{@@_check_ans_active:} will check the state of the variable
-%    \cs{l_@@_check_ans_bool} activated by the key \mykey{check-ans}, if
+%    \cs{l_@@_check_ans_key_bool} activated by the key \mykey{check-ans}, if
 %    this is \emph{\enquote{true}} it will check the variable \cs{l_@@_store_name_tl}
 %    is not empty, that is, the key \mykey{save-ans} is activated, if so
 %    it will execute the function \cs{@@_check_ans_level:} and otherwise
@@ -7314,7 +7314,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_if_empty:NF \l_@@_store_name_tl
       {
-        \bool_if:NT \l_@@_store_ans_bool
+        \bool_if:NT \l_@@_check_answer_bool
           {
             \@@_check_ans_level:
           }
@@ -7370,25 +7370,25 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_check_ans_to_hook:}
 %    The function \cs{@@_check_ans_to_hook:} will \emph{export} the status of the
-%    local variable \cs{l_@@_check_ans_bool} to the global variable
+%    local variable \cs{l_@@_check_ans_key_bool} to the global variable
 %    \cs{g_@@_check_ans_bool} only if the key \mykey{check-ans} is active.
 %^^A  The function \cs{@@_check_ans_to_hook:} will count the number of
 %^^A  times the |\item| and |\item*| commands appears per level within the
 %^^A  \myenv*{enumext} environment.
 % \iffalse
-%% Function to export \l_@@_check_ans_bool for |check-ans| key.
+%% Function to export \l_@@_check_ans_key_bool for |check-ans| key.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_check_ans_to_hook:
   {
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_check_ans_bool }
+      { \bool_if_p:N \l_@@_check_ans_key_bool }
       { \bool_if_p:N \g_@@_standar_bool }
       {
         \bool_gset_true:N \g_@@_check_ans_bool
       }
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_check_ans_bool }
+      { \bool_if_p:N \l_@@_check_ans_key_bool }
       { \bool_if_p:N \g_@@_starred_bool }
       {
         \bool_gset_true:N \g_@@_check_ans_bool
@@ -7692,7 +7692,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open:
   {
-    \bool_if:NT \l_@@_store_ans_bool
+    \bool_if:NT \l_@@_check_answer_bool
       {
         \tl_if_empty:cTF { l_@@_store_opt_ \@@_level: _tl }
           {
@@ -7716,7 +7716,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_store_level_close:
   {
-    \bool_if:NT \l_@@_store_ans_bool
+    \bool_if:NT \l_@@_check_answer_bool
       {
         \@@_store_addto_seq:n { \end{enumext} }
       }
@@ -7740,7 +7740,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open_vii:
   {
-    \bool_if:NT \l_@@_store_ans_bool
+    \bool_if:NT \l_@@_check_answer_bool
       {
         \tl_if_empty:NTF \l_@@_store_opt_vii_tl
           {
@@ -7768,7 +7768,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_store_level_close_vii:
   {
-    \bool_if:NT \l_@@_store_ans_bool
+    \bool_if:NT \l_@@_check_answer_bool
       {
         \@@_store_addto_seq:n { \end{enumext*} }
       }
@@ -7870,7 +7870,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
     \group_begin:
-      %\bool_if:NT \l_@@_store_ans_bool
+      %\bool_if:NT \l_@@_check_answer_bool
       %  {
           \int_gincr:N \g_@@_item_anskey_int
       %  }
@@ -8360,7 +8360,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \@@_store_addto_seq:V \l_@@_store_keyans_label_tl
-    \bool_if:NT \l_@@_store_ans_bool
+    \bool_if:NT \l_@@_check_answer_bool
       {
         \int_gincr:N \g_@@_item_anskey_int
       }
@@ -8551,7 +8551,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \smallskip
 %
 %   First we will see if the optional argument is present, if it is NOT
-%   present we will check the state of the variable \cs{l_@@_check_ans_bool}
+%   present we will check the state of the variable \cs{l_@@_check_ans_key_bool}
 %   set by the key \mykey{check-ans}, set the boolean variable
 %   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true}
 %   and execute \cs{@@_item_std:w}.
@@ -8575,7 +8575,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_if_novalue:nTF {#1}
       {
-        \bool_if:NT \l_@@_store_ans_bool
+        \bool_if:NT \l_@@_check_answer_bool
           {
             \int_gincr:N \g_@@_item_number_int
           }
@@ -8614,7 +8614,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %   \smallskip
 %
-%   Then we will see the state of the variable \cs{l_@@_check_ans_bool}
+%   Then we will see the state of the variable \cs{l_@@_check_ans_key_bool}
 %   set by the key \mykey{check-ans}, set the boolean variable
 %   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true} and execute \cs{@@_item_std:w}.
 %
@@ -8649,7 +8649,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \dim_set:cn { l_@@_item_symbol_sep_ \@@_level: _dim } {#2}
       }
-    \bool_if:NT \l_@@_store_ans_bool
+    \bool_if:NT \l_@@_check_answer_bool
       {
         \int_gincr:N \g_@@_item_number_int
       }
@@ -10663,8 +10663,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 \legacy_if_set_true:n { @hyper@item }
               }
             \refstepcounter{enumXvii}
-            \bool_if:NT \l_@@_store_ans_bool
-            %\bool_if:NT \l_@@_check_ans_bool
+            \bool_if:NT \l_@@_check_answer_bool
               {
                 \int_gincr:N \g_@@_item_number_int
               }
