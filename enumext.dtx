@@ -3971,7 +3971,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\l_@@_check_answer_bool,\l_@@_check_ans_key_bool, \g_@@_check_ans_bool,
+% \begin{variable}{\l_@@_check_answers_bool,\l_@@_check_ans_key_bool, \g_@@_check_ans_bool,
 %                  \l_@@_check_start_line_env_tl, \g_@@_start_line_tl,
 %                  \g_@@_check_starred_cmd_int,  \g_@@_item_anskey_int,
 %                  \g_@@_item_number_int,}
@@ -3984,7 +3984,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Variables used by check-answer mechanism, |check-ans| and |no-store| keys.
 % \fi
 %    \begin{macrocode}
-\bool_new:N \l_@@_check_answer_bool
+\bool_new:N \l_@@_check_answers_bool
 \bool_new:N \l_@@_check_ans_key_bool
 \bool_new:N \g_@@_check_ans_bool
 \tl_new:N   \l_@@_check_start_line_env_tl
@@ -7178,7 +7178,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \cs{l_@@_store_active_bool} which activates the use of the
 %   \ics*{anskey} command and the \myenv*{keyans}, \myenv*{keyans*} and
 %   \myenv*{keyanspic} environments and will set to true the variable
-%   \cs{l_@@_check_answer_bool} used for checking answers by the
+%   \cs{l_@@_check_answers_bool} used for checking answers by the
 %   \mykey{check-ans} and \mykey{no-store} keys.
 %   The \mymeta{prop list} \myvarenv{g__@@_series_\mymeta[cf=gray]{store
 %   name}_prop} and the \mymeta{sequence}
@@ -7191,7 +7191,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_storing_exec:
   {
     \bool_set_true:N \l_@@_store_active_bool
-    \bool_set_true:N \l_@@_check_answer_bool
+    \bool_set_true:N \l_@@_check_answers_bool
     \tl_gset:NV \g_@@_store_name_tl \l__enumext_store_name_tl
     \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
       {
@@ -7283,7 +7283,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         check-ans .initial:n  = false,
         check-ans .value_required:n = true,
         no-store  .code:n = {
-                              \bool_set_false:N \l_@@_check_answer_bool
+                              \bool_set_false:N \l_@@_check_answers_bool
                               \bool_set_false:N \l_@@_check_ans_key_bool
                             },
         no-store  .value_forbidden:n = true,
@@ -7314,7 +7314,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_if_empty:NF \l_@@_store_name_tl
       {
-        \bool_if:NT \l_@@_check_answer_bool
+        \bool_if:NT \l_@@_check_answers_bool
           {
             \@@_check_ans_level:
           }
@@ -7692,7 +7692,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open:
   {
-    \bool_if:NT \l_@@_check_answer_bool
+    \bool_if:NT \l_@@_check_answers_bool
       {
         \tl_if_empty:cTF { l_@@_store_opt_ \@@_level: _tl }
           {
@@ -7716,7 +7716,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_store_level_close:
   {
-    \bool_if:NT \l_@@_check_answer_bool
+    \bool_if:NT \l_@@_check_answers_bool
       {
         \@@_store_addto_seq:n { \end{enumext} }
       }
@@ -7740,7 +7740,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open_vii:
   {
-    \bool_if:NT \l_@@_check_answer_bool
+    \bool_if:NT \l_@@_check_answers_bool
       {
         \tl_if_empty:NTF \l_@@_store_opt_vii_tl
           {
@@ -7768,7 +7768,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_store_level_close_vii:
   {
-    \bool_if:NT \l_@@_check_answer_bool
+    \bool_if:NT \l_@@_check_answers_bool
       {
         \@@_store_addto_seq:n { \end{enumext*} }
       }
@@ -7870,7 +7870,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
     \group_begin:
-      %\bool_if:NT \l_@@_check_answer_bool
+      %\bool_if:NT \l_@@_check_answers_bool
       %  {
           \int_gincr:N \g_@@_item_anskey_int
       %  }
@@ -8360,7 +8360,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \@@_store_addto_seq:V \l_@@_store_keyans_label_tl
-    \bool_if:NT \l_@@_check_answer_bool
+    \bool_if:NT \l_@@_check_answers_bool
       {
         \int_gincr:N \g_@@_item_anskey_int
       }
@@ -8575,7 +8575,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_if_novalue:nTF {#1}
       {
-        \bool_if:NT \l_@@_check_answer_bool
+        \bool_if:NT \l_@@_check_answers_bool
           {
             \int_gincr:N \g_@@_item_number_int
           }
@@ -8649,7 +8649,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \dim_set:cn { l_@@_item_symbol_sep_ \@@_level: _dim } {#2}
       }
-    \bool_if:NT \l_@@_check_answer_bool
+    \bool_if:NT \l_@@_check_answers_bool
       {
         \int_gincr:N \g_@@_item_number_int
       }
@@ -10663,7 +10663,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 \legacy_if_set_true:n { @hyper@item }
               }
             \refstepcounter{enumXvii}
-            \bool_if:NT \l_@@_check_answer_bool
+            \bool_if:NT \l_@@_check_answers_bool
               {
                 \int_gincr:N \g_@@_item_number_int
               }

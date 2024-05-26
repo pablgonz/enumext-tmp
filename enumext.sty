@@ -167,8 +167,8 @@
 \int_new:N  \l__enumext_keyans_pic_below_int
 \skip_new:N \l__enumext_keyans_pic_above_skip
 %% Variables used by check-answer mechanism, |check-ans| and |no-store| keys.
-\bool_new:N \l__enumext_store_ans_bool
-\bool_new:N \l__enumext_check_ans_bool
+\bool_new:N \l__enumext_check_answers_bool
+\bool_new:N \l__enumext_check_ans_key_bool
 \bool_new:N \g__enumext_check_ans_bool
 \tl_new:N   \l__enumext_check_start_line_env_tl
 \tl_new:N   \g__enumext_start_line_tl
@@ -1893,7 +1893,7 @@
 \cs_new_protected:Nn \__enumext_storing_exec:
   {
     \bool_set_true:N \l__enumext_store_active_bool
-    \bool_set_true:N \l__enumext_store_ans_bool
+    \bool_set_true:N \l__enumext_check_answers_bool
     \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
     \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
       {
@@ -1916,12 +1916,12 @@
   {
     \keys_define:nn { enumext / #1 }
       {
-        check-ans .bool_set:N = \l__enumext_check_ans_bool,
+        check-ans .bool_set:N = \l__enumext_check_ans_key_bool,
         check-ans .initial:n  = false,
         check-ans .value_required:n = true,
         no-store  .code:n = {
-                              \bool_set_false:N \l__enumext_store_ans_bool
-                              \bool_set_false:N \l__enumext_check_ans_bool
+                              \bool_set_false:N \l__enumext_check_answers_bool
+                              \bool_set_false:N \l__enumext_check_ans_key_bool
                             },
         no-store  .value_forbidden:n = true,
       }
@@ -1936,7 +1936,7 @@
   {
     \tl_if_empty:NF \l__enumext_store_name_tl
       {
-        \bool_if:NT \l__enumext_store_ans_bool
+        \bool_if:NT \l__enumext_check_answers_bool
           {
             \__enumext_check_ans_level:
           }
@@ -1977,17 +1977,17 @@
              }
       }
   }
-%% Function to export \l_@@_check_ans_bool for |check-ans| key.
+%% Function to export \l_@@_check_ans_key_bool for |check-ans| key.
 \cs_new_protected:Nn \__enumext_check_ans_to_hook:
   {
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_check_ans_bool }
+      { \bool_if_p:N \l__enumext_check_ans_key_bool }
       { \bool_if_p:N \g__enumext_standar_bool }
       {
         \bool_gset_true:N \g__enumext_check_ans_bool
       }
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_check_ans_bool }
+      { \bool_if_p:N \l__enumext_check_ans_key_bool }
       { \bool_if_p:N \g__enumext_starred_bool }
       {
         \bool_gset_true:N \g__enumext_check_ans_bool
@@ -2161,7 +2161,7 @@
 %% Function for memorize level execution of |\anskey| on |enumext|.
 \cs_new_protected:Nn \__enumext_store_level_open:
   {
-    \bool_if:NT \l__enumext_store_ans_bool
+    \bool_if:NT \l__enumext_check_answers_bool
       {
         \tl_if_empty:cTF { l__enumext_store_opt_ \__enumext_level: _tl }
           {
@@ -2185,7 +2185,7 @@
   }
 \cs_new_protected:Nn \__enumext_store_level_close:
   {
-    \bool_if:NT \l__enumext_store_ans_bool
+    \bool_if:NT \l__enumext_check_answers_bool
       {
         \__enumext_store_addto_seq:n { \end{enumext} }
       }
@@ -2193,7 +2193,7 @@
 %% Function for memorize level execution of |\anskey| on |enumext*|.
 \cs_new_protected:Nn \__enumext_store_level_open_vii:
   {
-    \bool_if:NT \l__enumext_store_ans_bool
+    \bool_if:NT \l__enumext_check_answers_bool
       {
         \tl_if_empty:NTF \l__enumext_store_opt_vii_tl
           {
@@ -2221,7 +2221,7 @@
   }
 \cs_new_protected:Nn \__enumext_store_level_close_vii:
   {
-    \bool_if:NT \l__enumext_store_ans_bool
+    \bool_if:NT \l__enumext_check_answers_bool
       {
         \__enumext_store_addto_seq:n { \end{enumext*} }
       }
@@ -2269,7 +2269,7 @@
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
     \group_begin:
-      %\bool_if:NT \l__enumext_store_ans_bool
+      %\bool_if:NT \l__enumext_check_answers_bool
       %  {
           \int_gincr:N \g__enumext_item_anskey_int
       %  }
@@ -2575,7 +2575,7 @@
           }
       }
     \__enumext_store_addto_seq:V \l__enumext_store_keyans_label_tl
-    \bool_if:NT \l__enumext_store_ans_bool
+    \bool_if:NT \l__enumext_check_answers_bool
       {
         \int_gincr:N \g__enumext_item_anskey_int
       }
@@ -2707,7 +2707,7 @@
   {
     \tl_if_novalue:nTF {#1}
       {
-        \bool_if:NT \l__enumext_store_ans_bool
+        \bool_if:NT \l__enumext_check_answers_bool
           {
             \int_gincr:N \g__enumext_item_number_int
           }
@@ -2738,7 +2738,7 @@
       {
         \dim_set:cn { l__enumext_item_symbol_sep_ \__enumext_level: _dim } {#2}
       }
-    \bool_if:NT \l__enumext_store_ans_bool
+    \bool_if:NT \l__enumext_check_answers_bool
       {
         \int_gincr:N \g__enumext_item_number_int
       }
@@ -3723,8 +3723,7 @@
                 \legacy_if_set_true:n { @hyper@item }
               }
             \refstepcounter{enumXvii}
-            \bool_if:NT \l__enumext_store_ans_bool
-            %\bool_if:NT \l__enumext_check_ans_bool
+            \bool_if:NT \l__enumext_check_answers_bool
               {
                 \int_gincr:N \g__enumext_item_number_int
               }
