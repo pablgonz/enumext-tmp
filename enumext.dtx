@@ -3623,8 +3623,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{\l_@@_level_int, \l_@@_level_h_int, \l_@@_keyans_level_int,
 %                       \l_@@_keyans_level_h_int, \l_@@_keyans_pic_level_int,
-%                       \l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_first_level_bool,
-%                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_first_level_bool,
+%                       \l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_first_bool,
+%                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_first_bool,
 %                       \l_@@_keyans_env_bool,}
 %
 %    Integer variables will control the nesting levels of the environments
@@ -3645,10 +3645,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N  \l_@@_keyans_pic_level_int
 \bool_new:N \l_@@_starred_bool
 \bool_new:N \g_@@_starred_bool
-\bool_new:N \l_@@_starred_first_level_bool
+\bool_new:N \l_@@_starred_first_bool
 \bool_new:N \l_@@_standar_bool
 \bool_new:N \g_@@_standar_bool
-\bool_new:N \l_@@_standar_first_level_bool
+\bool_new:N \l_@@_standar_first_bool
 \bool_new:N \l_@@_keyans_env_bool
 %    \end{macrocode}
 % \end{variable}
@@ -4253,7 +4253,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
       }
       {
-        \bool_set_true:N \l_@@_standar_first_level_bool
+        \bool_set_true:N \l_@@_standar_first_bool
         \tl_gset:Nn \g_@@_envir_name_tl { enumext }
         \tl_gset:Ne \g_@@_start_line_tl
           {
@@ -4267,7 +4267,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
       }
       {
-        \bool_set_true:N \l_@@_starred_first_level_bool
+        \bool_set_true:N \l_@@_starred_first_bool
         \tl_gset:Nn \g_@@_envir_name_tl { enumext* }
         \tl_gset:Ne \g_@@_start_line_tl
           {
@@ -6821,12 +6821,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_resume_last:n #1
   {
-    \bool_if:NT \l_@@_standar_first_level_bool
+    \bool_if:NT \l_@@_standar_first_bool
       {
         \tl_gclear:N \g_@@_standar_series_tl
         \tl_gset:Ne \g_@@_standar_series_tl { \@@_filter_series:n {#1} }
       }
-    \bool_if:NT \l_@@_starred_first_level_bool
+    \bool_if:NT \l_@@_starred_first_bool
       {
         \tl_gclear:N \g_@@_starred_series_tl
         \tl_gset:Ne \g_@@_starred_series_tl { \@@_filter_series:n {#1} }
@@ -7057,7 +7057,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_resume_counter_save_ans:
   {
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_standar_first_level_bool }
+      { \bool_if_p:N \l_@@_standar_first_bool }
       { \bool_if_p:N \l_@@_store_active_bool }
       {
         \int_set:Nn \l_@@_start_i_int
@@ -7066,7 +7066,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_starred_first_level_bool }
+      { \bool_if_p:N \l_@@_starred_first_bool }
       { \bool_if_p:N \l_@@_store_active_bool }
       {
         \int_set:Nn \l_@@_start_vii_int
@@ -7158,14 +7158,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_if_empty:NTF \l_@@_store_name_tl
       {
         \bool_lazy_or:nnT
-          { \l_@@_standar_first_level_bool } { \l_@@_starred_first_level_bool }
+          { \l_@@_standar_first_bool } { \l_@@_starred_first_bool }
           {
             \msg_error:nnV { enumext } { save-ans-empty } \g_@@_envir_name_tl
           }
       }
       {
         \bool_lazy_or:nnT
-          { \l_@@_standar_first_level_bool } { \l_@@_starred_first_level_bool }
+          { \l_@@_standar_first_bool } { \l_@@_starred_first_bool }
           {
             \msg_term:nnVV { enumext } { save-ans-log }
               \g_@@_envir_name_tl \l_@@_store_name_tl
@@ -7299,8 +7299,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Set-up check answer mechanism}\label{int:set-check-answer}
 %
-% \begin{macro}{\@@_check_ans:, \@@_check_ans_level:,}
-%    The function \cs{@@_check_ans:} will check the state of the variable
+% \begin{macro}{\@@_check_ans_active:, \@@_check_ans_level:,}
+%    The function \cs{@@_check_ans_active:} will check the state of the variable
 %    \cs{l_@@_check_ans_bool} activated by the key \mykey{check-ans}, if
 %    this is \emph{\enquote{true}} it will check the variable \cs{l_@@_store_name_tl}
 %    is not empty, that is, the key \mykey{save-ans} is activated, if so
@@ -7310,21 +7310,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function |check-ans| key, start checking answer mechanism in |enumext| and |enumext|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_check_ans:
+\cs_new_protected:Nn \@@_check_ans_active:
   {
-    \bool_if:NT \l_@@_check_ans_bool
+    \tl_if_empty:NF \l_@@_store_name_tl
       {
-        \tl_if_empty:NTF \l_@@_store_name_tl
-          {
-            \bool_if:NT \l_@@_standar_first_level_bool
-              {
-                \msg_error:nnnn { enumext } { need-save-ans }{ check-ans } { enumext }
-              }
-            \bool_if:NT \l_@@_starred_first_level_bool
-              {
-                \msg_error:nnnn { enumext } { need-save-ans }{ check-ans } { enumext* }
-              }
-          }
+        \bool_if:NT \l_@@_store_ans_bool
           {
             \@@_check_ans_level:
           }
@@ -7407,7 +7397,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_check_ans_show:}
+% \begin{macro}{\@@_check_ans_show:, \@@_check_ans_log:}
 %   The function \cs{@@_check_ans_show:} will perform the comparison
 %   between the |\item| in the environments and the |\item|'s with answers and
 %   return the appropriate message. As this function is passed to the
@@ -7442,9 +7432,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \msg_warning:nneee { enumext } { item-greater-answer }
       { \g_@@_store_name_tl } { \g_@@_envir_name_tl } { \g_@@_start_line_tl }
   }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \cs_new_protected:Nn \@@_check_ans_log:
   {
     \int_case:nn { \g_@@_item_answer_diff_int }
@@ -7883,14 +7870,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
     \group_begin:
-      \bool_if:NT \l_@@_store_ans_bool
-        {
-          \bool_if:NT \l_@@_check_ans_bool
-            {
-              \int_gincr:N \g_@@_item_anskey_int
-            }
-          \@@_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
-        }
+      %\bool_if:NT \l_@@_store_ans_bool
+      %  {
+          \int_gincr:N \g_@@_item_anskey_int
+      %  }
+      \@@_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
     \group_end:
   }
 %    \end{macrocode}
@@ -8376,7 +8360,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \@@_store_addto_seq:V \l_@@_store_keyans_label_tl
-    \bool_if:NT \l_@@_check_ans_bool
+    \bool_if:NT \l_@@_store_ans_bool
       {
         \int_gincr:N \g_@@_item_anskey_int
       }
@@ -8591,10 +8575,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_if_novalue:nTF {#1}
       {
-        %\bool_if:NT \l_@@_check_ans_bool
-        %  {
+        \bool_if:NT \l_@@_store_ans_bool
+          {
             \int_gincr:N \g_@@_item_number_int
-        %  }
+          }
         \bool_set_true:c { l_@@_wrap_label_ \@@_level: _bool }
         \@@_item_std:w \tl_use:c { l_@@_fake_item_indent_ \@@_level: _tl }
       }
@@ -8665,10 +8649,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \dim_set:cn { l_@@_item_symbol_sep_ \@@_level: _dim } {#2}
       }
-    %\bool_if:NT \l_@@_check_ans_bool
-    %  {
+    \bool_if:NT \l_@@_store_ans_bool
+      {
         \int_gincr:N \g_@@_item_number_int
-    %  }
+      }
     \bool_set_true:c { l_@@_wrap_label_ \@@_level: _bool }
     \@@_item_std:w \tl_use:c { l_@@_fake_item_indent_ \@@_level: _tl }
   }
@@ -9183,7 +9167,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    if the environment is not nested in \myenv*{enumext*}, we increment the
 %    variable \cs{l_@@_level_int} for the nesting levels and set the
 %    \cs{l_@@_standard_bool} variable to \emph{\enquote{true}}. Finally we
-%    set the variable \cs{l_@@_standar_first_level_bool} to
+%    set the variable \cs{l_@@_standar_first_bool} to
 %    \emph{\enquote{true}} only if the environment is not nested and we are
 %    at the \emph{\enquote{first level}} of it using the function \cs{@@_is_on_first_level:}.
 % \iffalse
@@ -9340,11 +9324,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_vspace_above:
     \@@_before_args_exec:
 %    \end{macrocode}
-%    The function \cs{@@_check_ans:}  will handle the check
+%    The function \cs{@@_check_ans_active:}  will handle the check
 %    answer mechanism, which will be activated with the \mykey{check-ans}
 %    key.
 %    \begin{macrocode}
-    \@@_check_ans:
+    \@@_check_ans_active:
 %    \end{macrocode}
 %    When the \mykey{mini-env} key is active it will set the value of the
 %    \myvarenv{l__@@_minipage_right_X_dim} to be the \emph{width} of the \myvarenv*{__@@_mini_env*}
@@ -10439,7 +10423,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_before_list_vii:
   {
     \@@_vspace_above_vii:
-    \@@_check_ans: % need by chek-ans
+    \@@_check_ans_active:
     \@@_before_args_exec_vii:
     \@@_start_mini_vii:
   }
@@ -10679,10 +10663,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 \legacy_if_set_true:n { @hyper@item }
               }
             \refstepcounter{enumXvii}
+            \bool_if:NT \l_@@_store_ans_bool
             %\bool_if:NT \l_@@_check_ans_bool
-            %  {
+              {
                 \int_gincr:N \g_@@_item_number_int
-            %  }
+              }
           }
       }
 %    \end{macrocode}
@@ -11708,7 +11693,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \msg_new:nnn { enumext } { prop-seq-int-hook }
   {
-    * ~ Package ~ enumext: ~ Answers ~ in ~ \c_backslash_str g_@@_#1_prop ~ = ~ #2.\\
+    * ~ Package ~ enumext: ~ Elements ~ in ~ \c_backslash_str g_@@_#1_prop ~ = ~ #2.\\
     * ~ Package ~ enumext: ~ Elements ~ in ~ \c_backslash_str g_@@_#1_seq ~ = ~ #3.\\
     * ~ Package ~ enumext: ~ Value ~ off ~ \c_backslash_str g_@@_resume_#1_int ~ = ~ #4.
   }
