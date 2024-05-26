@@ -169,7 +169,7 @@
 %% Variables used by check-answer mechanism, |check-ans| and |no-store| keys.
 \bool_new:N \l__enumext_check_answers_bool
 \bool_new:N \l__enumext_check_ans_key_bool
-\bool_new:N \g__enumext_check_ans_bool
+\bool_new:N \g__enumext_check_ans_key_bool
 \tl_new:N   \l__enumext_check_start_line_env_tl
 \tl_new:N   \g__enumext_start_line_tl
 \tl_new:N   \g__enumext_envir_name_tl
@@ -344,60 +344,44 @@
 %% Reset all global vars after use in hook function.
 \cs_new_protected:Nn \__enumext_reset_global_vars:
   {
+    \__enumext_reset_global_int:
+    \__enumext_reset_global_bool:
+    \__enumext_reset_global_tl:
+  }
+\cs_new_protected:Nn \__enumext_reset_global_int:
+  {
     \int_gzero:N \g__enumext_item_number_int
     \int_gzero:N \g__enumext_item_anskey_int
     \int_gzero:N \g__enumext_item_answer_diff_int
-    \bool_gset_false:N \g__enumext_check_ans_bool
+  }
+\cs_new_protected:Nn \__enumext_reset_global_bool:
+  {
+    \bool_gset_false:N \g__enumext_check_ans_key_bool
     \bool_gset_false:N \g__enumext_standar_bool
     \bool_gset_false:N \g__enumext_starred_bool
+  }
+\cs_new_protected:Nn \__enumext_reset_global_tl:
+  {
     \tl_gclear:N \g__enumext_store_name_tl
     \tl_gclear:N \g__enumext_start_line_tl
     \tl_gclear:N \g__enumext_envir_name_tl
   }
-%% Reset all global vars after use in hook function.
+%% Write all global vars after use in hook function.
 \cs_new_protected:Nn \__enumext_log_global_vars:
   {
     \msg_log:nneeee { enumext } { prop-seq-int-hook }
-      { \g__enumext_store_name_tl } { \prop_count:c { g__enumext_ \g__enumext_store_name_tl _prop } }
+      { \g__enumext_store_name_tl }
+      { \prop_count:c { g__enumext_ \g__enumext_store_name_tl _prop } }
       { \seq_count:c { g__enumext_ \g__enumext_store_name_tl _seq } }
       { \int_use:c { g__enumext_resume_ \g__enumext_store_name_tl _int } }
   }
-%% Reset all global vars after use in hook function.
+%% Write all global vars for check-answer after use in hook function.
 \cs_new_protected:Nn \__enumext_log_answer_vars:
   {
     \msg_log:nneee { enumext } { item-answer-hook }
       { \int_use:N \g__enumext_item_number_int }
       { \int_use:N \g__enumext_item_anskey_int }
       { \int_eval:n { \g__enumext_item_number_int - \g__enumext_item_anskey_int} }
-  }
-%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
-\cs_new_protected:Nn \__enumext_item_answer_diff:
-  {
-    \int_gset:Nn \g__enumext_item_answer_diff_int
-      {
-        \int_sign:n { \g__enumext_item_number_int - \g__enumext_item_anskey_int }
-      }
-  }
-\cs_new_protected:Nn \__enumext_execute_after_env:
-  {
-    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
-      {
-        \tl_if_empty:NF \g__enumext_store_name_tl
-          {
-            \__enumext_item_answer_diff:
-            \msg_term:nnVV
-              { enumext } { save-ans-log-hook }
-              \g__enumext_envir_name_tl \g__enumext_store_name_tl
-            \__enumext_log_global_vars:
-            \__enumext_log_answer_vars:
-            \bool_if:NTF \g__enumext_check_ans_bool
-              {
-                \__enumext_check_ans_show:
-              }
-              { \__enumext_check_ans_log: }
-          }
-        \__enumext_reset_global_vars:
-      }
   }
 %% Copy list tools.
 \__enumext_at_begin_document:n
@@ -1868,6 +1852,17 @@
       }
   }
 \clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
+%% Print/write start and stop environment with |save-ans| key active.
+\cs_new_protected:Nn \__enumext_start_save_ans_msg:
+  {
+    \msg_term:nnVV { enumext } { save-ans-log }
+      \g__enumext_envir_name_tl \l__enumext_store_name_tl
+  }
+\cs_new_protected:Nn \__enumext_stop_save_ans_msg:
+  {
+    \msg_term:nnVV { enumext } { save-ans-log-hook }
+      \g__enumext_envir_name_tl \g__enumext_store_name_tl
+  }
 %% Function to activate ALL "storing" (and |check-ans|, |no-store|, |resume|) used by |save-ans| key.
 \cs_new_protected:Npn \__enumext_storing_set:n #1
   {
@@ -1884,8 +1879,7 @@
         \bool_lazy_or:nnT
           { \l__enumext_standar_first_bool } { \l__enumext_starred_first_bool }
           {
-            \msg_term:nnVV { enumext } { save-ans-log }
-              \g__enumext_envir_name_tl \l__enumext_store_name_tl
+            \__enumext_start_save_ans_msg:
             \__enumext_storing_exec:
           }
       }
@@ -1931,7 +1925,7 @@
     level-1, level-2, level-3, level-4, enumext*
   }
   { \__enumext_tmp:n {#1} }
-%% Function |check-ans| key, start checking answer mechanism in |enumext| and |enumext|.
+%% Internal function for checking answer mechanism in |enumext| and |enumext|.
 \cs_new_protected:Nn \__enumext_check_ans_active:
   {
     \tl_if_empty:NF \l__enumext_store_name_tl
@@ -1978,22 +1972,30 @@
       }
   }
 %% Function to export \l_@@_check_ans_key_bool for |check-ans| key.
-\cs_new_protected:Nn \__enumext_check_ans_to_hook:
+\cs_new_protected:Nn \__enumext_check_ans_key_hook:
   {
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_check_ans_key_bool }
       { \bool_if_p:N \g__enumext_standar_bool }
       {
-        \bool_gset_true:N \g__enumext_check_ans_bool
+        \bool_gset_true:N \g__enumext_check_ans_key_bool
       }
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_check_ans_key_bool }
       { \bool_if_p:N \g__enumext_starred_bool }
       {
-        \bool_gset_true:N \g__enumext_check_ans_bool
+        \bool_gset_true:N \g__enumext_check_ans_key_bool
       }
   }
-%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+%% Set \g_@@_item_answer_diff_int for |check-ans| key and internal.
+\cs_new_protected:Nn \__enumext_item_answer_diff:
+  {
+    \int_gset:Nn \g__enumext_item_answer_diff_int
+      {
+        \int_sign:n { \g__enumext_item_number_int - \g__enumext_item_anskey_int }
+      }
+  }
+%% Function to print |check-ans| key.
 \cs_new_protected:Nn \__enumext_check_ans_show:
   {
     \int_case:nn { \g__enumext_item_answer_diff_int }
@@ -2005,19 +2007,20 @@
   }
 \cs_new_protected:Nn \__enumext_check_ans_msg_less:
   {
-    \msg_warning:nneee { enumext } { item-less-answer }
-      { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+    \msg_warning:nneee { enumext } { item-less-answer } { \g__enumext_store_name_tl }
+      { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
   }
 \cs_new_protected:Nn \__enumext_check_ans_msg_same_ok:
   {
-    \msg_term:nneee { enumext } { items-same-answer }
-      { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+    \msg_term:nneee { enumext } { items-same-answer } { \g__enumext_store_name_tl }
+      { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
   }
 \cs_new_protected:Nn \__enumext_check_ans_msg_greater:
   {
-    \msg_warning:nneee { enumext } { item-greater-answer }
-      { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+    \msg_warning:nneee { enumext } { item-greater-answer } { \g__enumext_store_name_tl }
+      { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
   }
+%% Function to log check-answer mechanims.
 \cs_new_protected:Nn \__enumext_check_ans_log:
   {
     \int_case:nn { \g__enumext_item_answer_diff_int }
@@ -2029,18 +2032,38 @@
   }
 \cs_new_protected:Nn \__enumext_check_ans_log_msg_less:
   {
-    \msg_log:nneee { enumext } { item-less-answer }
-      { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+    \msg_log:nneee { enumext } { item-less-answer } { \g__enumext_store_name_tl }
+      { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
   }
 \cs_new_protected:Nn \__enumext_check_ans_log_msg_same_ok:
   {
-    \msg_log:nneee { enumext } { items-same-answer }
-      { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+    \msg_log:nneee { enumext } { items-same-answer }  { \g__enumext_store_name_tl }
+      { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
   }
 \cs_new_protected:Nn \__enumext_check_ans_log_msg_greater:
   {
-    \msg_log:nneee { enumext } { item-greater-answer }
-      { \g__enumext_store_name_tl } { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+    \msg_log:nneee { enumext } { item-greater-answer } { \g__enumext_store_name_tl }
+      { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
+  }
+%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+\cs_new_protected:Nn \__enumext_execute_after_env:
+  {
+    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
+      {
+        \tl_if_empty:NF \g__enumext_store_name_tl
+          {
+            \__enumext_stop_save_ans_msg:
+            \__enumext_item_answer_diff:
+            \__enumext_log_global_vars:
+            \__enumext_log_answer_vars:
+            \bool_if:NTF \g__enumext_check_ans_key_bool
+              {
+                \__enumext_check_ans_show:
+              }
+              { \__enumext_check_ans_log: }
+          }
+        \__enumext_reset_global_vars:
+      }
   }
 %% Function for check \item* and \anspic* commands.
 \cs_new_protected:Npn \__enumext_check_starred_cmd:n #1
@@ -3150,7 +3173,7 @@
         \par\addvspace { \l__enumext_minipage_after_skip }
       }
       { \__enumext_multicols_stop: }
-     \__enumext_check_ans_to_hook:
+     \__enumext_check_ans_key_hook:
     \__enumext_after_stop_list:
     \__enumext_vspace_below:
     \bool_set_false:N \l__enumext_standar_bool
@@ -3612,7 +3635,7 @@
   {
     \__enumext_stop_mini_vii:
     \__enumext_after_stop_list_vii:
-    \__enumext_check_ans_to_hook:
+    \__enumext_check_ans_key_hook:
     \__enumext_vspace_below_vii:
     \bool_set_false:N \l__enumext_starred_bool
     \__enumext_resume_save_counter:
@@ -4433,11 +4456,11 @@
   }
 \msg_new:nnn { enumext } { save-ans-log }
   {
-    * ~ Package ~ enumext: ~ Begin ~ \c_left_brace_str#1\c_right_brace_str \c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Start ~ \c_left_brace_str#1\c_right_brace_str \c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { save-ans-log-hook }
   {
-    * ~ Package ~ enumext: ~ End ~ \c_left_brace_str#1\c_right_brace_str \c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Stop ~ \c_left_brace_str#1\c_right_brace_str \c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { save-ans-hook }
   {
