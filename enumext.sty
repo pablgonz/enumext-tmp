@@ -2136,7 +2136,7 @@
   }
 \clist_map_inline:nn { keyans, keyans* } { \__enumext_tmp:n {#1} }
 %% Add |save-key| key.
-\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+\cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \keys_define:nn { enumext / enumext* }
       {
@@ -2149,11 +2149,7 @@
         save-key .value_required:n = true,
       }
   }
-\clist_map_inline:nn
-  {
-    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}
-  }
-  { \__enumext_tmp:nn #1 }
+\clist_map_inline:nn { level-1, level-2, level-3, level-4 } { \__enumext_tmp:n {#1} }
 %% Internal function for filter keys for |save-key| key.
 \cs_new:Npn \__enumext_filter_save_key:n #1
   {
