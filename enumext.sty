@@ -142,15 +142,11 @@
 \int_new:N \l__enumext_setkey_tmpa_int
 \seq_new:N \l__enumext_setkey_tmpa_seq
 \seq_new:N \l__enumext_setkey_tmpb_seq
-%% Variables used by |key=val| in |enumext|, |enumext*| and |\printkeyans| .
+%% Variables used by store level, |save-key| and |\printkeyans| in |enumext| and |enumext*|.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
-    \tl_new:c { l__enumext_store_opt_#1_tl             }
+    \tl_new:c { l__enumext_store_save_key_#1_tl        }
     \tl_new:c { l__enumext_print_keyans_#1_tl          }
-    \bool_new:c { l__enumext_store_columns_#1_bool     }
-    \int_new:c { l__enumext_store_columns_#1_int       }
-    \bool_new:c { l__enumext_store_columns_sep_#1_bool }
-    \dim_new:c { l__enumext_store_columns_sep_#1_dim   }
     \bool_new:c { l__enumext_store_upper_level_#1_bool }
   }
 \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {#1} }
@@ -2139,32 +2135,72 @@
       }
   }
 \clist_map_inline:nn { keyans, keyans* } { \__enumext_tmp:n {#1} }
-%% Add keys |columns-sep*| and |columns*| for |\printkeyans|.
+%% Add |save-key| key.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
+    \keys_define:nn { enumext / enumext* }
+      {
+        save-key .code:n = \__enumext_parse_save_key_vii:n {##1},
+        save-key .value_required:n = true,
+      }
     \keys_define:nn { enumext / #1 }
       {
-        columns*     .code:n = \bool_set_true:c { l__enumext_store_columns_#2_bool }
-                               \int_set:cn { l__enumext_store_columns_#2_int } {##1}
-                               \tl_put_right:ce { l__enumext_store_opt_#2_tl }
-                                 {
-                                    columns = \exp_not:v { l__enumext_store_columns_#2_int },
-                                 },
-        columns*     .value_required:n  = true,
-        columns-sep* .code:n = \bool_set_true:c { l__enumext_store_columns_sep_#2_bool }
-                               \dim_set:cn { l__enumext_store_columns_sep_#2_dim } {##1}
-                               \tl_put_right:ce { l__enumext_store_opt_#2_tl }
-                                 {
-                                    columns-sep = \exp_not:v { l__enumext_store_columns_sep_#2_dim },
-                                 },
-        columns-sep* .value_required:n  = true,
+        save-key .code:n = \__enumext_parse_save_key:n {##1},
+        save-key .value_required:n = true,
       }
   }
 \clist_map_inline:nn
   {
-    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
+    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}
   }
   { \__enumext_tmp:nn #1 }
+%% Internal function for filter keys for |save-key| key.
+\cs_new:Npn \__enumext_filter_save_key:n #1
+  {
+    \use:e
+      {
+        \keyval_parse:NNn
+          \__enumext_filter_save_key_key:n
+          \__enumext_filter_save_key_pair:nn {#1}
+      }
+  }
+\cs_new:Npn \__enumext_filter_save_key_key:n #1
+  {
+    \str_case:nnF {#1}
+      {
+        { resume } {}
+        { resume* } {}
+        { no-store } {}
+      }
+      { , { \exp_not:n {#1} } }
+  }
+\cs_new:Npn \__enumext_filter_save_key_pair:nn #1#2
+  {
+    \str_case:nnF {#1}
+      {
+        { series } {}
+        { resume } {}
+        { start } {}
+        { save-ans } {}
+        { save-key } {}
+        { check-ans } {}
+        { show-ans } {}
+        { show-pos } {}
+      }
+      { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
+  }
+%% Internal function for |save-key| key.
+\cs_new_protected:Npn \__enumext_parse_save_key:n #1
+  {
+    \tl_clear:c { l__enumext_save_key_ \__enumext_level: _tl }
+    \tl_set:ce { l__enumext_store_save_key_ \__enumext_level: _tl }{ \__enumext_filter_save_key:n {#1} }
+    \tl_show:c { l__enumext_store_save_key_ \__enumext_level: _tl }
+  }
+\cs_new_protected:Npn \__enumext_parse_save_key_vii:n #1
+  {
+    \tl_clear:N \l__enumext_store_save_key_vii_tl
+    \tl_set:Ne \l__enumext_store_save_key_vii_tl { \__enumext_filter_save_key:n {#1} }
+  }
 %% Function for store content to prop list.
 \cs_new_protected:Npn \__enumext_store_addto_prop:n #1
   {
@@ -2186,7 +2222,7 @@
   {
     \bool_if:NT \l__enumext_check_answers_bool
       {
-        \tl_if_empty:cTF { l__enumext_store_opt_ \__enumext_level: _tl }
+        \tl_if_empty:cTF { l__enumext_store_save_key_ \__enumext_level: _tl }
           {
             \__enumext_store_addto_seq:n
               {
@@ -2194,15 +2230,15 @@
               }
           }
           {
-            \tl_put_left:cn { l__enumext_store_opt_ \__enumext_level: _tl }
+            \tl_put_left:cn { l__enumext_store_save_key_ \__enumext_level: _tl }
               {
                 \item \begin{enumext} [
               }
-            \tl_put_right:cn { l__enumext_store_opt_ \__enumext_level: _tl }
+            \tl_put_right:cn { l__enumext_store_save_key_ \__enumext_level: _tl }
               {
                 ]
               }
-            \__enumext_store_addto_seq:v { l__enumext_store_opt_ \__enumext_level: _tl }
+            \__enumext_store_addto_seq:v { l__enumext_store_save_key_ \__enumext_level: _tl }
           }
       }
   }
@@ -2218,7 +2254,7 @@
   {
     \bool_if:NT \l__enumext_check_answers_bool
       {
-        \tl_if_empty:NTF \l__enumext_store_opt_vii_tl
+        \tl_if_empty:NTF \l__enumext_store_save_key_vii_tl
           {
             \__enumext_store_addto_seq:n
               {
@@ -2228,17 +2264,17 @@
               }
           }
           {
-            \tl_put_left:Nn \l__enumext_store_opt_vii_tl
+            \tl_put_left:Nn \l__enumext_store_save_key_vii_tl
               {
                 \item \mode_leave_vertical:
                   \vspace { -\skip_eval:n { \baselineskip + \parsep } }
                   \begin{enumext*}[before={\setlength{\topsep}{0pt}},
               }
-            \tl_put_right:Nn \l__enumext_store_opt_vii_tl
+            \tl_put_right:Nn \l__enumext_store_save_key_vii_tl
               {
                 ]
               }
-            \__enumext_store_addto_seq:V \l__enumext_store_opt_vii_tl
+            \__enumext_store_addto_seq:V \l__enumext_store_save_key_vii_tl
           }
       }
   }
@@ -3020,40 +3056,6 @@
             \exp_args:Ne \keys_set:nn
               { enumext / level-\int_use:N \l__enumext_level_int } {#1}
           }
-        \bool_if:NT \l__enumext_store_active_bool
-          {
-            \__enumext_parse_store_keys:n {#1}
-          }
-      }
-  }
-%% Set |key=val| (store keys) for \printkeyans.
-\cs_new_protected:Npn \__enumext_parse_store_keys:n #1
-  {
-    \bool_if:cF { l__enumext_store_columns_ \__enumext_level: _bool }
-      {
-        \regex_match:nnT { \b columns\b } {#1}
-          {
-            \int_set_eq:cc
-              { l__enumext_store_columns_ \__enumext_level: _int }
-              { l__enumext_columns_  \__enumext_level: _int }
-            \tl_put_right:ce { l__enumext_store_opt_ \__enumext_level: _tl }
-              {
-                columns = \exp_not:v { l__enumext_store_columns_ \__enumext_level: _int },
-              }
-          }
-      }
-    \bool_if:cF { l__enumext_store_columns_sep_ \__enumext_level: _bool }
-      {
-        \regex_match:nnT { \b columns-sep \b} {#1}
-          {
-            \dim_set_eq:cc
-              { l__enumext_store_columns_sep_ \__enumext_level: _dim }
-              { l__enumext_columns_sep_  \__enumext_level: _dim }
-            \tl_put_right:ce { l__enumext_store_opt_ \__enumext_level: _tl }
-              {
-                columns-sep = \exp_not:v { l__enumext_store_columns_sep_ \__enumext_level: _dim },
-              }
-          }
       }
   }
 \cs_new_protected:Nn \__enumext_start_store_level:
@@ -3588,40 +3590,6 @@
         \str_clear:N \l__enumext_series_str
         \keys_set:nn { enumext / enumext* } {#1}
         \__enumext_parse_series:n {#1}
-        \bool_if:NT \l__enumext_store_active_bool
-          {
-            \__enumext_parse_store_keys_vii:n {#1}
-          }
-      }
-  }
-%% Set |key=val| (store keys) for \printkeyans for |enumext*|.
-\cs_new_protected:Npn \__enumext_parse_store_keys_vii:n #1
-  {
-    \bool_if:NF \l__enumext_store_columns_vii_bool
-      {
-        \regex_match:nnT { \b columns\b } {#1}
-          {
-            \int_set_eq:NN
-              \l__enumext_store_columns_vii_int
-              \l__enumext_columns_vii_int
-            \tl_put_right:Ne \l__enumext_store_opt_vii_tl
-              {
-                columns = \exp_not:V \l__enumext_store_columns_vii_int ,
-              }
-          }
-      }
-    \bool_if:NF \l__enumext_store_columns_sep_vii_bool
-      {
-        \regex_match:nnT { \b columns-sep \b} {#1}
-          {
-            \dim_set_eq:NN
-              \l__enumext_store_columns_sep_vii_dim
-              \l__enumext_columns_sep_vii_dim
-            \tl_put_right:Ne \l__enumext_store_opt_vii_tl
-              {
-                columns-sep = \exp_not:V \l__enumext_store_columns_sep_vii_dim,
-              }
-          }
       }
   }
 \cs_new_protected:Nn \__enumext_before_list_vii:
