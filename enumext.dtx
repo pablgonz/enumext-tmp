@@ -2031,7 +2031,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \ics*{anskey} in \myenv*{enumext} and \myenv*{enumext*} environments, \ics*{item*} in
 % \myenv*{keyans} and \myenv*{keyans*} environments and \ics*{anspic*} in \myenv*{keyanspic}
 % environment. If the \mymeta{sequence} or \mymeta{prop list} does not
-% exist, it will be created globally and will not be overwritten if the key is used again..
+% exist, it will be created globally and will not be overwritten if the key is used again.
 %
 % \smallskip
 %
@@ -3596,7 +3596,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-24}
+  {2024-05-26}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4232,7 +4232,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The function \cs{@@_is_on_first_level:} will set the variables
-%   \cs{l_@@_standard_first_bool} and \cs{l_@@_starred_first_bool}
+%   \cs{l_@@_standar_first_bool} and \cs{l_@@_starred_first_bool}
 %   to \emph{\enquote{true}} only if the environment is not nested and we
 %   are in the \emph{\enquote{first level}} of it . We will also save the
 %   start line number of each environment in the variable \cs{g_@@_start_line_tl}
@@ -6790,7 +6790,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   values are not overwritten when the environment is nested and the
 %   \mykey{series} key is not being used.
 % \iffalse
-%% Save keys for last environment wiyhout |series|, |resume| and |resume*| keys active.
+%% Save keys for last environment without |series|, |resume| and |resume*| keys active.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_resume_last:n #1
@@ -7467,7 +7467,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \cs{g_@@_item_answer_diff_int} set by the function
 %   \cs{@@_item_answer_diff:}.
 % \iffalse
-%% Function to log check-answer mechanims.
+%% Function to log check-answer mechanisms.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_check_ans_log:
@@ -7696,7 +7696,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_filter_save_key:n, \@@_filter_save_key_key:n, \@@_filter_save_key_pair:nn}
 %   The function \cs{@@_filter_save_key:n} will be in charge of filtering the
-%   \mymeta{keys} we want to \emph{store} in \mymeta{secuence} where |{#1}| represents the optional
+%   \mymeta{keys} we want to \emph{store} in \mymeta{sequence} where |{#1}| represents the optional
 %   value passed to the environment.
 % \iffalse
 %% Internal function for filter keys for |save-key| key.
@@ -9311,10 +9311,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_safe_exec:}\label{fun:enumext:safe-exe}
 %    The \cs{@@_safe_exec:} function first execute the function \cs{@@_is_not_nested:} which
-%    will set the variable \cs{g_@@_standard_bool} to \emph{\enquote{true}}
+%    will set the variable \cs{g_@@_standar_bool} to \emph{\enquote{true}}
 %    if the environment is not nested in \myenv*{enumext*}, we increment the
 %    variable \cs{l_@@_level_int} for the nesting levels and set the
-%    \cs{l_@@_standard_bool} variable to \emph{\enquote{true}}. Finally we
+%    \cs{l_@@_standar_bool} variable to \emph{\enquote{true}}. Finally we
 %    set the variable \cs{l_@@_standar_first_bool} to
 %    \emph{\enquote{true}} only if the environment is not nested and we are
 %    at the \emph{\enquote{first level}} of it using the function \cs{@@_is_on_first_level:}.
@@ -10586,7 +10586,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \emph{width} of the box that will store the content passed to \ics*{item}. Then we
 %    will look for the argument \enquote{\textcolor{MediumOrchid}{\ttfamily *}}, if it is present we will call the
 %    function \cs{@@_starred_item_vii:w} otherwise we will call the
-%    function \cs{@@_standard_item_vii:w}.
+%    function \cs{@@_standar_item_vii:w}.
 % \iffalse
 %% Joined item's for |enumext*|
 % \fi
@@ -10596,14 +10596,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_starred_joined_item_vii:n {#1}
     \peek_meaning_remove:NTF *
       { \@@_starred_item_vii:w  }
-      { \@@_standard_item_vii:w }
+      { \@@_standar_item_vii:w }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_standard_item_vii:w}
+% \begin{macro}{\@@_standar_item_vii:w}
 %
-% The function \cs{@@_standard_item_vii:w} will first look for the
+% The function \cs{@@_standar_item_vii:w} will first look for the
 % argument “|[|”, if present it will set the state of the variable
 % \cs{l_@@_wrap_label_opt_vii_bool} equal to the state of the variable
 % \cs{l_@@_wrap_label_opt_vii_bool} handled by the key
@@ -10619,7 +10619,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Set \item[opt] for |enumext*|
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_standard_item_vii:w
+\cs_new_protected:Npn \@@_standar_item_vii:w
   {
     \bool_set_false:N \l_@@_item_starred_vii_bool
       \peek_meaning:NTF [
@@ -11167,7 +11167,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \emph{width} of the box that will store the content passed to \ics*{item}. Then we
 %    will look for the argument \enquote{\textcolor{MediumOrchid}{\ttfamily *}}, if it is present we will call the
 %    function \cs{@@_starred_item_viii:w} otherwise we will call the
-%    function \cs{@@_standard_item_viii:w}.
+%    function \cs{@@_standar_item_viii:w}.
 % \iffalse
 %% Joined item's for |keyans*|
 % \fi
@@ -11177,13 +11177,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_starred_joined_item_viii:n {#1}
     \peek_meaning_remove:NTF *
       { \@@_starred_item_viii:w  }
-      { \@@_standard_item_viii:w }
+      { \@@_standar_item_viii:w }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_standard_item_viii:w}
-%   The function \cs{@@_standard_item_viii:w} will first look for the
+% \begin{macro}{\@@_standar_item_viii:w}
+%   The function \cs{@@_standar_item_viii:w} will first look for the
 %   argument “|[|”, if present it will set the state of the variable
 %   \cs{l_@@_wrap_label_opt_viii_bool} equal to the state of the variable
 %   \cs{l_@@_wrap_label_opt_viii_bool} handled by the key
@@ -11198,7 +11198,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Set standar \item[opt] for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_standard_item_viii:w
+\cs_new_protected:Npn \@@_standar_item_viii:w
   {
     \bool_set_false:N \l_@@_item_starred_viii_bool
       \peek_meaning:NTF [

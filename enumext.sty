@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-24}
+  {2024-05-26}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -1648,7 +1648,7 @@
           }
       }
   }
-%% Save keys for last environment wiyhout |series|, |resume| and |resume*| keys active.
+%% Save keys for last environment without |series|, |resume| and |resume*| keys active.
 \cs_new_protected:Npn \__enumext_resume_last:n #1
   {
     \bool_if:NT \l__enumext_standar_first_bool
@@ -2016,7 +2016,7 @@
     \msg_warning:nneee { enumext } { item-greater-answer } { \g__enumext_store_name_tl }
       { \g__enumext_envir_name_tl } { \g__enumext_start_line_tl }
   }
-%% Function to log check-answer mechanims.
+%% Function to log check-answer mechanisms.
 \cs_new_protected:Nn \__enumext_check_ans_log:
   {
     \int_case:nn { \g__enumext_item_answer_diff_int }
@@ -3649,10 +3649,10 @@
     \__enumext_starred_joined_item_vii:n {#1}
     \peek_meaning_remove:NTF *
       { \__enumext_starred_item_vii:w  }
-      { \__enumext_standard_item_vii:w }
+      { \__enumext_standar_item_vii:w }
   }
 %% Set \item[opt] for |enumext*|
-\cs_new_protected:Npn \__enumext_standard_item_vii:w
+\cs_new_protected:Npn \__enumext_standar_item_vii:w
   {
     \bool_set_false:N \l__enumext_item_starred_vii_bool
       \peek_meaning:NTF [
@@ -3996,10 +3996,10 @@
     \__enumext_starred_joined_item_viii:n {#1}
     \peek_meaning_remove:NTF *
       { \__enumext_starred_item_viii:w  }
-      { \__enumext_standard_item_viii:w }
+      { \__enumext_standar_item_viii:w }
   }
 %% Set standar \item[opt] for |keyans*| environment.
-\cs_new_protected:Npn \__enumext_standard_item_viii:w
+\cs_new_protected:Npn \__enumext_standar_item_viii:w
   {
     \bool_set_false:N \l__enumext_item_starred_viii_bool
       \peek_meaning:NTF [
