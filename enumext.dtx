@@ -7361,7 +7361,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_case:nn { \l_@@_level_h_int }
       {
         { 1 }{
-               \bool_if:NT \g_@@_standar_bool
+               \bool_lazy_all:nT
+                 {
+                   { \bool_if_p:N \g_@@_standar_bool }
+                   { \int_compare_p:nNn { \l_@@_level_int } = { 1 } }
+                 }
                  {
                    \int_gdecr:N \g_@@_item_number_int
                  }
@@ -7726,8 +7730,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   The function \cs{@@_filter_save_key_pair:nn} will be responsible for
 %   filtering the \mymeta{keys} that are passed \emph{\enquote{with value}} by
-%   excluding the \mykey{series}, \mykey{resume}, \mykey{start}, \mykey{save-ans} and
-%   \mykey{save-key} keys.
+%   excluding the \mykey{series}, \mykey{resume}, \mykey{start},
+%   \mykey{save-ans}, \mykey{save-ref}, \mykey{check-ans},
+%   \mykey{show-ans}, \mykey{save-pos}, \mykey{wrap-ans}, \mykey{mark-ans},
+%   \mykey{wrap-opt}, \mykey{save-sep}  and \mykey{mark-ref} keys.
 %    \begin{macrocode}
 \cs_new:Npn \@@_filter_save_key_pair:nn #1#2
   {
@@ -7737,10 +7743,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { resume } {}
         { start } {}
         { save-ans } {}
+        { save-ref } {}
         { save-key } {}
         { check-ans } {}
         { show-ans } {}
         { show-pos } {}
+        { wrap-ans } {}
+        { mark-ans } {}
+        { wrap-opt } {}
+        { save-sep } {}
+        { mark-ref } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
@@ -7748,8 +7760,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_parse_save_key:n, \@@_parse_save_key_vii:n,}
-%   The functions \cs{@@_parse_save_key:n} and \cs{@@_parse_save_key_vii:n} will be responsible for
-%   storing the filtered \mymeta{keys} in the variable \myvarenv{l__@@_store_save_key_X_tl} for \myenv*{enumext}.
+%   The functions \cs{@@_parse_save_key:n} and
+%   \cs{@@_parse_save_key_vii:n} will be responsible for storing the
+%   filtered \mymeta{keys} in the variable \myvarenv{l__@@_store_save_key_X_tl}
+%   for \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
 %% Internal function for |save-key| key.
 % \fi
@@ -7757,8 +7771,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_parse_save_key:n #1
   {
     \tl_clear:c { l_@@_save_key_ \@@_level: _tl }
-    \tl_set:ce { l_@@_store_save_key_ \@@_level: _tl }{ \@@_filter_save_key:n {#1} }
-    \tl_show:c { l_@@_store_save_key_ \@@_level: _tl }
+    \tl_set:ce
+      { l_@@_store_save_key_ \@@_level: _tl }
+      { \@@_filter_save_key:n {#1} }
   }
 \cs_new_protected:Npn \@@_parse_save_key_vii:n #1
   {

@@ -22,16 +22,16 @@
       \item You use linux? \anskey{Yes}
       \item Usually uses the package manager? \anskey{Yes, \texttt{dnf}}
       \item Rate the following package and class
-        \begin{enumext}[nosep]
+        \begin{enumext*}[nosep]
           \item \texttt{xsim-exam} \anskey{doesn't exist for now :(}
           \item \texttt{xsim} \anskey{very good}
           \item \texttt{exsheets} \anskey{obsolete}
-        \end{enumext}
+        \end{enumext*}
     \end{enumext}
 \end{enumext}
 
 The answer to \ref{simplews:1} is \getkeyans{simplews:1} and the answer
 to \ref{simplews:3} is \getkeyans{simplews:3}.
-
+\setenumext[print,*]{label=\Alph*,nosep, itemindent=1cm,  font=\small, wrap-label={\fbox{##1}}}
 \printkeyans[columns=2]{simplews}
 \end{document}
