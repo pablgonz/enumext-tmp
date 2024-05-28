@@ -4269,8 +4269,8 @@
   }
 \seq_const_from_clist:Nn \c__enumext_all_families_seq
   {
-    level-1 , level-2 , level-3 , level-4 , keyans, enumext*,
-    keyans* , print-1 , print-2 , print-3 , print-4 , print-*,
+    level-1 , level-2 , level-3 , level-4 , keyans, enumext*, keyans*,
+    print-1 , print-2 , print-3 , print-4 , print-*, print*,
   }
 %% Define |\setenumext|,  \tl_if_novalue:nTF here (program level)
 \NewDocumentCommand \setenumext { o +m }
@@ -4309,7 +4309,7 @@
 \cs_new_protected:Npn \__enumext_set_parse:n #1
   {
     \tl_set:Ne \l__enumext_setkey_tmpb_tl { \tl_trim_spaces:n {#1} }
-    \int_step_inline:nnn { 0 } { 4 } % <- max level
+    \clist_map_inline:nn { 0, 1, 2, 3, 4, * } % <- max level
       { \tl_remove_all:Nn \l__enumext_setkey_tmpb_tl {##1} }
     \tl_if_empty:NTF \l__enumext_setkey_tmpb_tl
       {
