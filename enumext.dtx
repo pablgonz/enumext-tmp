@@ -850,7 +850,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % classes provided by \hologo{LaTeX}: \myclass{book}, \myclass{report},
 % \myclass{article} and \myclass{letter} on \mydim{10pt}, \mydim{11pt} and \mydim{12pt}.
 %
-% \newpage
 % \pagestyle{myheader}
 %
 % \section{Introduction}
@@ -981,10 +980,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 %  \begin{keyanspic}[3,2]
 %    \anspic{\includegraphics[scale=0.15]{example-image-a}}
-%    \anspic*{\includegraphics[scale=0.15]{example-image-b}}
+%    \anspic{\includegraphics[scale=0.15]{example-image-b}}
 %    \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %    \anspic{\includegraphics[scale=0.15]{example-image-a}}
-%    \anspic[A duck]{\includegraphics[scale=0.30]{example-image-duck}}
+%    \anspic*[A duck]{\includegraphics[scale=0.30]{example-image-duck}}
 %  \end{keyanspic}
 %
 % \item Question with image on left side:
@@ -1326,8 +1325,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</example>
 % \fi
 %
-% \section{The environment \texttt{enumext}}
-% \label{sec:envenumext}
+% \section{The environments provided}
+%
+% The package \mypkg*{enumext} provides two main list environments, the
+% \emph{vertical} environment \myenv*{enumext} and the \emph{horizontal}
+% environment \myenv*{enumext*}.
 %
 % \vspace*{-\baselineskip}
 %
@@ -1342,21 +1344,19 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \medskip
 %
-% The \myenv*{enumext} is an \emph{\enquote{enumerated list}} environment that
-% works in the same way as the standard \myenv{enumerate} environment
-% provided by \hologo{LaTeX}, \ics*{item} and \ics*{item}\myoarg[type=tt]{custom}
-% commands work in the usual way.
+% \subsection{The environment \texttt{enumext}}\label{sec:envenumext}
 %
-% \smallskip
-%
-% The environment can be nested with at most \emph{\enquote{four
-% levels}} and the options can be configured globally using \ics*{setenumext}
+% The \myenv*{enumext} is an environment that works in the same way as
+% the standard \myenv{enumerate} environment provided by \hologo{LaTeX},
+% \ics*{item} and \ics*{item}\myoarg[type=tt]{custom} commands work in
+% the usual way. The environment can be nested with at most \emph{\enquote{four levels}}
+% and the options can be configured globally using \ics*{setenumext}
 % command and locally using \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 % in the environment.
 %
 % \subsubsection*{Example}
 %
-% \begin{enumext}
+% \begin{enumext}[columns=2, topsep=0pt]
 %   \item This text is in the first level.
 %     \begin{enumext}
 %        \item This text is in the second level.
@@ -1371,30 +1371,42 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \item* This text is in the first level.
 % \end{enumext}
 %
-% \iffalse
-%<*example>
-% \fi
-\begin{examplecode}[frame=single]
-\begin{enumext}
-  \item This text is in the first level.
-    \begin{enumext}
-      \item This text is in the second level.
-        \begin{enumext}
-          \item This text is in the third level.
-            \begin{enumext}
-              \item This text is in the fourth level.
-            \end{enumext}
-        \end{enumext}
-    \end{enumext}
-  \item[X] This text is in the first level.
-  \item* This text is in the first level.
-\end{enumext}
-\end{examplecode}
-% \iffalse
-%</example>
-% \fi
+% \subsection{The environment \texttt{enumext*}}
 %
-% \subsection{The \cs[no-index]{item*} in \texttt{enumext}}
+% The \myenv*{enumext*} environment is a horizontal list environment
+% similar to the \myenv{enumerate}|*| environment provided by the
+% \mypkg{enumitem} package, \ics*{item} and \ics*{item}\myoarg[type=tt]{custom}
+% work as usual. The options can be configured globally using \ics*{setenumext}
+% command and locally using \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
+% in the environment.
+%
+% \medskip
+%
+% Some considerations to take into account for this environment:
+%
+% \begin{itemize}
+% \item The environment cannot be nested within itself, but it can be
+%   nested within \myenv*{enumext} and can contain it nested within it.
+%
+% \item Each \emph{\enquote{item}} in the environment is placed within a \myenv{minipage}
+%   environment whose \emph{width} is stored in the dimension \ics*{itemwidth}
+%   that includes \mykey{labelwith}, \mykey{labelsep} plus the \emph{width of the content}.
+%
+% \item You cannot have floating environments like \myenv{figure} or
+%  \myenv{table} but \ics{footnote} with \mypkg{hyperref} support is
+%  supported if the \mypkg{footnotehyper} package is loaded.
+% \end{itemize}
+%
+% \subsubsection*{Example}
+%
+% \begin{enumext*}[columns=2]
+%   \item This text is in the first level.
+%   \item This text is in the first level.
+%   \item[X] This text is in the first level.
+%   \item* This text is in the first level.
+% \end{enumext*}
+%
+% \subsection{The command \cs[no-index]{item*}}
 %
 % \vspace*{-\baselineskip}
 %
@@ -1416,19 +1428,21 @@ This work consists of the files enumext.dtx and enumext.sty.
 %    \smallskip
 %
 %    The \emph{starred version} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
-%    from the command, i.e. \ics*{item*} and the first optional argument does \emph{\enquote{not support}} verbatim
+%    from the command, i.e. \ics*{item*} and the first optional
+%    argument does \emph{\enquote{not support}} verbatim
 %    content. Can be configure with the keys \mykey{item-sym*} and
-%    \mykey{item-pos*} locally in the environment or globally using \ics*{setenumext} command (\S\ref{sec:setenumext}).
+%    \mykey{item-pos*} locally in the environment or globally using
+%    \ics*{setenumext} command (\S\ref{sec:setenumext}).
 % \end{function}
 %
 % \smallskip
 %
 % \begin{important}*
-% The behavior of \ics*{item*} in the \myenv*{enumext} environment is NOT
-% the same as in the \myenv*{keyans} environment.
+% The behavior of \ics*{item*} in the \myenv*{enumext} and \myenv*{enumext*} environments is NOT
+% the same as in the \myenv*{keyans} and \myenv*{keyans*} environments.
 % \end{important}
 %
-% \subsubsection{Keys for \cs[no-index]{item*} in \texttt{enumext}}
+% \subsubsection{Keys for \cs[no-index]{item*}}
 %
 % \keyexamp{item-sym\textcolor{MediumOrchid}{*}}{symbol}{\$\textbackslash{}star\$}
 % Sets the \emph{symbol} to be displayed in the \emph{\enquote{left}} of the
@@ -1445,6 +1459,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % set by \mykey{labelsep} key at each level. If positive values are
 % passed it will \emph{offset to the left} and if negative values are
 % passed it will \emph{offset to the right}.
+%
+% \subsection{The command \cs[no-index]{item} in \texttt{enumext*}}
 %
 % \section{The command \cs{setenumext}}
 % \label{sec:setenumext}
