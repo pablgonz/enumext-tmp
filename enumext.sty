@@ -4281,28 +4281,28 @@
 %% Add keys for |\setenumext|.
 \keys_define:nn { enumext / meta-families }
   {
-    level-1  .code:n = { \keys_set:nn { enumext / level-1  } {#1} } ,
-    level-2  .code:n = { \keys_set:nn { enumext / level-2  } {#1} } ,
-    level-3  .code:n = { \keys_set:nn { enumext / level-3  } {#1} } ,
-    level-4  .code:n = { \keys_set:nn { enumext / level-4  } {#1} } ,
-    keyans   .code:n = { \keys_set:nn { enumext / keyans   } {#1} } ,
-    enumext* .code:n = { \keys_set:nn { enumext / enumext* } {#1} } ,
-    keyans*  .code:n = { \keys_set:nn { enumext / keyans*  } {#1} } ,
-    print*   .code:n = { \keys_set:nn { enumext / print    } { print*  = {#1} } } ,
-    print-1  .code:n = { \keys_set:nn { enumext / print    } { print-1 = {#1} } } ,
-    print-2  .code:n = { \keys_set:nn { enumext / print    } { print-2 = {#1} } } ,
-    print-3  .code:n = { \keys_set:nn { enumext / print    } { print-3 = {#1} } } ,
-    print-4  .code:n = { \keys_set:nn { enumext / print    } { print-4 = {#1} } } ,
-    print-*  .code:n = { \keys_set:nn { enumext / print    } { print-* = {#1} } } ,
-    unknown  .code:n = { \msg_error:nn { enumext } { unknown-key-family } } ,
+    enumext-1 .code:n = { \keys_set:nn { enumext / level-1  } {#1} } ,
+    enumext-2 .code:n = { \keys_set:nn { enumext / level-2  } {#1} } ,
+    enumext-3 .code:n = { \keys_set:nn { enumext / level-3  } {#1} } ,
+    enumext-4 .code:n = { \keys_set:nn { enumext / level-4  } {#1} } ,
+    keyans    .code:n = { \keys_set:nn { enumext / keyans   } {#1} } ,
+    enumext*  .code:n = { \keys_set:nn { enumext / enumext* } {#1} } ,
+    keyans*   .code:n = { \keys_set:nn { enumext / keyans*  } {#1} } ,
+    print*    .code:n = { \keys_set:nn { enumext / print    } { print*  = {#1} } } ,
+    print-1   .code:n = { \keys_set:nn { enumext / print    } { print-1 = {#1} } } ,
+    print-2   .code:n = { \keys_set:nn { enumext / print    } { print-2 = {#1} } } ,
+    print-3   .code:n = { \keys_set:nn { enumext / print    } { print-3 = {#1} } } ,
+    print-4   .code:n = { \keys_set:nn { enumext / print    } { print-4 = {#1} } } ,
+    print-*   .code:n = { \keys_set:nn { enumext / print    } { print-* = {#1} } } ,
+    unknown   .code:n = { \msg_error:nn { enumext } { unknown-key-family } } ,
   }
 \seq_const_from_clist:Nn \c__enumext_all_families_seq
   {
-    level-1 , level-2 , level-3 , level-4 , keyans, enumext*, keyans*,
-    print-1 , print-2 , print-3 , print-4 , print-*, print*,
+    enumext-1, enumext-2, enumext-3, enumext-4, keyans, enumext*,
+    keyans*, print-1, print-2, print-3, print-4, print-*, print*,
   }
 %% Define |\setenumext|,  \tl_if_novalue:nTF here (program level)
-\NewDocumentCommand \setenumext { o +m }
+\NewDocumentCommand \setenumext { O{enumext,1} +m }
   {
     \tl_if_novalue:nTF {#1}
       {

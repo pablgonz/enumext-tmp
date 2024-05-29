@@ -1027,8 +1027,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % small requirements in the creation of \emph{\enquote{simple
 % worksheets}} and \emph{\enquote{multiple choice questions}}.
 %
-% \newpage
-%
 % \subsection{Description and usage}
 %
 % The \mypkg*{enumext} package defines enumerated environments using the
@@ -1468,7 +1466,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{The command \cs[no-index]{item} in \texttt{enumext*}}
 %
 % The \ics*{item} command for the \myenv*{enumext*} environment provides
-% an optional first argument |\item(number)| which \emph{\enquote{joins items}}
+% an optional first argument \ics*{item}\myparg{number} which \emph{\enquote{joins items}}
 % between columns. Let's consider the following examples adapted directly from
 % the \mypkg{task} package:
 
@@ -1513,22 +1511,25 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{function}{\setenumext}
 %   \begin{minipage}[t]{0.45\linewidth}
+%     \cmdexamp{setenumext}{key \textnormal{\textcolor{gray}{=}} val}
 %     \cmdexamp{setenumext}[enumext\textnormal{\textcolor{gray}{,}} level]{key \textnormal{\textcolor{gray}{=}} val}
-%     \cmdexamp{setenumext}[print\textnormal{\textcolor{gray}{,}} level]{key \textnormal{\textcolor{gray}{=}} val}
+%     \cmdexamp{setenumext}[enumext*]{key \textnormal{\textcolor{gray}{=}} val}
 %     \cmdexamp{setenumext}[keyans]{key \textnormal{\textcolor{gray}{=}} val}
 %   \end{minipage}\hfill
 %   \begin{minipage}[t]{0.45\linewidth}
-%     \cmdexamp{setenumext}[enumext*]{key \textnormal{\textcolor{gray}{=}} val}
 %     \cmdexamp{setenumext}[keyans*]{key \textnormal{\textcolor{gray}{=}} val}
+%     \cmdexamp{setenumext}[print\textnormal{\textcolor{gray}{,}} level]{key \textnormal{\textcolor{gray}{=}} val}
+%     \cmdexamp{setenumext}[print\textnormal{\textcolor{gray}{,}} \textnormal{\textcolor{red}{*}}]{key \textnormal{\textcolor{gray}{=}} val}
 %     \cmdexamp{setenumext}[print*]{key \textnormal{\textcolor{gray}{=}} val}
 %   \end{minipage}
 %
 % \smallskip
 %
 % The command \ics*{setenumext} sets the \mymeta{keys} on a global basis
-% for environment \myenv*{enumext}, the \ics*{printkeyans} command and
-% the \myenv*{keyans} environment. It can be used both in the preamble
-% and in the body of the document as many times as desired.
+% for environments \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans},
+% \myenv*{keyans*} and the \ics*{printkeyans} command.
+% It can be used both in the preamble and in the body of the document
+% as many times as desired.
 % \end{function}
 %
 % \smallskip
@@ -1542,15 +1543,45 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \begin{important}*
-% It should be kept in mind that using any \mymeta{key} that sets
-% a \emph{rubber lengths} or \emph{rigid lengths} for vertical or horizontal space on
-% a level will influence the vertical and horizontal
-% space for \emph{inners levels} and \myenv*{keyans} and \myenv*{keyanspic} environments.
+% All \mymeta{keys} related to the \emph{\enquote{storage system}}
+% should NOT be passed through this command and should be activated
+% directly at the \emph{\enquote{first level}} of the environment
+% in which they are executed.
+% \end{important}
+%
+% \smallskip
+%
+% \section{The \texttt{key=val} system}
+%
+% The \mymeta{key = val} system used by the \mypkg*{enumext} package is implemented
+% using \mypkg{l3keys} so it must be taken into consideration that those
+% keys marked as \emph{\enquote{value forbidden}}, that is \mymeta{key} is
+% different from \mymeta{key=}.
+%
+% \smallskip
+%
+% All \mymeta{keys} described in this section are available for the
+% \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and \myenv*{keyans*}
+% environments with the exception of the keys \mykey{series}, \mykey{resume},
+% \mykey{resume*} which are only available for the \emph{\enquote{first level}}
+% of the environments \myenv*{enumext} and \myenv*{enumext*}; and the keys
+% \mykey{mini-right}, \mykey{mini- right*} which are only available for
+% the \myenv*{enumext*} and \myenv*{keyans*} environments.
+%
+% \smallskip
+%
+%
 % All \mymeta{keys} related to vertical or horizontal spacing accept a \emph{\enquote{skip}} or \emph{\enquote{dim}}
 % expression if passed between braces, i.e. you do not need to use
 % |\dimeval| or |\dimexpr| to perform calculations.
 %
-% \end{important}
+% \smallskip
+%
+% It should be kept in mind that using any \mymeta{key} that sets
+% a \emph{rubber lengths} or \emph{rigid lengths} for vertical or
+% horizontal space on a level will influence the vertical and horizontal
+% space for \emph{inners levels} and \myenv*{keyans}, \myenv*{keyans*} and
+% \myenv*{keyanspic} environments.
 %
 % \subsection{Keys for \texttt{label} and \texttt{ref}}\label{subsec:label-and-ref}
 %
@@ -1562,16 +1593,19 @@ This work consists of the files enumext.dtx and enumext.sty.
 %         \textcolor{lightgray}{\textbar} \ilabel{Roman*}}
 %   }{by levels}
 % Sets the \mymeta{label} that will be printed at the \emph{current
-% level}. The default value for first level are \ilabel{arabic*.}, for
+% level}. The default value for the first level of the environments
+% \myenv*{enumext} and \myenv*{enumext*} are \ilabel{arabic*.}, for
 % second level are \ilabel*{alph*)}, for third level are \ilabel{roman*.}
-% and for fourth level are \ilabel{Alph*.}.
+% and for fourth level are \ilabel{Alph*.}. For \myenv*{keyans}
+% and \myenv*{keyans*} environments the default value is \ilabel{Alph*)}.
 %
 % \smallskip
 %
 % \begin{important}*
 % This key is intended to give the basic structure with which the
 % \mymeta{label} will be displayed, and the form in which it is
-% used by standard \emph{\enquote{label and ref}} and the \emph{\enquote{internal reference}} system with the
+% used by standard \emph{\enquote{label and ref}} and the
+% \emph{\enquote{internal reference}} system with the
 % \mykey{save-ref} key. You cannot use commands with \mymeta{label} as an
 % argument, for example |\emph|\mymarg[type=tt]{\textnormal{\ilabel{alph*}}} will return an
 % error. For full customization of how \mymeta{label} is displayed use the \mykey{font}
@@ -1590,14 +1624,18 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \mykey{label} key sets the default form of the \emph{cross references}, by using this key
 % you can define a different format, for example: \mykey{ref}|=\emph|\mymarg[type=tt]{\textnormal{\ilabel{alph*}}} is valid.
 %
+% \smallskip
 %
-% \begin{important}*
-% Internally, it renews the command associated with each counter when it
-% is executed, i.e., |\theenumXi| is modified when the key is executed at
-% the first level, |\theenumXii| when it is executed at the second level
-% and |\theenumXiii| together with |\theenumXiv| when it is executed at the
+% Internally it renews the command associated with each counter when it
+% is executed, i.e., in the environment \myenv*{enumext} the command |\theenumXi|
+% is modified when the key is executed at the first level, |\theenumXii|
+% when it is executed at the second level and |\theenumXiii| together
+% with |\theenumXiv| when it is executed at the
 % third and fourth levels.
 %
+% \smallskip
+%
+% \begin{important}*
 % This must be kept in mind, since the values set by the \mykey{label} and
 % \mykey{ref} keys are not cumulative by levels, so if you have used the \mykey{ref}
 % key in the first level and then want to associate the counter with
@@ -1652,7 +1690,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \end{lrbox}
 %
 % \keyexamp{wrap-label}{code{} \space\usebox{\hashbox} more code}{empty}
-% Wraps the current \mymeta{label} defined by \mykey{label} key referenced by |{#1}|.
+% Wraps the \emph{current} \mymeta{label} defined by \mykey{label} key referenced by |{#1}|.
 % The \mymarg[type=tt]{code} must be passed between braces.
 % This key does not modify the value set by the \mykey{labelwidth} key
 % and is applied only on \ics*{item} and \ics*{item*}.
@@ -1694,18 +1732,22 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{topsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
 % Set the \emph{vertical space} added to both the top and bottom of the list.
 % Internally sets the value of \ics{topsep} for the current level.
-% The default values for first level are \mydim{8.0pt plus 2.0pt minus 4.0pt},
+% The default value for the first level of the environments
+% \myenv*{enumext} and \myenv*{enumext*} are \mydim{8.0pt plus 2.0pt minus 4.0pt},
 % for second level are \mydim{4.0pt plus 2.0pt minus 1.0pt}, for third and
-% fourth level are \mydim{2.0pt plus 1.0pt minus 1.0pt}.
+% fourth level are \mydim{2.0pt plus 1.0pt minus 1.0pt}. For \myenv*{keyans}
+% and \myenv*{keyans*} environments the default value is \mydim{4.0pt plus 2.0pt minus 1.0pt}.
 %
 % \smallskip
 %
 % \keyexamp{parsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
-% Set the \emph{vertical space} between paragraphs within an item. Internally
-% sets the value of \ics{parsep} for the current level. The default
-% values for first level are \mydim{4.0pt plus 2.0pt minus 1.0pt},
+% Set the \emph{vertical space} between paragraphs within an item.
+% Internally sets the value of \ics{parsep} for the current level.
+% The default value for the first level of the environments \myenv*{enumext}
+% and \myenv*{enumext*} are \mydim{4.0pt plus 2.0pt minus 1.0pt},
 % for second level are \mydim{2.0pt plus 1.0pt minus 1.0pt}, for third and
-% fourth level are \mydim{0pt}.
+% fourth level are \mydim{0pt}. For \myenv*{keyans} and \myenv*{keyans*}
+% environments the default value is \mydim{2.0pt plus 1.0pt minus 1.0pt}.
 %
 % \smallskip
 %
@@ -1713,25 +1755,32 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Set the \emph{vertical space} added, beyond \mykey{topsep}, to the \enquote{top} and \enquote{bottom}
 % of the entire environment if the environment instance is preceded by a \emph{\enquote{blank
 % line}} or |\par| command. Internally sets the value of \ics{partopsep} for the current level.
-% The default values for first and second level are \mydim{2.0pt plus 1.0pt minus 1.0pt},
-% for third and fourth level are \mydim{1.0pt minus 1.0pt}.
+% The default values for first and second level in environment
+% \myenv*{enumext} are \mydim{2.0pt plus 1.0pt minus 1.0pt},
+% for third and fourth level are \mydim{1.0pt minus 1.0pt}. For
+% \myenv*{keyans}, \myenv*{keyans*} and \myenv*{enumext*}
+% environments the default value is \mydim{2.0pt plus 1.0pt minus 1.0pt}.
 %
 % \smallskip
 %
 % \begin{important}*
 % The value of this parameter also affects the \emph{inner levels} and the
-% \myenv*{keyans} environment. Caution should be taken with
-% \emph{\enquote{blank lines}} or |\par| command \emph{\enquote{before}} each
-% environment or nested level when formatting the source code of document.
-% \hologo{TeX} will enter \mymeta{vertical mode} and apply this value to
-% the \enquote{top} and \enquote{bottom} the environment or nested level.
+% environments \myenv*{keyans}, \myenv*{keyanspic} and \myenv*{keyans*}.
+% Caution should be taken with \emph{\enquote{blank lines}} or |\par|
+% command \emph{\enquote{before}} each environment or nested level when
+% formatting the source code of document. \hologo{TeX} will enter \mymeta{vertical mode}
+% and apply this value to the \enquote{top} and \enquote{bottom} the
+% environment or nested level.
 % \end{important}
 %
 % \keyexamp{itemsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
 % Set the \emph{vertical space} between items, beyond the \mykey{parsep}.
 % Internally sets the value of \ics{itemsep} for the current level.
-% The default values for first level are \mydim{4.0pt plus 2.0pt minus 1.0pt},
+% The default value for the first level of the environments \myenv*{enumext}
+% and \myenv*{enumext*} are \mydim{4.0pt plus 2.0pt minus 1.0pt},
 % for the rest of the levels are \mydim{2.0pt plus 1.0pt minus 1.0pt}.
+% For \myenv*{keyans} and \myenv*{keyans*} environments the default
+% value is \mydim{4.0pt plus 2.0pt minus 1.0pt}.
 %
 % \keyexamp*{noitemsep}{value forbidden}{not used}
 % This is a \emph{\enquote{meta-key}} that does not receive an argument. Set
@@ -1747,13 +1796,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{important}*
 % The following \mymeta{keys} should be used with \emph{\enquote{caution}}, they
-% are intended to be used at the \enquote{top} and \enquote{bottom} of the environment when the
-% \mykey{columns} or \mykey{mini-env} keys do not provide adequate
-% \emph{vertical spaces}.
+% are intended to be used at the \enquote{top} and \enquote{bottom} of
+% the environment when the \mykey{columns} or \mykey{mini-env} keys do
+% not provide adequate \emph{vertical spaces}.
 % The values ​​passed can be \emph{rubber} or \emph{rigid} lengths, the
-% way they are applied is the way you differ, using the \emph{star} ‘|*|’ \mymeta{keys} applies
-% |\vspace*| so that \hologo{LaTeX} does \emph{not discard} this space at
-% page break.
+% way they are applied is the way you differ, using the \emph{star} ‘|*|’
+% \mymeta{keys} applies |\vspace*| so that \hologo{LaTeX} does
+% \emph{not discard} this space at page break.
 % \end{important}
 %
 % \smallskip
@@ -11746,20 +11795,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \keys_define:nn { enumext / meta-families }
   {
-    level-1  .code:n = { \keys_set:nn { enumext / level-1  } {#1} } ,
-    level-2  .code:n = { \keys_set:nn { enumext / level-2  } {#1} } ,
-    level-3  .code:n = { \keys_set:nn { enumext / level-3  } {#1} } ,
-    level-4  .code:n = { \keys_set:nn { enumext / level-4  } {#1} } ,
-    keyans   .code:n = { \keys_set:nn { enumext / keyans   } {#1} } ,
-    enumext* .code:n = { \keys_set:nn { enumext / enumext* } {#1} } ,
-    keyans*  .code:n = { \keys_set:nn { enumext / keyans*  } {#1} } ,
-    print*   .code:n = { \keys_set:nn { enumext / print    } { print*  = {#1} } } ,
-    print-1  .code:n = { \keys_set:nn { enumext / print    } { print-1 = {#1} } } ,
-    print-2  .code:n = { \keys_set:nn { enumext / print    } { print-2 = {#1} } } ,
-    print-3  .code:n = { \keys_set:nn { enumext / print    } { print-3 = {#1} } } ,
-    print-4  .code:n = { \keys_set:nn { enumext / print    } { print-4 = {#1} } } ,
-    print-*  .code:n = { \keys_set:nn { enumext / print    } { print-* = {#1} } } ,
-    unknown  .code:n = { \msg_error:nn { enumext } { unknown-key-family } } ,
+    enumext-1 .code:n = { \keys_set:nn { enumext / level-1  } {#1} } ,
+    enumext-2 .code:n = { \keys_set:nn { enumext / level-2  } {#1} } ,
+    enumext-3 .code:n = { \keys_set:nn { enumext / level-3  } {#1} } ,
+    enumext-4 .code:n = { \keys_set:nn { enumext / level-4  } {#1} } ,
+    keyans    .code:n = { \keys_set:nn { enumext / keyans   } {#1} } ,
+    enumext*  .code:n = { \keys_set:nn { enumext / enumext* } {#1} } ,
+    keyans*   .code:n = { \keys_set:nn { enumext / keyans*  } {#1} } ,
+    print*    .code:n = { \keys_set:nn { enumext / print    } { print*  = {#1} } } ,
+    print-1   .code:n = { \keys_set:nn { enumext / print    } { print-1 = {#1} } } ,
+    print-2   .code:n = { \keys_set:nn { enumext / print    } { print-2 = {#1} } } ,
+    print-3   .code:n = { \keys_set:nn { enumext / print    } { print-3 = {#1} } } ,
+    print-4   .code:n = { \keys_set:nn { enumext / print    } { print-4 = {#1} } } ,
+    print-*   .code:n = { \keys_set:nn { enumext / print    } { print-* = {#1} } } ,
+    unknown   .code:n = { \msg_error:nn { enumext } { unknown-key-family } } ,
   }
 %    \end{macrocode}
 %    We store them in the constant sequence \cs{c_@@_all_families_seq}
@@ -11767,8 +11816,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \seq_const_from_clist:Nn \c_@@_all_families_seq
   {
-    level-1 , level-2 , level-3 , level-4 , keyans, enumext*, keyans*,
-    print-1 , print-2 , print-3 , print-4 , print-*, print*,
+    enumext-1, enumext-2, enumext-3, enumext-4, keyans, enumext*,
+    keyans*, print-1, print-2, print-3, print-4, print-*, print*,
   }
 %    \end{macrocode}
 %
@@ -11778,7 +11827,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Define |\setenumext|,  \tl_if_novalue:nTF here (program level)
 % \fi
 %    \begin{macrocode}
-\NewDocumentCommand \setenumext { o +m }
+\NewDocumentCommand \setenumext { O{enumext,1} +m }
   {
     \tl_if_novalue:nTF {#1}
       {
