@@ -6660,7 +6660,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \mykey{resume} and \mykey{resume*} keys. The idea behind this is to be
 % able to absorb the \mymeta{keys} passed to the optional argument of the
 % \emph{\enquote{first level}} of the environments \myenv*{enumext} and \myenv*{enumext*}, but, discarding some specific
-% \mymeta{keys}.
+% \mymeta{keys}. This implementation is adapted directly from the code
+% provided by Jonathan P. Spratte \texttt(@Skillmon) in \href{https://chat.stackexchange.com/transcript/41?m=65647962#65647962}{chat-TeX-SX}
 %
 % \begin{macro}[int]{series, resume, resume*, }
 %     We define the keys \mykey{series}, \mykey{resume}
@@ -7662,6 +7663,48 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsubsection{Store optional arguments of the environments}
+%
+% The idea behind \emph{\enquote{storing}} in the \mymeta{sequence} is to have a copy of the
+% structure of the environment in which the key \mykey{save-ans} is being
+% executed so we must capture the optional arguments passed to the levels
+% of the environment in which it is executed and \emph{\enquote{storing}} them.
+%
+% \begin{macro}{\@@_store_active_keys:n, \@@_store_active_keys_vii:n,}
+%   The functions \cs{@@_store_active_keys:n} and
+%   \cs{@@_store_active_keys_vii:n} will be responsible for
+%   \emph{\enquote{storing}} the \mymeta{keys} filtered from the optional
+%   arguments of the environment in which the key \mykey{save-ans} is
+%   executed and the levels within this for the \myenv*{enumext} and
+%   \myenv*{enumext*} environments. We will execute this function only if
+%   the variable \cs{l_@@_store_save_key_X_bool} is false, that is, the key
+%   \mykey{store-key} is not active, establishing the variable
+%   \cs{l_@@_store_save_key_X_tl} with the filtered \mymeta{keys}.
+% \iffalse
+%% Internal function for store optional arguments of the environments in seq.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_store_active_keys:n #1
+  {
+    \bool_if:cF { l_@@_store_save_key_ \@@_level: _bool }
+      {
+        \tl_clear:c { l_@@_save_key_ \@@_level: _tl }
+        \tl_set:ce
+          { l_@@_store_save_key_ \@@_level: _tl }
+          { \@@_filter_save_key:n {#1} }
+      }
+  }
+\cs_new_protected:Npn \@@_store_active_keys_vii:n #1
+  {
+    \bool_if:NF \l_@@_store_save_key_vii_bool
+      {
+        \tl_clear:N \l_@@_store_save_key_vii_tl
+        \tl_set:Ne \l_@@_store_save_key_vii_tl { \@@_filter_save_key:n {#1} }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsubsection{Setting \texttt{save-key} key}\label{key:save-key}
 %
 % Since this list structure will be stored in the \mymeta{sequence}
@@ -7671,14 +7714,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % the \mymeta{sequence}.
 %
 % \begin{macro}[int]{save-key}
-%    The values set by this key will be passed as optional arguments to
-%    the \emph{\enquote{inner levels}} of the \myenv*{enumext} and
-%    \myenv*{enumext*} environments via the \cs{@@_store_level_open:}
-%    function used by the \emph{\enquote{storage system}} to preserve
-%    the structure and then used by the |\printkeyans| command.
-%
-%    Now we define the key \mykey{save-key} for all
-%    levels of \myenv*{enumext} and \myenv*{enumext*} environments.
+%    The values ​​set by this key passed in the optional arguments of the
+%    \myenv*{enumext} and \myenv*{enumext*} environments will override the
+%    values ​​of the \cs{l_@@_store_save_key_X_tl} variable set by the
+%    functions \cs{@@_store_active_keys:n} and \cs{@@_store_active_keys_vii:n}.
+%    Define the key \mykey{save-key} for all levels of \myenv*{enumext} and \myenv*{enumext*} environments.
 % \iffalse
 %% Add |save-key| key.
 % \fi
@@ -7700,7 +7740,33 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Internal functions for \texttt{save-key} key}
+% \begin{macro}{\@@_parse_save_key:n, \@@_parse_save_key_vii:n,}
+%   The functions \cs{@@_parse_save_key:n} and
+%   \cs{@@_parse_save_key_vii:n} will be responsible for storing the
+%   filtered \mymeta{keys} in the variable \myvarenv{l__@@_store_save_key_X_tl}
+%   for \myenv*{enumext} and \myenv*{enumext*}.
+% \iffalse
+%% Internal function for |save-key| key.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_parse_save_key:n #1
+  {
+    \bool_set_true:c { l_@@_store_save_key_ \@@_level: _bool }
+    \tl_clear:c { l_@@_save_key_ \@@_level: _tl }
+    \tl_set:ce
+      { l_@@_store_save_key_ \@@_level: _tl }
+      { \@@_filter_save_key:n {#1} }
+  }
+\cs_new_protected:Npn \@@_parse_save_key_vii:n #1
+  {
+    \bool_set_true:N \l_@@_store_save_key_vii_bool
+    \tl_clear:N \l_@@_store_save_key_vii_tl
+    \tl_set:Ne \l_@@_store_save_key_vii_tl { \@@_filter_save_key:n {#1} }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Internal functions to store optional arguments}
 %
 % \begin{macro}{\@@_filter_save_key:n, \@@_filter_save_key_key:n, \@@_filter_save_key_pair:nn}
 %   The function \cs{@@_filter_save_key:n} will be in charge of filtering the
@@ -7752,30 +7818,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { miniright } {} { miniright* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_parse_save_key:n, \@@_parse_save_key_vii:n,}
-%   The functions \cs{@@_parse_save_key:n} and
-%   \cs{@@_parse_save_key_vii:n} will be responsible for storing the
-%   filtered \mymeta{keys} in the variable \myvarenv{l__@@_store_save_key_X_tl}
-%   for \myenv*{enumext} and \myenv*{enumext*}.
-% \iffalse
-%% Internal function for |save-key| key.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_parse_save_key:n #1
-  {
-    \tl_clear:c { l_@@_save_key_ \@@_level: _tl }
-    \tl_set:ce
-      { l_@@_store_save_key_ \@@_level: _tl }
-      { \@@_filter_save_key:n {#1} }
-  }
-\cs_new_protected:Npn \@@_parse_save_key_vii:n #1
-  {
-    \tl_clear:N \l_@@_store_save_key_vii_tl
-    \tl_set:Ne \l_@@_store_save_key_vii_tl { \@@_filter_save_key:n {#1} }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9371,6 +9413,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \exp_args:Ne \keys_set:nn
               { enumext / level-\int_use:N \l_@@_level_int } {#1}
           }
+        \@@_store_active_keys:n {#1}
       }
   }
 %    \end{macrocode}
@@ -10455,9 +10498,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_parse_keys_vii:n}
 %    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 %    for \myenv*{enumext*}. If the variable
-%    \cs{l_@@_store_active_bool} is true it will call the function
-%    \cs{@@_parse_store_keys_vii:n} and reprocess the keys to pass them to the
-%    storage sequence.
+%    \cs{l_@@_store_active_bool} is true it will call the functions
+%    \cs{@@_parse_serie:n} and \cs{@@_store_active_keys_vii:n} and reprocess the \mykey{keys} to pass them to the
+%    storage \mymeta{sequence}.
 % \iffalse
 %% Parse |key=val| and store keys for |enumext*|.
 % \fi
@@ -10469,6 +10512,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \str_clear:N \l_@@_series_str
         \keys_set:nn { enumext / enumext* } {#1}
         \@@_parse_series:n {#1}
+        \@@_store_active_keys_vii:n {#1}
       }
   }
 %    \end{macrocode}

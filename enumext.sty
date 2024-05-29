@@ -2142,6 +2142,25 @@
       }
   }
 \clist_map_inline:nn { keyans, keyans* } { \__enumext_tmp:n {#1} }
+%% Internal function for store optional arguments of the environments in seq.
+\cs_new_protected:Npn \__enumext_store_active_keys:n #1
+  {
+    \bool_if:cF { l__enumext_store_save_key_ \__enumext_level: _bool }
+      {
+        \tl_clear:c { l__enumext_save_key_ \__enumext_level: _tl }
+        \tl_set:ce
+          { l__enumext_store_save_key_ \__enumext_level: _tl }
+          { \__enumext_filter_save_key:n {#1} }
+      }
+  }
+\cs_new_protected:Npn \__enumext_store_active_keys_vii:n #1
+  {
+    \bool_if:NF \l__enumext_store_save_key_vii_bool
+      {
+        \tl_clear:N \l__enumext_store_save_key_vii_tl
+        \tl_set:Ne \l__enumext_store_save_key_vii_tl { \__enumext_filter_save_key:n {#1} }
+      }
+  }
 %% Add |save-key| key.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
@@ -2157,6 +2176,21 @@
       }
   }
 \clist_map_inline:nn { level-1, level-2, level-3, level-4 } { \__enumext_tmp:n {#1} }
+%% Internal function for |save-key| key.
+\cs_new_protected:Npn \__enumext_parse_save_key:n #1
+  {
+    \bool_set_true:c { l__enumext_store_save_key_ \__enumext_level: _bool }
+    \tl_clear:c { l__enumext_save_key_ \__enumext_level: _tl }
+    \tl_set:ce
+      { l__enumext_store_save_key_ \__enumext_level: _tl }
+      { \__enumext_filter_save_key:n {#1} }
+  }
+\cs_new_protected:Npn \__enumext_parse_save_key_vii:n #1
+  {
+    \bool_set_true:N \l__enumext_store_save_key_vii_bool
+    \tl_clear:N \l__enumext_store_save_key_vii_tl
+    \tl_set:Ne \l__enumext_store_save_key_vii_tl { \__enumext_filter_save_key:n {#1} }
+  }
 %% Internal function for filter keys for |save-key| key.
 \cs_new:Npn \__enumext_filter_save_key:n #1
   {
@@ -2186,19 +2220,6 @@
         { miniright } {} { miniright* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
-  }
-%% Internal function for |save-key| key.
-\cs_new_protected:Npn \__enumext_parse_save_key:n #1
-  {
-    \tl_clear:c { l__enumext_save_key_ \__enumext_level: _tl }
-    \tl_set:ce
-      { l__enumext_store_save_key_ \__enumext_level: _tl }
-      { \__enumext_filter_save_key:n {#1} }
-  }
-\cs_new_protected:Npn \__enumext_parse_save_key_vii:n #1
-  {
-    \tl_clear:N \l__enumext_store_save_key_vii_tl
-    \tl_set:Ne \l__enumext_store_save_key_vii_tl { \__enumext_filter_save_key:n {#1} }
   }
 %% Function for store content to prop list.
 \cs_new_protected:Npn \__enumext_store_addto_prop:n #1
@@ -3055,6 +3076,7 @@
             \exp_args:Ne \keys_set:nn
               { enumext / level-\int_use:N \l__enumext_level_int } {#1}
           }
+        \__enumext_store_active_keys:n {#1}
       }
   }
 \cs_new_protected:Nn \__enumext_start_store_level:
@@ -3589,6 +3611,7 @@
         \str_clear:N \l__enumext_series_str
         \keys_set:nn { enumext / enumext* } {#1}
         \__enumext_parse_series:n {#1}
+        \__enumext_store_active_keys_vii:n {#1}
       }
   }
 \cs_new_protected:Nn \__enumext_before_list_vii:
