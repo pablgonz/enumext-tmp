@@ -765,6 +765,10 @@ This work consists of the files enumext.dtx and enumext.sty.
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedright{#2}}}}%
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedleft{#2}}}}%
   }
+% for enumext* samples
+% \Sample is defined to contain some sample text:
+\def\sample{This is some sample text we will use to create a somewhat longer text spanning a few lines.}
+\def\Sample{\sample\ \sample\par\sample}
 \begin{document}
   \DocInput{\jobname.dtx}
 \end{document}
@@ -1354,7 +1358,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % command and locally using \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 % in the environment.
 %
-% \subsubsection*{Example}
+% \subsubsection*{Example with \texttt{columns=2}}
 %
 % \begin{enumext}[columns=2, topsep=0pt]
 %   \item This text is in the first level.
@@ -1375,7 +1379,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % The \myenv*{enumext*} environment is a horizontal list environment
 % similar to the \myenv{enumerate}|*| environment provided by the
-% \mypkg{enumitem} package, \ics*{item} and \ics*{item}\myoarg[type=tt]{custom}
+% \mypkg{enumitem} package or \myenv{task} environment provided by the
+% \mypkg{task} package , \ics*{item} and \ics*{item}\myoarg[type=tt]{custom}
 % work as usual. The options can be configured globally using \ics*{setenumext}
 % command and locally using \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 % in the environment.
@@ -1397,7 +1402,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  supported if the \mypkg{footnotehyper} package is loaded.
 % \end{itemize}
 %
-% \subsubsection*{Example}
+% \subsubsection*{Example with \texttt{columns=2}}
 %
 % \begin{enumext*}[columns=2]
 %   \item This text is in the first level.
@@ -1461,6 +1466,45 @@ This work consists of the files enumext.dtx and enumext.sty.
 % passed it will \emph{offset to the right}.
 %
 % \subsection{The command \cs[no-index]{item} in \texttt{enumext*}}
+%
+% The \ics*{item} command for the \myenv*{enumext*} environment provides
+% an optional first argument |\item(number)| which \emph{\enquote{joins items}}
+% between columns. Let's consider the following examples adapted directly from
+% the \mypkg{task} package:
+
+% \iffalse
+%<*example>
+% \fi
+\begin{examplecode}[frame=single]
+\begin{enumext*}[widest=10,columns=4]
+  \item The first
+  \item* The second
+  \item The third
+  \item The fourth
+  \item(3)* The fifth item is way too long for this and needs three columns
+  \item The sixth
+  \item the seventh
+  \item(2)[X] The eighth item is way too long for this and needs two columns
+  \item[Z] The nineth
+  \item The tenth
+\end{enumext*}
+\end{examplecode}
+% \iffalse
+%</example>
+% \fi
+%
+% \begin{enumext*}[widest=10,columns=4]
+%  \item The first
+%  \item* The second
+%  \item The third
+%  \item The fourth
+%  \item(3)* The fifth item is way too long for this and needs three columns
+%  \item The sixth
+%  \item the seventh
+%  \item(2)[X] The eighth item is way too long for this and needs two columns
+%  \item[Z] The nineth
+%  \item The tenth
+% \end{enumext*}
 %
 % \section{The command \cs{setenumext}}
 % \label{sec:setenumext}
