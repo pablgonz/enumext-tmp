@@ -146,8 +146,10 @@
 \tl_new:N \l__enumext_print_keyans_starred_tl
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
-    \tl_new:c { l__enumext_store_save_key_#1_tl        }
-    \tl_new:c { l__enumext_print_keyans_#1_tl          }
+    \tl_new:c   { l__enumext_store_save_key_#1_tl    }
+    \bool_new:c { l__enumext_store_save_key_#1_bool  }
+    \tl_new:c   { l__enumext_store_active_keys_#1_tl }
+    \tl_new:c   { l__enumext_print_keyans_#1_tl      }
     \bool_new:c { l__enumext_store_upper_level_#1_bool }
   }
 \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {#1} }
@@ -2169,9 +2171,7 @@
   {
     \str_case:nnF {#1}
       {
-        { resume } {}
-        { resume* } {}
-        { no-store } {}
+        { resume } {} { resume* } {} { no-store } {}
       }
       { , { \exp_not:n {#1} } }
   }
@@ -2179,20 +2179,11 @@
   {
     \str_case:nnF {#1}
       {
-        { series } {}
-        { resume } {}
-        { start } {}
-        { save-ans } {}
-        { save-ref } {}
-        { save-key } {}
-        { check-ans } {}
-        { show-ans } {}
-        { show-pos } {}
-        { wrap-ans } {}
-        { mark-ans } {}
-        { wrap-opt } {}
-        { save-sep } {}
-        { mark-ref } {}
+        { series    } {} { resume   } {} { start     } {} { save-ans } {}
+        { save-ref  } {} { save-key } {} { check-ans } {} { show-ans } {}
+        { show-pos  } {} { wrap-ans } {} { mark-ans  } {} { wrap-opt } {}
+        { save-sep  } {} { mark-ref } {} { mini-env  } {} { mini-sep } { }
+        { miniright } {} { miniright* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
@@ -4198,24 +4189,31 @@
     \group_end:
   }
 %% Add keys for |\printkeyans|.
+\cs_generate_variant:Nn \keys_precompile:nnN { neN }
 \keys_define:nn  { enumext / print }
   {
-    print*  .code:n     = \keys_precompile:nnN { enumext / enumext* } { #1 }
+    print*  .code:n     = \keys_precompile:neN { enumext / enumext* }
+                            { \__enumext_filter_save_key:n {#1} }
                             \l__enumext_print_keyans_starred_tl, % starred cmd
     print*  .initial:n  = { nosep, label=\arabic*., columns=2, first=\small, font=\small },
-    print-1 .code:n     = \keys_precompile:nnN { enumext / level-1 } { #1 }
+    print-1 .code:n     = \keys_precompile:neN { enumext / level-1 }
+                            { \__enumext_filter_save_key:n {#1} }
                             \l__enumext_print_keyans_i_tl,
     print-1 .initial:n  = { nosep, label=\arabic*., columns=2, first=\small, font=\small },
-    print-2 .code:n     = \keys_precompile:nnN { enumext / level-2 } { #1 }
+    print-2 .code:n     = \keys_precompile:neN { enumext / level-2 }
+                            { \__enumext_filter_save_key:n {#1} }
                             \l__enumext_print_keyans_ii_tl,
     print-2 .initial:n  = { nosep, label=(\alph*), first=\small, font=\small },
-    print-3 .code:n     = \keys_precompile:nnN { enumext / level-3 } { #1 }
+    print-3 .code:n     = \keys_precompile:neN { enumext / level-3 }
+                            { \__enumext_filter_save_key:n {#1} }
                             \l__enumext_print_keyans_iii_tl,
     print-3 .initial:n  = { nosep, label=\roman*., first=\small, font=\small },
-    print-4 .code:n     = \keys_precompile:nnN { enumext / level-4 } { #1 }
+    print-4 .code:n     = \keys_precompile:neN { enumext / level-4 }
+                            { \__enumext_filter_save_key:n {#1} }
                             \l__enumext_print_keyans_iv_tl,
     print-4 .initial:n  = { nosep, label=\Alph*., first=\small, font=\small },
-    print-* .code:n     = \keys_precompile:nnN { enumext / enumext* } { #1 }
+    print-* .code:n     = \keys_precompile:neN { enumext / enumext* }
+                            { \__enumext_filter_save_key:n {#1} }
                             \l__enumext_print_keyans_vii_tl, % starred nested
     print-* .initial:n  = { nosep, label=(\alph*), first=\small, font=\small },
   }

@@ -3923,8 +3923,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \tl_new:N \l_@@_print_keyans_starred_tl
 \cs_set_protected:Npn \@@_tmp:n #1
   {
-    \tl_new:c { l_@@_store_save_key_#1_tl        }
-    \tl_new:c { l_@@_print_keyans_#1_tl          }
+    \tl_new:c   { l_@@_store_save_key_#1_tl    }
+    \bool_new:c { l_@@_store_save_key_#1_bool  }
+    \tl_new:c   { l_@@_store_active_keys_#1_tl }
+    \tl_new:c   { l_@@_print_keyans_#1_tl      }
     \bool_new:c { l_@@_store_upper_level_#1_bool }
   }
 \clist_map_inline:nn { i, ii, iii, iv, vii } { \@@_tmp:n {#1} }
@@ -7358,6 +7360,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                \int_gdecr:N \g_@@_item_number_int
              }
       }
+%    \end{macrocode}
+%   We should only execute this if \myenv*{enumext*} is nested in the first
+%   level of \myenv*{enumext}, for the rest of the cases the value of
+%   \cs{g_@@_item_number_int} is already decreased.
+%    \begin{macrocode}
     \int_case:nn { \l_@@_level_h_int }
       {
         { 1 }{
@@ -7721,9 +7728,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \str_case:nnF {#1}
       {
-        { resume } {}
-        { resume* } {}
-        { no-store } {}
+        { resume } {} { resume* } {} { no-store } {}
       }
       { , { \exp_not:n {#1} } }
   }
@@ -7733,26 +7738,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   excluding the \mykey{series}, \mykey{resume}, \mykey{start},
 %   \mykey{save-ans}, \mykey{save-ref}, \mykey{check-ans},
 %   \mykey{show-ans}, \mykey{save-pos}, \mykey{wrap-ans}, \mykey{mark-ans},
-%   \mykey{wrap-opt}, \mykey{save-sep}  and \mykey{mark-ref} keys.
+%   \mykey{wrap-opt}, \mykey{save-sep}, \mykey{mark-ref}, \mykey{mini-env}, \mykey{mini-sep},
+%   \mykey{miniright} and \mykey{miniright*} keys.
 %    \begin{macrocode}
 \cs_new:Npn \@@_filter_save_key_pair:nn #1#2
   {
     \str_case:nnF {#1}
       {
-        { series } {}
-        { resume } {}
-        { start } {}
-        { save-ans } {}
-        { save-ref } {}
-        { save-key } {}
-        { check-ans } {}
-        { show-ans } {}
-        { show-pos } {}
-        { wrap-ans } {}
-        { mark-ans } {}
-        { wrap-opt } {}
-        { save-sep } {}
-        { mark-ref } {}
+        { series    } {} { resume   } {} { start     } {} { save-ans } {}
+        { save-ref  } {} { save-key } {} { check-ans } {} { show-ans } {}
+        { show-pos  } {} { wrap-ans } {} { mark-ans  } {} { wrap-opt } {}
+        { save-sep  } {} { mark-ref } {} { mini-env  } {} { mini-sep } { }
+        { miniright } {} { miniright* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
@@ -11512,33 +11509,54 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % The \ics*{printkeyans} command prints \emph{\enquote{all stored
 % content}} in the \mymeta{sequence} defined by the \mykey{save-ans} key.
 %
-% The first thing we will do is to define a set of \mymeta{keys} with
+% The first thing we will do is define a set of \mymeta{filtered keys} with
 % which we will control the options of the different nesting levels for
-% the \myenv*{enumext} and \myenv*{enumext*} environment by storing the
-% values of these in the token list variables \myvarenv{l__@@_print_keyans_X_tl}.
+% the environment \myenv*{enumext} and \myenv*{enumext*} by storing their
+% values ​​in the list of tokens \myvarenv{l__@@_print_keyans_X_tl}. The
+% variable \cs{l_@@_print_keyans_starred_tl} will have the default \mymeta{keys}
+% for \ics*{printkeyans*} and will be set by \ics*{setenumext}|[print*]|
+% and the variable \cs{l__@@_print_keyans_vii_tl} will have the default
+% keys for the environment \myenv*{enumext*} nested within the \mymeta{sequence}
+% and will be set by \ics*{setenumext}|[print,*]|, the rest of the
+% variables will be for the environment \myenv*{enumext} and will be set
+% by \ics*{setenumext}|[print,level]|.
 %
+% \begin{important}*
+% The reason for storing \mymeta{keys} in token lists using
+% \cs{keys_precompile:neN} is because the keys are set via
+% \ics*{setenumext} but are later executed by running the command
+% \ics*{printkeyans} and they are not handled directly by its optional
+% argument, except those related to the first opening level.
+% \end{important}
 % \iffalse
 %% Add keys for |\printkeyans|.
 % \fi
 %    \begin{macrocode}
+\cs_generate_variant:Nn \keys_precompile:nnN { neN }
 \keys_define:nn  { enumext / print }
   {
-    print*  .code:n     = \keys_precompile:nnN { enumext / enumext* } { #1 }
+    print*  .code:n     = \keys_precompile:neN { enumext / enumext* }
+                            { \@@_filter_save_key:n {#1} }
                             \l_@@_print_keyans_starred_tl, % starred cmd
     print*  .initial:n  = { nosep, label=\arabic*., columns=2, first=\small, font=\small },
-    print-1 .code:n     = \keys_precompile:nnN { enumext / level-1 } { #1 }
+    print-1 .code:n     = \keys_precompile:neN { enumext / level-1 }
+                            { \@@_filter_save_key:n {#1} }
                             \l_@@_print_keyans_i_tl,
     print-1 .initial:n  = { nosep, label=\arabic*., columns=2, first=\small, font=\small },
-    print-2 .code:n     = \keys_precompile:nnN { enumext / level-2 } { #1 }
+    print-2 .code:n     = \keys_precompile:neN { enumext / level-2 }
+                            { \@@_filter_save_key:n {#1} }
                             \l_@@_print_keyans_ii_tl,
     print-2 .initial:n  = { nosep, label=(\alph*), first=\small, font=\small },
-    print-3 .code:n     = \keys_precompile:nnN { enumext / level-3 } { #1 }
+    print-3 .code:n     = \keys_precompile:neN { enumext / level-3 }
+                            { \@@_filter_save_key:n {#1} }
                             \l_@@_print_keyans_iii_tl,
     print-3 .initial:n  = { nosep, label=\roman*., first=\small, font=\small },
-    print-4 .code:n     = \keys_precompile:nnN { enumext / level-4 } { #1 }
+    print-4 .code:n     = \keys_precompile:neN { enumext / level-4 }
+                            { \@@_filter_save_key:n {#1} }
                             \l_@@_print_keyans_iv_tl,
     print-4 .initial:n  = { nosep, label=\Alph*., first=\small, font=\small },
-    print-* .code:n     = \keys_precompile:nnN { enumext / enumext* } { #1 }
+    print-* .code:n     = \keys_precompile:neN { enumext / enumext* }
+                            { \@@_filter_save_key:n {#1} }
                             \l_@@_print_keyans_vii_tl, % starred nested
     print-* .initial:n  = { nosep, label=(\alph*), first=\small, font=\small },
   }
@@ -11547,6 +11565,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\printkeyans}
 %    Create a user command to print \emph{\enquote{all stored content}}
 %    in \mymeta{sequence} for \ics*{anskey}, \ics*{item*} and \ics*{anspic*}.
+%    Within a group we will run our \emph{\enquote{precompiled keys}} and
+%    then call the internal function \cs{@@_printkeyans:nnn}.
 % \iffalse
 %% Define |\printkeyans|.
 % \fi
@@ -11568,8 +11588,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_printkeyans:nnn}
 %    The internal function \cs{@@_printkeyans:nnn} will check
 %    for the existence of the \mymeta{sequence}, if it does not exist
-%    it will return an error message, then it will fetch the content
-%    specified by the first argument mapping the \mymeta{sequence}.
+%    it will return an error message, then it will check the starred
+%    argument, if it is present it will execute the variable
+%    \cs{l_@@_print_keyans_starred_tl} that contains the default \mymeta{keys} for
+%    the environment \myenv*{enumext*} not nested in the \mymeta{sequence}, it will
+%    open the environment \myenv*{enumext*} passing the optional argument
+%    to the first level and then will map the \mymeta{sequence}, otherwise it will
+%    open the environment \myenv*{enumext} passing the optional argument to
+%    the first level and then map the \mymeta{sequence}.
 %
 % \begin{arguments}
 %    \item starred
