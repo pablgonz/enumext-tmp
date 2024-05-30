@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-29}
+  {2024-05-30}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -2213,7 +2213,7 @@
   {
     \str_case:nnF {#1}
       {
-        { series    } {} { resume   } {} { start     } {} { save-ans } {}
+        { series    } {} { resume   } {} { save-ans } {}
         { save-ref  } {} { save-key } {} { check-ans } {} { show-ans } {}
         { show-pos  } {} { wrap-ans } {} { mark-ans  } {} { wrap-opt } {}
         { save-sep  } {} { mark-ref } {} { mini-env  } {} { mini-sep } { }
@@ -2348,11 +2348,11 @@
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
     \group_begin:
-      %\bool_if:NT \l__enumext_check_answers_bool
-      %  {
+      \bool_if:NT \l__enumext_check_answers_bool
+        {
           \int_gincr:N \g__enumext_item_anskey_int
-      %  }
-      \__enumext_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
+          \__enumext_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
+        }
     \group_end:
   }
 %% Internal function of |\anskey|.
@@ -4261,10 +4261,16 @@
             %%\seq_show:c { g__enumext_#3_seq }
             \bool_if:nTF {#1}
               {
-                \tl_use:N \l__enumext_print_keyans_starred_tl
-                \begin{enumext*}[#2]
-                  \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }
-                \end{enumext*}
+                \seq_if_in:cnTF { g__enumext_#3_seq } { \end{enumext*} }
+                  {
+                    \msg_error:nnnn { enumext } { print-starred } {#3} { enumext* }
+                  }
+                  {
+                    \tl_use:N \l__enumext_print_keyans_starred_tl
+                    \begin{enumext*}[#2]
+                      \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }
+                    \end{enumext*}
+                  }
               }
               {
                 \begin{enumext}[#2]
@@ -4488,6 +4494,11 @@
 \msg_new:nnn { enumext } { many-starred }
   {
     Many ~ '\c_backslash_str #1*' ~ #2.
+  }
+\msg_new:nnn { enumext } { print-starred }
+  {
+    \c_backslash_str printkeyans*:~ The ~ sequence ~ '#1' ~ already ~ contains ~
+    #2 ~ environment ~  \msg_line_context:.
   }
 \msg_new:nnn { enumext } { list-too-deep }
   {

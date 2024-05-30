@@ -3814,7 +3814,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-29}
+  {2024-05-30}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -8019,8 +8019,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   The function \cs{@@_filter_save_key_pair:nn} will be responsible for
 %   filtering the \mymeta{keys} that are passed \emph{\enquote{with value}} by
-%   excluding the \mykey{series}, \mykey{resume}, \mykey{start},
-%   \mykey{save-ans}, \mykey{save-ref}, \mykey{check-ans},
+%   excluding the \mykey{series}, \mykey{resume}, \mykey{save-ans}, \mykey{save-ref}, \mykey{check-ans},
 %   \mykey{show-ans}, \mykey{save-pos}, \mykey{wrap-ans}, \mykey{mark-ans},
 %   \mykey{wrap-opt}, \mykey{save-sep}, \mykey{mark-ref}, \mykey{mini-env}, \mykey{mini-sep},
 %   \mykey{mini-right} and \mykey{mini-right*} keys.
@@ -8029,7 +8028,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \str_case:nnF {#1}
       {
-        { series    } {} { resume   } {} { start     } {} { save-ans } {}
+        { series    } {} { resume   } {} { save-ans } {}
         { save-ref  } {} { save-key } {} { check-ans } {} { show-ans } {}
         { show-pos  } {} { wrap-ans } {} { mark-ans  } {} { wrap-opt } {}
         { save-sep  } {} { mark-ref } {} { mini-env  } {} { mini-sep } { }
@@ -8287,11 +8286,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
     \group_begin:
-      %\bool_if:NT \l_@@_check_answers_bool
-      %  {
+      \bool_if:NT \l_@@_check_answers_bool
+        {
           \int_gincr:N \g_@@_item_anskey_int
-      %  }
-      \@@_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
+          \@@_store_anskey_code:nnnn {#1} {#2} {#3} {#4}
+        }
     \group_end:
   }
 %    \end{macrocode}
@@ -10961,8 +10960,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
 %  \ics*{item} inside the \myenv*{enumext*} environment.
 %
-%    The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to the
-%    value of \cs{@@_stop_item_vii:} which we will define later and add the
+%    The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to
+%    \cs{@@_stop_item_vii:} which we will define later and add the
 %    \mypkg{hyperref} compatible \icounter{enumXvii} counter, after that we will
 %    start capturing the item content in a box. Here need setting the |\if@hyper@item| switch to
 %    \emph{\enquote{true}} for \mypkg{hyperref} compatible. The
@@ -11875,10 +11874,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             %%\seq_show:c { g_@@_#3_seq }
             \bool_if:nTF {#1}
               {
-                \tl_use:N \l_@@_print_keyans_starred_tl
-                \begin{enumext*}[#2]
-                  \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
-                \end{enumext*}
+                \seq_if_in:cnTF { g_@@_#3_seq } { \end{enumext*} }
+                  {
+                    \msg_error:nnnn { enumext } { print-starred } {#3} { enumext* }
+                  }
+                  {
+                    \tl_use:N \l_@@_print_keyans_starred_tl
+                    \begin{enumext*}[#2]
+                      \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
+                    \end{enumext*}
+                  }
               }
               {
                 \begin{enumext}[#2]
@@ -12179,6 +12184,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \msg_new:nnn { enumext } { many-starred }
   {
     Many ~ '\c_backslash_str #1*' ~ #2.
+  }
+%    \end{macrocode}
+%  Messages used by |\printkeyans*| command.
+%    \begin{macrocode}
+\msg_new:nnn { enumext } { print-starred }
+  {
+    \c_backslash_str printkeyans*:~ The ~ sequence ~ '#1' ~ already ~ contains ~
+    #2 ~ environment ~  \msg_line_context:.
   }
 %    \end{macrocode}
 % Message for the nesting depth of the environment \myenv*{enumext}.
