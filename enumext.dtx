@@ -1167,7 +1167,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \ics*{anspic*} commands to \emph{stored content}, \ics*{getkeyans}
 % command to get the individual \emph{stored content}, \ics*{printkeyans}
 % to print all \emph{stored content}, \ics*{miniright} for \myenv{minipage}
-% and \ics*{setenumext} to config all \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
+% and \ics*{setenumext} to config all \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 % options.
 %
 % \subsubsection{Internal counters}
@@ -1350,10 +1350,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % The \myenv*{enumext} is an environment that works in the same way as
 % the standard \myenv{enumerate} environment provided by \hologo{LaTeX},
-% \ics*{item} and \ics*{item}\myoarg[type=tt]{custom} commands work in
+% \ics*{item} and \ics*{item}\myoarg{custom} commands work in
 % the usual way. The environment can be nested with at most \emph{\enquote{four levels}}
 % and the options can be configured globally using \ics*{setenumext}
-% command and locally using \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
+% command and locally using \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 % in the environment.
 %
 % \subsubsection*{Example with \texttt{columns=2}}
@@ -1378,9 +1378,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The \myenv*{enumext*} environment is a horizontal list environment
 % similar to the \myenv{enumerate}|*| environment provided by the
 % \mypkg{enumitem} package or \myenv{task} environment provided by the
-% \mypkg{task} package , \ics*{item} and \ics*{item}\myoarg[type=tt]{custom}
+% \mypkg{task} package , \ics*{item} and \ics*{item}\myoarg{custom}
 % work as usual. The options can be configured globally using \ics*{setenumext}
-% command and locally using \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
+% command and locally using \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 % in the environment.
 %
 % \medskip
@@ -1416,11 +1416,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \begin{function}{\item*}
 %   \begin{syntax}
 %     \ics*{item*}
-%     \ics*{item*}\myoarg[type=tt]{symbol}
-%     \ics*{item*}\myoarg[type=tt]{symbol}\myoarg[type=tt]{offset}
+%     \ics*{item*}\myoarg{symbol}
+%     \ics*{item*}\myoarg{symbol}\myoarg{offset}
 %   \end{syntax}
-%    The \ics*{item*}, \ics*{item*}\myoarg[type=tt]{symbol} and
-%    \ics*{item*}\myoarg[type=tt]{symbol}\myoarg[type=tt]{offset} works like
+%    The \ics*{item*}, \ics*{item*}\myoarg{symbol} and
+%    \ics*{item*}\myoarg{symbol}\myoarg{offset} works like
 %    the numbered |\item|, but placing a \mymeta{symbol} to the \emph{\enquote{left}} of the
 %    \mymeta{label} separated from it by the value set by the
 %    \mykey{labelsep} key and can be \mymeta{offset} using the second optional
@@ -1611,7 +1611,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % used by standard \emph{\enquote{label and ref}} and the
 % \emph{\enquote{internal reference}} system with the
 % \mykey{save-ref} key. You cannot use commands with \mymeta{label} as an
-% argument, for example |\emph|\mymarg[type=tt]{\textnormal{\ilabel{alph*}}} will return an
+% argument, for example |\emph|\mymarg{\textnormal{\ilabel{alph*}}} will return an
 % error. For full customization of how \mymeta{label} is displayed use the \mykey{font}
 % or \mykey{wrap-label} keys.
 % \end{important}
@@ -1626,7 +1626,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % Modifies the way \emph{cross references} are displayed. The
 % \mykey{label} key sets the default form of the \emph{cross references}, by using this key
-% you can define a different format, for example: \mykey{ref}|=\emph|\mymarg[type=tt]{\textnormal{\ilabel{alph*}}} is valid.
+% you can define a different format, for example: \mykey{ref}|=\emph|\mymarg{\textnormal{\ilabel{alph*}}} is valid.
 %
 % \smallskip
 %
@@ -1695,7 +1695,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{wrap-label}{code{} \space\usebox{\hashbox} more code}{empty}
 % Wraps the \emph{current} \mymeta{label} defined by \mykey{label} key referenced by |{#1}|.
-% The \mymarg[type=tt]{code} must be passed between braces.
+% The \mymarg{code} must be passed between braces.
 % This key does not modify the value set by the \mykey{labelwidth} key
 % and is applied only on \ics*{item} and \ics*{item*}.
 % When using it in the \ics*{setenumext} command it is necessary to use the
@@ -1722,7 +1722,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{wrap-label\textcolor{MediumOrchid}{*}}{code{} \space\usebox{\hashbox} more code}{empty}
-% The same as the \mykey{wrap-label} key but also applies on \ics*{item}\myoarg[type=tt]{custom}.
+% The same as the \mykey{wrap-label} key but also applies on \ics*{item}\myoarg{custom}.
 %
 % \subsection{Keys for spaces}
 %
@@ -1905,46 +1905,46 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{important}*
 % The following \mymeta{keys} should be used with \emph{\enquote{caution}}, they
-% are intended to inject \mymarg[type=tt]{code} into different parts of
+% are intended to inject \mymarg{code} into different parts of
 % the defined environments. We must keep in mind that the defined
 % environments are based on the \myenv{list} base environment provided by
 % \hologo{LaTeX} which is defined (simplified) as plain form
-% |\list|\mymarg[type=tt]{arg one}\mymarg[type=tt]{arg two}.
+% |\list|\mymarg{arg one}\mymarg{arg two}.
 % Using the \mykey{before*} key does not allow access to the \myenv{list}
-% parameters defined by \myoarg[type=tt]{key
+% parameters defined by \myoarg{key
 % \textnormal{\textcolor{gray}{=}} val}.
 % \end{important}
 %
 % \smallskip
 %
 % \keyexamp{before}{code}{not used}
-% Execute \mymarg[type=tt]{code} \emph{\enquote{before}} the
-% environment starts. The \mymarg[type=tt]{code} must be passed between braces, is executed
+% Execute \mymarg{code} \emph{\enquote{before}} the
+% environment starts. The \mymarg{code} must be passed between braces, is executed
 % \emph{\enquote{after}} performing all calculations related to the
 % \emph{list parameters} in the environment and the parameters sets by
-% \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val} that is, in the second argument of the list after setting all the parameters
-% |\list|\mymarg[type=tt]{arg one}|{|\mymeta{arg two}\mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|}|.
+% \myoarg{key \textnormal{\textcolor{gray}{=}} val} that is, in the second argument of the list after setting all the parameters
+% |\list|\mymarg{arg one}|{|\mymeta{arg two}\mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|}|.
 %
 % \smallskip
 %
 % \keyexamp{before\textcolor{MediumOrchid}{*}}{code}{not used}
-% Execute \mymarg[type=tt]{code} \emph{\enquote{before}} the
-% environment starts. The \mymarg[type=tt]{code} must be passed between braces, is executed
+% Execute \mymarg{code} \emph{\enquote{before}} the
+% environment starts. The \mymarg{code} must be passed between braces, is executed
 % \emph{\enquote{before}} performing all calculations related to the \emph{list
-% parameters} and \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}}
+% parameters} and \myoarg{key \textnormal{\textcolor{gray}{=}}
 % val} sets in the environment that is,
 % before the arguments defining the environment are executed:
-% \mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|\list|\mymarg[type=tt]{arg
-% one}\mymarg[type=tt]{arg two}.
+% \mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|\list|\mymarg{arg
+% one}\mymarg{arg two}.
 %
 % \smallskip
 %
 % \keyexamp{first}{code}{not used}
-% Executes \mymarg[type=tt]{code} when \emph{\enquote{starting}} the
-% environment. The \mymarg[type=tt]{code} must be passed between
+% Executes \mymarg{code} when \emph{\enquote{starting}} the
+% environment. The \mymarg{code} must be passed between
 % braces, is executed right \emph{\enquote{after}} all \emph{list
 % parameters} are done, after the second argument of list, just before the first occurrence of \ics*{item}:
-% |\list|\mymarg[type=tt]{arg one}\mymarg[type=tt]{arg two}\mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|\item|.
+% |\list|\mymarg{arg one}\mymarg{arg two}\mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|\item|.
 %
 % \smallskip
 %
@@ -1956,8 +1956,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \end{important}
 %
 % \keyexamp{after}{code}{not used}
-% Execute \mymarg[type=tt]{code} \emph{\enquote{after}} finishing the
-% environment. The \mymarg[type=tt]{code} must be passed between braces.
+% Execute \mymarg{code} \emph{\enquote{after}} finishing the
+% environment. The \mymarg{code} must be passed between braces.
 %
 % \subsection{Keys for \texttt{start}, \texttt{series} and \texttt{resume}}
 %
@@ -2041,9 +2041,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \begin{important}*
-% The |\footnote|\mymarg[type=tt]{text} command in the nested levels of \myenv{multicols} will not
-% work as expected, prefer the use of |\footnotemark|\myoarg[type=tt]{number} inside the
-% environment and |\footnotetext|\myoarg[type=tt]{number}\mymarg[type=tt]{text} outside the environment
+% The |\footnote|\mymarg{text} command in the nested levels of \myenv{multicols} will not
+% work as expected, prefer the use of |\footnotemark|\myoarg{number} inside the
+% environment and |\footnotetext|\myoarg{number}\mymarg{text} outside the environment
 % or via the \mykey{after} key.
 % \end{important}
 %
@@ -2081,10 +2081,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \end{function}
 %
 % \begin{important}*
-% The |\footnote|\mymarg[type=tt]{text} command in \myenv{minipage} environment will work as
+% The |\footnote|\mymarg{text} command in \myenv{minipage} environment will work as
 % usual. If you prefer the footnotes to be numbered (not lowercase) and
-% outside the environment, use |\footnotemark|\myoarg[type=tt]{number} inside the
-% environment and |\footnotetext|\myoarg[type=tt]{number}\mymarg[type=tt]{text} outside the environment
+% outside the environment, use |\footnotemark|\myoarg{number} inside the
+% environment and |\footnotetext|\myoarg{number}\mymarg{text} outside the environment
 % or via the \mykey{after} key.
 % \end{important}
 %
@@ -2119,7 +2119,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \begin{minipage}[t]{0.45\linewidth}
 \centering
 \begin{examplecode}[frame=none,mathescape=true]
-\begin{enumext}[save-ans=`\mymarg[type=tt]{store name}`]
+\begin{enumext}[save-ans=`\mymarg{store name}`]
   \item Text \anskey{answer}
   \item Text
     \begin{keyans}
@@ -2131,7 +2131,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \begin{minipage}[t]{0.45\linewidth}
 \vspace{0pt}\centering
 \begin{examplecode}[frame=none,mathescape=true]
-\begin{enumext}[save-ans=`\mymarg[type=tt]{store name}`]
+\begin{enumext}[save-ans=`\mymarg{store name}`]
   \item Text \anskey{answer}
   \item Text
     \begin{keyanspic}
@@ -2196,7 +2196,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %<*example>
 % \fi
 \begin{examplecode}[frame=none,mathescape=true]
-\begin{enumext}[save-ans=`\mymarg[type=tt]{store name}`]
+\begin{enumext}[save-ans=`\mymarg{store name}`]
   \item Text \anskey{answer}
   \item Text
     \begin{enumext}[nosep, columns=2, save-key={columns=3}]
@@ -2229,11 +2229,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{save-ref}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Activates the \emph{\enquote{internal label and ref}} mechanism for
-% referencing \emph{\enquote{stored content}} in \mymeta[type=tt]{store name} set by \mykey{save-ans} key. To reference the location
+% referencing \emph{\enquote{stored content}} in \mymeta{store name} set by \mykey{save-ans} key. To reference the location
 % of the \emph{\enquote{stored content}} within the environment you must
-% use |\ref|\mymarg[type=tt]{store name \textnormal{\textcolor{red}{:}} position},
+% use |\ref|\mymarg{store name \textnormal{\textcolor{red}{:}} position},
 % where \mymeta{position} corresponds to the position occupied by the
-% \emph{\enquote{stored content}} in the \mymeta[type=tt]{store name} returned by the \mykey{show-pos} key.
+% \emph{\enquote{stored content}} in the \mymeta{store name} returned by the \mykey{show-pos} key.
 % For example |\ref{test:4}| will return |3.(b)| which corresponds to the
 % location of the \emph{\enquote{stored content}} at position |4| within
 % the environment in which the key \mykey{save-ans}|=test| was set.
@@ -2253,11 +2253,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{wrap-ans}{code{} \space\usebox{\hashbox} more code}{\textbackslash{}fbox\{\#1\}}
 % Wraps the \emph{current argument} passed to the \ics*{anskey} command to
 % referenced by |{#1}| when using the \mykey{show-ans} or \mykey{show-pos} keys.
-% The \mymarg[type=tt]{code} must be passed between
+% The \mymarg{code} must be passed between
 % braces and only affects the \mymeta{current argument} passed to
 % \ics*{anskey} and NOT the \emph{\enquote{stored content}} in the \mymeta{store name}
 % set by \mykey{save-ans} key.
-%^^A If this key is passed using the \ics*{setenumext} command it is necessary to use double ‘|{##1}|’.
+% If this key is passed using the \ics*{setenumext} command it is necessary to use double ‘|{##1}|’.
 %
 % \smallskip
 %
@@ -2266,11 +2266,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \ics*{item*} and \ics*{anspic*} commands referenced by |{#1}|
 % in the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
 % environments when using the \mykey{show-ans} or \mykey{show-pos} keys.
-% The \mymarg[type=tt]{code} must be passed between braces
+% The \mymarg{code} must be passed between braces
 % and only affects the current \mymeta{optional argument} and NOT the
 % \emph{\enquote{stored content}} in \mymeta{store name} set by
 % \mykey{save-ans} key.
-%^^A If this key is passed using the \ics*{setenumext} command it is necessary to use double ‘|{##1}|’.
+% If this key is passed using the \ics*{setenumext} command it is necessary to use double ‘|{##1}|’.
 %
 % \smallskip
 %
@@ -2300,7 +2300,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{show-pos}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Displays the \emph{position} occupied by the \emph{\enquote{stored content}} by
 % commands \ics*{anskey}, \ics*{item*} and \ics*{anspic*} in the
-% \emph{prop list} \mymeta[type=tt]{store name} set by \mykey{save-ans} key.
+% \emph{prop list} \mymeta{store name} set by \mykey{save-ans} key.
 % This position is used by the \ics*{getkeyans} command and by the |\ref|
 % command if the \mykey{save-ref} key is active.
 %
@@ -2333,7 +2333,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \newsavebox{\exaboxtmp}
 % \begin{lrbox}{\exaboxtmp}
 %    \small\ttfamily
-%    \textcolor{pkgcolor}{\textbackslash anskey}\mymarg[type=tt]{content}
+%    \textcolor{pkgcolor}{\textbackslash anskey}\mymarg{content}
 % \end{lrbox}
 %
 % \vspace*{-\baselineskip}
@@ -2346,7 +2346,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \end{syntax}
 %  The \ics*{anskey} command takes a mandatory argument and is
 %  triggered by \mykey{save-ans} key. The \emph{\enquote{content}} are
-%  \emph{\enquote{stored}} in \mymeta[type=tt]{store name} set by \mykey{save-ans} key.
+%  \emph{\enquote{stored}} in \mymeta{store name} set by \mykey{save-ans} key.
 %  The command does \emph{\enquote{not support}} verbatim content and must NOT be nested. By design it is
 %  assumed that each \ics*{item} or \ics*{item*} will have a \emph{\enquote{single}}
 %  occurrence of the command unless a nested level is opened or the
@@ -2373,13 +2373,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \fi
 \begin{examplecode}[frame=single]
 \begin{enumext}[save-ans=test,show-ans=true]
-  \item* Text containing our instructions or questions. `\ics*{anskey}\mymarg[type=tt]{first answer}`
+  \item* Text containing our instructions or questions. `\ics*{anskey}\mymarg{first answer}`
   \item Text containing our instructions or questions.
     \begin{enumext}
-      \item Question.`\ics*{anskey}\mymarg[type=tt]{second answer}`
+      \item Question.`\ics*{anskey}\mymarg{second answer}`
     \end{enumext}
-  \item Text containing our instructions or questions. `\ics*{anskey}\mymarg[type=tt]{third answer}`
-  \item Text containing our instructions or questions. `\ics*{anskey}\mymarg[type=tt]{fourth answer}`
+  \item Text containing our instructions or questions. `\ics*{anskey}\mymarg{third answer}`
+  \item Text containing our instructions or questions. `\ics*{anskey}\mymarg{fourth answer}`
 \end{enumext}
 \end{examplecode}
 % \iffalse
@@ -2392,15 +2392,15 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{function}{keyans,keyans*}
 %   \begin{syntax}
-%     |\begin{keyans}|\myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg[type=tt]{custom} \ics*{item*} \ics*{item*}\myoarg[type=tt]{content} |\end{keyans}|\par
-%     |\begin{keyans*}|\myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg[type=tt]{custom} \ics*{item*} \ics*{item*}\myoarg[type=tt]{content} |\end{keyans*}|
+%     |\begin{keyans}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg{custom} \ics*{item*} \ics*{item*}\myoarg{content} |\end{keyans}|\par
+%     |\begin{keyans*}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg{custom} \ics*{item*} \ics*{item*}\myoarg{content} |\end{keyans*}|
 %   \end{syntax}
 % The \myenv*{keyans} is an \emph{\enquote{enumerated
 % list}} environment designed for \emph{\enquote{multiple choice}}
 % questions activated by the \mykey{save-ans} key.
 % This environment can NOT be nested and must always be at the
 % \emph{\enquote{first level}} of the \myenv*{enumext} environment, the
-% commands \ics*{item} and \ics*{item}\myoarg[type=tt]{custom} work in the usual.
+% commands \ics*{item} and \ics*{item}\myoarg{custom} work in the usual.
 % \end{function}
 %
 % \iffalse
@@ -2409,11 +2409,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 \begin{examplecode}[frame=none]
 \begin{enumext}[save-ans=test]
   \item `\mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
-    \begin{keyans}`\myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}`
+    \begin{keyans}`\myoarg{key \textnormal{\textcolor{gray}{=}} val}`
       \item `\mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
-      \item `\myoarg[type=tt]{custom} \mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
+      \item `\myoarg{custom} \mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
       \item* `\mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
-      `\ics*{item*}\myoarg[type=tt]{content} \mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
+      `\ics*{item*}\myoarg{content} \mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
     \end{keyans}
 \end{enumext}
 \end{examplecode}
@@ -2424,7 +2424,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The \mymeta{keys} set in the optional argument of the environment are the same
 % (almost) as those of the \myenv*{enumext} environment and have higher
 % precedence than those set by
-% \ics*{setenumext}\myoarg[type=tt]{keyans}\mymarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}.
+% \ics*{setenumext}\myoarg{keyans}\mymarg{key \textnormal{\textcolor{gray}{=}} val}.
 % If the optional argument is not passed or the \mymeta{keys} are not set by
 % \ics*{setenumext}, the default values will be the same as the second
 % level of the \myenv*{enumext} environment with the difference in the
@@ -2437,16 +2437,16 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \begin{function}{\item*}
 %   \begin{syntax}
 %     \ics*{item*}
-%     \ics*{item*}\myoarg[type=tt]{content}
+%     \ics*{item*}\myoarg{content}
 %   \end{syntax}
-%    The \ics*{item*} and \ics*{item*}\myoarg[type=tt]{content} command store
+%    The \ics*{item*} and \ics*{item*}\myoarg{content} command store
 %    the current \mymeta{label} set by \mykey{label} key next to the \mymeta{content} (if it is present)
-%    in \mymeta[type=tt]{store name} set by \mykey{save-ans} key in the \emph{\enquote{first level}} of the
-%    \myenv*{enumext} environment.
+%    in \mymarg{store name} set by \mykey{save-ans} key in the \emph{\enquote{first level}} of the
+%    \myenv*{enumext} or \myenv*{enumext*} environments.
 %
 %    \smallskip
 %
-%    The \emph{starred version} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
+%    The \emph{argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
 %    from the command, i.e. \ics*{item*} and the optional argument does \emph{\enquote{not support}} verbatim
 %    content. By design it is assumed that the \emph{starred version} ‘|*|’ will only
 %    appear \emph{\enquote{once}} within the environment.
@@ -2480,7 +2480,7 @@ This work consists of the files enumext.dtx and enumext.sty.
       \item Choice
       \item Choice
       \item Choice
-      `\ics*{item*}\myoarg[type=tt]{note}` Correct choice
+      `\ics*{item*}\myoarg{note}` Correct choice
       \miniright
       \includegraphics[scale=0.25]{example-image-a}
 
@@ -2523,7 +2523,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{function}{keyanspic}
 %   \begin{syntax}
-%     |\begin{keyanspic}|\myoarg[type=tt]{number above, number below}\ics*{anspic}\mymarg[type=tt]{drawing}\ics*{anspic*}\myoarg[type=tt]{content}\mymarg[type=tt]{drawing}
+%     |\begin{keyanspic}|\myoarg{number above, number below}\ics*{anspic}\mymarg{drawing}\ics*{anspic*}\myoarg{content}\mymarg{drawing}
 %   \end{syntax}
 % The \myenv*{keyanspic} is a \emph{\enquote{fake enumerated list}}
 % environment that which uses the \ics*{anspic} command instead of
@@ -2674,13 +2674,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   in \emph{prop list} \mymarg{store name} defined by
 %   \mykey{save-ans} key in the \mymeta{position} returned by the
 %   \mykey{show-pos} key.
+%   The \emph{\enquote{stored content}} can only be accessed \emph{after}
+%   it is stored, if \mymarg{store name} does not exist the command
+%   will return an error.
 % \end{function}
 %
 %  \smallskip
 %
-% The \emph{\enquote{stored content}} can only be accessed \emph{\enquote{after}}
-% it is stored, if the \mymarg{store name} does not exist the command
-% will return an error. The form taken by the argument \mymarg{store name \textnormal{\textcolor{red}{:}} position}
+% The form taken by the argument \mymarg{store name \textnormal{\textcolor{red}{:}} position}
 % is the same as that used to generate the \emph{\enquote{internal
 % label and ref}} system when \mykey{save-ref} key are active, so to
 % refer to a \emph{\enquote{stored content}}. For example
@@ -2711,15 +2712,35 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  The optional argument allows to handle the \mymeta{keys} on the
 %  \emph{\enquote{first level}} of the environment \myenv*{enumext} or
 %  \myenv*{enumext*} if the \emph{starred version} ‘|*|’ is used.
-%  The default values ​​for the first level are the same as the default values
-%  for the \myenv*{enumext} and \myenv*{enumext*} environments along with
-%  the keys |nosep,first=\small,font=\small| and |columns=2|.
+%  The default values ​​for the \emph{\enquote{first level}} are the
+%  same as the default values for the \myenv*{enumext} and \myenv*{enumext*}
+%  environments along with the keys |nosep,first=\small,font=\small| and |columns=2|.
+%
+%  For the inner levels of the environment \myenv*{enumext} saved in the
+%  \emph{sequence} the default values ​​are the same as those established for the
+%  second, third and fourth levels plus the keys |nosep,first=\small,font=\small|,
+%  if the environment \myenv*{enumext*} is saved within the \emph{sequence},
+%  it will have the same default values ​​plus the keys |nosep,first=\small,font=\small|.
+%
+%
+% \subsubsection*{Setting the keys for \cs[no-index]{printkeyans}}
+%
 %
 % \smallskip
 %
+%
+% The default values ​​for the \emph{\enquote{first level}} of |\printkeyans| commands and
+% |\printkeyans*| are established using \ics*{setenumext}\myoarg{print \textnormal{\textcolor{gray}{,}} \textcolor{MediumOrchid}{1}}\mymarg{keys} and
+% \ics*{setenumext}\myoarg{print\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}}\mymarg{keys}.
+%
+%^^A The default values ​​for |\printkeyans| command \emph{\enquote{on the first level}} are established using \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print \textnormal{\textcolor{gray}{,}} 1}\mymarg{keys}
+%^^A and the default values ​​for |\printkeyans*| command \emph{\enquote{on the first level}} are established using \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print\textnormal{\textcolor{red}{*}}}\mymarg{keys}.
+%^^A \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print \textnormal{\textcolor{gray}{,}} 1}\mymarg{keys} and .
+%^^A \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print\textnormal{\textcolor{gray}{,}}}\mymarg{keys}.
+%
 %  The optional argument allows to handle the \mymeta{keys} \emph{\enquote{on the first level}} of the \myenv*{enumext}
-%   environment encapsulated by the command. If need to pass options for nested levels use
-%   \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print \textnormal{\textcolor{gray}{,}} level}\mymarg[type=tt]{store name}.
+%  environment encapsulated by the command. If need to pass options for nested levels use
+%   \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print \textnormal{\textcolor{gray}{,}} level}\mymarg{store name}.
 %
 % \subsubsection*{Example}
 %
@@ -3382,7 +3403,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % Here I leave as an example other uses of the \myenv*{enumext}
 % environment that can be helpful for specific purposes. The
 % \emph{\enquote{trick}} to generate these \emph{fake environments} is
-% set \mykey{label}|={}| or \mykey{label}|=|\mymarg[type=tt]{some} and
+% set \mykey{label}|={}| or \mykey{label}|=|\mymarg{some} and
 % play with the |list-indent|, |list-offset|, |font| and |wrap-label| keys.
 %
 % \subsection*{Fake \texttt{itemize} environment}
@@ -4108,7 +4129,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{variable}[int]{\l_@@_print_keyans_starred_tl, \l_@@_store_save_key_X_tl,
 %                       \l_@@_print_keyans_X_tl, \l_@@_store_upper_level_X_bool, }
 %
-%    Internal variables used by \myoarg[type=tt]{key
+%    Internal variables used by \myoarg{key
 %    \textnormal{\textcolor{gray}{=}} val} in \myenv*{enumext} and
 %    \myenv*{enumext*} environment, the command \ics*{printkeyans}
 %    (\S\ref{cmd:printkeyans}) and \mykey{save-key} key.
@@ -4361,7 +4382,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    the \mykey{ref} key.
 %    It loops through the defined counter styles in \cs{c_@@_counter_style_tl}
 %    and replace ‘|*|’ by real command, for example, looking for \ilabel{arabic*}
-%    and replacing that by \ics{arabic}\mymarg[type=tt]{counter} defined
+%    and replacing that by \ics{arabic}\mymarg{counter} defined
 %    on the current level.
 % \iffalse
 %% Regex for replace * for |ref| key.
@@ -4598,8 +4619,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %<*example>
 % \fi
 \begin{examplecode}[frame=none]
-\list`\mymarg[type=tt]{arg one}\mymarg[type=tt]{arg two}`
-  \item`\myoarg[type=tt]{opt}`
+\list`\mymarg{arg one}\mymarg{arg two}`
+  \item`\myoarg{opt}`
 \endlist
 \end{examplecode}
 % \iffalse
@@ -4634,8 +4655,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %<*example>
 % \fi
 \begin{examplecode}[frame=none]
-\minipage`\myoarg[type=tt]{pos}\myoarg[type=tt]{height}\myoarg[type=tt]{inner-pos}\mymarg[type=tt]{width}`
-  `\mymeta[type=tt]{internal implement}`
+\minipage`\myoarg{pos}\myoarg{height}\myoarg{inner-pos}\mymarg{width}`
+  `\mymeta{internal implement}`
 \endminipage
 \end{examplecode}
 % \iffalse
@@ -4883,7 +4904,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %     It loops through the defined counter styles in \cs{g_@@_counter_styles_tl}
 %     (\ics{arabic}, \ics{alph}, \ics{Alph}, \ics{roman}, and \ics{Roman}) for example,
-%     looking for \ilabel{roman*} and replacing that by \ics{roman}\mymarg[type=tt]{counter},
+%     looking for \ilabel{roman*} and replacing that by \ics{roman}\mymarg{counter},
 %     and doing the same for the \cs{g_@@_widest_label_tl} to keep both in sync.
 % \iffalse
 %% Function to support |*| in |label| key.
@@ -5633,9 +5654,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_before_args_exec:,\@@_before_keys_exec:,\@@_after_stop_list:,\@@_after_args_exec:}
 %
-%    The function \cs{@@_before_args_exec:} executes the \mymarg[type=tt]{code} set by the
+%    The function \cs{@@_before_args_exec:} executes the \mymarg{code} set by the
 %    \mykey{before*} key \emph{\enquote{before}} the \myenv*{enumext}
-%    environment is started. The \mymarg[type=tt]{code} is executed \emph{\enquote{without}}
+%    environment is started. The \mymarg{code} is executed \emph{\enquote{without}}
 %    knowing any definition of the \emph{second argument} of the list.
 % \iffalse
 %% Function for |before|, |before*|, |after| and |first| keys in |enumext|.
@@ -5647,10 +5668,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-%    The function \cs{@@_before_keys_exec:} executes the \mymarg[type=tt]{code} set by the
+%    The function \cs{@@_before_keys_exec:} executes the \mymarg{code} set by the
 %    \mykey{before} key \emph{\enquote{before}} the \myenv*{enumext}
 %    environment is started in \emph{second argument} of the list. The
-%    \mymarg[type=tt]{code} is executed \emph{\enquote{knowing}}
+%    \mymarg{code} is executed \emph{\enquote{knowing}}
 %    all definition and values provides by \mymeta{keys}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_keys_exec:
@@ -5659,7 +5680,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-%    The function \cs{@@_after_stop_list:} executes the \mymarg[type=tt]{code} set by the
+%    The function \cs{@@_after_stop_list:} executes the \mymarg{code} set by the
 %    \mykey{after} key \emph{\enquote{after}} the \myenv*{enumext}
 %    environment has finished.
 %    \begin{macrocode}
@@ -5668,7 +5689,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_use:c { l_@@_after_stop_list_ \@@_level: _tl }
   }
 %    \end{macrocode}
-%    The function \cs{@@_after_args_exec:} executes the \mymarg[type=tt]{code} set by the
+%    The function \cs{@@_after_args_exec:} executes the \mymarg{code} set by the
 %    \mykey{first} key after the end of the second argument of the list
 %    defining the \myenv*{enumext} environment, just before the first
 %    occurrence of \ics{item}.
@@ -5684,10 +5705,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_before_args_exec_v:,\@@_before_keys_exec_v:,\@@_after_stop_list_v:,
 %               \@@_after_args_exec_v:}
-%    The function \cs{@@_before_args_exec_v:} executes the \mymarg[type=tt]{code} set
+%    The function \cs{@@_before_args_exec_v:} executes the \mymarg{code} set
 %    by the \mykey{before*} key \emph{\enquote{before}} the
-%    \myenv*{keyans} environment is started. The \mymarg[type=tt]{code} is executed
-%    \emph{\enquote{without}} knowing any definition of the \mymarg[type=tt]{arg two} of the list.
+%    \myenv*{keyans} environment is started. The \mymarg{code} is executed
+%    \emph{\enquote{without}} knowing any definition of the \mymarg{arg two} of the list.
 % \iffalse
 %% Function for |before|, |before*|, |after| and |first| keys in |keyans|.
 % \fi
@@ -5697,10 +5718,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_use:N \l_@@_before_starred_key_v_tl
   }
 %    \end{macrocode}
-%    The function \cs{@@_before_keys_exec_v:} executes the \mymarg[type=tt]{code} set by the
+%    The function \cs{@@_before_keys_exec_v:} executes the \mymarg{code} set by the
 %    \mykey{before} key \emph{\enquote{before}} the \myenv*{keyans}
-%    environment is started in \mymarg[type=tt]{arg two} of the list. The
-%    \mymarg[type=tt]{code} is executed \emph{\enquote{knowing}}
+%    environment is started in \mymarg{arg two} of the list. The
+%    \mymarg{code} is executed \emph{\enquote{knowing}}
 %    all definition and values provides by \mymeta{keys}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_keys_exec_v:
@@ -5709,7 +5730,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-%    The function \cs{@@_after_stop_list_v:} executes the \mymarg[type=tt]{code} set by the
+%    The function \cs{@@_after_stop_list_v:} executes the \mymarg{code} set by the
 %    \mykey{after} key \emph{\enquote{after}} the \myenv*{keyans}
 %    environment has finished.
 %    \begin{macrocode}
@@ -5718,8 +5739,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_use:N \l_@@_after_stop_list_v_tl
   }
 %    \end{macrocode}
-%    The function \cs{@@_after_args_exec_v:} executes the \mymarg[type=tt]{code} set by the
-%    \mykey{first} key after the end of \mymarg[type=tt]{arg two} of the list
+%    The function \cs{@@_after_args_exec_v:} executes the \mymarg{code} set by the
+%    \mykey{first} key after the end of \mymarg{arg two} of the list
 %    defining the \myenv*{keyans} environment, just before the first
 %    occurrence of \ics{item}.
 %    \begin{macrocode}
@@ -5734,10 +5755,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_before_args_exec_vii:,\@@_before_keys_exec_vii,\@@_after_stop_list_vii:,
 %               \@@_after_args_exec_vii:}
-%    The function \cs{@@_before_args_exec_v:} executes the \mymarg[type=tt]{code} set
+%    The function \cs{@@_before_args_exec_v:} executes the \mymarg{code} set
 %    by the \mykey{before*} key \emph{\enquote{before}} the
-%    \myenv*{keyans} environment is started. The \mymarg[type=tt]{code} is executed
-%    \emph{\enquote{without}} knowing any definition of the \mymarg[type=tt]{arg two} of the list.
+%    \myenv*{keyans} environment is started. The \mymarg{code} is executed
+%    \emph{\enquote{without}} knowing any definition of the \mymarg{arg two} of the list.
 % \iffalse
 %% Function for |before|, |before*|, |after| and |first| keys in |enumext*| and |keyans*|.
 % \fi
@@ -5751,10 +5772,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_use:N \l_@@_before_starred_key_viii_tl
   }
 %    \end{macrocode}
-%    The functions \cs{@@_before_keys_exec_vii:} and \cs{@@_before_keys_exec_viii:} executes the \mymarg[type=tt]{code} set by the
+%    The functions \cs{@@_before_keys_exec_vii:} and \cs{@@_before_keys_exec_viii:} executes the \mymarg{code} set by the
 %    \mykey{before} key \emph{\enquote{before}} in \myenv*{enumext*} and \myenv*{keyans*}
-%    environments is started in \mymarg[type=tt]{arg two} of the list. The
-%    \mymarg[type=tt]{code} is executed \emph{\enquote{knowing}}
+%    environments is started in \mymarg{arg two} of the list. The
+%    \mymarg{code} is executed \emph{\enquote{knowing}}
 %    all definition and values provides by \mymeta{keys}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_keys_exec_vii:
@@ -5767,7 +5788,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-%    The function \cs{@@_after_stop_list:} executes the \mymarg[type=tt]{code} set by the
+%    The function \cs{@@_after_stop_list:} executes the \mymarg{code} set by the
 %    \mykey{after} key \emph{\enquote{after}} the \myenv*{keyans}
 %    environment has finished.
 %    \begin{macrocode}
@@ -5780,8 +5801,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_use:N \l_@@_after_stop_list_viii_tl
   }
 %    \end{macrocode}
-%    The function \cs{@@_after_args_exec_v:} executes the \mymarg[type=tt]{code} set by the
-%    \mykey{first} key after the end of \mymarg[type=tt]{arg two} of the list
+%    The function \cs{@@_after_args_exec_v:} executes the \mymarg{code} set by the
+%    \mykey{first} key after the end of \mymarg{arg two} of the list
 %    defining the \myenv*{keyans} environment, just before the first
 %    occurrence of \ics{item}.
 %    \begin{macrocode}
@@ -8029,7 +8050,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \smallskip
 %
 %    The form in which the content is \emph{\enquote{stored}} in the \mymeta{prop list}
-%    is \mymarg[type=tt]{position}\mymarg[type=tt]{content}. This
+%    is \mymarg{position}\mymarg{content}. This
 %    function is used by \ics*{anskey} in \myenv*{enumext} and
 %    \myenv*{enumext*} environments, \ics*{item*} in \myenv*{keyans}
 %    and \myenv*{keyans*} environments and \ics*{anspic} in \myenv*{keyanspic}
@@ -8219,8 +8240,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\anskey}
 %
 %     We want the command to be executed as follows:
-%     \ics*{anskey}\myparg{number}|*|\myoarg[type=tt]{key
-%     \textnormal{\textcolor{gray}{=}} val}\mymarg[type=tt]{content} so
+%     \ics*{anskey}\myparg{number}|*|\myoarg{key
+%     \textnormal{\textcolor{gray}{=}} val}\mymarg{content} so
 %     first we'll add the keys  \mykey{item-sym*}, \mykey{item-pos*} and
 %     \mykey{store-brk}.
 % \iffalse
@@ -8303,7 +8324,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   command to build our |\item| in the variable \cs{l_@@_store_anskey_arg_tl}
 %   which we will \emph{\enquote{store}} in the \mymeta{sequence}.
 %   First we clear the variable \cs{l_@@_store_anskey_arg_tl} and process
-%   \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}, if the
+%   \myoarg{key \textnormal{\textcolor{gray}{=}} val}, if the
 %   \mykey{store-brk} key is present and the command is running under
 %   \myenv*{enumext} (not in the starred version) we will add
 %   \ics{columnbreak} and then |\item|.
@@ -8391,7 +8412,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_store_internal_ref:} handles the internal
 %    \emph{\enquote{label and ref}} system used by the \mykey{save-ref} and
 %    \mykey{mark-ref} keys for \ics*{anskey} will allow to execute
-%    \ics{ref}\mymarg[type=tt]{store name \textcolor{red}{:} position} and
+%    \ics{ref}\mymarg{store name \textcolor{red}{:} position} and
 %    will return |1.(a).i.A|.
 %
 %    First we will remove the dots \enquote{\textcolor{red}{.}} from
@@ -8480,7 +8501,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
 %    \end{macrocode}
 %    Now we set the variable \cs{l_@@_newlabel_arg_one_tl} which will
-%    contain \mymarg[type=tt]{store name \textcolor{red}{:} position}.
+%    contain \mymarg{store name \textcolor{red}{:} position}.
 %    \begin{macrocode}
     \tl_put_right:Ne \l_@@_newlabel_arg_one_tl
       {
@@ -8610,7 +8631,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % implemented for the \ics*{anskey} command, basically because in this
 % environments we are interested in the current \mymeta{label}. The
 % mechanism defined here will allow to execute
-% \ics{ref}\mymarg[type=tt]{store name \textcolor{red}{:} position} and
+% \ics{ref}\mymarg{store name \textcolor{red}{:} position} and
 % will return |1.(A)|.
 %
 % \begin{macro}{\@@_keyans_store_ref:, \@@_keyans_store_ref_aux_i:,\@@_keyans_store_ref_aux_ii:}
@@ -8643,7 +8664,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %    The auxiliary function \cs{@@_keyans_store_ref_aux_i:} set the
 %    variable \cs{l_@@_newlabel_arg_one_tl} which will
-%    contain \mymarg[type=tt]{store name \textcolor{red}{:} position}
+%    contain \mymarg{store name \textcolor{red}{:} position}
 %    analyzing whether the environment in which they are executed is
 %    \myenv*{enumext*} or \myenv*{enumext}.
 %    \begin{macrocode}
@@ -8941,7 +8962,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{The \cs{item} command in \env{enumext}}\label{env:item-starred-enumext}
 %
 % \begin{macro}[int]{\@@_default_item:n}
-%   The \ics*{item} and \ics*{item}\myoarg[type=tt]{custom}
+%   The \ics*{item} and \ics*{item}\myoarg{custom}
 %   commands work in the usual way on \myenv*{enumext}.
 %
 %   \smallskip
@@ -8990,12 +9011,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}[int]{\@@_starred_item:nn}
 %
-%    The \ics*{item*}, \ics*{item*}\myoarg[type=tt]{symbol} and
-%    \ics*{item*}\myoarg[type=tt]{symbol}\myoarg[type=tt]{offset} works like
-%    the numbered |\item|, but placing a \myoarg[type=tt]{symbol} to the \emph{\enquote{left}} of the
+%    The \ics*{item*}, \ics*{item*}\myoarg{symbol} and
+%    \ics*{item*}\myoarg{symbol}\myoarg{offset} works like
+%    the numbered |\item|, but placing a \myoarg{symbol} to the \emph{\enquote{left}} of the
 %    \mymeta{label} separated from it by the value set by the
 %    \mykey{labelsep} key and can be \emph{offset} using the second optional
-%    argument \myoarg[type=tt]{offset}.
+%    argument \myoarg{offset}.
 %
 % \begin{arguments}
 %   \item \myvarenv{l__@@_item_symbol_X_tl}
@@ -9085,8 +9106,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{The \cs{item} command  in \texttt{keyans}}\label{cmd:item-starred}
 %
-% The \ics*{item*} and \ics*{item*}\myoarg[type=tt]{content} commands \emph{store}
-% the current \mymeta{label} next to the \myoarg[type=tt]{content} if it is present
+% The \ics*{item*} and \ics*{item*}\myoarg{content} commands \emph{store}
+% the current \mymeta{label} next to the \myoarg{content} if it is present
 % in the \mymeta{sequence} and \mymeta{prop list} defined by \mykey{save-ans} key.
 %
 % \begin{macro}{\@@_keyans_default_item:n,}
@@ -9666,7 +9687,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_before_list:}
 %    The function \cs{@@_before_list:} will add the vertical
 %    spacing on the environment if the \mykey{above} key is active next to
-%    the \mymarg[type=tt]{code} defined by the \mykey{before*} key if it is active.
+%    the \mymarg{code} defined by the \mykey{before*} key if it is active.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_list:
   {
@@ -9831,7 +9852,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
      \@@_check_ans_key_hook:
 %    \end{macrocode}
-%    Now apply the \mymarg[type=tt]{code} handled by the \mykey{after} key
+%    Now apply the \mymarg{code} handled by the \mykey{after} key
 %    together with the \emph{vertical space} handled by the \mykey{below} key if
 %    they are present, set \cs{l_@@_standar_bool} to false and save the
 %    \emph{current value} of the counter for \mykey{series}, \mykey{resume}
@@ -9923,7 +9944,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_keyans_parse_keys:n}
-%    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val} for
+%    Parse \myoarg{key \textnormal{\textcolor{gray}{=}} val} for
 %    \myenv*{keyans} environment.
 % \iffalse
 %% Function for parse |key=val| in |keyans|. Replace \exp_args:Nx \keys_set:nn => \keys_set:nx => => \keys_set:nn
@@ -10088,7 +10109,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       { \@@_keyans_multicols_stop: }
 %    \end{macrocode}
-%    Finally we will apply the \mymarg[type=tt]{code} handled by the \mykey{after} key
+%    Finally we will apply the \mymarg{code} handled by the \mykey{after} key
 %    together with the \emph{vertical space} handled by the \mykey{below} key if
 %    they are present.
 %    \begin{macrocode}
@@ -10192,9 +10213,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\anspic}
 %    The \ics*{anspic} command take three arguments, the
-%    starred (|*|) versions \ics*{anspic*} and \ics*{anspic*}\myoarg[type=tt]{content}
+%    starred (|*|) versions \ics*{anspic*} and \ics*{anspic*}\myoarg{content}
 %    store the current \mymeta{label} next to the
-%    \myoarg[type=tt]{content} if it is present in the \mymeta{sequence} and \mymeta{prop list}
+%    \myoarg{content} if it is present in the \mymeta{sequence} and \mymeta{prop list}
 %    defined by \mykey{save-ans} key. This command is used as a
 %    replacement for \ics{item} in the \myenv*{keyanspic} environment.
 % \iffalse
@@ -10272,7 +10293,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{keyanspic}
 %    Now we define the environment \myenv*{keyanspic} based on list.
-%    The optional argument \myoarg[type=tt]{number above, number below}
+%    The optional argument \myoarg{number above, number below}
 %    will determine the number of \myenv{minipage} environments that
 %    will be above and below separated by \ics{parsep}+\ics{itemsep} within it.
 % \iffalse
@@ -10693,7 +10714,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_parse_keys_vii:n}
-%    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
+%    Parse \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 %    for \myenv*{enumext*}. If the variable
 %    \cs{l_@@_store_active_bool} is true it will call the functions
 %    \cs{@@_parse_serie:n} and \cs{@@_store_active_keys_vii:n} and reprocess the \mykey{keys} to pass them to the
@@ -10718,7 +10739,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_before_list_vii:}
 %    The function \cs{@@_before_list_vii:} will add the vertical
 %    spacing on the environment if the \mykey{above} key is active next to
-%    the \mymarg[type=tt]{code} defined by the \mykey{before*} key if
+%    the \mymarg{code} defined by the \mykey{before*} key if
 %    it is active, the call the function \cs{@@_start_mini_vii:} handle by
 %    \mykey{mini-env}.
 %    \begin{macrocode}
@@ -10734,7 +10755,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_after_list_vii:}
 %    The function \cs{@@_after_list:} first call the function \cs{@@_stop_mini_vii:},
-%    then apply the \mymarg[type=tt]{code} handled by the \mykey{after} key
+%    then apply the \mymarg{code} handled by the \mykey{after} key
 %    together with the \emph{vertical space} handled by the \mykey{below} key if
 %    they are present.
 %    Finally set false the vars \cs{g_@@_starred_bool} and \cs{l_@@_starred_bool},
@@ -10858,7 +10879,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \cs{l_@@_wrap_label_opt_vii_bool} equal to the state of the variable
 % \cs{l_@@_wrap_label_opt_vii_bool} handled by the key
 % \mykey{wrap-label*} and finally execute the \emph{non-enumerated}
-% version \ics*{item}\myoarg[type=tt]{custom} by means of the function
+% version \ics*{item}\myoarg{custom} by means of the function
 % \cs{@@_start_item_vii:w}, otherwise we will set the value of the
 % variable \cs{l_@@_wrap_label_vii_bool} handled by the
 % \mykey{wrap-label} key to true and set the switch |\if@noitemarg| to
@@ -10893,8 +10914,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % The function \cs{@@_starred_item_vii:w} together with the specified
 % auxiliary functions |aux_i:w|, |aux_ii:w|, and |aux_iii:w| execute \ics*{item*},
-% \ics*{item*}\myoarg[type=tt]{symbol} and
-% \ics*{item*}\myoarg[type=tt]{symbol}\myoarg[type=tt]{offset}.
+% \ics*{item*}\myoarg{symbol} and
+% \ics*{item*}\myoarg{symbol}\myoarg{offset}.
 %
 % \iffalse
 %% Set \item*[sym][sep] for |enumext*| environment.
@@ -11310,7 +11331,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_parse_keys_viii:n}
-%    Parse \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
+%    Parse \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 %    for \myenv*{keyans*}.
 % \iffalse
 %% Parse |key=val| and store keys for |keyans*|.
@@ -11329,7 +11350,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_before_list_viii:}
 %    The function \cs{@@_before_list_viii:} will add the vertical
 %    spacing on the environment if the \mykey{above} key is active next to
-%    the \mymarg[type=tt]{code} defined by the \mykey{before*} key if
+%    the \mymarg{code} defined by the \mykey{before*} key if
 %    it is active, the call the function \cs{@@_start_mini_viii:} handle by
 %    \mykey{mini-env}.
 %    \begin{macrocode}
@@ -11344,7 +11365,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_after_list_viii:}
 %    The function \cs{@@_after_list:} first call the function \cs{@@_stop_mini_viii:},
-%    then apply the \mymarg[type=tt]{code} handled by the \mykey{after} key
+%    then apply the \mymarg{code} handled by the \mykey{after} key
 %    together with the \emph{vertical space} handled by the \mykey{below} key if
 %    they are present.
 %    \begin{macrocode}
@@ -11363,10 +11384,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % in the \myenv*{keyans} environment with the difference of the optional
 % argument \myparg{number} which works in the same way as in the \myenv*{enumext*}
 % environment.
-% In simple terms we want to store the \mymeta{label} next to the \myoarg[type=tt]{content} if it is present
+% In simple terms we want to store the \mymeta{label} next to the \myoarg{content} if it is present
 % in the \mymeta{sequence} and \mymeta{prop list} defined by \mykey{save-ans} key for
-% |\item*|, |\item*|\myoarg[type=tt]{content}, |\item|\myparg{number}|*| and
-% |\item|\myparg{number}|*|\myoarg[type=tt]{content} commands.
+% |\item*|, |\item*|\myoarg{content}, |\item|\myparg{number}|*| and
+% |\item|\myparg{number}|*|\myoarg{content} commands.
 %
 % \begin{macro}{\@@_start_item_tmp_viii:}
 %
@@ -11438,7 +11459,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \cs{l_@@_wrap_label_opt_viii_bool} equal to the state of the variable
 %   \cs{l_@@_wrap_label_opt_viii_bool} handled by the key
 %   \mykey{wrap-label*} and finally execute the \emph{non-enumerated}
-%   version \ics*{item}\myoarg[type=tt]{custom} by means of the function
+%   version \ics*{item}\myoarg{custom} by means of the function
 %   \cs{@@_start_item_viii:w}, otherwise we will set the value of the
 %   variable \cs{l_@@_wrap_label_viii_bool} handled by the
 %   \mykey{wrap-label} key to true and set the switch |\if@noitemarg| to
@@ -11471,7 +11492,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %               \@@_starred_item_viii_aux_ii:w,}
 % The function \cs{@@_starred_item_viii:w} together with the specified
 % auxiliary functions |aux_i:w| and |aux_ii:w| execute \ics*{item*}
-% and \ics*{item*}\myoarg[type=tt]{content}.
+% and \ics*{item*}\myoarg{content}.
 % \iffalse
 %% Set \item*[content] for |keyans*| environment.
 % \fi
@@ -11521,7 +11542,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_starred_item_exec:,}
 % The function \cs{@@_starred_item_exec:} will be in charge of storing
 % the current \mymeta{label} for \ics*{item*} followed by the
-% \myoarg[type=tt]{content} for \ics*{item*}\myoarg[type=tt]{content} if
+% \myoarg{content} for \ics*{item*}\myoarg{content} if
 % present in the \mymeta{sequence} and \mymeta{prop list} set by the
 % \mykey{save-ans} key. In this same function the keys \mykey{show-ans},
 % \mykey{show-pos} and \mykey{save-ref} are implemented.
@@ -11692,7 +11713,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\getkeyans}
 %    The \ics*{getkeyans} command takes a mandatory argument of the
-%    form \mymarg[type=tt]{store name \textcolor{red}{:} position}.
+%    form \mymarg{store name \textcolor{red}{:} position}.
 %    Retrieve a \emph{\enquote{single}} content stored by \ics*{anskey}, \ics*{anspic*}
 %    and \ics*{item*} from \mymeta{prop list} defined by \mykey{save-ans} key.
 % \iffalse
@@ -12029,7 +12050,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-% Message used by \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
+% Message used by \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 % system and \ics*{setenumext} command.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { invalid-key }
