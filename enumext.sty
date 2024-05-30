@@ -21,7 +21,17 @@
 %% 
 %% This work consists of the files enumext.dtx and enumext.sty.
 %% 
-
+%%  The optional argument allows to handle the \mymeta{keys} on the
+%%  \emph{\enquote{first level}} of the environment \myenv*{enumext} or
+%%  \myenv*{enumext*} if the \emph{starred version} ‘|*|’ is used. The
+%%  default values ​​for the first level are the same as the default values
+​​%%  for the \myenv*{enumext} and \myenv*{enumext*} environments along with
+%%  the keys |nosep,first=\small,font=\small| and |columns=2|.
+%%   Internally it places the \emph{\enquote{stored content}} in \emph{sequence} \mymarg{store name} inside the \myenv*{enumext} environment
+%%   with default values for \mykey{label} key are the same as those of the \myenv*{enumext}
+%%   environment along with the keys: |nosep,first=\small,font=\small| for
+%%   all levels, except for the first one that adds the |columns=2| key.
+%%
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
@@ -1038,19 +1048,19 @@
       }
   }
 \clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
-%% Set |columns=2|, add |miniright| and |miniright*| keys for starred environments.
+%% Set |columns=2|, add |mini-right| and |mini-right*| keys for starred environments.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
       {
         columns    .initial:n = 2,
-        miniright  .tl_gset:c = { g__enumext_miniright_code_#2_tl },
-        miniright  .value_required:n = true,
-        miniright* .code:n    = {
+        mini-right  .tl_gset:c = { g__enumext_miniright_code_#2_tl },
+        mini-right  .value_required:n = true,
+        mini-right* .code:n    = {
                                   \bool_gset_true:c { g__enumext_minipage_center_#2_bool }
                                   \keys_set:nn { enumext / #1 } { miniright = {##1} }
                                 },
-        miniright* .value_required:n = true,
+        mini-right* .value_required:n = true,
       }
   }
 \clist_map_inline:nn { {enumext*}{vii}, {keyans*}{viii} } { \__enumext_tmp:nn #1 }
@@ -2218,7 +2228,7 @@
         { save-ref  } {} { save-key } {} { check-ans } {} { show-ans } {}
         { show-pos  } {} { wrap-ans } {} { mark-ans  } {} { wrap-opt } {}
         { save-sep  } {} { mark-ref } {} { mini-env  } {} { mini-sep } { }
-        { miniright } {} { miniright* } {}
+        { mini-right } {} { mini-right* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }

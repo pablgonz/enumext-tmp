@@ -579,7 +579,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywordstyle  = [6]{\color{optcolor}},%
     keywords      = [6]{save-ans,wrap-ans,save-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
                     nosep,before,after,start, right, item-sym, item-sep, hyperfootnotes,%
-                    scale,wrap-label,font,first,widest,mini-env,list-indent},%
+                    scale,wrap-label,font,first,widest,mini-env,list-indent, no-store, save-key,},%
 % Reserved words 7 (label values)
     keywordstyle  = [7]{\color{MediumOrchid}},%
     keywords      = [7]{m,s,M,VIII,viii,v,E,t,A,XXIII,true, false,test,sample},%
@@ -812,7 +812,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{multiple choice questions}}, the basic idea behind
 % \mypkg*{enumext} is to cover three points:
 %
-% \begin{enumerate}[left=0pt, labelsep=5pt, nosep, label=\small\arabic*.,topsep=2pt]
+% \begin{enumerate}[left=0pt, labelsep=5pt, label=\small\arabic*.,topsep=2pt]
 %   \item To have a simple interface to be able to write \emph{\enquote{lists of
 %         exercises}} with \emph{\enquote{answers}}.
 %   \item To have a simple interface for writing \emph{\enquote{multiple choice
@@ -1469,7 +1469,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % an optional first argument \ics*{item}\myparg{number} which \emph{\enquote{joins items}}
 % between columns. Let's consider the following examples adapted directly from
 % the \mypkg{task} package:
-
+%
 % \iffalse
 %<*example>
 % \fi
@@ -1543,11 +1543,15 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \begin{important}*
-% All \mymeta{keys} related to the \emph{\enquote{storage system}}
-% should NOT be passed through this command and should be activated
-% directly at the \emph{\enquote{first level}} of the environment
-% in which they are executed.
+% The key \mykey{save-ans} that activate the \emph{\enquote{storage
+% system}} must NOT be passed through this command and must be passed
+% directly in the optional argument of the \emph{\enquote{first level}}
+% of the environment in which they are executed.
 % \end{important}
+%^^A All \mymeta{keys} related to the \emph{\enquote{storage system}}
+%^^A should NOT be passed through this command and should be activated
+%^^A directly at the \emph{\enquote{first level}} of the environment
+%^^A in which they are executed.
 %
 % \smallskip
 %
@@ -1565,15 +1569,15 @@ This work consists of the files enumext.dtx and enumext.sty.
 % environments with the exception of the keys \mykey{series}, \mykey{resume},
 % \mykey{resume*} which are only available for the \emph{\enquote{first level}}
 % of the environments \myenv*{enumext} and \myenv*{enumext*}; and the keys
-% \mykey{mini-right}, \mykey{mini- right*} which are only available for
+% \mykey{mini-right}, \mykey{mini-right*} which are only available for
 % the \myenv*{enumext*} and \myenv*{keyans*} environments.
 %
 % \smallskip
 %
-%
-% All \mymeta{keys} related to vertical or horizontal spacing accept a \emph{\enquote{skip}} or \emph{\enquote{dim}}
-% expression if passed between braces, i.e. you do not need to use
-% |\dimeval| or |\dimexpr| to perform calculations.
+% All \mymeta{keys} related to vertical or horizontal spacing accept a
+% \emph{\enquote{skip}} or \emph{\enquote{dim}} expression if passed
+% between braces, i.e. you do not need to use |\dimeval| or |\dimexpr|
+% to perform calculations.
 %
 % \smallskip
 %
@@ -2084,18 +2088,18 @@ This work consists of the files enumext.dtx and enumext.sty.
 % or via the \mykey{after} key.
 % \end{important}
 %
-% \subsubsection{The key \texttt{miniright}}
+% \subsubsection{The key \texttt{mini-right}}
 %
 % In the horizontal list environments \myenv*{enumext*} and \myenv*{keyans*}
-% it is not possible to use the \ics*{miniright} command and the \mykey{miniright}
+% it is not possible to use the \ics*{miniright} command and the \mykey{mini-right}
 % key must be used instead.
 %
-% \keyexamp{miniright}{code for drawing or tabular}{not used}
+% \keyexamp{mini-right}{code for drawing or tabular}{not used}
 % Set the \emph{code} for the drawing or tabular to be placed in the
 % \myenv{minipage} environment on the \emph{\enquote{right side}} by
 % starting it with |\centering|.
 %
-% \keyexamp{miniright\textcolor{MediumOrchid}{*}}{code for drawing or tabular}{not used}
+% \keyexamp{mini-right\textcolor{MediumOrchid}{*}}{code for drawing or tabular}{not used}
 % Same as above, but \emph{without} starting with |\centering|.
 %
 % \section{The storage system}\label{sec:storage system}
@@ -2159,12 +2163,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{Keys for storage system}\label{subsec:storage-keys}
 %
 % \begin{important}*
-% The only key available for all levels of the \myenv*{enumext}
-% environment and the \myenv*{enumext*} environment is \mykey{no-store},
-% all other keys described in this section must be
-% passed directly in the optional argument from the \emph{\enquote{first
-% level}} of the \myenv*{enumext} or \myenv*{enumext*} environments and
-% NOT through the \ics*{setenumext} command.
+% The only \mymeta{keys} available for all levels of the \myenv*{enumext}
+% environment and the \myenv*{enumext*} environment are \mykey{no-store}
+% and \mykey{save-key}, the rest of the \mymeta{keys} described in this
+% section must be passed directly in the optional argument of the
+% \emph{\enquote{first level}} of the environment in which the key
+% \mykey{save-ans} is executed. The key \mykey{save-ans} should NOT be passed
+% with the command \ics*{setenumext}.
 % \end{important}
 %
 % \smallskip
@@ -2335,7 +2340,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{function}{\anskey}
 %   \begin{syntax}
-%    \usebox{\exaboxtmp}
+%    \cmdexamp{anskey}{content}
+%    \cmdexamp{anskey}[keys]{content}
+%    \cmdexamp[*]{anskey}[keys]{content}
 %   \end{syntax}
 %  The \ics*{anskey} command takes a mandatory argument and is
 %  triggered by \mykey{save-ans} key. The \emph{\enquote{content}} are
@@ -2663,23 +2670,23 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \begin{syntax}
 %      \cmdexamp{getkeyans}{store name \textnormal{\textcolor{red}{:}} position}
 %   \end{syntax}
-%   The command \ics*{getkeyans} prints the \emph{\enquote{only stored content}}
-%   in \mymeta[type=tt]{store name} defined by \mykey{save-ans} key in the \mymeta{position} returned by the
+%   The command \ics*{getkeyans} prints the \emph{\enquote{stored content}}
+%   in \emph{prop list} \mymarg{store name} defined by
+%   \mykey{save-ans} key in the \mymeta{position} returned by the
 %   \mykey{show-pos} key.
-%
 % \end{function}
 %
 %  \smallskip
 %
-% The \emph{\enquote{content}} can only be accessed
-% \emph{\enquote{after}} it is stored, if the \mymeta[type=tt]{store name}
-% does not exist the command will return an error. The form taken by the argument \mymeta[type=tt]{store name
-% \textnormal{\textcolor{red}{:}} position} is the same as that used to
-% generate the internal \emph{\enquote{label and ref}} system when \mykey{save-ref} key are active, so to
-% refer to a stored \emph{\enquote{content}}.
-% For example |\getkeyans{test:4}| will return the \emph{\enquote{stored
-% content}} at position |4| of the environment in which the key
-% |save-ans=test| was set.
+% The \emph{\enquote{stored content}} can only be accessed \emph{\enquote{after}}
+% it is stored, if the \mymarg{store name} does not exist the command
+% will return an error. The form taken by the argument \mymarg{store name \textnormal{\textcolor{red}{:}} position}
+% is the same as that used to generate the \emph{\enquote{internal
+% label and ref}} system when \mykey{save-ref} key are active, so to
+% refer to a \emph{\enquote{stored content}}. For example
+% |\getkeyans{test:4}| will return the \emph{\enquote{stored content}}
+% at position |4| of the environment in which the key |save-ans=test|
+% was set.
 %
 % \subsubsection{The command \cs[no-index]{printkeyans}}
 % \label{sec:printkeyans}
@@ -2689,20 +2696,29 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \begin{function}{\printkeyans}
 %   \begin{syntax}
 %      \cmdexamp{printkeyans}[keys]{store name}
+%      \cmdexamp[*]{printkeyans}[keys]{store name}
 %   \end{syntax}
 %   The command \ics*{printkeyans} prints \emph{\enquote{all stored content}}
-%   in \mymarg[type=tt]{store name} defined by \mykey{save-ans} key.
-%   The \emph{\enquote{content}} can only be accessed \emph{\enquote{after}} it is stored, if \mymeta[type=tt]{store name}
-%   does not exist the command will return an error.
-%
+%   in \emph{sequence} \mymarg{store name} defined by \mykey{save-ans}
+%   key placing this inside the \myenv*{enumext} environment or the
+%   \myenv*{enumext*} environment if the \emph{starred version} ‘|*|’ is used.
+%   The \emph{\enquote{stored content}} can only be accessed \emph{after} it is
+%   stored in the \emph{sequence}, if \mymarg{store name} does not exist the
+%   command will return an error.
+% \end{function}
 % \smallskip
 %
-%   Internally it places the
-%   \emph{\enquote{stored content}} inside the \myenv*{enumext} environment
-%   with default values for \mykey{label} key are the same as those of the \myenv*{enumext}
-%   environment along with the keys: |nosep,first=\small,font=\small| for
-%   all levels, except for the first one that adds the |columns=2| key.
-% \end{function}
+%%  The optional argument allows to handle the \mymeta{keys} on the
+%%  \emph{\enquote{first level}} of the environment \myenv*{enumext} or
+%%  \myenv*{enumext*} if the \emph{starred version} ‘|*|’ is used. The
+%%  default values ​​for the first level are the same as the default values
+​​%%  for the \myenv*{enumext} and \myenv*{enumext*} environments along with
+%%  the keys |nosep,first=\small,font=\small| and |columns=2|.
+%%   Internally it places the \emph{\enquote{stored content}} in \emph{sequence} \mymarg{store name} inside the \myenv*{enumext} environment
+%%   with default values for \mykey{label} key are the same as those of the \myenv*{enumext}
+%%   environment along with the keys: |nosep,first=\small,font=\small| for
+%%   all levels, except for the first one that adds the |columns=2| key.
+%%
 %
 % \smallskip
 %
@@ -3979,7 +3995,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \g_@@_minipage_right_skip, \g_@@_minipage_after_skip,
 %                       \l_@@_minipage_left_X_dim, \l_@@_minipage_active_X_bool}
 %    Internal variables used by \ics*{miniright} command (\S\ref{cmd:miniright})
-%    and the keys \mykey{miniright}, \mykey{miniright*}, \mykey{mini-env}
+%    and the keys \mykey{mini-right}, \mykey{mini-right*}, \mykey{mini-env}
 %    and \mykey{mini-sep} (\S\ref{key:mini-multi}, \S\ref{vspace:minipage}).
 % \iffalse
 %% Variables used by |miniright|, |mini-env|, |mini-sep| and |\miniright|.
@@ -5820,10 +5836,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % For \myenv*{enumext*} and \myenv*{keyans*} environments the situation
 % is a bit different, the default value for \mykey{columns} key are
 % \mydim{2} and the command \ics*{miniright} is not available, so we will add
-% the keys \mykey{miniright} and \mykey{miniright*} to implement support for
+% the keys \mykey{mini-right} and \mykey{mini-right*} to implement support for
 % \myenv{minipage}.
 % \iffalse
-%% Set |columns=2|, add |miniright| and |miniright*| keys for starred environments.
+%% Set |columns=2|, add |mini-right| and |mini-right*| keys for starred environments.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:nn #1 #2
@@ -5831,13 +5847,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \keys_define:nn { enumext / #1 }
       {
         columns    .initial:n = 2,
-        miniright  .tl_gset:c = { g_@@_miniright_code_#2_tl },
-        miniright  .value_required:n = true,
-        miniright* .code:n    = {
+        mini-right  .tl_gset:c = { g_@@_miniright_code_#2_tl },
+        mini-right  .value_required:n = true,
+        mini-right* .code:n    = {
                                   \bool_gset_true:c { g_@@_minipage_center_#2_bool }
                                   \keys_set:nn { enumext / #1 } { miniright = {##1} }
                                 },
-        miniright* .value_required:n = true,
+        mini-right* .value_required:n = true,
       }
   }
 \clist_map_inline:nn { {enumext*}{vii}, {keyans*}{viii} } { \@@_tmp:nn #1 }
@@ -6515,7 +6531,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   The functions \cs{@@_mini_addvspace_vii:} and
 %   \cs{@@_mini_addvspace_viii:} will apply the vertical space
 %   \emph{\enquote{only above}} the \myvarenv*{__@@_mini_env*} environment on
-%   the \emph{left side} when the \mykey{miniright} key is active in the
+%   the \emph{left side} when the \mykey{mini-right} key is active in the
 %   \myenv*{enumext*} and \myenv*{keyans*} environments.
 %
 %   Here we will NOT take into account whether \hologo{TeX} is in
@@ -7990,7 +8006,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mykey{save-ans}, \mykey{save-ref}, \mykey{check-ans},
 %   \mykey{show-ans}, \mykey{save-pos}, \mykey{wrap-ans}, \mykey{mark-ans},
 %   \mykey{wrap-opt}, \mykey{save-sep}, \mykey{mark-ref}, \mykey{mini-env}, \mykey{mini-sep},
-%   \mykey{miniright} and \mykey{miniright*} keys.
+%   \mykey{mini-right} and \mykey{mini-right*} keys.
 %    \begin{macrocode}
 \cs_new:Npn \@@_filter_save_key_pair:nn #1#2
   {
@@ -8000,7 +8016,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { save-ref  } {} { save-key } {} { check-ans } {} { show-ans } {}
         { show-pos  } {} { wrap-ans } {} { mark-ans  } {} { wrap-opt } {}
         { save-sep  } {} { mark-ref } {} { mini-env  } {} { mini-sep } { }
-        { miniright } {} { miniright* } {}
+        { mini-right } {} { mini-right* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
@@ -10594,7 +10610,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
    }
 %    \end{macrocode}
 %
-%    Finally we execute code passed to the \mykey{miniright} key
+%    Finally we execute code passed to the \mykey{mini-right} or \mykey{mini-right*} keys
 %    stored in the variable \cs{g_@@_miniright_code_vii_tl} in the
 %    \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{right side}}.
 % \iffalse
