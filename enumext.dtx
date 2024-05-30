@@ -1164,9 +1164,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % The user interface consists in \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans}, \myenv*{keyans*} and
 % \myenv*{keyanspic} environments, \ics*{anskey}, \ics*{item*} and
-% \ics*{anspic*} commands to \mymeta{stored content}, \ics*{getkeyans}
-% command to get the individual \mymeta{stored content}, \ics*{printkeyans}
-% to print all \mymeta{stored content}, \ics*{miniright} for \myenv{minipage}
+% \ics*{anspic*} commands to \emph{stored content}, \ics*{getkeyans}
+% command to get the individual \emph{stored content}, \ics*{printkeyans}
+% to print all \emph{stored content}, \ics*{miniright} for \myenv{minipage}
 % and \ics*{setenumext} to config all \myoarg[type=tt]{key \textnormal{\textcolor{gray}{=}} val}
 % options.
 %
@@ -1302,11 +1302,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsubsection{Support for \cs[no-index]{footnote}}
 %
 % This package provides an internal implementation for the |\footnote|
-% command which is compatible with the \mypkg{hyperref} package, but, it
-% will not produce the expected links, and when using the
-% \mykey{mini-env} key or the starred environments \myenv*{enumext*} and
-% \myenv*{keyans*}  the output will look like the classic way they are
-% displayed in the \myenv{minipage} environment.
+% command which is compatible with the \mypkg{hyperref} package for the
+% \myenv*{enumext*} and \myenv*{keyans*} environments, but will not
+% produce the expected links, and if the \mykey{mini-env} key is used in
+% \myenv*{enumext} or \myenv*{keyans} environments the output will look
+% like the classic way they are displayed in the environment \myenv{minipage}.
 %
 % The best way to solve this is to use Jean-François Burnol
 % \mypkg{footnotehyper}\cite{footnotehyper} package, it will support
@@ -1455,7 +1455,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \keyexamp{item-pos\textcolor{MediumOrchid}{*}}{rigid length \textnormal{\textcolor{lightgray}{\textbar}} dim expression}{by levels}
+% \keyexamp{item-pos\textcolor{MediumOrchid}{*}}{rigid length}{by levels}
 % Sets the \emph{offset} between the box containing the
 % current \mymeta{label} defined by \mykey{labelwidth} key and the
 % \mymeta{symbol} set by \mykey{item-sym*} key. The default values are
@@ -1551,7 +1551,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \section{The \texttt{key=val} system}
+% \section{The \texttt{keyval} system}
 %
 % The \mymeta{key = val} system used by the \mypkg*{enumext} package is implemented
 % using \mypkg{l3keys} so it must be taken into consideration that those
@@ -1884,12 +1884,17 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \begin{important}*
-% If |list-indent=|\mydim{0pt} the \mymeta{label} will be part of the
+% If |list-indent=|\mydim{0pt} is set in the environment \myenv*{enumext} the \mymeta{label} will be part of the
 % text, separated by the value of the \mykey{labelsep} key and the \emph{first word},
 % in simple terms it will look like a \emph{\enquote{common paragraph}}. This
 % setting is equivalent (more or less) to the \textcolor{optcolor}{\texttt{wide}}
 % key provided by the \mypkg{enumitem} package.
+%
+% \smallskip
+%
+% \begin{important}*
+% For the \myenv*{enumext*} and \myenv*{keyans*} environments the keys
+% \mykey{list-indent} and \mykey{list-offset} have the same effect.
 % \end{important}
 %
 % \subsection{Keys for add \texttt{code}}
@@ -2111,6 +2116,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \centering
 \begin{examplecode}[frame=none,mathescape=true]
 \begin{enumext}[save-ans=`\mymarg[type=tt]{store name}`]
+  \item Text \anskey{answer}
   \item Text
     \begin{keyans}
           $\cdots$
@@ -2122,6 +2128,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \vspace{0pt}\centering
 \begin{examplecode}[frame=none,mathescape=true]
 \begin{enumext}[save-ans=`\mymarg[type=tt]{store name}`]
+  \item Text \anskey{answer}
   \item Text
     \begin{keyanspic}
           $\cdots$
@@ -2132,7 +2139,35 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \iffalse
 %</example>
 % \fi
-% \subsection{Keys for storage}\label{subsec:storage-keys}
+%
+% By executing the key \mykey{save-ans}|=|\mymarg{store name} the entire
+% structure of the environment (excluding the first level) including the
+% optional arguments passed to the inner levels or the environment nested
+% in it, along with the content passed to \ics*{anskey}, the current
+% \mymeta{labels} for \ics*{item*} and \ics*{anspic*} in the environments
+% \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} will be stored
+% in a \mymeta{sequence} and at the same time will be stored (without the
+% environment structure or optional arguments) in a \mymeta{prop list}.
+%
+% \smallskip
+%
+% The optional arguments of the inner levels or the nested environment
+% are filtered by excluding all \mymeta{keys} related to the \emph{\enquote{stored
+% system}} along with the keys \mykey{series}, \mykey{resume} and
+% \mykey{resume*} when storing in \mymeta{sequence}.
+%
+% \subsection{Keys for storage system}\label{subsec:storage-keys}
+%
+% \begin{important}*
+% The only key available for all levels of the \myenv*{enumext}
+% environment and the \myenv*{enumext*} environment is \mykey{no-store},
+% all other keys described in this section must be
+% passed directly in the optional argument from the \emph{\enquote{first
+% level}} of the \myenv*{enumext} or \myenv*{enumext*} environments and
+% NOT through the \ics*{setenumext} command.
+% \end{important}
+%
+% \smallskip
 %
 % \keyexamp{save-ans}{store name}{not set}
 % Sets the \emph{name} of the \mymeta{sequence} and
@@ -2144,53 +2179,51 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \keyexamp{wrap-ans}{code{} \space\usebox{\hashbox} more code}{\textbackslash{}fbox\{\#1\}}
-% Wraps the \emph{current argument} passed \ics*{anskey} command to
-% referenced by |{#1}|. The \mymarg[type=tt]{code} must be passed between
-% braces and only affects the \mymeta{current argument} passed to
-% \ics*{anskey} and NOT the \emph{\enquote{stored content}} in the \mymeta{store name}
-% set by \mykey{save-ans} key. If this key is passed using the
-% \ics*{setenumext} command it is necessary to use double ‘|{##1}|’.
+% \keyexamp{save-key}{key list}{not set}
+% This key \emph{overrides} the default \emph{\enquote{stored keys}} of the
+% optional arguments of the inner levels or nested environment that will
+% be passed to the \mymeta{sequence}. The \mymeta{key list} passed to
+% this key ignores any \mymeta{keys} in the \emph{\enquote{stored
+% system}} and must be passed between braces. For example, if we
+% execute at a second level:
 %
-% \keyexamp{wrap-opt}{code{} \space\usebox{\hashbox} more code}{[\{\#1\}]}
-% Wraps the \emph{optional argument} passed to the
-% \ics*{item*} and \ics*{anspic*} commands referenced by |{#1}|
-% in the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
-% environments. The \mymarg[type=tt]{code} must be passed between braces
-% and only affects the current \mymeta{optional argument} and NOT the
-% \emph{\enquote{stored content}} in \mymeta{store name} set by
-% \mykey{save-ans} key. If this key is passed using the \ics*{setenumext}
-% command, it is necessary to use the double ‘|{##1}|’.
+% \iffalse
+%<*example>
+% \fi
+\begin{examplecode}[frame=none,mathescape=true]
+\begin{enumext}[save-ans=`\mymarg[type=tt]{store name}`]
+  \item Text \anskey{answer}
+  \item Text
+    \begin{enumext}[nosep, columns=2, save-key={columns=3}]
+          $\cdots$
+    \end{enumext}
+\end{enumext}
+\end{examplecode}
+% \iffalse
+%</example>
+% \fi
+%
+% The \mymeta{keys} that will be stored by default in the \mymeta{sequence} would
+% be |nosep, columns=2|, but using the key \mykey{save-key}|={columns=3}|
+% will overwrite this and store it in the \mymeta{sequence} only the key
+% |columns=3| ignoring all the others.
+%
+% \smallskip
 %
 % \keyexamp{save-sep}{text symbol}{\{, \}}
 % Sets the \emph{text symbol} that will separate the current
-% \mymeta{label} defined by the \mykey{label} key from the
-% \mymeta{optional argument} (if present), when storing them in
-% the \mymeta{store name} defined by the \mykey{save-ans} key for the
-% \ics*{item*} command in the \myenv*{keyans} and \myenv*{keyans*}
-% environment and for the \ics*{anspic} command in the \myenv*{keyanspic}
-% environment. The \mymarg{text symbol} must always be passed between
+% \mymeta{label} to the \emph{optional argument} passed to the
+% \ics*{item*} and \ics*{anspic*} in the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
+% environments and storing them in the \mymeta{store name} defined by the \mykey{save-ans} key.
+% The \mymarg{text symbol} must always be passed between
 % braces, whitespace ‘\verb*+ +’ is preserved within the braces and only
 % affects the \emph{\enquote{stored content}} and not what is displayed
 % when using the \mykey{show-ans} or \mykey{show-pos} keys.
 %
-% \keyexamp{mark-ans}{symbol}{\textbackslash{}textasteriskcentered}
-% Sets the \emph{symbol} to be displayed in the left margin of the
-% \emph{\enquote{stored content}} in \mymeta[type=tt]{store name} set by
-% \mykey{save-ans} key when using \mykey{show-ans} key.
-%
-% \smallskip
-%
-% \keyexamp{mark-pos}{left \textnormal{\textcolor{lightgray}{\textbar}} right}{left}
-% Sets the aligned of the \emph{symbol} defined by \mykey{mark-ans} key. The
-% \emph{\enquote{symbol}} is aligned in a box with the same dimensions of the label box
-% defined by \mykey{labelwidth} key on the current level and separated by the value of the
-% \mykey{labelsep} key.
-%
-% \subsection{Keys for internal \texttt{label} and \texttt{ref}}\label{subsec:label-ref}
+% \subsubsection{Keys for \texttt{label} and \texttt{ref}}\label{subsec:label-ref}
 %
 % \keyexamp{save-ref}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
-% Activates the internal \emph{\enquote{label and ref}} mechanism for
+% Activates the \emph{\enquote{internal label and ref}} mechanism for
 % referencing \emph{\enquote{stored content}} in \mymeta[type=tt]{store name} set by \mykey{save-ans} key. To reference the location
 % of the \emph{\enquote{stored content}} within the environment you must
 % use |\ref|\mymarg[type=tt]{store name \textnormal{\textcolor{red}{:}} position},
@@ -2210,41 +2243,84 @@ This work consists of the files enumext.dtx and enumext.sty.
 % in which the \mykey{save-ans} key was used and the place where the
 % command is executed.
 %
-% \subsection{Keys for debugging and checking}
+% \subsubsection{Keys for \texttt{wrap} and \texttt{display}}\label{subsec:wrap-display}
 %
-% \keyexamp{show-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
-% Displays the \emph{current} \mymeta{argument} passed to \ics*{anskey} in
-% \myenv*{enumext} environment, the current \mymeta{label}
-% for \ics*{item*} in \myenv*{keyans} environment and the current
-% \mymeta{label} for \ics*{anspic*} in \myenv*{keyanspic}
-% environment at the place where it is executed. If the optional
-% argument is present in \ics*{item*} or \ics*{anspic*} it will
-% be shown in square brackets.
+% \keyexamp{wrap-ans}{code{} \space\usebox{\hashbox} more code}{\textbackslash{}fbox\{\#1\}}
+% Wraps the \emph{current argument} passed to the \ics*{anskey} command to
+% referenced by |{#1}| when using the \mykey{show-ans} or \mykey{show-pos} keys.
+% The \mymarg[type=tt]{code} must be passed between
+% braces and only affects the \mymeta{current argument} passed to
+% \ics*{anskey} and NOT the \emph{\enquote{stored content}} in the \mymeta{store name}
+% set by \mykey{save-ans} key.
+%^^A If this key is passed using the \ics*{setenumext} command it is necessary to use double ‘|{##1}|’.
 %
 % \smallskip
 %
+% \keyexamp{wrap-opt}{code{} \space\usebox{\hashbox} more code}{[\{\#1\}]}
+% Wraps the \emph{optional argument} passed to the
+% \ics*{item*} and \ics*{anspic*} commands referenced by |{#1}|
+% in the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
+% environments when using the \mykey{show-ans} or \mykey{show-pos} keys.
+% The \mymarg[type=tt]{code} must be passed between braces
+% and only affects the current \mymeta{optional argument} and NOT the
+% \emph{\enquote{stored content}} in \mymeta{store name} set by
+% \mykey{save-ans} key.
+%^^A If this key is passed using the \ics*{setenumext} command it is necessary to use double ‘|{##1}|’.
+%
+% \smallskip
+%
+% \keyexamp{show-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
+% Displays the \emph{current} \mymeta{argument} passed to the \ics*{anskey} command, the current \mymeta{label}
+% for \ics*{item*} and \ics*{anspic*} commands at the place where it is executed. If the optional
+% argument is present in \ics*{item*} or \ics*{anspic*} it will
+% be shown using \mykey{wrap-opt} key.
+%
+% \smallskip
+%
+% \keyexamp{mark-ans}{symbol}{\textbackslash{}textasteriskcentered}
+% Sets the \emph{symbol} to be displayed in the left margin for the
+% commands \ics*{anskey}, \ics*{item*} and \ics*{anspic*} in the place
+% where they are executed when using the key \mykey{show-ans}.
+%
+% \smallskip
+%
+% \keyexamp{mark-pos}{left \textnormal{\textcolor{lightgray}{\textbar}} right}{left}
+% Sets the \emph{aligned} of the symbol defined by \mykey{mark-ans} key. The
+% \emph{\enquote{symbol}} is aligned in a box with the same dimensions of the label box
+% defined by \mykey{labelwidth} key on the current level and separated by the value of the
+% \mykey{labelsep} key.
+%
+% \subsubsection{Keys for debug and checking}
+%
 % \keyexamp{show-pos}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Displays the \emph{position} occupied by the \emph{\enquote{stored content}} by
-% \ics*{anskey} in \myenv*{enumext} environment, \ics*{item*} in
-% \myenv*{keyans} environment and \ics*{anspic*} in \myenv*{keyanspic}
-% environment in \mymeta[type=tt]{store name} set by \mykey{save-ans} key.
+% commands \ics*{anskey}, \ics*{item*} and \ics*{anspic*} in the
+% \emph{prop list} \mymeta[type=tt]{store name} set by \mykey{save-ans} key.
 % This position is used by the \ics*{getkeyans} command and by the |\ref|
 % command if the \mykey{save-ref} key is active.
 %
 % \smallskip
 %
 % \keyexamp{check-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
-% Enables the \emph{checking answer} mechanism. This key works under the logic that
-% each question will contain \emph{\enquote{only one answer}}, it is
-% intended to be used in conjunction with \mykey{no-store} key.
+% Enables the  \emph{checking answer} mechanism by displaying an
+% appropriate message on the terminal. This key works under the logic
+% that each \ics*{item} or \ics*{item*} that does not open an
+% inner level or nested environment contains \emph{\enquote{only one
+% answer}} or \emph{\enquote{only one execution}} of the \ics*{anskey}
+% command. It is intended to be used in conjunction with the
+% \mykey{no-store} key.
 %
 % \smallskip
 %
 % \keyexamp*{no-store}{value forbidden}{not used}
-% This is a \emph{meta-key} that does not receive an argument. This key is
-% used in conjunction with \mykey{check-ans} and is designed to be used
-% with nested levels of \myenv*{enumext} in which the \ics*{anskey}
-% command will not be used.
+% This is a \emph{meta-key} that does not receive an argument
+% and disables the environment structure stored in the \mymeta{sequence}
+% at the entire level or a nested environment in which it runs. This key
+% is intended for use in internal levels or nested environments in which
+% you want to use \myenv*{enumext} or \myenv*{enumext*} but without using
+% the \ics*{anskey} command, without interfering with the
+% \mykey{check-ans} key and without storing an unwanted environment
+% structure in the \mymeta{sequence}.
 %
 % \subsection{The command \cs[no-index]{anskey}}
 % \label{sec:anskey}
@@ -3705,7 +3781,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-26}
+  {2024-05-29}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
