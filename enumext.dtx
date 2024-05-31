@@ -1486,7 +1486,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{The command \cs[no-index]{item} in \texttt{enumext*}}
 %
 % The \ics*{item} command for the \myenv*{enumext*} environment provides
-% an optional first argument \ics*{item}\myparg{number} which \emph{\enquote{joins items}}
+% an optional \emph{\enquote{first argument}} \ics*{item}\myparg{columns} which \emph{\enquote{joins items}}
 % between columns. Let's consider the following examples adapted directly from
 % the \mypkg{task} package:
 %
@@ -1568,10 +1568,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % directly in the optional argument of the \emph{\enquote{first level}}
 % of the environment in which they are executed.
 % \end{important}
-%^^A All \mymeta{keys} related to the \emph{\enquote{storage system}}
-%^^A should NOT be passed through this command and should be activated
-%^^A directly at the \emph{\enquote{first level}} of the environment
-%^^A in which they are executed.
 %
 % \smallskip
 %
@@ -2356,23 +2352,54 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \begin{syntax}
 %    \cmdexamp{anskey}[keys]{content}
 %   \end{syntax}
-%  The \ics*{anskey} command takes a mandatory argument and is
-%  triggered by \mykey{save-ans} key. The \emph{\enquote{content}} are
-%  \emph{\enquote{stored}} in \mymeta{store name} set by \mykey{save-ans} key.
-%  The command does \emph{\enquote{not support}} verbatim content and must NOT be nested. By design it is
-%  assumed that each \ics*{item} or \ics*{item*} will have a \emph{\enquote{single}}
-%  occurrence of the command unless a nested level is opened or the
-%  \mykey{no-store} key is used.
-%  If \mykey{save-ref} key are active and the \mypkg{hyperref}\cite{hyperref} package is detected,
-%  |\hyperlink| and |\hypertarget| will be used, otherwise the
-%  usual \emph{\enquote{label and ref}} system provided by \hologo{LaTeX} will be used.
+%  The command \ics*{anskey} takes a mandatory argument \mymarg{content}
+%  and \emph{\enquote{stores}} it in the \emph{sequence} and \emph{prop
+%  list} \mymarg{store name} set by \mykey{save-ans} key.
+%  By design the command cannot be nested or passed \emph{verbatim} in the
+%  argument and it is assumed that each |\item| or |\item*| within the
+%  environment in which it is active it has a \emph{\enquote{single
+%  execution}} of |\anskey| unless |\item| or |\item*| open a nested level
+%  or use the \mykey{no-store} key.
+%
+%  \smallskip
+%
+%  If \mykey{save-ref} key are active and the
+%  \mypkg{hyperref}\cite{hyperref} package is detected, |\hyperlink| and
+%  |\hypertarget| will be used, otherwise the usual \emph{\enquote{label
+%  and ref}} system provided by \hologo{LaTeX} will be used.
 % \end{function}
 %
-% \keyexamp{item-sym\textcolor{MediumOrchid}{*}}{symbol}{\$\textbackslash{}star\$}
-% Sets the \emph{symbol} to be displayed in the \emph{\enquote{left}} of the
-% box containing the current \mymeta{label} set by \mykey{labelwidth} key for \ics*{item*} in
-% stored INCCCCCCCCCCCCCCCCCCCCC\myenv*{enumext}. The \emph{symbol} can be in text or math mode, for
-% example \mykeycmd{item-sym*}|={$\ast$}|.
+% \subsubsection{Keys for command}
+%
+% By default the \mymarg{content} argument passed to |\anskey| when
+% \emph{\enquote{storing}} in the \emph{sequence} \mymarg{store name} has
+% the form |\item| \mymeta{content}, the following \mymeta{keys} allow
+% modifying the way in which it is \emph{\enquote{stored}} in the
+% \emph{sequence}.
+%
+% \keyexampcmd*{break-col}{value forbidden}{not used}
+% Stores \mymarg{content} in the \emph{sequence} \mymarg{store name} of
+% the form \ics{columnbreak} |\item| \mymeta{content}.
+%
+% \keyexampcmd{item-join}{columns}{not set}
+% Set the \emph{number of columns} to be used for |\item|\myparg{columns} and stores \mymarg{content} in the \emph{sequence}
+% \mymarg{store name} of the form |\item|\myparg{columns} \mymeta{content}.
+%
+% \keyexampcmd*{item-star}{value forbidden}{not used}
+% Stores \mymarg{content} in the \emph{sequence} \mymarg{store name} of
+% the form |\item*| \mymeta{content}.
+%
+% \keyexampcmd{item-sym\textcolor{MediumOrchid}{*}}{symbol}{\$\textbackslash{}star\$}
+% Sets the \emph{symbol} for |\item*| when using the key
+% \mykeycmd{item-star} and stores \mymarg{content} in the \emph{sequence}
+% \mymarg{store name} of the form |\item*|\myoarg{symbol} \mymeta{content}.
+% The \emph{symbol} can be in text or math mode, for example
+% \mykeycmd{item-sym*}|={$\ast$}| stores |\item*||[$\ast$]| \mymeta{content}.
+%
+% \keyexampcmd{item-pos\textcolor{MediumOrchid}{*}}{rigid length}{not set}
+% Sets the \emph{offset} for |\item*| when using the keys
+% \mykeycmd{item-star} and \mykeycmd{item-sym*} and stores \mymarg{content} in the \emph{sequence}
+% \mymarg{store name} of the form |\item*|\myoarg{symbol}\myoarg{offset} \mymeta{content}.
 %
 % \subsubsection*{Example}
 %
@@ -2413,17 +2440,19 @@ This work consists of the files enumext.dtx and enumext.sty.
 %     |\begin{keyans}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg{custom} \ics*{item*} \ics*{item*}\myoarg{content} |\end{keyans}|\par
 %     |\begin{keyans*}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg{custom} \ics*{item*} \ics*{item*}\myoarg{content} |\end{keyans*}|
 %   \end{syntax}
-% The \myenv*{keyans} is an \emph{\enquote{enumerated
-% list}} environment designed for \emph{\enquote{multiple choice}}
-% questions activated by the \mykey{save-ans} key.
-% This environment can NOT be nested and must always be at the
+% The \myenv*{keyans} and \myenv*{keyans*} environments are
+% \emph{\enquote{enumerated list}} environments designed for
+% \emph{\enquote{multiple choice}} questions activated by the \mykey{save-ans} key.
+% This environments can NOT be nested and must always be at the
 % \emph{\enquote{first level}} of the \myenv*{enumext} environment, the
-% commands \ics*{item} and \ics*{item}\myoarg{custom} work in the usual.
+% commands \ics*{item} and \ics*{item}\myoarg{custom} work in the usual
+% and the command |\item|\myparg{columns} is available for the \myenv*{keyans*} environment.
 % \end{function}
 %
 % \iffalse
 %<*example>
 % \fi
+\vspace*{-1\baselineskip}
 \begin{minipage}[t]{0.45\linewidth}
 \begin{examplecode}[frame=none]
 \begin{enumext}[save-ans=test]
@@ -2456,15 +2485,15 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \fi
 %
 % The \mymeta{keys} set in the optional argument of the environment are the same
-% (almost) as those of the \myenv*{enumext} environment and have higher
-% precedence than those set by
-% \ics*{setenumext}\myoarg{keyans}\mymarg{key \textnormal{\textcolor{gray}{=}} val}.
+% (almost) as those of the \myenv*{enumext} and \myenv*{enumext*} environments and have higher
+% precedence than those set by \ics*{setenumext}\myoarg{keyans}\mymarg{key \textnormal{\textcolor{gray}{=}} val} or
+% \ics*{setenumext}\myoarg{keyans*}\mymarg{key \textnormal{\textcolor{gray}{=}} val}.
 % If the optional argument is not passed or the \mymeta{keys} are not set by
 % \ics*{setenumext}, the default values will be the same as the second
 % level of the \myenv*{enumext} environment with the difference in the
-% \mymeta{label} which will be set to \mykey{label}=\ilabel*{Alph*)}.
+% \mymeta{label} which will be set to \mykey{label}=\ilabel{Alph*)}.
 %
-% \subsubsection{The \cs[no-index]{item*} in \texttt{keyans}}
+% \subsubsection[The \texttt{\textbackslash item*} in \texttt{keyans}]{The \cs[no-index]{item*} in \texttt{keyans} and \texttt{keyans*}}
 %
 % \vspace*{-\baselineskip}
 %
@@ -2473,24 +2502,25 @@ This work consists of the files enumext.dtx and enumext.sty.
 %     \ics*{item*}
 %     \ics*{item*}\myoarg{content}
 %   \end{syntax}
-%    The \ics*{item*} and \ics*{item*}\myoarg{content} command store
+%    The \ics*{item*} and \ics*{item*}\myoarg{content} command \emph{\enquote{store}}
 %    the current \mymeta{label} set by \mykey{label} key next to the \mymeta{content} (if it is present)
-%    in \mymarg{store name} set by \mykey{save-ans} key in the \emph{\enquote{first level}} of the
+%    in \emph{sequence} and \emph{prop list} \mymarg{store name} set by
+%    \mykey{save-ans} key in the \emph{\enquote{first level}} of the
 %    \myenv*{enumext} or \myenv*{enumext*} environments.
 %
 %    \smallskip
 %
 %    The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
 %    from the command, i.e. \ics*{item*} and the optional argument does \emph{\enquote{not support}} verbatim
-%    content. By design it is assumed that the \emph{starred argument} ‘|*|’ will only
+%    content. By design it is assumed that the |\item*| will only
 %    appear \emph{\enquote{once}} within the environment.
 % \end{function}
 %
 % \smallskip
 %
 % \begin{important}*
-% The behavior of |\item*| in \myenv*{keyans} environment is NOT the same as in the
-% \myenv*{enumext} environment.
+% The behavior of |\item*| in \myenv*{keyans} and \myenv*{keyans*} environments is NOT the same as in the
+% \myenv*{enumext} or \myenv*{enumext*} environments.
 % \end{important}
 %
 % \subsubsection*{Example}
@@ -2501,14 +2531,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 \begin{examplecode}[frame=single]
 \begin{enumext}[save-ans=test,columns=2,show-ans=true]
   \item Text containing a question.
-    \begin{keyans}[nosep]
+    \begin{keyans*}[nosep,columns=2]
       \item Choice
       \item* Correct choice
       \item Choice
       \item Choice
       \item Choice
-    \end{keyans}
-
+    \end{keyans*}
   \item Text containing a question and image.
     \begin{keyans}[nosep,mini-env={0.4\linewidth}]
       \item Choice
@@ -2526,16 +2555,16 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</example>
 % \fi
 %
-% \begin{enumext}[save-ans=test,show-ans=true,columns=2]
+% \begin{enumext}[save-ans=test,show-ans=true,columns=2,nosep]
 %  \item Text containing a question.
 %
-%    \begin{keyans}[nosep]
+%    \begin{keyans*}[nosep,columns=2]
 %      \item Choice
 %      \item* Correct choice
 %      \item Choice
 %      \item Choice
 %      \item Choice
-%    \end{keyans}
+%    \end{keyans*}
 %
 %   \item Text containing a question and image.
 %
@@ -3107,7 +3136,6 @@ $ pdfdetach -saveall enumext.pdf
 % \end{enumext}
 %
 % \printkeyans[columns=1]{sabastiano2}
-% \vfill
 %
 % \subsubsection*{Example 3}
 %
