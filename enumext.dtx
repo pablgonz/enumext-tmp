@@ -1430,7 +1430,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 %    \smallskip
 %
-%    The \emph{starred version} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
+%    The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
 %    from the command, i.e. \ics*{item*} and the first optional
 %    argument does \emph{\enquote{not support}} verbatim
 %    content. Can be configure with the keys \mykey{item-sym*} and
@@ -2075,7 +2075,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % current environment and \emph{\enquote{before}} starting the material
 % to be placed on the \emph{\enquote{right side}}.
 %
-% The \emph{starred version} ‘|*|’ inhibits the use of |\centering|
+% The \emph{starred argument} ‘|*|’ inhibits the use of |\centering|
 % command i.e. the usual \hologo{LaTeX} justification is maintained in
 % the \myenv{minipage} on the \emph{\enquote{right side}}.
 % \end{function}
@@ -2446,9 +2446,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 %    \smallskip
 %
-%    The \emph{argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
+%    The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
 %    from the command, i.e. \ics*{item*} and the optional argument does \emph{\enquote{not support}} verbatim
-%    content. By design it is assumed that the \emph{starred version} ‘|*|’ will only
+%    content. By design it is assumed that the \emph{starred argument} ‘|*|’ will only
 %    appear \emph{\enquote{once}} within the environment.
 % \end{function}
 %
@@ -2472,6 +2472,7 @@ This work consists of the files enumext.dtx and enumext.sty.
       \item* Correct choice
       \item Choice
       \item Choice
+      \item Choice
     \end{keyans}
 
   \item Text containing a question and image.
@@ -2483,7 +2484,6 @@ This work consists of the files enumext.dtx and enumext.sty.
       `\ics*{item*}\myoarg{note}` Correct choice
       \miniright
       \includegraphics[scale=0.25]{example-image-a}
-
       Some text
     \end{keyans}
 \end{enumext}
@@ -2498,6 +2498,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %    \begin{keyans}[nosep]
 %      \item Choice
 %      \item* Correct choice
+%      \item Choice
 %      \item Choice
 %      \item Choice
 %    \end{keyans}
@@ -2615,14 +2616,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 %      \cmdexamp[*]{anspic}[content]{drawing or tabular}
 %   \end{syntax}
 %    The \ics*{anspic} command take three arguments, the
-%    \emph{starred version} ‘|*|’ store the current \mymeta{label} next to the \mymeta{content} (if it is present)
+%    \emph{starred argument} ‘|*|’ store the current \mymeta{label} next to the \mymeta{content} (if it is present)
 %    in \mymeta{store name} set by \mykey{save-ans} key.
 %
 %    \smallskip
 %
-%    The \emph{starred version} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
+%    The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
 %    from the command, i.e. \ics*{anspic*} and the optional argument does \emph{\enquote{not support}} verbatim
-%    content. By design it is assumed that the \emph{starred version} ‘|*|’ will only
+%    content. By design it is assumed that the \emph{starred argument} ‘|*|’ will only
 %    appear \emph{\enquote{once}} within the environment.
 %
 % \end{function}
@@ -2702,45 +2703,65 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   The command \ics*{printkeyans} prints \emph{\enquote{all stored content}}
 %   in \emph{sequence} \mymarg{store name} defined by \mykey{save-ans}
 %   key placing this inside the \myenv*{enumext} environment or the
-%   \myenv*{enumext*} environment if the \emph{starred version} ‘|*|’ is used.
+%   \myenv*{enumext*} environment if the \emph{starred argument} ‘|*|’ is used.
 %   The \emph{\enquote{stored content}} can only be accessed \emph{after} it is
 %   stored in the \emph{sequence}, if \mymarg{store name} does not exist the
 %   command will return an error.
 % \end{function}
-% \smallskip
-%
-%  The optional argument allows to handle the \mymeta{keys} on the
-%  \emph{\enquote{first level}} of the environment \myenv*{enumext} or
-%  \myenv*{enumext*} if the \emph{starred version} ‘|*|’ is used.
-%  The default values ​​for the \emph{\enquote{first level}} are the
-%  same as the default values for the \myenv*{enumext} and \myenv*{enumext*}
-%  environments along with the keys |nosep,first=\small,font=\small| and |columns=2|.
-%
-%  For the inner levels of the environment \myenv*{enumext} saved in the
-%  \emph{sequence} the default values ​​are the same as those established for the
-%  second, third and fourth levels plus the keys |nosep,first=\small,font=\small|,
-%  if the environment \myenv*{enumext*} is saved within the \emph{sequence},
-%  it will have the same default values ​​plus the keys |nosep,first=\small,font=\small|.
-%
-%
-% \subsubsection*{Setting the keys for \cs[no-index]{printkeyans}}
-%
 %
 % \smallskip
 %
+% The optional argument allows managing the \mykey{keys} in the
+% \emph{\enquote{first level}} of the environment in which the
+% \emph{\enquote{stored content}} of the \emph{sequence} \mymarg{store
+% name} will be printed, if the \emph{starred argument} ‘|*|’ is used it will be
+% \myenv*{enumext*} otherwise \myenv*{enumext}.
+%
+% \smallskip
+%
+% The default values ​​for the \emph{\enquote{first level}} are the
+% same as the default values for the \myenv*{enumext} and \myenv*{enumext*}
+% environments along with the keys |nosep,first=\small,font=\small| and |columns=2|.
+% For the inner levels of the environment \myenv*{enumext} saved in the
+% \emph{sequence} \mymarg{store name} the default values ​​are the same
+% as those established for the second, third and fourth levels plus the
+% keys |nosep,first=\small,font=\small|. If the environment \myenv*{enumext*}
+% is saved within the \emph{sequence} \mymarg{store name} it will have
+% the same default values plus the keys |nosep,first=\small, font=\small|.
+%
+% \smallskip
+%
+% Since the command encapsulates by default the \myenv*{enumext}
+% environment or the \myenv*{enumext*} environment, we must take some
+% considerations:
+%
+%\begin{itemize}[topsep=0pt]
+% \item If we execute |\printkeyans*|\mymarg{store name} and the \emph{sequence}
+%   \mymarg{store name} already contains any \myenv*{enumext*} environment
+%   an error will be returned as we cannot nest.
+%
+% \item If we execute |\printkeyans*|\mymarg{store name} and the \emph{sequence}
+%   \mymarg{store name} contains any \myenv*{enumext} environments, they
+%   will start with the \mymeta{keys} set for the first level unless they
+%   are set in the optional argument or \mykey{save-key} is used to modify it.
+%
+% \item If we execute |\printkeyans|\mymarg{store name} and the \emph{sequence}
+%    \mymarg{store name} contains any environment \myenv*{enumext*}, they
+%    will start with the \mymeta{keys} set by default unless they are set
+%    in the optional argument or \mykey{save-key} is used to modify it.
+%\end{itemize}
 %
 % The default values ​​for the \emph{\enquote{first level}} of |\printkeyans| commands and
 % |\printkeyans*| are established using \ics*{setenumext}\myoarg{print \textnormal{\textcolor{gray}{,}} \textcolor{MediumOrchid}{1}}\mymarg{keys} and
 % \ics*{setenumext}\myoarg{print\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}}\mymarg{keys}.
-%
-%^^A The default values ​​for |\printkeyans| command \emph{\enquote{on the first level}} are established using \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print \textnormal{\textcolor{gray}{,}} 1}\mymarg{keys}
-%^^A and the default values ​​for |\printkeyans*| command \emph{\enquote{on the first level}} are established using \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print\textnormal{\textcolor{red}{*}}}\mymarg{keys}.
-%^^A \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print \textnormal{\textcolor{gray}{,}} 1}\mymarg{keys} and .
-%^^A \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print\textnormal{\textcolor{gray}{,}}}\mymarg{keys}.
-%
-%  The optional argument allows to handle the \mymeta{keys} \emph{\enquote{on the first level}} of the \myenv*{enumext}
-%  environment encapsulated by the command. If need to pass options for nested levels use
-%   \ics*{setenumext}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{print \textnormal{\textcolor{gray}{,}} level}\mymarg{store name}.
+% If we need to set the \mymeta{keys} for the environment
+% \myenv*{enumext} \enquote{saved} in the \emph{sequence} \mymarg{store
+% name} we will use \ics*{setenumext}\myoarg{print
+% \textnormal{\textcolor{gray}{,}} level}\mymarg{keys} and if we need to
+% set the \mymeta{keys} for the environment \myenv*{enumext*}
+% \enquote{saved} in the \emph{sequence} \mymarg{store name} we will use
+% \ics*{setenumext}\myoarg{print \textnormal{\textcolor{gray}{,}}
+% \textnormal{\textcolor{MediumOrchid}{\texttt{*}}}}\mymarg{keys}.
 %
 % \subsubsection*{Example}
 %
@@ -6581,7 +6602,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \emph{\enquote{right side}} adding the \emph{adjusted vertical space}.
 % By default we will add |\centering| when starting the
 % \emph{\enquote{right side}} environment.
-% The \emph{starred version} ‘|*|’ inhibits the use of |\centering|
+% The \emph{starred argument} ‘|*|’ inhibits the use of |\centering|
 % command i.e. the usual \hologo{LaTeX} justification is maintained in
 % the \myvarenv*{__@@_mini_env*} on the \emph{\enquote{right side}}.
 %
@@ -6615,7 +6636,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_mini_right_cmd:n}
-%    The function \cs{@@_mini_right_cmd:n} takes as argument the \emph{starred version} ‘|*|’
+%    The function \cs{@@_mini_right_cmd:n} takes as argument the \emph{starred} ‘|*|’
 %    of the \ics*{miniright} command in the \myenv*{enumext} environment.
 %    We check if the \mykey{mini-env} key is active via the variable
 %    \myvarenv{l__@@_minipage_right_X_dim}, if so we close the
@@ -6652,7 +6673,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_keyans_mini_right_cmd:n}
-%    The function \cs{@@_keyans_mini_right_cmd:n} takes as argument the \emph{starred version} ‘|*|’
+%    The function \cs{@@_keyans_mini_right_cmd:n} takes as argument the \emph{starred} ‘|*|’
 %    of the \ics*{miniright} command in the \myenv*{keyans}
 %    environment. The implementation of this function is the same as that of
 %    the \cs{@@_mini_right_cmd:n} function of the \myenv*{enumext}
@@ -8256,6 +8277,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     store-brk .bool_set:N = \l_@@_store_columns_break_bool,
     store-brk .default:n  = true,
     store-brk .value_forbidden:n = true,
+  % break-col=tl .value_forbidden:n = true
+  % item-star=bool .value_forbidden:n = true
+  % item-join=intr .value_required:n = true,
   }
 %    \end{macrocode}
 %
