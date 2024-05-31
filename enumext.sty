@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-30}
+  {2024-05-31}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -38,12 +38,14 @@
         \RequirePackage{multicol}[2023-03-30]
       }
   }
-%% Variable for levels and nesting off all environments.
+%% Variable for levels and nesting off all environments and \anskey.
 \int_new:N  \l__enumext_level_int
 \int_new:N  \l__enumext_level_h_int
+\int_new:N  \l__enumext_anskey_level_int
 \int_new:N  \l__enumext_keyans_level_int
 \int_new:N  \l__enumext_keyans_level_h_int
 \int_new:N  \l__enumext_keyans_pic_level_int
+%% Bool vars for levels and nesting off all environments.
 \bool_new:N \l__enumext_starred_bool
 \bool_new:N \g__enumext_starred_bool
 \bool_new:N \l__enumext_starred_first_bool

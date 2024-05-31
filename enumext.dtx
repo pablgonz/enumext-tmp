@@ -3897,7 +3897,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-30}
+  {2024-05-31}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -3922,28 +3922,36 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % Variables that do not appear in this section are created by means of
 % \cs[no-index]{keys_define:nn} or some function described below.
 %
-% \begin{variable}[int]{\l_@@_level_int, \l_@@_level_h_int, \l_@@_keyans_level_int,
-%                       \l_@@_keyans_level_h_int, \l_@@_keyans_pic_level_int,
-%                       \l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_first_bool,
+% \begin{variable}[int]{\l_@@_level_int, \l_@@_level_h_int, \l_@@_anskey_level_int,
+%                       \l_@@_keyans_level_int, \l_@@_keyans_level_h_int,
+%                       \l_@@_keyans_pic_level_int,}
+%    Integer variables will control the nesting levels of the environments
+%    and |\anskey| command.
+% \iffalse
+%% Variable for levels and nesting off all environments and \anskey.
+% \fi
+%    \begin{macrocode}
+\int_new:N  \l_@@_level_int
+\int_new:N  \l_@@_level_h_int
+\int_new:N  \l_@@_anskey_level_int
+\int_new:N  \l_@@_keyans_level_int
+\int_new:N  \l_@@_keyans_level_h_int
+\int_new:N  \l_@@_keyans_pic_level_int
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}[int]{\l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_first_bool,
 %                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_first_bool,
 %                       \l_@@_keyans_env_bool,}
 %
-%    Integer variables will control the nesting levels of the environments
-%    and boolean variables will be used to determine if they are present
-%    (nested) in each other.
 %    The boolean variables \myvarenv{g__@@_starred_bool} and
 %    \myvarenv{g__@@_standar_bool} will be set to \emph{\enquote{true}} when the
 %    \myenv*{enumext} and \myenv*{enumext*} environments are not nested with
 %    each other.
 % \iffalse
-%% Variable for levels and nesting off all environments.
+%% Bool vars for levels and nesting off all environments.
 % \fi
 %    \begin{macrocode}
-\int_new:N  \l_@@_level_int
-\int_new:N  \l_@@_level_h_int
-\int_new:N  \l_@@_keyans_level_int
-\int_new:N  \l_@@_keyans_level_h_int
-\int_new:N  \l_@@_keyans_pic_level_int
 \bool_new:N \l_@@_starred_bool
 \bool_new:N \g_@@_starred_bool
 \bool_new:N \l_@@_starred_first_bool
@@ -8315,17 +8323,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % Since we will be \emph{\enquote{storing content}} in a list environment
 % within \mymeta{sequences} and can (more or less) manage the options
 % passed to each level, it is necessary that we have a little more
-% control over |\item| when storing. The \ics*{anskey} command will cover
-% this point and give it very similar behaviour to that of |\item| in the
-% \myenv*{enumext} and \myenv*{enumext*} environments.
+% control over |\item| when storing.
+%
+% \smallskip
+%
+% The \ics*{anskey} command will cover this point and give it very
+% similar behaviour to that of |\item| in the \myenv*{enumext} and \myenv*{enumext*}
+% environments.
 %
 % \begin{macro}{\anskey}
 %
 %     We want the command to be executed as follows:
-%     \ics*{anskey}\myparg{number}|*|\myoarg{key
-%     \textnormal{\textcolor{gray}{=}} val}\mymarg{content} so
-%     first we'll add the keys  \mykey{item-sym*}, \mykey{item-pos*} and
-%     \mykey{store-brk}.
+%     \ics*{anskey}\myoarg{key \textnormal{\textcolor{gray}{=}} val}\mymarg{content} so
+%     first we'll add the keys  \mykeycmd{item-sym*}, \mykeycmd{item-pos*} and
+%     \mykeycmd{break-col}.
 % \iffalse
 %% Add |key=val| for |\anskey|.
 % \fi
