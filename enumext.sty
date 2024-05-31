@@ -2330,6 +2330,9 @@
     store-brk .bool_set:N = \l__enumext_store_columns_break_bool,
     store-brk .default:n  = true,
     store-brk .value_forbidden:n = true,
+  % break-col=tl .value_forbidden:n = true
+  % item-star=bool .value_forbidden:n = true
+  % item-join=intr .value_required:n = true,
   }
 %% Define the user command |\anskey|.
 %% #1: (number); #2: * starred; #3: key-val; #4: argument
@@ -4162,7 +4165,8 @@
       {
         \__enumext_print_footnote:
       }
-    \int_compare:nNnTF { \l__enumext_item_column_pos_viii_int } = { \l__enumext_columns_viii_int }
+    \int_compare:nNnTF
+      { \l__enumext_item_column_pos_viii_int } = { \l__enumext_columns_viii_int }
       {
         \par\noindent
         \int_zero:N \l__enumext_item_column_pos_viii_int
@@ -4174,7 +4178,9 @@
   {
     \int_compare:nNnT
       {
-        \int_mod:nn {  \g__enumext_item_count_all_viii_int } { \l__enumext_columns_viii_int }
+        \int_mod:nn
+          { \g__enumext_item_count_all_viii_int }
+          { \l__enumext_columns_viii_int }
       }
       =
       { \c_zero_int }
@@ -4238,7 +4244,7 @@
     print-* .code:n     = \keys_precompile:neN { enumext / enumext* }
                             { \__enumext_filter_save_key:n {#1} }
                             \l__enumext_print_keyans_vii_tl, % starred nested
-    print-* .initial:n  = { nosep, label=(\alph*), first=\small, font=\small },
+    print-* .initial:n  = { nosep, label=\arabic*., first=\small, font=\small },
   }
 %% Define |\printkeyans|.
 \NewDocumentCommand \printkeyans { s O{} m }
@@ -4252,6 +4258,7 @@
       \__enumext_printkeyans:nnn { #1 } { #2 } { #3 }
     \group_end:
   }
+%% Internal function for |\printkeyans|.
 \cs_new_protected:Npn \__enumext_printkeyans:nnn #1 #2 #3
   {
     \seq_if_exist:cTF { g__enumext_#3_seq }

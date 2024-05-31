@@ -309,10 +309,6 @@ This work consists of the files enumext.dtx and enumext.sty.
   {
     \textcolor{\l_userdoc_meta_brackcolor_tl}{#1}
   }
-%\cs_new_protected:Npn \userdoc_meta_paren:n #1
-%  {
-%    \textcolor{\l_userdoc_meta_paren_tl}{#1}
-%  }
 % \envexamp{m}
 \newsavebox{\boxexaenv}
 \tl_new:N \l_tempc_tl
@@ -359,8 +355,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     \par
     \group_end:
   }
-
-% \keyexamp*{m m m}
+% \keyexamp{s m m m}
 \NewDocumentCommand \keyexamp{s m m m }
   {
     \adjustbox{outer=-\marginparsep}{\textcolor{optcolor}{\small\ttfamily{#2}}}
@@ -376,6 +371,22 @@ This work consists of the files enumext.dtx and enumext.sty.
     \hfill\textcolor{gray}{\small\textsf{default}:~\emph{#4}}\par%
     \MYSortIndex{Keys}{Keys ~ for ~ environments ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
   }
+% \keyexampcmd{s m m m}
+\NewDocumentCommand \keyexampcmd{s m m m }
+  {
+    \adjustbox{outer=-\marginparsep}{\textcolor{optcolor}{\small\ttfamily{#2}}}
+    \IfBooleanTF{#1}
+      {
+        \hphantom{\textcolor{white}{\,\bfseries\texttt{=}}\,{}}
+        \mymeta[type=tt,cbc=gray,ac=lightgray,cf=lightgray]{\small{#3}}
+      }
+      {
+        \textcolor{gray}{\,\bfseries\texttt{=}}\,{}
+        \mymarg[type=tt,cbc=gray,ac=lightgray,cf=optcolor]{\small{#3}}
+      }
+    \hfill\textcolor{gray}{\small\textsf{default}:~\emph{#4}}\par%
+    \MYSortIndex{Keys}{Keys ~ for ~ command ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
+  }
 % \mykey{m}
 \NewDocumentCommand \mykey{ m }
   {
@@ -384,6 +395,15 @@ This work consists of the files enumext.dtx and enumext.sty.
     \textcolor{optcolor}{\ttfamily \tl_use:N \l_tmpa_tl }
     %\textcolor{optcolor}{\texttt{#1}}
     \MYSortIndex{Keys}{Keys ~ for ~ environments ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
+  }
+% \mykeycmd{m}
+\NewDocumentCommand \mykeycmd{ m }
+  {
+    \tl_set:Nn \l_tmpa_tl { #1 }
+    \regex_replace_once:nnN { (\*) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tmpa_tl
+    \textcolor{optcolor}{\ttfamily \tl_use:N \l_tmpa_tl }
+    %\textcolor{optcolor}{\texttt{#1}}
+    \MYSortIndex{Keys}{Keys ~ for ~ command ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
   }
 % \mypkg{sm}
 \NewDocumentCommand \mypkg { s m }
@@ -1993,7 +2013,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % last environment in which it was executed. The \emph{start value} can be
 % overwritten using the \mykey{start} key.
 %
-% \keyexamp*{resume*}{value forbidden}{not used}
+% \keyexamp*{resume\textcolor{MediumOrchid}{*}}{value forbidden}{not used}
 % Sets the \emph{start value} and \emph{options} for the
 % \emph{\enquote{first level}} continuing the numbering of the
 % environment in which the \mykey{series}|=|\mymarg{series name} or
@@ -2330,19 +2350,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{The command \cs[no-index]{anskey}}
 % \label{sec:anskey}
 %
-% \newsavebox{\exaboxtmp}
-% \begin{lrbox}{\exaboxtmp}
-%    \small\ttfamily
-%    \textcolor{pkgcolor}{\textbackslash anskey}\mymarg{content}
-% \end{lrbox}
-%
 % \vspace*{-\baselineskip}
 %
 % \begin{function}{\anskey}
 %   \begin{syntax}
-%    \cmdexamp{anskey}{content}
 %    \cmdexamp{anskey}[keys]{content}
-%    \cmdexamp[*]{anskey}[keys]{content}
 %   \end{syntax}
 %  The \ics*{anskey} command takes a mandatory argument and is
 %  triggered by \mykey{save-ans} key. The \emph{\enquote{content}} are
@@ -2355,6 +2367,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  |\hyperlink| and |\hypertarget| will be used, otherwise the
 %  usual \emph{\enquote{label and ref}} system provided by \hologo{LaTeX} will be used.
 % \end{function}
+%
+% \keyexamp{item-sym\textcolor{MediumOrchid}{*}}{symbol}{\$\textbackslash{}star\$}
+% Sets the \emph{symbol} to be displayed in the \emph{\enquote{left}} of the
+% box containing the current \mymeta{label} set by \mykey{labelwidth} key for \ics*{item*} in
+% stored INCCCCCCCCCCCCCCCCCCCCC\myenv*{enumext}. The \emph{symbol} can be in text or math mode, for
+% example \mykeycmd{item-sym*}|={$\ast$}|.
 %
 % \subsubsection*{Example}
 %
@@ -2386,7 +2404,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</example>
 % \fi
 %
-% \subsection{The environment \texttt{keyans}}
+% \subsection[The environment \texttt{keyans}]{The environments \env{keyans} and \env{keyans*}}
 %
 % \vspace*{-\baselineskip}
 %
@@ -2406,6 +2424,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \iffalse
 %<*example>
 % \fi
+\begin{minipage}[t]{0.45\linewidth}
 \begin{examplecode}[frame=none]
 \begin{enumext}[save-ans=test]
   \item `\mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
@@ -2417,6 +2436,21 @@ This work consists of the files enumext.dtx and enumext.sty.
     \end{keyans}
 \end{enumext}
 \end{examplecode}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\linewidth}
+\begin{examplecode}[frame=none]
+\begin{enumext}[save-ans=test]
+  \item `\mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
+    \begin{keyans*}`\myoarg{key \textnormal{\textcolor{gray}{=}} val}`
+      \item `\mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
+      \item `\myoarg{custom} \mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
+      \item* `\mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
+      `\ics*{item*}\myoarg{content} \mymeta[type=tt,ac=lightgray,cf=gray]{item content}`
+    \end{keyans*}
+\end{enumext}
+\end{examplecode}
+\end{minipage}
 % \iffalse
 %</example>
 % \fi
@@ -2711,7 +2745,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% The optional argument allows managing the \mykey{keys} in the
+% The optional argument allows managing the \mymeta{keys} in the
 % \emph{\enquote{first level}} of the environment in which the
 % \emph{\enquote{stored content}} of the \emph{sequence} \mymarg{store
 % name} will be printed, if the \emph{starred argument} ‘|*|’ is used it will be
@@ -7414,7 +7448,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           { \l_@@_standar_first_bool } { \l_@@_starred_first_bool }
           {
             \@@_start_save_ans_msg:
-            \__enumext_storing_exec:
+            \@@_storing_exec:
           }
       }
   }
@@ -7437,7 +7471,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_set_true:N \l_@@_store_active_bool
     \bool_set_true:N \l_@@_check_answers_bool
-    \tl_gset:NV \g_@@_store_name_tl \l__enumext_store_name_tl
+    \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
     \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
       {
         \msg_log:nnV { enumext } { store-prop } \l_@@_store_name_tl
@@ -10373,7 +10407,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nn { enumext } { keyanspic-nested }
       }
-    \__enumext_keyans_save_start_line:
+    \@@_keyans_save_start_line:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10740,8 +10774,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Parse \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 %    for \myenv*{enumext*}. If the variable
 %    \cs{l_@@_store_active_bool} is true it will call the functions
-%    \cs{@@_parse_serie:n} and \cs{@@_store_active_keys_vii:n} and reprocess the \mykey{keys} to pass them to the
-%    storage \mymeta{sequence}.
+%    \cs{@@_parse_serie:n} and \cs{@@_store_active_keys_vii:n} and
+%    reprocess the \mymeta{keys} to pass them to the storage \mymeta{sequence}.
 % \iffalse
 %% Parse |key=val| and store keys for |enumext*|.
 % \fi
@@ -10792,7 +10826,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \@@_stop_mini_vii:
     \@@_after_stop_list_vii:
-    \__enumext_check_ans_key_hook:
+    \@@_check_ans_key_hook:
     \@@_vspace_below_vii:
     \bool_set_false:N \l_@@_starred_bool
     \@@_resume_save_counter:
@@ -11342,7 +11376,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nn { enumext } { nested }
       }
-    \__enumext_keyans_save_start_line:
+    \@@_keyans_save_start_line:
     % Set false for interfering with enumext nested in keyans* (yes, its possible and crayze)
     \bool_set_false:N \l_@@_store_active_bool
     \int_compare:nNnT { \l_@@_level_int } > { 1 }
@@ -11696,7 +11730,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \@@_print_footnote:
       }
-    \int_compare:nNnTF { \l_@@_item_column_pos_viii_int } = { \l_@@_columns_viii_int }
+    \int_compare:nNnTF
+      { \l_@@_item_column_pos_viii_int } = { \l_@@_columns_viii_int }
       {
         \par\noindent
         \int_zero:N \l_@@_item_column_pos_viii_int
@@ -11719,7 +11754,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \int_compare:nNnT
       {
-        \int_mod:nn {  \g_@@_item_count_all_viii_int } { \l_@@_columns_viii_int }
+        \int_mod:nn
+          { \g_@@_item_count_all_viii_int }
+          { \l_@@_columns_viii_int }
       }
       =
       { \c_zero_int }
@@ -11797,22 +11834,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % The first thing we will do is define a set of \mymeta{filtered keys} with
 % which we will control the options of the different nesting levels for
 % the environment \myenv*{enumext} and \myenv*{enumext*} by storing their
-% values ​​in the list of tokens \myvarenv{l__@@_print_keyans_X_tl}. The
-% variable \cs{l_@@_print_keyans_starred_tl} will have the default \mymeta{keys}
-% for \ics*{printkeyans*} and will be set by \ics*{setenumext}|[print*]|
+% values ​​in the list of tokens \myvarenv{l__@@_print_keyans_X_tl}.
+%
+% \smallskip
+%
+% The variable \cs{l_@@_print_keyans_starred_tl} will have the default \mymeta{keys}
+% for \ics*{printkeyans*} and will be set by |\setenumext|\myoarg{print\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}}
 % and the variable \cs{l__@@_print_keyans_vii_tl} will have the default
 % keys for the environment \myenv*{enumext*} nested within the \mymeta{sequence}
-% and will be set by \ics*{setenumext}|[print,*]|, the rest of the
-% variables will be for the environment \myenv*{enumext} and will be set
-% by \ics*{setenumext}|[print,level]|.
+% and will be set by |\setenumext|\myoarg{print \textnormal{\textcolor{gray}{,}}\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}},
+% the rest of the variables will be for the environment \myenv*{enumext} and will be set
+% by |\setenumext|\myoarg{print \textnormal{\textcolor{gray}{,}} level}
 %
-% \begin{important}*
-% The reason for storing \mymeta{keys} in token lists using
-% \cs{keys_precompile:neN} is because the keys are set via
-% \ics*{setenumext} but are later executed by running the command
-% \ics*{printkeyans} and they are not handled directly by its optional
-% argument, except those related to the first opening level.
-% \end{important}
 % \iffalse
 %% Add keys for |\printkeyans|.
 % \fi
@@ -11843,9 +11876,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     print-* .code:n     = \keys_precompile:neN { enumext / enumext* }
                             { \@@_filter_save_key:n {#1} }
                             \l_@@_print_keyans_vii_tl, % starred nested
-    print-* .initial:n  = { nosep, label=(\alph*), first=\small, font=\small },
+    print-* .initial:n  = { nosep, label=\arabic*., first=\small, font=\small },
   }
 %    \end{macrocode}
+%
+% \begin{important}*
+% The reason for storing \mymeta{keys} in token lists using
+% \cs{keys_precompile:neN} is because the keys are set via
+% \ics*{setenumext} but are later executed by running the command
+% \ics*{printkeyans} and they are not handled directly by its optional
+% argument, except those related to the first opening level.
+% \end{important}
 %
 % \begin{macro}{\printkeyans}
 %    Create a user command to print \emph{\enquote{all stored content}}
@@ -11873,21 +11914,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_printkeyans:nnn}
 %    The internal function \cs{@@_printkeyans:nnn} will check
 %    for the existence of the \mymeta{sequence}, if it does not exist
-%    it will return an error message, then it will check the starred
-%    argument, if it is present it will execute the variable
-%    \cs{l_@@_print_keyans_starred_tl} that contains the default \mymeta{keys} for
-%    the environment \myenv*{enumext*} not nested in the \mymeta{sequence}, it will
-%    open the environment \myenv*{enumext*} passing the optional argument
-%    to the first level and then will map the \mymeta{sequence}, otherwise it will
-%    open the environment \myenv*{enumext} passing the optional argument to
-%    the first level and then map the \mymeta{sequence}.
-%
-% \begin{arguments}
-%    \item starred
-%    \item key-val
-%    \item seq-name
-% \end{arguments}
-%
+%    it will return an error message, then it will check if not empty.
+% \iffalse
+%% Internal function for |\printkeyans|.
+% \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_printkeyans:nnn #1 #2 #3
   {
@@ -11896,6 +11926,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \seq_if_empty:cF { g_@@_#3_seq }
           {
             %%\seq_show:c { g_@@_#3_seq }
+%    \end{macrocode}
+%    If the starred if it is present we will check that the environment
+%    \myenv*{enumext*} is not saved in the \mymeta{sequence}, then execute the variable
+%    \cs{l_@@_print_keyans_starred_tl} that contains the default \mymeta{keys} for
+%    the environment \myenv*{enumext*}, it will open the environment
+%    \myenv*{enumext*} passing the optional argument to the first level
+%    and then will map the \mymeta{sequence}
+%    \begin{macrocode}
             \bool_if:nTF {#1}
               {
                 \seq_if_in:cnTF { g_@@_#3_seq } { \end{enumext*} }
@@ -11909,6 +11947,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                     \end{enumext*}
                   }
               }
+%    \end{macrocode}
+%   Otherwise it will open the environment \myenv*{enumext} passing the optional argument to
+%   the first level and then map the \mymeta{sequence}.
+%    \begin{macrocode}
               {
                 \begin{enumext}[#2]
                   \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
@@ -12055,7 +12097,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { store-prop }
   {
-    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g__enumext_#1_prop ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g_@@_#1_prop ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { store-seq }
   {
