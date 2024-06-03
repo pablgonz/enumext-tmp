@@ -397,6 +397,17 @@
     \cs_new_eq:NN \__enumext_minipage:w \minipage
     \cs_new_eq:NN \__enumext_endminipage: \endminipage
   }
+%% Function for define a internal minipage environment.
+\cs_new_protected:Nn \__enumext_internal_mini_page:
+  {
+    \DeclareDocumentEnvironment{__enumext_mini_env*}{ m }
+      {
+        \__enumext_minipage:w [ t ] { ##1 }
+          \legacy_if_gset_false:n { @minipage }
+          \vspace { 0pt }
+      }
+      { \__enumext_endminipage: }
+  }
 %% Detection off |hyperref| package with |hyperfootnotes=true|.
 \hook_gput_code:nnn { begindocument } { enumext } { \__enumext_after_hyperref: }
 \hook_gset_rule:nnnn { begindocument } { enumext } { after } { hyperref }
@@ -641,7 +652,7 @@
       }
   }
 \__enumext_tmp:nnn { enumext* } {  vii } { \arabic*.}
-\__enumext_tmp:nnn { keyans*  } { viii } { (\Alph*) }
+\__enumext_tmp:nnn { keyans*  } { viii } { \Alph*) }
 %% Internal function used by |ref| key in |enumext*| and |keyans*| environments.
 \cs_new_protected:Npn \__enumext_starred_ref:n #1
   {
@@ -712,7 +723,7 @@
                          \dim_set_eq:cN  { l__enumext_labelwidth_v_dim }
                             \l__enumext_current_widest_dim
                        },
-    label .initial:n = (\Alph*),
+    label .initial:n = \Alph*),
     label .value_required:n = true,
     ref   .code:n    = \__enumext_keyans_ref:n {#1},
     ref   .value_required:n = true,
@@ -1039,12 +1050,11 @@
       }
   }
 \clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
-%% Set |columns=2|, add |mini-right| and |mini-right*| keys for starred environments.
+%% Add |mini-right| and |mini-right*| keys for starred environments.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
       {
-        columns    .initial:n = 2,
         mini-right  .tl_gset:c = { g__enumext_miniright_code_#2_tl },
         mini-right  .value_required:n = true,
         mini-right* .code:n    = {
@@ -1140,14 +1150,6 @@
     \par\nopagebreak
     \addvspace{ \l__enumext_multicols_above_v_skip }
   }
-%% Function for define custom (internal) minipage environment.
-\DeclareDocumentEnvironment{__enumext_mini_env*}{ m }
-  {
-     \__enumext_minipage:w [ t ] { #1 }
-       \legacy_if_gset_false:n { @minipage }
-       \vspace { 0pt }
-  }
-  { \__enumext_endminipage: }
 %% Adjustment of vertical spacing for |minipage| in |enumext|.
 \cs_new_protected:Nn \__enumext_mini_set_vskip:
   {
@@ -2568,7 +2570,7 @@
    \bool_if:NT \l__enumext_check_answers_bool
      {
        \int_gincr:N \g__enumext_item_anskey_int
-       \__enumext_store_anskey_safe_inner:n {#2}
+       \__enumext_anskey_env_safe_inner:n {#2}
        \__enumext_store_anskey_code:nn {#1} {#2}
      }
  }
@@ -3118,6 +3120,7 @@
 %% Safe exec for |enumext|.
 \cs_new_protected:Nn \__enumext_safe_exec:
   {
+    \__enumext_internal_mini_page:
     \__enumext_is_not_nested:
     \int_incr:N \l__enumext_level_int
     \int_compare:nNnT { \l__enumext_level_int } > { 4 }
@@ -4203,7 +4206,8 @@
           \bool_if:NT \l__enumext_item_starred_viii_bool
             {
               \tl_use:N \l__enumext_fake_item_indent_viii_tl
-              \__enumext_keyans_show_item_opt: \skip_horizontal:n { -\l__enumext_fake_item_indent_viii_dim }
+              \__enumext_keyans_show_item_opt:
+              \skip_horizontal:n { -\l__enumext_fake_item_indent_viii_dim - \l__enumext_labelsep_viii_dim }
             }
             {
               \tl_use:N \l__enumext_fake_item_indent_viii_tl

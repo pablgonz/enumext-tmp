@@ -2369,7 +2369,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  and ref}} system provided by \hologo{LaTeX} will be used.
 % \end{function}
 %
-% \subsubsection{Keys for command}
+% \subsubsection{Keys for \cs[no-index]{anskey}}
 %
 % By default the \mymarg{content} argument passed to |\anskey| when
 % \emph{\enquote{storing}} in the \emph{sequence} \mymarg{store name} has
@@ -2401,6 +2401,20 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \mykeycmd{item-star} and \mykeycmd{item-sym*} and stores \mymarg{content} in the \emph{sequence}
 % \mymarg{store name} of the form |\item*|\myoarg{symbol}\myoarg{offset} \mymeta{content}.
 %
+% \subsubsection{The environment \env{anskey*}}
+%
+% \begin{function}{anskey*}
+%   \begin{syntax}
+%     |\begin{anskey*}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \mymeta{body content} |\end{anskey*}|
+%   \end{syntax}
+% The \myenv*{anskey*} environments are
+% \emph{\enquote{enumerated list}} environments designed for
+% \emph{\enquote{multiple choice}} questions activated by the \mykey{save-ans} key.
+% This environments can NOT be nested and must always be at the
+% \emph{\enquote{first level}} of the \myenv*{enumext} environment, the
+% commands \ics*{item} and \ics*{item}\myoarg{custom} work in the usual
+% and the command |\item|\myparg{columns} is available for the \myenv*{keyans*} environment.
+% \end{function}
 % \subsubsection*{Example}
 %
 % \begin{enumext}[save-ans=test,show-ans=true,columns=2,nosep]
@@ -2487,7 +2501,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The \mymeta{keys} set in the optional argument of the environment are the same
 % (almost) as those of the \myenv*{enumext} and \myenv*{enumext*} environments and have higher
 % precedence than those set by \ics*{setenumext}\myoarg{keyans}\mymarg{key \textnormal{\textcolor{gray}{=}} val} or
-% \ics*{setenumext}\myoarg{keyans*}\mymarg{key \textnormal{\textcolor{gray}{=}} val}.
+% \ics*{setenumext}\myoarg{keyans\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}}\mymarg{key \textnormal{\textcolor{gray}{=}} val}.
 % If the optional argument is not passed or the \mymeta{keys} are not set by
 % \ics*{setenumext}, the default values will be the same as the second
 % level of the \myenv*{enumext} environment with the difference in the
@@ -2587,7 +2601,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{function}{keyanspic}
 %   \begin{syntax}
-%     |\begin{keyanspic}|\myoarg{number above, number below}\ics*{anspic}\mymarg{drawing}\ics*{anspic*}\myoarg{content}\mymarg{drawing}
+%     |\begin{keyanspic}|\myoarg{nº above, nº below}\ics*{anspic}\mymarg{drawing}\ics*{anspic*}\myoarg{content}\mymarg{drawing}
 %   \end{syntax}
 % The \myenv*{keyanspic} is a \emph{\enquote{fake enumerated list}}
 % environment that which uses the \ics*{anspic} command instead of
@@ -4754,6 +4768,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %</example>
 % \fi
 %
+% \smallskip
+%
 % As a precaution we copy them using \cs{@@_at_begin_document:n} in
 % case any package redefines the \myenv{minipage} environment or a
 % related command.
@@ -4770,6 +4786,36 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \cs_new_eq:NN \@@_minipage:w \minipage
     \cs_new_eq:NN \@@_endminipage: \endminipage
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{The internal \env{minipage} environment}
+%
+% \begin{macro}[int]{\@@_internal_mini_page:, @@_mini_env*}
+%   The function \cs{@@_internal_mini_page:} creates a internal
+%   \myvarenv*{__@@_mini_env*} environment (\emph{custom version} of
+%   \myenv{minipage}) setting the |\if@minipage| switch to
+%   \emph{\enquote{false}} to allow spaces at the \emph{\enquote{above}} of
+%   the environment, plus we will add |\vspace{|\mydim{0pt}|}| to maintain alignment
+%   on \emph{\enquote{top}}. This environment will be used internally by the
+%   \mykey{mini-env} key, it is not documented in the user interface and is for
+%   internal use only. This function is passed to the function \cs{@@_safe_exec:}
+%   in the \myenv*{enumext} environment definition (\S\ref{env:enumext}).
+%
+% \iffalse
+%% Function for define a internal minipage environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_internal_mini_page:
+  {
+    \DeclareDocumentEnvironment{@@_mini_env*}{ m }
+      {
+        \@@_minipage:w [ t ] { ##1 }
+          \legacy_if_gset_false:n { @minipage }
+          \vspace { 0pt }
+      }
+      { \@@_endminipage: }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -5240,7 +5286,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 \@@_tmp:nnn { enumext* } {  vii } { \arabic*.}
-\@@_tmp:nnn { keyans*  } { viii } { (\Alph*) }
+\@@_tmp:nnn { keyans*  } { viii } { \Alph*) }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -5323,8 +5369,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\l_@@_label_v_tl,\l_@@_label_vi_tl,}
 %    Here we set the default \mymeta{label} for \myenv*{keyans}
 %    and \myenv*{keyanspic} environment, along with the default value for
-%    \mykey{labelwidth} and \mykey{ref} key. The \myenv*{keyanspic} environment use the same
-%    \mymeta{label} as the \myenv*{keyans} environment.
+%    \mykey{labelwidth} and \mykey{ref} key. The \myenv*{keyanspic}
+%    environment use the same \mymeta{label} as the \myenv*{keyans}
+%    environment.
 % \iffalse
 %% Define and set |label| and |ref| keys for |keyans| and |keyanspic|.
 % \fi
@@ -5341,7 +5388,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                          \dim_set_eq:cN  { l_@@_labelwidth_v_dim }
                             \l_@@_current_widest_dim
                        },
-    label .initial:n = (\Alph*),
+    label .initial:n = \Alph*),
     label .value_required:n = true,
     ref   .code:n    = \@@_keyans_ref:n {#1},
     ref   .value_required:n = true,
@@ -5481,7 +5528,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}[int]{start, widest, \l_@@_start_X_int}
 %    Now define and set \mykey{start} and \mykey{widest} keys for
-%    \myenv*{enumext} and \myenv*{keyans} environments.
+%    \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and
+%    \myenv*{keyans*} environments.
 %
 % \iffalse
 %% Add |start| and |widest| key.
@@ -5513,9 +5561,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection{Setting keys for vertical spaces}
 %
 % \begin{macro}[int]{topsep, partopsep, parsep, noitemsep, nosep}
-% Define and set \mykey{topsep}, \mykey{partopsep}, \mykey{parsep},
-% \mykey{itemsep}, \mykey{noitemsep} and \mykey{nosep} keys for
-% \myenv*{enumext} and \myenv*{keyans} environments.
+%   Define and set \mykey{topsep}, \mykey{partopsep}, \mykey{parsep},
+%   \mykey{itemsep}, \mykey{noitemsep} and \mykey{nosep} keys for
+%   \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and
+%   \myenv*{keyans*} environments.
 %
 % \iffalse
 %% Add |topsep|, |partopsep|, |parsep|, |noitemsep| and |nosep| keys.
@@ -5575,10 +5624,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection{Setting keys for horizontal spaces}\label{key:list-indent}
 %
 % \begin{macro}[int]{itemindent, rightmargin, listparindent, list-offset, list-indent}
-%
 %    Define and set \mykey{itemindent}, \mykey{rightmargin}, \mykey{listparindent}, \mykey{list-offset}
-%    and \mykey{list-indent} keys for \myenv*{enumext} and \myenv*{keyans}
-%    environments.
+%    and \mykey{list-indent} keys for \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and
+%    \myenv*{keyans*} environments.
 % \iffalse
 %% Add |itemindent|, |rightmargin|, |listparindent|, |list-offset| and |list-indent| keys.
 % \fi
@@ -5718,7 +5766,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}[int]{before, before*, after, first}
 %    Define and set \mykey{before}, \mykey{before*}, \mykey{after} and \mykey{first} keys
-%    for \myenv*{enumext} and \myenv*{keyans} environments.
+%    for \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and  \myenv*{keyans*} environments.
 % \iffalse
 %% Add |before|, |before*|, |after| and |first| keys.
 % \fi
@@ -5917,7 +5965,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    and \myenv*{keyans} environments.
 %
 %    Define and set \mykey{mini-env}, \mykey{mini-sep}, \mykey{columns-sep}
-%    and \mykey{columns} keys for \myenv*{enumext} and \myenv*{keyans} environments.
+%    and \mykey{columns} keys for \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and
+%    \myenv*{keyans*} environments.
 % \iffalse
 %% Add |mini-env|, |mini-sep|, |columns-sep| and |columns| keys.
 % \fi
@@ -5942,19 +5991,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %
 % For \myenv*{enumext*} and \myenv*{keyans*} environments the situation
-% is a bit different, the default value for \mykey{columns} key are
-% \mydim{2} and the command \ics*{miniright} is not available, so we will add
+% is a bit different, the command \ics*{miniright} is not available, so we will add
 % the keys \mykey{mini-right} and \mykey{mini-right*} to implement support for
-% \myenv{minipage}.
+% \myenv{minipage} environment.
 % \iffalse
-%% Set |columns=2|, add |mini-right| and |mini-right*| keys for starred environments.
+%% Add |mini-right| and |mini-right*| keys for starred environments.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
       {
-        columns    .initial:n = 2,
         mini-right  .tl_gset:c = { g_@@_miniright_code_#2_tl },
         mini-right  .value_required:n = true,
         mini-right* .code:n    = {
@@ -6242,30 +6289,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % package, again my attempts to find the correct values using |\showoutput| and
 % |\showboxdepth| absolutely failed.
 % \end{important}
-%
-% \begin{macro}[int]{@@_mini_env*}
-%
-%   Creates a \myvarenv*{__@@_mini_env*} environment (\emph{custom version} of
-%   \myenv{minipage}) setting the |\if@minipage| switch to
-%   \emph{\enquote{false}} to allow spaces at the \emph{\enquote{above}} of
-%   the environment, plus we will add |\vspace{|\mydim{0pt}|}| to maintain alignment
-%   on \emph{\enquote{top}}. This environment will be used internally by the
-%   \mykey{mini-env} key, it is not documented in the user interface and is for
-%   internal use only.
-%
-% \iffalse
-%% Function for define custom (internal) minipage environment.
-% \fi
-%    \begin{macrocode}
-\DeclareDocumentEnvironment{@@_mini_env*}{ m }
-  {
-     \@@_minipage:w [ t ] { #1 }
-       \legacy_if_gset_false:n { @minipage }
-       \vspace { 0pt }
-  }
-  { \@@_endminipage: }
-%    \end{macrocode}
-% \end{macro}
 %
 % \subsubsection{Adjustment of vertical spaces for \env{minipage} in \env{enumext}}
 %
@@ -8143,7 +8166,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    is \mymarg{position}\mymarg{content}. This
 %    function is used by \ics*{anskey} in \myenv*{enumext} and
 %    \myenv*{enumext*} environments, \ics*{item*} in \myenv*{keyans}
-%    and \myenv*{keyans*} environments and \ics*{anspic} in \myenv*{keyanspic}
+%    and \myenv*{keyans*} environments and \ics*{anspic*} in \myenv*{keyanspic}
 %    environment.
 % \iffalse
 %% Function for store content to prop list.
@@ -8730,7 +8753,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
    \bool_if:NT \l_@@_check_answers_bool
      {
        \int_gincr:N \g_@@_item_anskey_int
-       \@@_store_anskey_safe_inner:n {#2}
+       \@@_anskey_env_safe_inner:n {#2}
        \@@_store_anskey_code:nn {#1} {#2}
      }
  }
@@ -9791,6 +9814,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec:
   {
+    \@@_internal_mini_page:
     \@@_is_not_nested:
     \int_incr:N \l_@@_level_int
     \int_compare:nNnT { \l_@@_level_int } > { 4 }
@@ -11837,7 +11861,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \bool_if:NT \l_@@_item_starred_viii_bool
             {
               \tl_use:N \l_@@_fake_item_indent_viii_tl
-              \@@_keyans_show_item_opt: \skip_horizontal:n { -\l_@@_fake_item_indent_viii_dim }
+              \@@_keyans_show_item_opt:
+              \skip_horizontal:n { -\l_@@_fake_item_indent_viii_dim - \l_@@_labelsep_viii_dim }
             }
             {
               \tl_use:N \l_@@_fake_item_indent_viii_tl
