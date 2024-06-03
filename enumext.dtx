@@ -8327,9 +8327,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \smallskip
 %
-% The \ics*{anskey} command will cover this point and give it very
-% similar behaviour to that of |\item| in the \myenv*{enumext} and \myenv*{enumext*}
-% environments.We want the command to be executed as follows:
+% The \ics*{anskey} command will cover this point and give it similar
+% behaviour to that of |\item| in the \myenv*{enumext} and
+% \myenv*{enumext*} environments executed as follows:
 % \ics*{anskey}\myoarg{key \textnormal{\textcolor{gray}{=}} val}\mymarg{content} so
 % first we'll add the keys \mykeycmd{break-col}, \mykeycmd{item-join},
 % \mykeycmd{item-star}, \mykeycmd{item-sym*} and \mykeycmd{item-pos*}.
@@ -8354,25 +8354,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-% \begin{macro}{\anskey}
-%
+% \begin{important}*
 %   The \ics*{anskey} command will only be present when using the
 %   \mykey{save-ans} key in \myenv*{enumext} and \myenv*{enumext*}
 %   environments, otherwise it will return an error.
+% \end{important}
 %
-%^^A   We will first call the function \cs{@@_store_anskey_safe_outer:} to be
-%^^A   sure where we execute the command, then we will check the state of the
-%^^A   variable \cs{l_@@_check_answers_bool} set by the key \mykey{no-store},
-%^^A   if is true we proceed to execute the function
-%^^A   \cs{@@_store_anskey_safe_inner:n} to ensure that the command is not
-%^^A   nested and that the argument is not empty we increase the value of
-%^^A   \cs{g_@@_item_anskey_int}, finally we call the function
-%^^A   \cs{@@_store_anskey_code:nn}.
-%^^A If the
-%^^A    \mykey{check-ans} key is active, increment
-%^^A    \cs{g_@@_count_item_with_ans_int}, then call internal function
-%^^A    \cs{@@_store_anskey_code:nnnn} will \emph{\enquote{store content}} in
-%^^A    the \mymeta{sequence} and in the \mymeta{prop list}.
+% \begin{macro}{\anskey}
+%   We will first call the function \cs{@@_anskey_safe_outer:} to be
+%   sure where we execute the command, then we will check the state of the
+%   variable \cs{l_@@_check_answers_bool} set by the key \mykey{no-store},
+%   if is true we will increment \cs{g_@@_item_anskey_int} for the internal
+%   \emph{\enquote{check answer}} system and execute the function
+%   \cs{@@_anskey_safe_inner:n} to ensure that the command is not
+%   nested and that the argument is not empty, finally we call the function
+%   \cs{@@_store_anskey_code:nn}.
 % \iffalse
 %% Define the user command |\anskey|.
 %% #1: key-val; #2: argument
@@ -8380,12 +8376,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \NewDocumentCommand \anskey { o +m }
   {
-    \@@_store_anskey_safe_outer:
+    \@@_anskey_safe_outer:
     \group_begin:
       \bool_if:NT \l_@@_check_answers_bool
         {
           \int_gincr:N \g_@@_item_anskey_int
-          \@@_store_anskey_safe_inner:n {#2}
+          \@@_anskey_safe_inner:n {#2}
           \@@_store_anskey_code:nn {#1} {#2}
         }
     \group_end:
@@ -8395,7 +8391,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Internal functions for the command}
 %
-% \begin{macro}{\@@_store_anskey_safe_outer:, \@@_anskey_safe_inner:n}
+% \begin{macro}{\@@_anskey_safe_outer:, \@@_anskey_safe_inner:n}
 %   The \cs{@@_store_anskey_safe_outer:} function will return the
 %   appropriate messages when the command is executed outside the
 %   environment in which the \mykey{save-ans} key was activated.
@@ -8403,7 +8399,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal function for msg when |\anskey| is outer.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_store_anskey_safe_outer:
+\cs_new_protected:Nn \@@_anskey_safe_outer:
   {
     \bool_if:NF \l_@@_store_active_bool
       {
@@ -8423,14 +8419,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % passed argument is empty and then check to see if the command is nested
 % by returning the appropriate messages.
 % \iffalse
-%% Internal function for msg when |\anskey| is inner.
+%% Internal function for msg when |\anskey| is inner and arg is empty.
 % \fi
 %    \begin{macrocode}
-\msg_new:nnn { enumext } { anskey-empty-arg }
-  {
-    Can't ~ store ~ empty ~ content ~ ~ \msg_line_context:.
-  }
-\cs_new_protected:Npn \@@_store_anskey_safe_inner:n #1
+\cs_new_protected:Npn \@@_anskey_safe_inner:n #1
   {
     \tl_if_empty:nT {#1}
       {
@@ -8446,9 +8438,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_store_anskey_code:nn}
-%
 %   The internal function \cs{@@_store_anskey_code:nn} first we pass the
-%   command \mymeta{argument} to the \mymeta{prop list}, then checks the
+%   \mymeta{argument} to the \mymeta{prop list}, then checks the
 %   state of the variable \cs{l_@@_store_ref_key_bool} handled by the
 %   \mykey{save-ref} key and will call the function
 %   \cs{@@_store_internal_ref:} for the internal \emph{\enquote{label
@@ -8456,7 +8447,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mykey{show-pos} keys are active we will show the
 %   \emph{\enquote{wrapped}} \mymeta{argument} passed to the command.
 % \iffalse
-%% Internal function of |\anskey|.
+%% Internal function of |\anskey| for store content.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_store_anskey_code:nn #1 #2
@@ -8468,14 +8459,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \@@_store_anskey_show_left:n { #2 }
 %    \end{macrocode}
-%   Now we start processing the optional arguments passed to the
-%   command to build our |\item| in the variable \cs{l_@@_store_anskey_arg_tl}
+%   Now we start processing the \myoarg{key \textnormal{\textcolor{gray}{=}} val}
+%   passed to the command to build our |\item| in the variable \cs{l_@@_store_anskey_arg_tl}
 %   which we will \emph{\enquote{store}} in the \mymeta{sequence}.
 %   First we clear the variable \cs{l_@@_store_anskey_arg_tl} and process
-%   \myoarg{key \textnormal{\textcolor{gray}{=}} val}, if the
-%   \mykeycmd{break-col} key is present and the command is running under
-%   \myenv*{enumext} (not in the starred version) we will add
-%   \ics{columnbreak} and then |\item|.
+%   the \mymeta{keys}, if the \mykeycmd{break-col} key is present and
+%   the command is running under \myenv*{enumext} (not in \myenv*{enumext*})
+%   we will add \ics{columnbreak} and then |\item|.
 %    \begin{macrocode}
     \tl_if_novalue:nF {#1}
       {
@@ -8505,7 +8495,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   And now we will review the keys \mykeycmd{item-star}, \mykeycmd{item-sym*} and
 %   \mykeycmd{item-pos*} and pass them to \cs{l_@@_store_anskey_arg_tl}
-%   along with the \mymeta{argument}..
+%   along with the \mymeta{argument}.
 %    \begin{macrocode}
      \bool_if:NTF \l_@@_store_item_star_bool
       {
@@ -8535,7 +8525,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %    Finally we check if the \mykey{save-ref} key are active along with the
 %    \mypkg{hyperref} package load, if both conditions are met, it will
-%    create the \ics{hyperlink} with \mykey{mark-ref} key and then store in \mymeta{sequence}.
+%    create the \ics{hyperlink} with \emph{symbol} set by
+%    \mykey{mark-ref} key and then store in \mymeta{sequence}.
 %    \begin{macrocode}
     \bool_lazy_and:nnT
       { \bool_if_p:N \l_@@_store_ref_key_bool }
@@ -8722,6 +8713,69 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \group_end:
           }
         \@@_store_anskey_show_wrap:n { #1 }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The environment \env{anskey*}}
+%
+% \begin{macro}{anskey*,\@@_anskey_env_safe_outer:, \@@_anskey_env_safe_inner:n}
+%  Only as a complement and demarcation for very extensive content, we
+%  will provide the environment version of the command |\anskey|.
+%    \begin{macrocode}
+\NewDocumentEnvironment{anskey*}{ o +b }
+ {
+   \@@_anskey_env_safe_outer:
+   \bool_if:NT \l_@@_check_answers_bool
+     {
+       \int_gincr:N \g_@@_item_anskey_int
+       \@@_store_anskey_safe_inner:n {#2}
+       \@@_store_anskey_code:nn {#1} {#2}
+     }
+ }
+ {}
+%    \end{macrocode}
+%   The \cs{@@_anskey_env_safe_outer:} function will return the
+%   appropriate messages when the environment is executed outside the
+%   environment in which the \mykey{save-ans} key was activated.
+% \iffalse
+%% Internal function for msg when |anskey*| is outer.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_anskey_env_safe_outer:
+  {
+    \bool_if:NF \l_@@_store_active_bool
+      {
+        \msg_error:nnnn { enumext } { anskey-wrong-place }{ anskey }{ enumext }
+      }
+    \int_compare:nNnT { \l_@@_keyans_level_int } = { 1 }
+      {
+        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans }
+      }
+    \int_compare:nNnT { \l_@@_keyans_pic_level_int } = { 1 }
+      {
+        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
+      }
+  }
+%    \end{macrocode}
+% The \cs{@@_anskey_env_safe_inner:n} function will first check to see if the
+% body is empty and then check to see if the environment is nested
+% by returning the appropriate messages.
+% \iffalse
+%% Internal function for msg when |anskey*| is inner and body is empty.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_anskey_env_safe_inner:n #1
+  {
+    \tl_if_empty:nT {#1}
+      {
+        \msg_error:nn { enumext } { anskey-empty-arg }
+      }
+    \int_incr:N \l_@@_anskey_level_int
+    \int_compare:nNnT { \l_@@_anskey_level_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { anskey-nested-env }
       }
   }
 %    \end{macrocode}
@@ -12357,6 +12411,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % Messages used by \ics*{anskey} and \ics*{anspic} commands.
 %    \begin{macrocode}
+\msg_new:nnn { enumext } { anskey-empty-arg }
+  {
+    Can't ~ store ~ empty ~ content ~ ~ \msg_line_context:.
+  }
 \msg_new:nnn { enumext } { anskey-wrong-place }
   {
     Wrong ~ place ~ for ~ command ~ '\c_backslash_str #1' ~ \msg_line_context:.~ \\
@@ -12364,7 +12422,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \msg_new:nnn { enumext } { anskey-nested }
   {
-    The ~ command ~ can't ~ be ~ nested ~ \msg_line_context:.
+    The ~ command ~ \c_backslash_str anskey~ can't ~ be ~ nested ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { anskey-nested-env }
+  {
+    The ~ environment ~ anskey* ~ can't ~ be ~ nested ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { anspic-wrong-place }
   {

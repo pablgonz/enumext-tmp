@@ -2342,18 +2342,18 @@
 %% #1: key-val; #2: argument
 \NewDocumentCommand \anskey { o +m }
   {
-    \__enumext_store_anskey_safe_outer:
+    \__enumext_anskey_safe_outer:
     \group_begin:
       \bool_if:NT \l__enumext_check_answers_bool
         {
           \int_gincr:N \g__enumext_item_anskey_int
-          \__enumext_store_anskey_safe_inner:n {#2}
+          \__enumext_anskey_safe_inner:n {#2}
           \__enumext_store_anskey_code:nn {#1} {#2}
         }
     \group_end:
   }
 %% Internal function for msg when |\anskey| is outer.
-\cs_new_protected:Nn \__enumext_store_anskey_safe_outer:
+\cs_new_protected:Nn \__enumext_anskey_safe_outer:
   {
     \bool_if:NF \l__enumext_store_active_bool
       {
@@ -2368,12 +2368,8 @@
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
   }
-%% Internal function for msg when |\anskey| is inner.
-\msg_new:nnn { enumext } { anskey-empty-arg }
-  {
-    Can't ~ store ~ empty ~ content ~ ~ \msg_line_context:.
-  }
-\cs_new_protected:Npn \__enumext_store_anskey_safe_inner:n #1
+%% Internal function for msg when |\anskey| is inner and arg is empty.
+\cs_new_protected:Npn \__enumext_anskey_safe_inner:n #1
   {
     \tl_if_empty:nT {#1}
       {
@@ -2385,7 +2381,7 @@
         \msg_error:nn { enumext } { anskey-nested }
       }
   }
-%% Internal function of |\anskey|.
+%% Internal function of |\anskey| for store content.
 \cs_new_protected:Npn \__enumext_store_anskey_code:nn #1 #2
   {
     \__enumext_store_addto_prop:n {#2}
@@ -2564,6 +2560,46 @@
             \group_end:
           }
         \__enumext_store_anskey_show_wrap:n { #1 }
+      }
+  }
+\NewDocumentEnvironment{anskey*}{ o +b }
+ {
+   \__enumext_anskey_env_safe_outer:
+   \bool_if:NT \l__enumext_check_answers_bool
+     {
+       \int_gincr:N \g__enumext_item_anskey_int
+       \__enumext_store_anskey_safe_inner:n {#2}
+       \__enumext_store_anskey_code:nn {#1} {#2}
+     }
+ }
+ {}
+%% Internal function for msg when |anskey*| is outer.
+\cs_new_protected:Nn \__enumext_anskey_env_safe_outer:
+  {
+    \bool_if:NF \l__enumext_store_active_bool
+      {
+        \msg_error:nnnn { enumext } { anskey-wrong-place }{ anskey }{ enumext }
+      }
+    \int_compare:nNnT { \l__enumext_keyans_level_int } = { 1 }
+      {
+        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans }
+      }
+    \int_compare:nNnT { \l__enumext_keyans_pic_level_int } = { 1 }
+      {
+        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
+      }
+  }
+%% Internal function for msg when |anskey*| is inner and body is empty.
+\cs_new_protected:Npn \__enumext_anskey_env_safe_inner:n #1
+  {
+    \tl_if_empty:nT {#1}
+      {
+        \msg_error:nn { enumext } { anskey-empty-arg }
+      }
+    \int_incr:N \l__enumext_anskey_level_int
+    \int_compare:nNnT { \l__enumext_anskey_level_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { anskey-nested-env }
       }
   }
 %% Function for storing in prop list for |keyans| and |keyanspic|.
@@ -4537,6 +4573,10 @@
     Too ~ deep ~ nesting  ~ for ~ 'enumext' ~ \msg_line_context:.~ \\
     The ~ maximum  ~ level  ~ of  ~ nesting  ~ is ~ 4.
   }
+\msg_new:nnn { enumext } { anskey-empty-arg }
+  {
+    Can't ~ store ~ empty ~ content ~ ~ \msg_line_context:.
+  }
 \msg_new:nnn { enumext } { anskey-wrong-place }
   {
     Wrong ~ place ~ for ~ command ~ '\c_backslash_str #1' ~ \msg_line_context:.~ \\
@@ -4544,7 +4584,11 @@
   }
 \msg_new:nnn { enumext } { anskey-nested }
   {
-    The ~ command ~ can't ~ be ~ nested ~ \msg_line_context:.
+    The ~ command ~ \c_backslash_str anskey~ can't ~ be ~ nested ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { anskey-nested-env }
+  {
+    The ~ environment ~ anskey* ~ can't ~ be ~ nested ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { anspic-wrong-place }
   {
