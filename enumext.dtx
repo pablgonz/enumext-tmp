@@ -2367,6 +2367,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  \mypkg{hyperref}\cite{hyperref} package is detected, |\hyperlink| and
 %  |\hypertarget| will be used, otherwise the usual \emph{\enquote{label
 %  and ref}} system provided by \hologo{LaTeX} will be used.
+%
+% \smallskip
+%
+% The \ics*{anskey} command is available for all levels of the
+% \myenv*{enumext} environment and the \myenv*{enumext*} environment, but
+% is disabled for the \myenv*{keyans}, \myenv*{keyans*} and
+% \myenv*{keyanspic} environments.
 % \end{function}
 %
 % \subsubsection{Keys for \cs[no-index]{anskey}}
@@ -2401,31 +2408,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \mykeycmd{item-star} and \mykeycmd{item-sym*} and stores \mymarg{content} in the \emph{sequence}
 % \mymarg{store name} of the form |\item*|\myoarg{symbol}\myoarg{offset} \mymeta{content}.
 %
-% \subsubsection{The environment \env{anskey*}}
-%
-% \begin{function}{anskey*}
-%   \begin{syntax}
-%     |\begin{anskey*}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \mymeta{body content} |\end{anskey*}|
-%   \end{syntax}
-% The \myenv*{anskey*} environments are
-% \emph{\enquote{enumerated list}} environments designed for
-% \emph{\enquote{multiple choice}} questions activated by the \mykey{save-ans} key.
-% This environments can NOT be nested and must always be at the
-% \emph{\enquote{first level}} of the \myenv*{enumext} environment, the
-% commands \ics*{item} and \ics*{item}\myoarg{custom} work in the usual
-% and the command |\item|\myparg{columns} is available for the \myenv*{keyans*} environment.
-% \end{function}
 % \subsubsection*{Example}
-%
-% \begin{enumext}[save-ans=test,show-ans=true,columns=2,nosep]
-%   \item* Text containing our instructions or questions.\anskey{first answer}
-%   \item Text containing our instructions or questions.
-%     \begin{enumext}
-%       \item Question.\anskey{second answer}
-%     \end{enumext}
-%   \item Text containing our instructions or questions. \anskey{third answer}
-%   \item Text containing our instructions or questions. \anskey{fourth answer}
-% \end{enumext}
 %
 % \iffalse
 %<*example>
@@ -2444,6 +2427,92 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \iffalse
 %</example>
 % \fi
+%
+% \begin{enumext}[save-ans=test,show-ans=true,columns=2,nosep]
+%   \item* Text containing our instructions or questions.\anskey{first answer}
+%   \item Text containing our instructions or questions.
+%     \begin{enumext}
+%       \item Question.\anskey{second answer}
+%     \end{enumext}
+%   \item Text containing our instructions or questions. \anskey{third answer}
+%   \item Text containing our instructions or questions. \anskey{fourth answer}
+% \end{enumext}
+%
+% \subsection{The environment \env{anskey*}}
+%
+% \vspace*{-\baselineskip}
+%
+% \begin{function}{anskey*}
+%   \begin{syntax}
+%     |\begin{anskey*}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \mymeta{body content} |\end{anskey*}|
+%   \end{syntax}
+%
+%  The environment \myenv*{anskey*} takes a mandatory \mymarg{body content}
+%  and \emph{\enquote{stores}} it in the \emph{sequence} and \emph{prop
+%  list} \mymarg{store name} set by \mykey{save-ans} key.
+%  By design the environment cannot be nested or passed \emph{verbatim} in the
+%  body and it is assumed that each |\item| or |\item*| within the
+%  environment in which it is active it has a \emph{\enquote{single
+%  execution}} of |\anskey| unless |\item| or |\item*| open a nested level
+%  or use the \mykey{no-store} key.
+%
+%  \smallskip
+%
+%  If \mykey{save-ref} key are active and the
+%  \mypkg{hyperref}\cite{hyperref} package is detected, |\hyperlink| and
+%  |\hypertarget| will be used, otherwise the usual \emph{\enquote{label
+%  and ref}} system provided by \hologo{LaTeX} will be used.
+%
+%  \smallskip
+%
+%  The \myenv*{anskey*} environment uses the same \mymeta{keys} as the
+%  \ics*{anskey} command and is available for all levels of the
+%  \myenv*{enumext} environment and the \myenv*{enumext*} environment, but
+%  it is disabled for the \myenv*{keyans}, \myenv*{keyans*} and
+%  \myenv*{keyanspic} environments.
+%  \end{function}
+%
+% \subsubsection*{Example}
+%
+% \iffalse
+%<*example>
+% \fi
+\begin{examplecode}[frame=single]
+\begin{enumext}[save-ans=test,show-pos=true,start=5]
+  \item* Text containing our instructions or questions.
+    \begin{anskey*}
+      `\mymeta{first answer}`
+    \end{anskey*}
+  \item Text containing our instructions or questions.
+    \begin{enumext}
+      \item Question.
+        \begin{anskey*}
+          `\mymeta{second answer}`
+        \end{anskey*}
+    \end{enumext}
+  \item Text containing our instructions or questions.
+    \begin{anskey*}
+      `\mymeta{third answer}`
+    \end{anskey*}
+  \item Text containing our instructions or questions.
+    \begin{anskey*}
+      `\mymeta{fourth answer}`
+    \end{anskey*}
+\end{enumext}
+\end{examplecode}
+% \iffalse
+%</example>
+% \fi
+%
+% \begin{enumext}[save-ans=test,show-pos=true,columns=2,nosep,start=5]
+%   \item* Text containing our instructions or questions.\anskey{first answer}
+%   \item Text containing our instructions or questions.
+%     \begin{enumext}
+%       \item Question.\anskey{second answer}
+%     \end{enumext}
+%   \item Text containing our instructions or questions. \anskey{third answer}
+%   \item Text containing our instructions or questions. \anskey{fourth answer}
+% \end{enumext}
 %
 % \subsection[The environment \texttt{keyans}]{The environments \env{keyans} and \env{keyans*}}
 %
@@ -3911,7 +3980,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-05-31}
+  {2024-06-03}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4790,7 +4859,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{The internal \env{minipage} environment}
+% \subsection{The internal \env{minipage} environment}
 %
 % \begin{macro}[int]{\@@_internal_mini_page:, @@_mini_env*}
 %   The function \cs{@@_internal_mini_page:} creates a internal
@@ -4801,7 +4870,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   on \emph{\enquote{top}}. This environment will be used internally by the
 %   \mykey{mini-env} key, it is not documented in the user interface and is for
 %   internal use only. This function is passed to the function \cs{@@_safe_exec:}
-%   in the \myenv*{enumext} environment definition (\S\ref{env:enumext}).
+%   in the \myenv*{enumext} environment definition (\S\ref{env:enumext}) and
+%   \cs{@@_safe_exec_vii:} in the \myenv*{enumext*} environment definition (\S\ref{env:starred})
 %
 % \iffalse
 %% Function for define a internal minipage environment.
@@ -4809,13 +4879,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_internal_mini_page:
   {
-    \DeclareDocumentEnvironment{@@_mini_env*}{ m }
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
       {
-        \@@_minipage:w [ t ] { ##1 }
-          \legacy_if_gset_false:n { @minipage }
-          \vspace { 0pt }
+        \DeclareDocumentEnvironment{@@_mini_env*}{ m }
+          {
+            \@@_minipage:w [ t ] { ##1 }
+              \legacy_if_gset_false:n { @minipage }
+              \vspace { 0pt }
+          }
+          { \@@_endminipage: }
       }
-      { \@@_endminipage: }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10923,6 +10996,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec_vii:
   {
+    \@@_internal_mini_page:
     \@@_is_not_nested:
     \int_incr:N \l_@@_level_h_int
     \int_compare:nNnT { \l_@@_level_h_int } > { 1 }

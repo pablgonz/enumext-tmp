@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2023-11-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-05-31}
+  {2024-06-03}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -400,13 +400,16 @@
 %% Function for define a internal minipage environment.
 \cs_new_protected:Nn \__enumext_internal_mini_page:
   {
-    \DeclareDocumentEnvironment{__enumext_mini_env*}{ m }
+    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
       {
-        \__enumext_minipage:w [ t ] { ##1 }
-          \legacy_if_gset_false:n { @minipage }
-          \vspace { 0pt }
+        \DeclareDocumentEnvironment{__enumext_mini_env*}{ m }
+          {
+            \__enumext_minipage:w [ t ] { ##1 }
+              \legacy_if_gset_false:n { @minipage }
+              \vspace { 0pt }
+          }
+          { \__enumext_endminipage: }
       }
-      { \__enumext_endminipage: }
   }
 %% Detection off |hyperref| package with |hyperfootnotes=true|.
 \hook_gput_code:nnn { begindocument } { enumext } { \__enumext_after_hyperref: }
@@ -3661,6 +3664,7 @@
 %% Test deep-level for |enumext*| and set bool vars.
 \cs_new_protected:Nn \__enumext_safe_exec_vii:
   {
+    \__enumext_internal_mini_page:
     \__enumext_is_not_nested:
     \int_incr:N \l__enumext_level_h_int
     \int_compare:nNnT { \l__enumext_level_h_int } > { 1 }
