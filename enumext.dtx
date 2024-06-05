@@ -4249,8 +4249,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}[int]{\l_@@_store_active_bool, \l_@@_store_name_tl,
-%                       \g_@@_store_name_tl, \l_@@_store_anskey_seq,
-%                       \l_@@_store_anskey_arg_tl, \l_@@_store_anskey_env_tl,
+%                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl, \l_@@_store_anskey_env_tl,
 %                       \l_@@_store_anskey_opt_tl, \l_@@_store_columns_join_int,
 %                       \l_@@_store_keyans_label_tl, \l_@@_store_keyans_item_opt_tl,
 %                       \l_@@_keyans_item_opt_tl, \l_@@_keyans_tmpa_tl,}
@@ -4284,7 +4283,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \l_@@_store_active_bool
 \tl_new:N   \l_@@_store_name_tl
 \tl_new:N   \g_@@_store_name_tl
-\seq_new:N  \l_@@_store_anskey_seq
 \tl_new:N   \l_@@_store_anskey_arg_tl
 \tl_new:N   \l_@@_store_anskey_env_tl
 \tl_new:N   \l_@@_store_anskey_opt_tl
@@ -8923,7 +8921,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           { g__scontents_name_ \g_@@_store_name_tl _seq } \l_@@_store_anskey_env_tl
           { \seq_item:ce { g__scontents_name_ \g_@@_store_name_tl _seq } { -1 }  }
         % add to prop
-        \regex_replace_all:nnN { \s{2,}\u{c__scontents_hidden_space_str} } { \% } \l_@@_store_anskey_env_tl
+        \regex_replace_all:nnN
+          { \s{2,}\u{c__scontents_hidden_space_str} } { \% } \l_@@_store_anskey_env_tl
         % keys
         \@@_anskey_env_keys:
         % store
