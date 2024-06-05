@@ -3997,7 +3997,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_info:nnn { enumext } { package-not-load } { multicol }
         \RequirePackage{multicol}[2023-03-30]
       }
-    \IfPackageLoadedTF { multicol }
+    \IfPackageLoadedTF { scontents }
       {
         \msg_info:nnn { enumext } { package-load } { scontents }
       }
@@ -4249,10 +4249,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}[int]{\l_@@_store_active_bool, \l_@@_store_name_tl,
-%                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl, \l_@@_store_anskey_opt_tl,
-%                       \l_@@_store_columns_join_int, \l_@@_store_keyans_label_tl,
-%                       \l_@@_store_keyans_item_opt_tl, \l_@@_keyans_item_opt_tl,
-%                       \l_@@_keyans_tmpa_tl,}
+%                       \g_@@_store_name_tl, \l_@@_store_anskey_seq,
+%                       \l_@@_store_anskey_arg_tl, \l_@@_store_anskey_env_tl,
+%                       \l_@@_store_anskey_opt_tl, \l_@@_store_columns_join_int,
+%                       \l_@@_store_keyans_label_tl, \l_@@_store_keyans_item_opt_tl,
+%                       \l_@@_keyans_item_opt_tl, \l_@@_keyans_tmpa_tl,}
 %
 %    The boolean variable \cs{l_@@_store_active_bool} setting by
 %    \mykey{save-ans} key (\S\ref{key:resume}) activates all the
@@ -4283,7 +4284,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \l_@@_store_active_bool
 \tl_new:N   \l_@@_store_name_tl
 \tl_new:N   \g_@@_store_name_tl
+\seq_new:N  \l_@@_store_anskey_seq
 \tl_new:N   \l_@@_store_anskey_arg_tl
+\tl_new:N   \l_@@_store_anskey_env_tl
 \tl_new:N   \l_@@_store_anskey_opt_tl
 \int_new:N  \l_@@_store_columns_join_int
 \tl_new:N   \l_@@_store_keyans_label_tl
@@ -4515,15 +4518,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_after_env:nn}
-%    A internal \emph{\enquote{hook}} function for execute code \mykey{minirigth}
-%    and \mykey{minirigth*} keys outside the \myenv*{enumext*} and
+% \begin{macro}{\@@_after_env:nn, \@@_before_env:nn}
+%    A internal \emph{\enquote{hook}} functions for execute code \mykey{mini-rigth}
+%    and \mykey{mini-rigth*} keys outside the \myenv*{enumext*} and
 %    \myenv*{keyans*} environments and print \mykey{check-ans} outside the
 %    \myenv*{enumext} and \myenv*{enumext*} environments.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_after_env:nn #1 #2
   {
     \hook_gput_code:nnn {env/#1/after} {enumext} {#2}
+  }
+\cs_new_protected:Npn \@@_before_env:nn #1 #2
+  {
+    \hook_gput_code:nnn {env/#1/before} {enumext} {#2}
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7960,8 +7967,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 \@@_check_ans_show:
               }
               { \@@_check_ans_log: }
-            \cs_undefine:c { __scontents_anskey*_env_begin: }
-            \cs_undefine:c { __scontents_anskey*_env_end:}
+            \cs_undefine:N \__scontents_anskeyenv_env_begin:
+            \cs_undefine:N \__scontents_anskeyenv_env_end:
           }
         \@@_reset_global_vars:
       }
@@ -8828,9 +8835,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The environment \env{anskey*}}
 %
-% \begin{macro}[int]{\@@_scontents_anskey:n, \@@_scontents_anskey:V, anskey*}
+% \begin{macro}[int]{\@@_scontents_anskey:n, \@@_scontents_anskey:V, anskeyenv}
 %   The function \cs{@@_scontents_anskey:n} creates a internal
-%   \myenv*{anskey*} environment (\emph{custom version} of
+%   \myenv*{anskeyenv} environment (\emph{custom version} of
 %   \myenv{scontents}) setting the |\if@minipage| switch to
 %   \emph{\enquote{false}} to allow spaces at the \emph{\enquote{above}} of
 %   the environment, plus we will add |\vspace{|\mydim{0pt}|}| to maintain alignment
@@ -8846,30 +8853,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scontents_anskey:n #1
   {
-    \keys_define:nn { scontents / scontents }
-      {
-        break-col .bool_gset:N = \g_@@_store_columns_break_bool,
-        break-col .default:n  = true,
-        break-col .value_forbidden:n = true,
-        item-join .int_gset:N = \g_@@_store_item_join_int,
-        item-join .value_required:n = true,
-        item-star .bool_gset:N = \g_@@_store_item_star_bool,
-        item-star .default:n  = true,
-        item-star .value_forbidden:n = true,
-        item-sym* .tl_gset:N   = \g_@@_store_item_symbol_tl,
-        item-sym* .value_required:n = true,
-        item-pos* .dim_gset:N  = \g_@@_store_item_symbol_sep_dim,
-        item-pos* .value_required:n = true,
-      }
-    \newenvsc{anskey*}[store-env=#1,print-env=false]
-    \@@_scontents_anskey_exec:
+
+    \newenvsc{anskeyenv}[store-env=#1,print-env=false]
+    \@@_anskey_env_exec:
   }
 \cs_generate_variant:Nn \@@_scontents_anskey:n { V }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_scontents_anskey_exec:, \@@_scontents_anskey_keys:,
-%                    \@@_scontents_anskey_store:, \@@_scontents_anskey_clean_vars:}
+% \begin{macro}[int]{\@@_anskey_env_exec:, \@@_anskey_env_keys:,
+%                    \@@_anskey_env_store:, \@@_anskey_env_clean:}
 %
 %   The function \cs{@@_internal_mini_page:} creates a internal
 %   \myvarenv*{__@@_mini_env*} environment (\emph{custom version} of
@@ -8884,22 +8877,61 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function for exec |anskey*| environment.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_scontents_anskey_exec:
+\cs_new_protected:Nn \@@_anskey_env_define_keys:
   {
-    \@@_after_env:nn { anskeyverb }
+    \keys_define:nn { scontents / scontents }
       {
-        \tl_clear:N \l_@@_store_anskey_arg_tl
-        \tl_clear:N \l_@@_store_anskey_opt_tl
+        break-col .bool_gset:N = \g_@@_store_columns_break_bool,
+        break-col .default:n  = true,
+        break-col .value_forbidden:n = true,
+        item-join .int_gset:N = \g_@@_store_item_join_int,
+        item-join .value_required:n = true,
+        item-star .bool_gset:N = \g_@@_store_item_star_bool,
+        item-star .default:n  = true,
+        item-star .value_forbidden:n = true,
+        item-sym* .tl_gset:N   = \g_@@_store_item_symbol_tl,
+        item-sym* .value_required:n = true,
+        item-pos* .dim_gset:N  = \g_@@_store_item_symbol_sep_dim,
+        item-pos* .value_required:n = true,
+        print-env .undefine:,
+        store-env .undefine:,
+        write-out .undefine:,
+      }
+  }
+\cs_new_protected:Nn \@@_anskey_env_undefine_keys:
+  {
+    \keys_define:nn { scontents / scontents }
+      {
+        break-col .undefine:,
+        item-join .undefine:,
+        item-star .undefine:,
+        item-sym* .undefine:,
+        item-pos* .undefine:,
+      }
+  }
+\cs_new_protected:Nn \@@_anskey_env_exec:
+  {
+    \@@_before_env:nn { anskeyenv }
+      {
+        \@@_anskey_env_define_keys:
+      }
+    \@@_after_env:nn { anskeyenv }
+      {
+        \tl_clear:N  \l_@@_store_anskey_env_tl
+        \tl_clear:N  \l_@@_store_anskey_opt_tl
         \seq_gpop_right:cNT
-          { g__scontents_name_ \g_@@_store_name_tl _seq } \l_@@_store_anskey_arg_tl
+          { g__scontents_name_ \g_@@_store_name_tl _seq } \l_@@_store_anskey_env_tl
           { \seq_item:ce { g__scontents_name_ \g_@@_store_name_tl _seq } { -1 }  }
         % add to prop
-        \regex_replace_all:nnN { \s{2,}\u{c__scontents_hidden_space_str} } { \% } \l_@@_store_anskey_arg_tl
+        \regex_replace_all:nnN { \s{2,}\u{c__scontents_hidden_space_str} } { \% } \l_@@_store_anskey_env_tl
         % keys
-        \@@_scontents_anskey_keys:
+        \@@_anskey_env_keys:
         % store
-        \@@_scontents_anskey_store:
+        \@@_anskey_env_store:
         % clean
+        \@@_anskey_env_clean:
+        % Undef
+        \@@_anskey_env_undefine_keys:
       }
   }
 %    \end{macrocode}
@@ -8909,7 +8941,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   running under \myenv*{enumext} (not in \myenv*{enumext*})
 %   we will add the key \mykeycmd{break-col}.
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_scontents_anskey_keys:
+\cs_new_protected:Nn \@@_anskey_env_keys:
   {
     \bool_lazy_and:nnT
       { \bool_if_p:N \g_@@_store_columns_break_bool }
@@ -8965,20 +8997,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    create the \ics{hyperlink} with \emph{symbol} set by
 %    \mykey{mark-ref} key and then store in \mymeta{sequence}.
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_scontents_anskey_store:
+\cs_new_protected:Nn \@@_anskey_env_store:
   {
     \group_begin:
-      \tl_if_empty:NF \l_@@_store_anskey_arg_tl
+      \tl_if_empty:NF \l_@@_store_anskey_env_tl
         {
           \tl_if_empty:NTF \l_@@_store_anskey_opt_tl
             {
               \exp_args:Ne
-                \anskey{ \__scontents_rescan_tokens:x { \l_@@_store_anskey_arg_tl } }
+                \anskey{ \__scontents_rescan_tokens:x { \l_@@_store_anskey_env_tl } }
             }
             {
               \keys_set:nV { enumext / anskey } \l_@@_store_anskey_opt_tl
               \exp_args:Ne
-                \anskey{ \__scontents_rescan_tokens:x { \l_@@_store_anskey_arg_tl } }
+                \anskey{ \__scontents_rescan_tokens:x { \l_@@_store_anskey_env_tl } }
             }
         }
     \group_end:
@@ -8989,7 +9021,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    create the \ics{hyperlink} with \emph{symbol} set by
 %    \mykey{mark-ref} key and then store in \mymeta{sequence}.
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_scontents_anskey_clean_vars:
+\cs_new_protected:Nn \@@_anskey_env_clean:
   {
     \bool_gset_false:N \g_@@_store_columns_break_bool
     \int_gzero:N       \g_@@_store_item_join_int
