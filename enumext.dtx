@@ -589,7 +589,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywords      = [3]{document,article,setlength,pagestyle,definecolor},%
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
-    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item,%
+    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskeyenv,%
                     setenumext,printkeyans,miniright,parleft,itembx, descitemwd,theenumXi,theenumXii,theenumXiii,theenumXiv,theenumXv, theenumXvii, theenumXviii},%
 % Reserved words 5 (in red)
     keywordstyle  = [5]{\color{red}},%
@@ -598,8 +598,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Reserved words 6 (optcolor) KEYS
     keywordstyle  = [6]{\color{optcolor}},%
     keywords      = [6]{save-ans,wrap-ans,save-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
-                    nosep,before,after,start, right, item-sym, item-sep, hyperfootnotes,%
-                    scale,wrap-label,font,first,widest,mini-env,list-indent, no-store, save-key,},%
+                    nosep,before,after,start, right, item-sym, item-sep, hyperfootnotes, item-star, %
+                    scale,wrap-label,font,first,widest,mini-env,list-indent, no-store, save-key,
+                    store-env, print-env, write-out},%
 % Reserved words 7 (label values)
     keywordstyle  = [7]{\color{MediumOrchid}},%
     keywords      = [7]{m,s,M,VIII,viii,v,E,t,A,XXIII,true, false,test,sample},%
@@ -2438,16 +2439,16 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \item Text containing our instructions or questions. \anskey{fourth answer}
 % \end{enumext}
 %
-% \subsection{The environment \env{anskey*}}
+% \subsection{The environment \env{anskeyenv}}
 %
 % \vspace*{-\baselineskip}
 %
-% \begin{function}{anskey*}
+% \begin{function}{anskeyenv}
 %   \begin{syntax}
-%     |\begin{anskey*}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \mymeta{body content} |\end{anskey*}|
+%     |\begin{anskeyenv}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \mymeta{body content} |\end{anskeyenv}|
 %   \end{syntax}
 %
-%  The environment \myenv*{anskey*} takes a mandatory \mymarg{body content}
+%  The environment \myenv*{anskeyenv} takes a mandatory \mymarg{body content}
 %  and \emph{\enquote{stores}} it in the \emph{sequence} and \emph{prop
 %  list} \mymarg{store name} set by \mykey{save-ans} key.
 %  By design the environment cannot be nested or passed \emph{verbatim} in the
@@ -2465,7 +2466,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 %  \smallskip
 %
-%  The \myenv*{anskey*} environment uses the same \mymeta{keys} as the
+%  The \myenv*{anskeyenv} environment uses the same \mymeta{keys} as the
 %  \ics*{anskey} command and is available for all levels of the
 %  \myenv*{enumext} environment and the \myenv*{enumext*} environment, but
 %  it is disabled for the \myenv*{keyans}, \myenv*{keyans*} and
@@ -2480,24 +2481,24 @@ This work consists of the files enumext.dtx and enumext.sty.
 \begin{examplecode}[frame=single]
 \begin{enumext}[save-ans=test,show-pos=true,start=5]
   \item* Text containing our instructions or questions.
-    \begin{anskey*}
+    \begin{anskeyenv}[item-star]
       `\mymeta{first answer}`
-    \end{anskey*}
+    \end{anskeyenv}
   \item Text containing our instructions or questions.
     \begin{enumext}
       \item Question.
-        \begin{anskey*}
+        \begin{anskeyenv}
           `\mymeta{second answer}`
-        \end{anskey*}
+        \end{anskeyenv}
     \end{enumext}
   \item Text containing our instructions or questions.
-    \begin{anskey*}
+    \begin{anskeyenv}
       `\mymeta{third answer}`
-    \end{anskey*}
+    \end{anskeyenv}
   \item Text containing our instructions or questions.
-    \begin{anskey*}
+    \begin{anskeyenv}
       `\mymeta{fourth answer}`
-    \end{anskey*}
+    \end{anskeyenv}
 \end{enumext}
 \end{examplecode}
 % \iffalse
@@ -2505,7 +2506,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \fi
 %
 % \begin{enumext}[save-ans=test,show-pos=true,columns=2,nosep,start=5]
-%   \item* Text containing our instructions or questions.\anskey{first answer}
+%   \item* Text containing our instructions or questions.
+%      \begin{anskeyenv}
+%        First answer with \verb+verbatim+
+%      \end{anskeyenv}
 %   \item Text containing our instructions or questions.
 %     \begin{enumext}
 %       \item Question.\anskey{second answer}
@@ -3995,7 +3999,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       {
         \msg_info:nnn { enumext } { package-not-load } { multicol }
-        \RequirePackage{multicol}[2023-03-30]
+        \RequirePackage{multicol}[2024-05-23]
       }
     \IfPackageLoadedTF { scontents }
       {
@@ -7604,7 +7608,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \ics*{anskey} command and the \myenv*{keyans}, \myenv*{keyans*} and
 %   \myenv*{keyanspic} environments and will set to true the variable
 %   \cs{l_@@_check_answers_bool} used for checking answers by the
-%   \mykey{check-ans} and \mykey{no-store} keys.
+%   \mykey{check-ans} and \mykey{no-store} keys, copy \mymarg{store
+%   name} into the global variable \cs{g_@@_store_name_tl} and execute the
+%   function \cs{@@_anskey_env_make:V} creating the environment
+%   \myenv*{anskeyenv} (\S\ref{env:anskeyenv}).
 %   The \mymeta{prop list} \myvarenv{g__@@_series_\mymeta[cf=gray]{store
 %   name}_prop} and the \mymeta{sequence}
 %   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_seq} will be
@@ -7618,7 +7625,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_set_true:N \l_@@_store_active_bool
     \bool_set_true:N \l_@@_check_answers_bool
     \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
-    \@@_scontents_anskey:V \l_@@_store_name_tl
+    \@@_anskey_env_make:V \l_@@_store_name_tl
     \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
       {
         \msg_log:nnV { enumext } { store-prop } \l_@@_store_name_tl
@@ -7972,6 +7979,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
+% \begin{important}*
+%  Here we must use \cs{cs_undefine:N} to prevent bounced messages every
+%  time we create the \myenv*{anskeyenv} environment (\S\ref{env:anskeyenv}).
+% \end{important}
 % \end{macro}
 %
 % \subsubsection{Check for \cs{item*} and \cs{anspic*} commands}
@@ -8035,8 +8046,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         mark-ans   .initial:n = \textasteriskcentered,
         mark-ans   .value_required:n = true,
         mark-pos   .choice:,
-        mark-pos  / left   .code:n = \str_set:Nn \l_@@_mark_position_str { l },
-        mark-pos  / right  .code:n = \str_set:Nn \l_@@_mark_position_str { r },
+        mark-pos / left    .code:n = \str_set:Nn \l_@@_mark_position_str { l },
+        mark-pos / right   .code:n = \str_set:Nn \l_@@_mark_position_str { r },
+%%        mark-pos / unknown .code:n =
+%%                           \msg_error:nneee { enumext } { unknown-choice }
+%%                             { mark-pos } { left , right } { \exp_not:n {##1} },
         mark-pos   .initial:n = right,
         mark-pos   .value_required:n = true,
         show-ans   .bool_set:N = \l_@@_show_answer_bool,
@@ -8831,48 +8845,42 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{The environment \env{anskey*}}
+% \subsection{The environment \env{anskeyenv}}\label{env:anskeyenv}
 %
-% \begin{macro}[int]{\@@_scontents_anskey:n, \@@_scontents_anskey:V, anskeyenv}
-%   The function \cs{@@_scontents_anskey:n} creates a internal
-%   \myenv*{anskeyenv} environment (\emph{custom version} of
-%   \myenv{scontents}) setting the |\if@minipage| switch to
-%   \emph{\enquote{false}} to allow spaces at the \emph{\enquote{above}} of
-%   the environment, plus we will add |\vspace{|\mydim{0pt}|}| to maintain alignment
-%   on \emph{\enquote{top}}. This environment will be used internally by the
-%   \mykey{mini-env} key, it is not documented in the user interface and is for
-%   internal use only. This function is passed to the function \cs{@@_safe_exec:}
-%   in the \myenv*{enumext} environment definition (\S\ref{env:enumext}) and
-%   \cs{@@_safe_exec_vii:} in the \myenv*{enumext*} environment definition (\S\ref{env:starred})
+% Managing \emph{verbatim content} in an environment is quite complicated, I
+% learned that when creating the \mypkg{scontents} package, so to be able
+% to have support at this point it is best to play a little with the
+% internal code of \mypkg{scontents} and \emph{hooks}.
+%
+% \begin{macro}[int]{\@@_anskey_env_make:n, \@@_anskey_env_make:V,
+%              anskeyenv, \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:}
+%    The function \cs{@@_anskey_env_make:n} creates the environment
+%    \myenv*{anskeyenv} (\emph{custom version} of \myenv{scontents}) by setting the
+%    initial keys |store-env=|\mymarg{store name} and |print-env=false|.
+%
+%    To maintain the \emph{scope} of the environment and that it is only active
+%    when the key \mykey{save-ans} is active we will pass this function to
+%    the function \cs{@@_storing_exec:} (\S\ref{key:save-ans}).
 %
 % \iffalse
-%% Function for define a internal |anskey*| environment using scontents.
+%% Function for define |anskeyenv| environment using scontents.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_scontents_anskey:n #1
+\cs_new_protected:Npn \@@_anskey_env_make:n #1
   {
-
     \newenvsc{anskeyenv}[store-env=#1,print-env=false]
     \@@_anskey_env_exec:
   }
-\cs_generate_variant:Nn \@@_scontents_anskey:n { V }
+\cs_generate_variant:Nn \@@_anskey_env_make:n { V }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{\@@_anskey_env_exec:, \@@_anskey_env_keys:,
-%                    \@@_anskey_env_store:, \@@_anskey_env_clean:}
-%
-%   The function \cs{@@_internal_mini_page:} creates a internal
-%   \myvarenv*{__@@_mini_env*} environment (\emph{custom version} of
-%   \myenv{minipage}) setting the |\if@minipage| switch to
-%   \emph{\enquote{false}} to allow spaces at the \emph{\enquote{above}} of
-%   the environment, plus we will add |\vspace{|\mydim{0pt}|}| to maintain alignment
-%   on \emph{\enquote{top}}. This environment will be used internally by the
-%   \mykey{mini-env} key, it is not documented in the user interface and is for
-%   internal use only.
-%
+%  The function \cs{@@_anskey_env_define_keys:} will add the keys
+%  \mykeycmd{break-col}, \mykeycmd{item-join}, \mykeycmd{item-join},
+%  \mykeycmd{item-star}, \mykeycmd{item-sym*} and \mykeycmd{item-pos*}
+%  and will leave the keys |print-env|, |store-env| and |write-out|
+%  undefined. We will apply this function using the \emph{hook} function
+%  \cs{@@_before_env:nn}.
 % \iffalse
-%% Function for exec |anskey*| environment.
+%% Define keys for |anskeyenv| environment using scontents PATH.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_define_keys:
@@ -8896,6 +8904,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         write-out .undefine:,
       }
   }
+%    \end{macrocode}
+%   The function \cs{@@_anskey_env_undefine_keys:} will leave the keys
+%   \mykeycmd{break-col}, \mykeycmd{item-join}, \mykeycmd{item-join},
+%   \mykeycmd{item-star}, \mykeycmd{item-sym*} and \mykeycmd{item-pos*}
+%   undefined. We will apply this function using the \emph{hook} function
+%   \cs{@@_after_env:nn}.
+% \iffalse
+%% Restore keys for |scontents| environment.
+% \fi
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_undefine_keys:
   {
     \keys_define:nn { scontents / scontents }
@@ -8907,12 +8925,33 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         item-pos* .undefine:,
       }
   }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_anskey_env_exec:,}
+%
+%   The function \cs{@@_anskey_env_exec:} will be responsible for
+%   processing all the code necessary for the execution of the environment.
+%   The first thing will be to add our \mymeta{keys}.
+% \iffalse
+%% Function for exec all code for |anskeyenv| environment.
+% \fi
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_exec:
   {
     \@@_before_env:nn { anskeyenv }
       {
         \@@_anskey_env_define_keys:
       }
+%    \end{macrocode}
+%   Now we will execute our actions after the \myenv*{anskeyenv}
+%   environment is closed. We'll fetch the contents of the
+%   \emph{environment body} that is now saved in
+%   \myvarenv{g__scontents_name_\mymeta[cf=gray]{store_name}_seq} and store it in
+%   the variable \cs{l_@@_store_anskey_env_tl}, then apply a \emph{regex}
+%   to remove the \emph{forced space} before \cs[no-index]{c__scontents_hidden_space_str}
+%   inside the variable then we execute the rest of the functions.
+%    \begin{macrocode}
     \@@_after_env:nn { anskeyenv }
       {
         \tl_clear:N  \l_@@_store_anskey_env_tl
@@ -8920,21 +8959,31 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \seq_gpop_right:cNT
           { g__scontents_name_ \g_@@_store_name_tl _seq } \l_@@_store_anskey_env_tl
           { \seq_item:ce { g__scontents_name_ \g_@@_store_name_tl _seq } { -1 }  }
-        % add to prop
         \regex_replace_all:nnN
           { \s{2,}\u{c__scontents_hidden_space_str} } { \% } \l_@@_store_anskey_env_tl
-        % keys
         \@@_anskey_env_keys:
-        % store
         \@@_anskey_env_store:
-        % clean
         \@@_anskey_env_clean:
-        % Undef
         \@@_anskey_env_undefine_keys:
       }
   }
 %    \end{macrocode}
-%   The function \cs{@@_scontents_anskey_keys:} processing the \myoarg{key \textnormal{\textcolor{gray}{=}} val}
+% \begin{important}*
+% The forced space in the variable \cs{l_@@_store_anskey_env_tl} should
+% not be there and the only way to remove it is with \emph{regex}.
+% Using \cs[no-index]{seq_gpop_right:cNT} is correct here, while we have control of
+% the scope of the environment, we cannot know if a user is using the key
+% |store-env=|\mymarg{store name} in some other environment.
+% The last function \cs{@@_anskey_env_undefine_keys:} is necessary so as
+% not to hinder any \myenv{scontents} environment running within
+% \myenv*{enumext} or \myenv*{enumext*}.
+%
+% \end{important}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_anskey_env_keys:, \@@_anskey_env_store:,
+%                    \@@_anskey_env_clean:, }
+%   The function \cs{@@_anskey__env_keys:} processing the \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 %   passed to the environment and save this in the variable \cs{l_@@_store_anskey_opt_tl}.
 %   If the \mykeycmd{break-col} key is present and the environment is
 %   running under \myenv*{enumext} (not in \myenv*{enumext*})
@@ -8991,10 +9040,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
        }
   }
 %    \end{macrocode}
-%    We check if the \mykey{save-ref} key are active along with the
-%    \mypkg{hyperref} package load, if both conditions are met, it will
-%    create the \ics{hyperlink} with \emph{symbol} set by
-%    \mykey{mark-ref} key and then store in \mymeta{sequence}.
+%   The function \cs{@@_anskey_env_store:} will be responsible for storing
+%   the content of the environment, we will execute the code within a group
+%   and only if the variable \cs{l_@@_store_anskey_env_tl} is not empty
+%   using the function \cs[no-index]{scontents_rescan_tokens:x} from
+%   package \mypkg{scontents}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_store:
   {
@@ -9015,10 +9065,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \group_end:
   }
 %    \end{macrocode}
-%    We check if the \mykey{save-ref} key are active along with the
-%    \mypkg{hyperref} package load, if both conditions are met, it will
-%    create the \ics{hyperlink} with \emph{symbol} set by
-%    \mykey{mark-ref} key and then store in \mymeta{sequence}.
+%   The function \cs{@@_anskey_env_clean:} will return the global variables
+%   used by the \mymeta{keys} to their initial state.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_clean:
   {

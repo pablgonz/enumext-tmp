@@ -35,7 +35,7 @@
       }
       {
         \msg_info:nnn { enumext } { package-not-load } { multicol }
-        \RequirePackage{multicol}[2023-03-30]
+        \RequirePackage{multicol}[2024-05-23]
       }
     \IfPackageLoadedTF { scontents }
       {
@@ -140,7 +140,6 @@
 \bool_new:N \l__enumext_store_active_bool
 \tl_new:N   \l__enumext_store_name_tl
 \tl_new:N   \g__enumext_store_name_tl
-\seq_new:N  \l__enumext_store_anskey_seq
 \tl_new:N   \l__enumext_store_anskey_arg_tl
 \tl_new:N   \l__enumext_store_anskey_env_tl
 \tl_new:N   \l__enumext_store_anskey_opt_tl
@@ -1910,7 +1909,7 @@
     \bool_set_true:N \l__enumext_store_active_bool
     \bool_set_true:N \l__enumext_check_answers_bool
     \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
-    \__enumext_scontents_anskey:V \l__enumext_store_name_tl
+    \__enumext_anskey_env_make:V \l__enumext_store_name_tl
     \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
       {
         \msg_log:nnV { enumext } { store-prop } \l__enumext_store_name_tl
@@ -2129,8 +2128,11 @@
         mark-ans   .initial:n = \textasteriskcentered,
         mark-ans   .value_required:n = true,
         mark-pos   .choice:,
-        mark-pos  / left   .code:n = \str_set:Nn \l__enumext_mark_position_str { l },
-        mark-pos  / right  .code:n = \str_set:Nn \l__enumext_mark_position_str { r },
+        mark-pos / left    .code:n = \str_set:Nn \l__enumext_mark_position_str { l },
+        mark-pos / right   .code:n = \str_set:Nn \l__enumext_mark_position_str { r },
+%%        mark-pos / unknown .code:n =
+%%                           \msg_error:nneee { enumext } { unknown-choice }
+%%                             { mark-pos } { left , right } { \exp_not:n {##1} },
         mark-pos   .initial:n = right,
         mark-pos   .value_required:n = true,
         show-ans   .bool_set:N = \l__enumext_show_answer_bool,
@@ -2585,15 +2587,14 @@
         \__enumext_store_anskey_show_wrap:n { #1 }
       }
   }
-%% Function for define a internal |anskey*| environment using scontents.
-\cs_new_protected:Npn \__enumext_scontents_anskey:n #1
+%% Function for define |anskeyenv| environment using scontents.
+\cs_new_protected:Npn \__enumext_anskey_env_make:n #1
   {
-
     \newenvsc{anskeyenv}[store-env=#1,print-env=false]
     \__enumext_anskey_env_exec:
   }
-\cs_generate_variant:Nn \__enumext_scontents_anskey:n { V }
-%% Function for exec |anskey*| environment.
+\cs_generate_variant:Nn \__enumext_anskey_env_make:n { V }
+%% Define keys for |anskeyenv| environment using scontents PATH.
 \cs_new_protected:Nn \__enumext_anskey_env_define_keys:
   {
     \keys_define:nn { scontents / scontents }
@@ -2615,6 +2616,7 @@
         write-out .undefine:,
       }
   }
+%% Restore keys for |scontents| environment.
 \cs_new_protected:Nn \__enumext_anskey_env_undefine_keys:
   {
     \keys_define:nn { scontents / scontents }
@@ -2626,6 +2628,7 @@
         item-pos* .undefine:,
       }
   }
+%% Function for exec all code for |anskeyenv| environment.
 \cs_new_protected:Nn \__enumext_anskey_env_exec:
   {
     \__enumext_before_env:nn { anskeyenv }
@@ -2639,15 +2642,11 @@
         \seq_gpop_right:cNT
           { g__scontents_name_ \g__enumext_store_name_tl _seq } \l__enumext_store_anskey_env_tl
           { \seq_item:ce { g__scontents_name_ \g__enumext_store_name_tl _seq } { -1 }  }
-        % add to prop
-        \regex_replace_all:nnN { \s{2,}\u{c__scontents_hidden_space_str} } { \% } \l__enumext_store_anskey_env_tl
-        % keys
+        \regex_replace_all:nnN
+          { \s{2,}\u{c__scontents_hidden_space_str} } { \% } \l__enumext_store_anskey_env_tl
         \__enumext_anskey_env_keys:
-        % store
         \__enumext_anskey_env_store:
-        % clean
         \__enumext_anskey_env_clean:
-        % Undef
         \__enumext_anskey_env_undefine_keys:
       }
   }

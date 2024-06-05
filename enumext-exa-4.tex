@@ -6,56 +6,12 @@
 \usepackage{lmodern}
 \usepackage{tikzducks}
 \usepackage[colorlinks]{hyperref}
-\usepackage{scontents}
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-
-
-\begin{enumext}[save-ans=simplews,columns=2,check-ans=true,show-pos=true,nosep,save-ref=true]
-  \item Factor $x^{2}-2x+1$
-
-\begin{anskeyenv}[item-star,write-env=verbatim.txt]
-Some code her \verb+\begin{anskey*}+
-
-   \vspace*{1cm}
-
-   Y más cosas aquí $3x+3y+3z$
-\end{anskeyenv}
-
-
-\end{enumext}
-
-The answer to \ref{simplews:1} is \getkeyans{simplews:1}and the answer
-to \ref{simplews:2} is \getkeyans{simplews:2}.
-
-\printkeyans[columns=1]{simplews}
-
-\begin{enumext}[save-ans=simplews,columns=2,check-ans=true,show-pos=true,nosep,save-ref=true]
-  \item Factor $x^{2}-2x+1$
-
-\begin{anskeyenv}[item-star]
-Some code her \verb+\begin{anskey*}+
-
-   \vspace*{1cm}
-
-   Y más cosas aquí $3x+3y+3z$
-\end{anskeyenv}
-
-\begin{scontents}
-Some code her \verb+\begin{anskey*}+
-
-   \vspace*{1cm}
-
-   Y más cosas aquí $3x+3y+3z$
-\end{scontents}
-
-\end{enumext}
-
-
-\end{document}
-
-  \item Factor $3x+3y+3z$ \anskey{Esto \\ es \par $3(x+y+z)$}
+\begin{enumext}[save-ans=simplews,columns=2,check-ans=true,show-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
+  \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
+  \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
   \item True False
     \begin{enumext}[nosep]
       \item $\alpha > \delta$ \anskey{False}
@@ -63,13 +19,7 @@ Some code her \verb+\begin{anskey*}+
     \end{enumext}
   \item Related to Linux
     \begin{enumext}[nosep]
-      \item You use linux?
-
-   \begin{anskey*}
-   Seconde code ce de de  code her \verb+\begin{anskey*}+\par
-  $\left(x-1\right)^{2}$
-   \end{anskey*}
-
+      \item You use linux? \anskey{Yes}
       \item Usually uses the package manager? \anskey{Yes, \texttt{dnf}}
       \item Rate the following package and class
         \begin{enumext}[nosep]
@@ -80,42 +30,8 @@ Some code her \verb+\begin{anskey*}+
     \end{enumext}
 \end{enumext}
 
-The answer to \ref{simplews:1} is \getkeyans{simplews:1}and the answer
-to \ref{simplews:2} is \getkeyans{simplews:2}.
+The answer to \ref{simplews:1} is \getkeyans{simplews:1} and the answer
+to \ref{simplews:3} is \getkeyans{simplews:3}.
 
-\printkeyans[columns=1]{simplews}
-
-\end{document}
-
-\newpage
-\section{continue}
-
-\begin{enumext}[save-ans=simplews,columns=2,check-ans=true,show-ans=true,nosep,save-ref=true]
-  \item Factor $x^{2}-2x+1$
-
-   \begin{anskey*}[item-star]
-   Some code her \verb+\begin{anskey*}+\par
-   \vspace*{3cm}
-   $\left(x-1\right)^{2}$
-   \end{anskey*}
-
-  \item Factor $3x+3y+3z$ \anskey{Esto \\ es \par $3(x+y+z)$}
-
-\end{enumext}
-
-%%\printkeyans[columns=1]{simplews}
-\end{document}
-
-\begin{enumext}[save-ans=simplews,columns=2,check-ans=true,show-ans=true,nosep,save-ref=true]
-  \item Factor $x^{2}-2x+1$
-
-   \begin{anskeyverb}[item-star]
-   Some code her \verb+\begin{anskey*}+
-   \end{anskeyverb}
-
-  \item Factor $3x+3y+3z$ \anskey{Esto \\ es \par $3(x+y+z)$}
-
-\end{enumext}
-The answer to \ref{simplews:1} is \getkeyans{simplews:1}and the answer
-%%\printkeyans[columns=1]{simplews}
+\printkeyans[columns=2]{simplews}
 \end{document}
