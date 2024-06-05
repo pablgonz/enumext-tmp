@@ -3973,19 +3973,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \hologo{LaTeX} to work correctly.
 %
 %    \begin{macrocode}
-\NeedsTeXFormat{LaTeX2e}[2023-11-01]
+\NeedsTeXFormat{LaTeX2e}[2024-06-01]
 %    \end{macrocode}
 %
 % Now declare the \mypkg*{enumext} package.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-06-03}
+  {2024-06-04}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
 %
-% Finally check if the \mypkg{multicol} package is loaded, if not we load it.
+% Finally check if the \mypkg{multicol} and \mypkg{scontents} packages are loaded, if not we load it.
 %    \begin{macrocode}
 \hook_gput_code:nnn {begindocument} {enumext}
   {
@@ -3996,6 +3996,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_info:nnn { enumext } { package-not-load } { multicol }
         \RequirePackage{multicol}[2023-03-30]
+      }
+    \IfPackageLoadedTF { multicol }
+      {
+        \msg_info:nnn { enumext } { package-load } { scontents }
+      }
+      {
+        \msg_info:nnn { enumext } { package-not-load } { scontents }
+        \RequirePackage{scontents}
       }
   }
 %    \end{macrocode}
@@ -4241,7 +4249,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}[int]{\l_@@_store_active_bool, \l_@@_store_name_tl,
-%                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl,
+%                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl, \l_@@_store_anskey_opt_tl,
 %                       \l_@@_store_columns_join_int, \l_@@_store_keyans_label_tl,
 %                       \l_@@_store_keyans_item_opt_tl, \l_@@_keyans_item_opt_tl,
 %                       \l_@@_keyans_tmpa_tl,}
@@ -4276,6 +4284,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \tl_new:N   \l_@@_store_name_tl
 \tl_new:N   \g_@@_store_name_tl
 \tl_new:N   \l_@@_store_anskey_arg_tl
+\tl_new:N   \l_@@_store_anskey_opt_tl
 \int_new:N  \l_@@_store_columns_join_int
 \tl_new:N   \l_@@_store_keyans_label_tl
 \tl_new:N   \l_@@_store_keyans_item_opt_tl
@@ -7604,6 +7613,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_set_true:N \l_@@_store_active_bool
     \bool_set_true:N \l_@@_check_answers_bool
     \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
+    \@@_scontents_anskey:V \l_@@_store_name_tl
     \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
       {
         \msg_log:nnV { enumext } { store-prop } \l_@@_store_name_tl
@@ -7950,6 +7960,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 \@@_check_ans_show:
               }
               { \@@_check_ans_log: }
+            \cs_undefine:c { __scontents_anskey*_env_begin: }
+            \cs_undefine:c { __scontents_anskey*_env_end:}
           }
         \@@_reset_global_vars:
       }
@@ -8253,7 +8265,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       { #1 }
   }
-\cs_generate_variant:Nn \@@_store_addto_prop:n { V }
+\cs_generate_variant:Nn \@@_store_addto_prop:n { V, e }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -8279,7 +8291,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \seq_gput_right:cn { g_@@_ \l_@@_store_name_tl _seq } { #1 }
   }
-\cs_generate_variant:Nn \@@_store_addto_seq:n { v, V }
+\cs_generate_variant:Nn \@@_store_addto_seq:n { v, V, e }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -8816,63 +8828,174 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The environment \env{anskey*}}
 %
-% \begin{macro}{anskey*,\@@_anskey_env_safe_outer:, \@@_anskey_env_safe_inner:n}
-%  Only as a complement and demarcation for very extensive content, we
-%  will provide the environment version of the command |\anskey|.
-%    \begin{macrocode}
-\NewDocumentEnvironment{anskey*}{ o +b }
- {
-   \@@_anskey_env_safe_outer:
-   \bool_if:NT \l_@@_check_answers_bool
-     {
-       \int_gincr:N \g_@@_item_anskey_int
-       \@@_anskey_env_safe_inner:n {#2}
-       \@@_store_anskey_code:nn {#1} {#2}
-     }
- }
- {}
-%    \end{macrocode}
-%   The \cs{@@_anskey_env_safe_outer:} function will return the
-%   appropriate messages when the environment is executed outside the
-%   environment in which the \mykey{save-ans} key was activated.
+% \begin{macro}[int]{\@@_scontents_anskey:n, \@@_scontents_anskey:V, anskey*}
+%   The function \cs{@@_scontents_anskey:n} creates a internal
+%   \myenv*{anskey*} environment (\emph{custom version} of
+%   \myenv{scontents}) setting the |\if@minipage| switch to
+%   \emph{\enquote{false}} to allow spaces at the \emph{\enquote{above}} of
+%   the environment, plus we will add |\vspace{|\mydim{0pt}|}| to maintain alignment
+%   on \emph{\enquote{top}}. This environment will be used internally by the
+%   \mykey{mini-env} key, it is not documented in the user interface and is for
+%   internal use only. This function is passed to the function \cs{@@_safe_exec:}
+%   in the \myenv*{enumext} environment definition (\S\ref{env:enumext}) and
+%   \cs{@@_safe_exec_vii:} in the \myenv*{enumext*} environment definition (\S\ref{env:starred})
+%
 % \iffalse
-%% Internal function for msg when |anskey*| is outer.
+%% Function for define a internal |anskey*| environment using scontents.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_anskey_env_safe_outer:
+\cs_new_protected:Npn \@@_scontents_anskey:n #1
   {
-    \bool_if:NF \l_@@_store_active_bool
+    \keys_define:nn { scontents / scontents }
       {
-        \msg_error:nnnn { enumext } { anskey-wrong-place }{ anskey }{ enumext }
+        break-col .bool_gset:N = \g_@@_store_columns_break_bool,
+        break-col .default:n  = true,
+        break-col .value_forbidden:n = true,
+        item-join .int_gset:N = \g_@@_store_item_join_int,
+        item-join .value_required:n = true,
+        item-star .bool_gset:N = \g_@@_store_item_star_bool,
+        item-star .default:n  = true,
+        item-star .value_forbidden:n = true,
+        item-sym* .tl_gset:N   = \g_@@_store_item_symbol_tl,
+        item-sym* .value_required:n = true,
+        item-pos* .dim_gset:N  = \g_@@_store_item_symbol_sep_dim,
+        item-pos* .value_required:n = true,
       }
-    \int_compare:nNnT { \l_@@_keyans_level_int } = { 1 }
+    \newenvsc{anskey*}[store-env=#1,print-env=false]
+    \@@_scontents_anskey_exec:
+  }
+\cs_generate_variant:Nn \@@_scontents_anskey:n { V }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_scontents_anskey_exec:, \@@_scontents_anskey_keys:,
+%                    \@@_scontents_anskey_store:, \@@_scontents_anskey_clean_vars:}
+%
+%   The function \cs{@@_internal_mini_page:} creates a internal
+%   \myvarenv*{__@@_mini_env*} environment (\emph{custom version} of
+%   \myenv{minipage}) setting the |\if@minipage| switch to
+%   \emph{\enquote{false}} to allow spaces at the \emph{\enquote{above}} of
+%   the environment, plus we will add |\vspace{|\mydim{0pt}|}| to maintain alignment
+%   on \emph{\enquote{top}}. This environment will be used internally by the
+%   \mykey{mini-env} key, it is not documented in the user interface and is for
+%   internal use only.
+%
+% \iffalse
+%% Function for exec |anskey*| environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_scontents_anskey_exec:
+  {
+    \@@_after_env:nn { anskeyverb }
       {
-        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans }
-      }
-    \int_compare:nNnT { \l_@@_keyans_pic_level_int } = { 1 }
-      {
-        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
+        \tl_clear:N \l_@@_store_anskey_arg_tl
+        \tl_clear:N \l_@@_store_anskey_opt_tl
+        \seq_gpop_right:cNT
+          { g__scontents_name_ \g_@@_store_name_tl _seq } \l_@@_store_anskey_arg_tl
+          { \seq_item:ce { g__scontents_name_ \g_@@_store_name_tl _seq } { -1 }  }
+        % add to prop
+        \regex_replace_all:nnN { \s{2,}\u{c__scontents_hidden_space_str} } { \% } \l_@@_store_anskey_arg_tl
+        % keys
+        \@@_scontents_anskey_keys:
+        % store
+        \@@_scontents_anskey_store:
+        % clean
       }
   }
 %    \end{macrocode}
-% The \cs{@@_anskey_env_safe_inner:n} function will first check to see if the
-% body is empty and then check to see if the environment is nested
-% by returning the appropriate messages.
-% \iffalse
-%% Internal function for msg when |anskey*| is inner and body is empty.
-% \fi
+%   The function \cs{@@_scontents_anskey_keys:} processing the \myoarg{key \textnormal{\textcolor{gray}{=}} val}
+%   passed to the environment and save this in the variable \cs{l_@@_store_anskey_opt_tl}.
+%   If the \mykeycmd{break-col} key is present and the environment is
+%   running under \myenv*{enumext} (not in \myenv*{enumext*})
+%   we will add the key \mykeycmd{break-col}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_anskey_env_safe_inner:n #1
+\cs_new_protected:Nn \@@_scontents_anskey_keys:
   {
-    \tl_if_empty:nT {#1}
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \g_@@_store_columns_break_bool }
+      { \bool_not_p:n { \l_@@_starred_bool } }
       {
-        \msg_error:nn { enumext } { anskey-empty-arg }
+        \tl_put_left:Ne \l_@@_store_anskey_opt_tl { ,break-col, }
       }
-    \int_incr:N \l_@@_anskey_level_int
-    \int_compare:nNnT { \l_@@_anskey_level_int } > { 1 }
+%    \end{macrocode}
+%   If the \mykeycmd{item-join} key is present and the command is running under
+%   \myenv*{enumext*} we will add to \cs{l_@@_store_anskey_opt_tl}.
+%    \begin{macrocode}
+    \bool_lazy_and:nnT
+      { \bool_not_p:n { \l_@@_starred_bool } }
+      { \int_compare_p:nNn { \g_@@_store_item_join_int } > { 1 } }
       {
-        \msg_error:nn { enumext } { anskey-nested-env }
-      }
+        \tl_put_left::Ne \l_@@_store_anskey_opt_tl
+          {
+            ,item-join = \exp_not:V \g_@@_store_item_join_int,
+          }
+       }
+%    \end{macrocode}
+%   And now we will review the keys \mykeycmd{item-star}, \mykeycmd{item-sym*} and
+%   \mykeycmd{item-pos*} and pass them to \cs{l_@@_store_anskey_opt_tl}.
+%    \begin{macrocode}
+    \bool_if:NT \g_@@_store_item_star_bool
+      {
+        \tl_put_left:Ne \l_@@_store_anskey_opt_tl
+          {
+            ,item-star,
+          }
+        \tl_if_empty:NF \g_@@_store_item_symbol_tl
+          {
+            \tl_put_left:Ne \l_@@_store_anskey_opt_tl
+              {
+                ,item-sym* = \exp_not:V \g_@@_store_item_symbol_tl,
+              }
+          }
+        \dim_compare:nT
+          {
+            \g_@@_store_item_symbol_sep_dim != \c_zero_dim
+          }
+          {
+            \tl_put_left:Ne \l_@@_store_anskey_opt_tl
+              {
+                ,item-pos* = \exp_not:V \g_@@_store_item_symbol_sep_dim,
+              }
+           }
+       }
+  }
+%    \end{macrocode}
+%    We check if the \mykey{save-ref} key are active along with the
+%    \mypkg{hyperref} package load, if both conditions are met, it will
+%    create the \ics{hyperlink} with \emph{symbol} set by
+%    \mykey{mark-ref} key and then store in \mymeta{sequence}.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_scontents_anskey_store:
+  {
+    \group_begin:
+      \tl_if_empty:NF \l_@@_store_anskey_arg_tl
+        {
+          \tl_if_empty:NTF \l_@@_store_anskey_opt_tl
+            {
+              \exp_args:Ne
+                \anskey{ \__scontents_rescan_tokens:x { \l_@@_store_anskey_arg_tl } }
+            }
+            {
+              \keys_set:nV { enumext / anskey } \l_@@_store_anskey_opt_tl
+              \exp_args:Ne
+                \anskey{ \__scontents_rescan_tokens:x { \l_@@_store_anskey_arg_tl } }
+            }
+        }
+    \group_end:
+  }
+%    \end{macrocode}
+%    We check if the \mykey{save-ref} key are active along with the
+%    \mypkg{hyperref} package load, if both conditions are met, it will
+%    create the \ics{hyperlink} with \emph{symbol} set by
+%    \mykey{mark-ref} key and then store in \mymeta{sequence}.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_scontents_anskey_clean_vars:
+  {
+    \bool_gset_false:N \g_@@_store_columns_break_bool
+    \int_gzero:N       \g_@@_store_item_join_int
+    \bool_gset_false:N \g_@@_store_item_star_bool
+    \tl_gclear:N       \g_@@_store_item_symbol_tl
+    \dim_gzero:N       \g_@@_store_item_symbol_sep_dim
   }
 %    \end{macrocode}
 % \end{macro}

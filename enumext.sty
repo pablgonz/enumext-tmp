@@ -21,10 +21,10 @@
 %% 
 %% This work consists of the files enumext.dtx and enumext.sty.
 %% 
-\NeedsTeXFormat{LaTeX2e}[2023-11-01]
+\NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-06-03}
+  {2024-06-04}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -36,6 +36,14 @@
       {
         \msg_info:nnn { enumext } { package-not-load } { multicol }
         \RequirePackage{multicol}[2023-03-30]
+      }
+    \IfPackageLoadedTF { multicol }
+      {
+        \msg_info:nnn { enumext } { package-load } { scontents }
+      }
+      {
+        \msg_info:nnn { enumext } { package-not-load } { scontents }
+        \RequirePackage{scontents}
       }
   }
 %% Variable for levels and nesting off all environments and \anskey.
@@ -133,6 +141,7 @@
 \tl_new:N   \l__enumext_store_name_tl
 \tl_new:N   \g__enumext_store_name_tl
 \tl_new:N   \l__enumext_store_anskey_arg_tl
+\tl_new:N   \l__enumext_store_anskey_opt_tl
 \int_new:N  \l__enumext_store_columns_join_int
 \tl_new:N   \l__enumext_store_keyans_label_tl
 \tl_new:N   \l__enumext_store_keyans_item_opt_tl
@@ -1895,6 +1904,7 @@
     \bool_set_true:N \l__enumext_store_active_bool
     \bool_set_true:N \l__enumext_check_answers_bool
     \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
+    \__enumext_scontents_anskey:V \l__enumext_store_name_tl
     \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
       {
         \msg_log:nnV { enumext } { store-prop } \l__enumext_store_name_tl
@@ -2071,6 +2081,8 @@
                 \__enumext_check_ans_show:
               }
               { \__enumext_check_ans_log: }
+            \cs_undefine:c { __scontents_anskey*_env_begin: }
+            \cs_undefine:c { __scontents_anskey*_env_end:}
           }
         \__enumext_reset_global_vars:
       }
@@ -2237,13 +2249,13 @@
       }
       { #1 }
   }
-\cs_generate_variant:Nn \__enumext_store_addto_prop:n { V }
+\cs_generate_variant:Nn \__enumext_store_addto_prop:n { V, e }
 %% Function for store content to sequence.
 \cs_new_protected:Npn \__enumext_store_addto_seq:n #1
   {
     \seq_gput_right:cn { g__enumext_ \l__enumext_store_name_tl _seq } { #1 }
   }
-\cs_generate_variant:Nn \__enumext_store_addto_seq:n { v, V }
+\cs_generate_variant:Nn \__enumext_store_addto_seq:n { v, V, e }
 %% Function for memorize level execution of |\anskey| on |enumext|.
 \cs_new_protected:Nn \__enumext_store_level_open:
   {
@@ -2567,45 +2579,114 @@
         \__enumext_store_anskey_show_wrap:n { #1 }
       }
   }
-\NewDocumentEnvironment{anskey*}{ o +b }
- {
-   \__enumext_anskey_env_safe_outer:
-   \bool_if:NT \l__enumext_check_answers_bool
-     {
-       \int_gincr:N \g__enumext_item_anskey_int
-       \__enumext_anskey_env_safe_inner:n {#2}
-       \__enumext_store_anskey_code:nn {#1} {#2}
-     }
- }
- {}
-%% Internal function for msg when |anskey*| is outer.
-\cs_new_protected:Nn \__enumext_anskey_env_safe_outer:
+%% Function for define a internal |anskey*| environment using scontents.
+\cs_new_protected:Npn \__enumext_scontents_anskey:n #1
   {
-    \bool_if:NF \l__enumext_store_active_bool
+    \keys_define:nn { scontents / scontents }
       {
-        \msg_error:nnnn { enumext } { anskey-wrong-place }{ anskey }{ enumext }
+        break-col .bool_gset:N = \g__enumext_store_columns_break_bool,
+        break-col .default:n  = true,
+        break-col .value_forbidden:n = true,
+        item-join .int_gset:N = \g__enumext_store_item_join_int,
+        item-join .value_required:n = true,
+        item-star .bool_gset:N = \g__enumext_store_item_star_bool,
+        item-star .default:n  = true,
+        item-star .value_forbidden:n = true,
+        item-sym* .tl_gset:N   = \g__enumext_store_item_symbol_tl,
+        item-sym* .value_required:n = true,
+        item-pos* .dim_gset:N  = \g__enumext_store_item_symbol_sep_dim,
+        item-pos* .value_required:n = true,
       }
-    \int_compare:nNnT { \l__enumext_keyans_level_int } = { 1 }
+    \newenvsc{anskey*}[store-env=#1,print-env=false]
+    \__enumext_scontents_anskey_exec:
+  }
+\cs_generate_variant:Nn \__enumext_scontents_anskey:n { V }
+%% Function for exec |anskey*| environment.
+\cs_new_protected:Nn \__enumext_scontents_anskey_exec:
+  {
+    \__enumext_after_env:nn { anskeyverb }
       {
-        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans }
-      }
-    \int_compare:nNnT { \l__enumext_keyans_pic_level_int } = { 1 }
-      {
-        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
+        \tl_clear:N \l__enumext_store_anskey_arg_tl
+        \tl_clear:N \l__enumext_store_anskey_opt_tl
+        \seq_gpop_right:cNT
+          { g__scontents_name_ \g__enumext_store_name_tl _seq } \l__enumext_store_anskey_arg_tl
+          { \seq_item:ce { g__scontents_name_ \g__enumext_store_name_tl _seq } { -1 }  }
+        % add to prop
+        \regex_replace_all:nnN { \s{2,}\u{c__scontents_hidden_space_str} } { \% } \l__enumext_store_anskey_arg_tl
+        % keys
+        \__enumext_scontents_anskey_keys:
+        % store
+        \__enumext_scontents_anskey_store:
+        % clean
       }
   }
-%% Internal function for msg when |anskey*| is inner and body is empty.
-\cs_new_protected:Npn \__enumext_anskey_env_safe_inner:n #1
+\cs_new_protected:Nn \__enumext_scontents_anskey_keys:
   {
-    \tl_if_empty:nT {#1}
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \g__enumext_store_columns_break_bool }
+      { \bool_not_p:n { \l__enumext_starred_bool } }
       {
-        \msg_error:nn { enumext } { anskey-empty-arg }
+        \tl_put_left:Ne \l__enumext_store_anskey_opt_tl { ,break-col, }
       }
-    \int_incr:N \l__enumext_anskey_level_int
-    \int_compare:nNnT { \l__enumext_anskey_level_int } > { 1 }
+    \bool_lazy_and:nnT
+      { \bool_not_p:n { \l__enumext_starred_bool } }
+      { \int_compare_p:nNn { \g__enumext_store_item_join_int } > { 1 } }
       {
-        \msg_error:nn { enumext } { anskey-nested-env }
-      }
+        \tl_put_left::Ne \l__enumext_store_anskey_opt_tl
+          {
+            ,item-join = \exp_not:V \g__enumext_store_item_join_int,
+          }
+       }
+    \bool_if:NT \g__enumext_store_item_star_bool
+      {
+        \tl_put_left:Ne \l__enumext_store_anskey_opt_tl
+          {
+            ,item-star,
+          }
+        \tl_if_empty:NF \g__enumext_store_item_symbol_tl
+          {
+            \tl_put_left:Ne \l__enumext_store_anskey_opt_tl
+              {
+                ,item-sym* = \exp_not:V \g__enumext_store_item_symbol_tl,
+              }
+          }
+        \dim_compare:nT
+          {
+            \g__enumext_store_item_symbol_sep_dim != \c_zero_dim
+          }
+          {
+            \tl_put_left:Ne \l__enumext_store_anskey_opt_tl
+              {
+                ,item-pos* = \exp_not:V \g__enumext_store_item_symbol_sep_dim,
+              }
+           }
+       }
+  }
+\cs_new_protected:Nn \__enumext_scontents_anskey_store:
+  {
+    \group_begin:
+      \tl_if_empty:NF \l__enumext_store_anskey_arg_tl
+        {
+          \tl_if_empty:NTF \l__enumext_store_anskey_opt_tl
+            {
+              \exp_args:Ne
+                \anskey{ \__scontents_rescan_tokens:x { \l__enumext_store_anskey_arg_tl } }
+            }
+            {
+              \keys_set:nV { enumext / anskey } \l__enumext_store_anskey_opt_tl
+              \exp_args:Ne
+                \anskey{ \__scontents_rescan_tokens:x { \l__enumext_store_anskey_arg_tl } }
+            }
+        }
+    \group_end:
+  }
+\cs_new_protected:Nn \__enumext_scontents_anskey_clean_vars:
+  {
+    \bool_gset_false:N \g__enumext_store_columns_break_bool
+    \int_gzero:N       \g__enumext_store_item_join_int
+    \bool_gset_false:N \g__enumext_store_item_star_bool
+    \tl_gclear:N       \g__enumext_store_item_symbol_tl
+    \dim_gzero:N       \g__enumext_store_item_symbol_sep_dim
   }
 %% Function for storing in prop list for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_addto_prop:n #1
