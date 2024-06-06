@@ -4011,7 +4011,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-06-04}
+  {2024-06-06}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -7964,54 +7964,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Writing \texttt{.log} and executing the \texttt{check-ans} key}
-%
-% \begin{macro}{\@@_execute_after_env:}
-%   The \cs{@@_execute_after_env:} function will first return the
-%   appropriate message for the end of the environment in which the
-%   \mykey{save-ans} key is being executed, then call the
-%   \cs{@@_item_answer_diff:} function and then will write the values of
-%   the global variables used to the |.log| file. If the key
-%   \mykey{check-ans} is active it will execute the function
-%   \cs{@@_check_ans_show:} and show the result in the terminal, otherwise
-%   it will execute the function \cs{@@_check_ans_log:} and write the
-%   results in the |.log| file will finally execute the function
-%   \cs{@@_reset_global_vars:} returning the used variables to their
-%   original state. As this function is passed to the
-%   function \cs{@@_after_env:nn} for the environments \myenv*{enumext} and
-%   \myenv*{enumext*} we must make sure that we are not nested at any level.
-% \iffalse
-%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_execute_after_env:
-  {
-    \int_compare:nNnT { \l_@@_level_int } = { 0 }
-      {
-        \tl_if_empty:NF \g_@@_store_name_tl
-          {
-            \@@_stop_save_ans_msg:
-            \@@_item_answer_diff:
-            \@@_log_global_vars:
-            \@@_log_answer_vars:
-            \bool_if:NTF \g_@@_check_ans_key_bool
-              {
-                \@@_check_ans_show:
-              }
-              { \@@_check_ans_log: }
-            \cs_undefine:N \__scontents_anskeyenv_env_begin:
-            \cs_undefine:N \__scontents_anskeyenv_env_end:
-          }
-        \@@_reset_global_vars:
-      }
-  }
-%    \end{macrocode}
-% \begin{important}*
-%  Here we must use \cs{cs_undefine:N} to prevent bounced messages every
-%  time we create the \myenv*{anskeyenv} environment (\S\ref{env:anskeyenv}).
-% \end{important}
-% \end{macro}
-%
 % \subsubsection{Check for \cs{item*} and \cs{anspic*} commands}
 %
 % \begin{macro}{\@@_check_starred_cmd:n,}
@@ -8042,6 +7994,53 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_clear:N \l_@@_check_start_line_env_tl
   }
 %    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Writing \texttt{.log}, executing \texttt{check-ans} key and more}\label{fun:exec-after-env}
+%
+% \begin{macro}{\@@_execute_after_env:}
+%   The \cs{@@_execute_after_env:} function will first return the
+%   appropriate message for the end of the environment in which the
+%   \mykey{save-ans} key is being executed, then call the
+%   \cs{@@_item_answer_diff:} function and then will write the values of
+%   the global variables used to the |.log| file. If the key
+%   \mykey{check-ans} is active it will execute the function
+%   \cs{@@_check_ans_show:} and show the result in the terminal, otherwise
+%   it will execute the function \cs{@@_check_ans_log:} and write the
+%   results in the |.log| file, undefine the environment \myenv*{anskeyenv} (\S\ref{env:anskeyenv})
+%   through the function \cs{@@_undefine_anskey_env:} and finally we execute the function
+%   \cs{@@_reset_global_vars:} returning the used variables to their
+%   original state.
+% \iffalse
+%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_execute_after_env:
+  {
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
+      {
+        \tl_if_empty:NF \g_@@_store_name_tl
+          {
+            \@@_stop_save_ans_msg:
+            \@@_item_answer_diff:
+            \@@_log_global_vars:
+            \@@_log_answer_vars:
+            \bool_if:NTF \g_@@_check_ans_key_bool
+              {
+                \@@_check_ans_show:
+              }
+              { \@@_check_ans_log: }
+            \@@_undefine_anskey_env:
+          }
+        \@@_reset_global_vars:
+      }
+  }
+%    \end{macrocode}
+% \begin{important}*
+%  This function is passed to the  function \cs{@@_after_env:nn} for the
+%  environments \myenv*{enumext} (\S\ref{env:enumext}) and \myenv*{enumext*} (\S\ref{env:starred})
+%  and it is executed only when the environments are not nested or at some level of these..
+% \end{important}
 % \end{macro}
 %
 % \subsection{Keys and functions associated with storage}\label{int:storage-system}
@@ -8878,12 +8877,74 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % learned that when creating the \mypkg{scontents} package, so to be able
 % to have support at this point it is best to play a little with the
 % internal code of \mypkg{scontents} and \emph{hooks}.
+% Some considerations I should have here before implementing this:
+%
+% \begin{itemize}[left=10pt,nosep, topsep=2pt]
+% \item If some package, class or user has defined the environment with the
+%  same name somewhere in the document it would be a problem, you would
+%  not know what argument has been passed to |store-env|, if you are using
+%  the key |print-env| or the |write-out| key, sure, I can detect and
+%  modify it within the \myenv*{enumext} and \myenv*{enumext*}
+%  environments, but it would look strange not to have some keys available
+%  when running within these environments.
+%
+% \item A better (perhaps a bit paranoid) option is to define it within the
+%  environment in which the |save-ans| key is executed. and have it
+%  available only when that key is executed, here I would have absolute
+%  control of the keys and I make sure that |write-out| is not used, then
+%  using \emph{hooks after} I undefine it and using \emph{hook before} I check if it has
+%  been created by any package, class or user and I return a fatal
+%  error, then the user will have to see how to solve the problem.
+% \end{itemize}
+%
+% \begin{macro}[int]{\@@_undefine_anskey_env:,}
+%    Detection of the \myenv*{anskeyenv} environment outside the
+%    \myenv*{enumext} and \myenv*{enumext*} environments.
+% \iffalse
+%% Hooks for |anskeyenv| environment out off enumext and enumext*.
+% \fi
+%    \begin{macrocode}
+\@@_before_env:nn { enumext }
+  {
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
+      {
+        \cs_if_free:NF \__scontents_anskeyenv_env_begin:
+          {
+            \msg_fatal:nnn { enumext } { anskeyenv-defined } { anskeyenv }
+          }
+      }
+  }
+\@@_before_env:nn { enumext* }
+  {
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
+      {
+        \cs_if_free:NF \__scontents_anskeyenv_env_begin:
+          {
+            \msg_fatal:nnn { enumext } { anskeyenv-defined } { anskeyenv }
+          }
+      }
+  }
+%    \end{macrocode}
+%   The function \cs{@@_undefine_anskey_env:} will undefine the environment
+%   \myenv*{anskeyenv} and will be passed to the function
+%   \cs{@@_execute_after_env:} (\S\ref{fun:exec-after-env}) which is
+%   executed after the environment in which the key \mykey{save-ans} is active.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_undefine_anskey_env:
+  {
+    \cs_undefine:N \anskeyenv
+    \cs_undefine:N \endanskeyenv
+    \cs_undefine:N \__scontents_anskeyenv_env_begin:
+    \cs_undefine:N \__scontents_anskeyenv_env_end:
+  }
+%    \end{macrocode}
+% \end{macro}
 %
 % \begin{macro}[int]{\@@_anskey_env_make:n, \@@_anskey_env_make:V,
 %                    anskeyenv, \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:
 %                    \@@_rescan_anskey_env:n}
 %    The function \cs{@@_anskey_env_make:n} creates the environment
-%    \myenv*{anskeyenv} (\emph{custom version} of \myenv{scontents}) by setting the
+%    \myenv*{anskeyenv} (\emph{custom version} of \myenv{scontents} environment) by setting the
 %    initial keys |store-env=|\mymarg{store name} and |print-env=false|.
 %
 %    To maintain the \emph{scope} of the environment and that it is only active
@@ -12569,6 +12630,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     The ~ counter ~ '#1' ~ is ~ already ~ defined ~ by ~ some ~ \\
     package ~ or ~ macro, ~ it ~ cannot ~ be ~ continued.
+  }
+%    \end{macrocode}
+%
+% Message used by reserved \myenv*{anskeyenv} environment by \mypkg*{enumext} package.
+%    \begin{macrocode}
+\msg_new:nnn { enumext } { anskeyenv-defined }
+  {
+    The ~ '#1' ~ environment ~ is ~ reserved ~ by ~\\
+    'enumext'~ package, ~ it ~ cannot ~ be ~ continued.
   }
 %    \end{macrocode}
 %
