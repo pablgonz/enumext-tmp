@@ -591,10 +591,10 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywordstyle  = [4]{\color{pkgcolor}},%
     keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskeyenv,%
                     setenumext,printkeyans,miniright,parleft,itembx, descitemwd,theenumXi,theenumXii,theenumXiii,theenumXiv,theenumXv, theenumXvii, theenumXviii},%
-% Reserved words 5 (in red)
+% Reserved words 5 (plain TeX)
     keywordstyle  = [5]{\color{red}},%
     keywords      = [5]{makeatletter,makeatother,let,verb,makebox,def,prevdepth,glue,%
-                    splittopskip,showboxdepth,topskip,showoutput,nointerlineskip},%
+                    splittopskip,showboxdepth,topskip,showoutput,nointerlineskip, ignorespaces},%
 % Reserved words 6 (optcolor) KEYS
     keywordstyle  = [6]{\color{optcolor}},%
     keywords      = [6]{save-ans,wrap-ans,save-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
@@ -4094,9 +4094,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \icounter{enumXiv} for \myenv*{enumext}  environment,
 %    \icounter{enumXv} for \myenv*{keyans} environment and
 %    \icounter{enumXvi} for the \myenv*{keyanspic} environment.
-%
 %    The counters \icounter{enumXvii} and \icounter{enumXviii} are used
 %    by \myenv*{enumext*} and \myenv*{keyans*} environments.
+%
+% \smallskip
 %
 %    The initial values of these variables are set by the function
 %    \cs{@@_define_counters:Nn} (\S\ref{int:counters}) and then modified by the function
@@ -4136,23 +4137,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}{\g_@@_resume_int, \g_@@_resume_vii_int, \l_@@_resume_name_tl,
-%                  \l_@@_resume_active_bool, \g_@@_item_symbol_tl, \g_@@_standar_series_tl,
-%                  \g_@@_starred_series_tl,}
+%                  \l_@@_resume_active_bool, \g_@@_starred_series_tl, \g_@@_standar_series_tl,
+%                  \g_@@_item_symbol_tl,}
 %
-%    Internal variables used by \mykey{resume}, \mykey{resume*} and \mykey{series} keys.
-%    The global token list \cs{g_@@_item_symbol_tl} is used by \mykey{item-sym*} key
-%    (\S\ref{key:item-starred}).
+%    Internal variables used by \mykey{resume}, \mykey{resume*} and
+%    \mykey{series} keys (\S\ref{key:series}). The global token list
+%    \cs{g_@@_item_symbol_tl} is used by \mykey{item-sym*} key (\S\ref{key:item-starred}).
 % \iffalse
-%% Variables used by |resume| and |item-sym*| key implementation.
+%% Variables used by |series|, |resume|, |resume*| and |item-sym*| key implementation.
 % \fi
 %    \begin{macrocode}
 \int_new:N  \g_@@_resume_int
 \int_new:N  \g_@@_resume_vii_int
 \tl_new:N   \l_@@_resume_name_tl
 \bool_new:N \l_@@_resume_active_bool
-\tl_new:N   \g_@@_item_symbol_tl
 \tl_new:N   \g_@@_standar_series_tl
 \tl_new:N   \g_@@_starred_series_tl
+\tl_new:N   \g_@@_item_symbol_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -4180,13 +4181,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The boolean variable \myvarenv{l__@@_leftmargin_tmp_X_bool} and the
 %    dimensional variable \myvarenv{l__@@_leftmargin_tmp_X_dim}
 %    are used by the \mykey{list-indent} key (\S\ref{key:list-indent}).
-%
-%    \smallskip
-%
 %    The variables \myvarenv{l__@@_leftmargin_X_dim} and
-%    \myvarenv{l__@@_itemindent_X_dim} are used (and set) by the function
-%    \myvarenv{__@@_calc_hspace:NNNNNNNNNNNN} (\S\ref{int:leftmargin})
-%    which determines the internal values for \ics{leftmargin} and \ics{itemindent}.
+%    \myvarenv{l__@@_itemindent_X_dim} are used and set by the function
+%    \myvarenv{__@@_calc_hspace:NNNNNNNNNNNN} (\S\ref{int:leftmargin}).
 %
 % \iffalse
 %% Add \l__enumext_leftmargin_tmp_X_bool, \l__enumext_leftmargin_tmp_X_dim,
@@ -4253,12 +4250,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %    The integer variable \myvarenv{l__@@_start_X_int} are used by the
 %    \mykey{start} key (\S\ref{key:start-widest}), the token list
-%    \myvarenv{l__@@_fake_item_indent_X_tl } is used by \mykey{itemindent} key,
+%    \myvarenv{l__@@_fake_item_indent_X_tl } is used by \mykey{itemindent} key (\S\ref{key:fake-indent}),
 %    the variables \myvarenv{l__@@_label_fill_left_X_tl}
 %    and \myvarenv{l__@@_label_fill_left_X_tl} are used by the
 %    \mykey{align} key (\S\ref{key:label}). The boolean vars \myvarenv{l__@@_vspace_a_star_X_bool},
 %    \myvarenv{l__@@_vspace_b_star_X_bool} are used by \mykey{above},
-%    \mykey{above*}, \mykey{below} and \mykey{below*} keys
+%    \mykey{above*}, \mykey{below} and \mykey{below*} keys (\S\ref{key:before}).
 %
 % \iffalse
 %% Internal variables used by |wrap-label|, |start|, |align|, |above| and |below| keys.
@@ -4286,13 +4283,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \l_@@_keyans_item_opt_tl, \l_@@_keyans_tmpa_tl,}
 %
 %    The boolean variable \cs{l_@@_store_active_bool} setting by
-%    \mykey{save-ans} key (\S\ref{key:resume}) activates all the
-%    mechanism related to \ics*{anskey}, \myenv*{keyans}, \myenv*{keyans*}
-%    and \myenv*{keyanspic}.
+%    \mykey{save-ans} key (\S\ref{key:save-ans}) activates all the
+%    mechanism related to \ics*{anskey}, \myenv*{anskeyenv}, \myenv*{keyans},
+%    \myenv*{keyans*} and \myenv*{keyanspic} environments.
 %
 %    \smallskip
 %
-%    The variable \cs{l_@@_store_name_tl} sets the name for the storage in
+%    The variable \cs{l_@@_store_name_tl} save the name for the storage in
 %    \mymeta{sequence} and \mymeta{prop list}, the variable \cs{g_@@_store_name_tl} is
 %    just a copy of the storage name used by the \mykey{check-ans} key (\S\ref{key:resume}).
 %
@@ -5784,7 +5781,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \clist_map_inline:nn { enumext*, keyans* } { \@@_tmp:n {#1} }
 %    \end{macrocode}
 %
-% \subsubsection{Functions for setting the fake \texttt{itemindent}}
+% \subsubsection{Functions for setting the fake \texttt{itemindent}}\label{key:fake-indent}
 %
 % \begin{macro}[int]{\@@_fake_item:,\@@_keyans_fake_item:, \@@_fake_item_vii:, \@@_fake_item_viii:}
 %
@@ -5880,7 +5877,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Setting \texttt{before}, \texttt{after} and \texttt{first} keys}
+% \subsection{Setting \texttt{before}, \texttt{after} and \texttt{first} keys}\label{key:before}
 %
 % \begin{macro}[int]{before, before*, after, first}
 %    Define and set \mykey{before}, \mykey{before*}, \mykey{after} and \mykey{first} keys
@@ -6081,7 +6078,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    the state of the boolean variable \myvarenv{l__@@_columns_sep_X_bool}
 %    which is handled in the internal definition of the \myenv*{enumext}
 %    and \myenv*{keyans} environments.
-%
 %    Define and set \mykey{mini-env}, \mykey{mini-sep}, \mykey{columns-sep}
 %    and \mykey{columns} keys for \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and
 %    \myenv*{keyans*} environments.
@@ -7569,7 +7565,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Internal functions for \texttt{save-ans} key}\label{key:save-ans}
+% \subsubsection{Internal functions for \texttt{save-ans} key}
 %
 % \begin{macro}{\@@_start_save_ans_msg:, \@@_stop_save_ans_msg:,}
 %   The functions \cs{@@_start_save_ans_msg:} and

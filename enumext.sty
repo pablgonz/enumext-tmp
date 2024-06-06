@@ -79,14 +79,14 @@
     \tl_set:ce { l__enumext_the_counter_#1_tl } { \exp_not:c { theenumX#1 } }
   }
 \clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
-%% Variables used by |resume| and |item-sym*| key implementation.
+%% Variables used by |series|, |resume|, |resume*| and |item-sym*| key implementation.
 \int_new:N  \g__enumext_resume_int
 \int_new:N  \g__enumext_resume_vii_int
 \tl_new:N   \l__enumext_resume_name_tl
 \bool_new:N \l__enumext_resume_active_bool
-\tl_new:N   \g__enumext_item_symbol_tl
 \tl_new:N   \g__enumext_standar_series_tl
 \tl_new:N   \g__enumext_starred_series_tl
+\tl_new:N   \g__enumext_item_symbol_tl
 %% Variables used by |label|, |ref| and |widest| keys.
 \dim_new:N \l__enumext_current_widest_dim
 \tl_new:N  \g__enumext_counter_styles_tl
