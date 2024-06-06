@@ -600,7 +600,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywords      = [6]{save-ans,wrap-ans,save-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
                     nosep,before,after,start, right, item-sym, item-sep, hyperfootnotes, item-star, %
                     scale,wrap-label,font,first,widest,mini-env,list-indent, no-store, save-key,
-                    store-env, print-env, write-out},%
+                    store-env, print-env, write-out, force-eol,  write-env, overwrite },%
 % Reserved words 7 (label values)
     keywordstyle  = [7]{\color{MediumOrchid}},%
     keywords      = [7]{m,s,M,VIII,viii,v,E,t,A,XXIII,true, false,test,sample},%
@@ -820,7 +820,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % This package provides \emph{\enquote{enumerated list}} environments
 % for creating \emph{\enquote{simple exercise sheets}} along with
 % \emph{\enquote{multiple choice questions}}, storing the
-% \mymeta{answers} to these in memory using the \mypkg{multicol} package
+% \mymeta{answers} to these in memory using \mypkg{multicol} and \mypkg{scontents} packages
 % and the \mypkg{l3seq} and \mypkg{l3prop} modules.
 % \end{abstract}
 %
@@ -833,7 +833,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{multiple choice questions}}, the basic idea behind
 % \mypkg*{enumext} is to cover three points:
 %
-% \begin{enumerate}[left=0pt, labelsep=5pt, label=\small\arabic*.,topsep=2pt]
+% \begin{enumerate}[left=0pt, nosep,labelsep=5pt, label=\small\arabic*.,topsep=2pt]
 %   \item To have a simple interface to be able to write \emph{\enquote{lists of
 %         exercises}} with \emph{\enquote{answers}}.
 %   \item To have a simple interface for writing \emph{\enquote{multiple choice
@@ -870,7 +870,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The software has the status \enquote{maintained}.
 %
 % The \mypkg*{enumext} package loads and requires \mypkg{multicol}\cite{multicol}
-% package, need to have a modern \hologo{TeX} distribution such as
+% and \mypkg{scontents}\cite{scontents} packages, need to have a modern \hologo{TeX} distribution such as
 % \hologo{TeX} Live or \hologo{MiKTeX}. It has been tested with the standard
 % classes provided by \hologo{LaTeX}: \myclass{book}, \myclass{report},
 % \myclass{article} and \myclass{letter} on \mydim{10pt}, \mydim{11pt} and \mydim{12pt}.
@@ -2451,14 +2451,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  The environment \myenv*{anskeyenv} takes a mandatory \mymarg{body content}
 %  and \emph{\enquote{stores}} it in the \emph{sequence} and \emph{prop
 %  list} \mymarg{store name} set by \mykey{save-ans} key.
-%  By design the environment cannot be nested or passed \emph{verbatim} in the
-%  body and it is assumed that each |\item| or |\item*| within the
-%  environment in which it is active it has a \emph{\enquote{single
-%  execution}} of |\anskey| unless |\item| or |\item*| open a nested level
-%  or use the \mykey{no-store} key.
-%
-%  \smallskip
-%
 %  If \mykey{save-ref} key are active and the
 %  \mypkg{hyperref}\cite{hyperref} package is detected, |\hyperlink| and
 %  |\hypertarget| will be used, otherwise the usual \emph{\enquote{label
@@ -2466,12 +2458,43 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 %  \smallskip
 %
+%  By design the environment cannot be nested but full supports \emph{verbatim material} in the
+%  body and it is assumed that each |\item| or |\item*| within the
+%  environment in which it is active it has a \emph{\enquote{single
+%  execution}} unless |\item| or |\item*| open a nested level
+%  or use the \mykey{no-store} key.
+%
+%  \smallskip
+%
+%  The \myenv*{anskeyenv} environment is implemented using the
+%  \mypkg{scontents} package, for the correct operation
+%  |\begin{anskeyenv}| and |\end{anskeyenv}| must
+%  be in different lines, all \mymeta{keys} must be passed separated by
+%  commas and \enquote{without separation} of the start of the environment.
+%  Comments \enquote{\textcolor{gray}{\%}} or \enquote{any character}
+%  after |\begin{anskeyenv}| or \myoarg{key \textnormal{\textcolor{gray}{=}} val}
+%  on the same line are NOT supported, the package \mypkg{scontents} will return an
+%  \enquote{error} message if this happens. In a similar way comments
+%  \enquote{\textcolor{gray}{\%}} or \enquote{any character} after %
+%  |\end{anskeyenv}| on the same line the package \mypkg{scontents} will
+%  return a \enquote{warning} message.
+%
+%  \smallskip
+%
 %  The \myenv*{anskeyenv} environment uses the same \mymeta{keys} as the
-%  \ics*{anskey} command and is available for all levels of the
+%  \ics*{anskey} command  next to the keys |write-env|, |force-eol| and
+%  |overwrite| inherited from package \mypkg{scontents}.
+%  The environment and is available for all levels of the
 %  \myenv*{enumext} environment and the \myenv*{enumext*} environment, but
 %  it is disabled for the \myenv*{keyans}, \myenv*{keyans*} and
 %  \myenv*{keyanspic} environments.
 %  \end{function}
+% \begin{important}*
+%  For security reasons the keys |store-env|, |print-env| and |write-out|
+%  they have been left disabled. It is recommended that you review the
+%  \mypkg{scontents}\cite{scontents} documentation to understand how the keys described
+%  here work.
+% \end{important}
 %
 % \subsubsection*{Example}
 %
@@ -3824,6 +3847,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \bibitem{multicol} \textsc{Mittelbach, Frank}. \enquote{An
 % environment for \textsf{multicolumn} output}. Available from
 % \textsc{ctan}, \url{https://www.ctan.org/pkg/multicol}, 2024.
+%
+% \bibitem{scontents} \textsc{González, Pablo}. \enquote{\textsf{scontents} - Stores
+% \hologo{LaTeX} contents in memory or files}. Available from
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/scontents}, 2022.
 %
 % \bibitem{enumerate} The \hologo{LaTeX} Project. \enquote{\textsf{enumerate} – Enumerate
 % with redefinable labels}. Available from
@@ -8853,7 +8880,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % internal code of \mypkg{scontents} and \emph{hooks}.
 %
 % \begin{macro}[int]{\@@_anskey_env_make:n, \@@_anskey_env_make:V,
-%              anskeyenv, \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:}
+%                    anskeyenv, \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:
+%                    \@@_rescan_anskey_env:n}
 %    The function \cs{@@_anskey_env_make:n} creates the environment
 %    \myenv*{anskeyenv} (\emph{custom version} of \myenv{scontents}) by setting the
 %    initial keys |store-env=|\mymarg{store name} and |print-env=false|.
@@ -8926,10 +8954,25 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
+%   The function \cs{@@_rescan_anskey_env:n} will be responsible for
+%   bringing the \mymeta{body} of the environment saved in the sequence
+%   \myvarenv{g__scontents_name_\mymeta[cf=gray]{store name}_seq} to
+%   pass it to our \emph{sequence} and \emph{prop list}.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_rescan_anskey_env:n #1
+  {
+    \group_begin:
+      \int_set:Nn \tex_newlinechar:D { `\^^J }
+      \__scontents_rescan_tokens:x
+        {
+          \endgroup % This assumes \catcode`\\=0... Things might go off otherwise.
+         #1
+        }
+  }
+%    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_anskey_env_exec:,}
-%
 %   The function \cs{@@_anskey_env_exec:} will be responsible for
 %   processing all the code necessary for the execution of the environment.
 %   The first thing will be to add our \mymeta{keys}.
@@ -8947,10 +8990,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   Now we will execute our actions after the \myenv*{anskeyenv}
 %   environment is closed. We'll fetch the contents of the
 %   \emph{environment body} that is now saved in
-%   \myvarenv{g__scontents_name_\mymeta[cf=gray]{store_name}_seq} and store it in
-%   the variable \cs{l_@@_store_anskey_env_tl}, then apply a \emph{regex}
-%   to remove the \emph{forced space} before \cs[no-index]{c__scontents_hidden_space_str}
-%   inside the variable then we execute the rest of the functions.
+%   \myvarenv{g__scontents_name_\mymeta[cf=gray]{store name}_seq} and store it in
+%   the variable \cs{l_@@_store_anskey_env_tl} then we execute the rest of the functions.
 %    \begin{macrocode}
     \@@_after_env:nn { anskeyenv }
       {
@@ -8959,8 +9000,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \seq_gpop_right:cNT
           { g__scontents_name_ \g_@@_store_name_tl _seq } \l_@@_store_anskey_env_tl
           { \seq_item:ce { g__scontents_name_ \g_@@_store_name_tl _seq } { -1 }  }
-        \regex_replace_all:nnN
-          { \s{2,}\u{c__scontents_hidden_space_str} } { \% } \l_@@_store_anskey_env_tl
         \@@_anskey_env_keys:
         \@@_anskey_env_store:
         \@@_anskey_env_clean:
@@ -8969,8 +9008,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \begin{important}*
-% The forced space in the variable \cs{l_@@_store_anskey_env_tl} should
-% not be there and the only way to remove it is with \emph{regex}.
 % Using \cs[no-index]{seq_gpop_right:cNT} is correct here, while we have control of
 % the scope of the environment, we cannot know if a user is using the key
 % |store-env=|\mymarg{store name} in some other environment.
@@ -9054,12 +9091,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \tl_if_empty:NTF \l_@@_store_anskey_opt_tl
             {
               \exp_args:Ne
-                \anskey{ \__scontents_rescan_tokens:x { \l_@@_store_anskey_env_tl } }
+                \anskey{ \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl } }
             }
             {
               \keys_set:nV { enumext / anskey } \l_@@_store_anskey_opt_tl
               \exp_args:Ne
-                \anskey{ \__scontents_rescan_tokens:x { \l_@@_store_anskey_env_tl } }
+                \anskey{ \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl } }
             }
         }
     \group_end:
