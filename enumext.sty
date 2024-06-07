@@ -554,21 +554,24 @@
     \keys_define:nn { enumext / #1 }
       {
         align .choice:,
-        align / left   .code:n =
-                         {
-                           \tl_clear:c { l__enumext_label_fill_left_#2_tl  }
-                           \tl_set:cn  { l__enumext_label_fill_right_#2_tl } { \hfill }
-                         },
-        align / right  .code:n =
-                         {
-                           \tl_set:cn  { l__enumext_label_fill_left_#2_tl  } { \hfill }
-                           \tl_clear:c { l__enumext_label_fill_right_#2_tl }
-                         },
-        align / center .code:n =
-                         {
-                           \tl_set:cn { l__enumext_label_fill_left_#2_tl  } { \hfill }
-                           \tl_set:cn { l__enumext_label_fill_right_#2_tl } { \hfill }
+        align / left    .code:n =
+                          {
+                            \tl_clear:c { l__enumext_label_fill_left_#2_tl  }
+                            \tl_set:cn  { l__enumext_label_fill_right_#2_tl } { \hfill }
                           },
+        align / right   .code:n =
+                          {
+                            \tl_set:cn  { l__enumext_label_fill_left_#2_tl  } { \hfill }
+                            \tl_clear:c { l__enumext_label_fill_right_#2_tl }
+                          },
+        align / center  .code:n =
+                          {
+                            \tl_set:cn { l__enumext_label_fill_left_#2_tl  } { \hfill }
+                            \tl_set:cn { l__enumext_label_fill_right_#2_tl } { \hfill }
+                          },
+        align / unknown .code:n =
+                          \msg_error:nneee { enumext } { unknown-choice }
+                            { align } { left, ~ right, ~  center } { \exp_not:n {##1} },
         align .initial:n  = left,
         align .value_required:n  = true,
       }
@@ -584,9 +587,12 @@
     \keys_define:nn { enumext / #1 }
       {
         align .choice:,
-        align / left   .code:n = \str_set:cn { l__enumext_align_label_#2_str } { l },
-        align / right  .code:n = \str_set:cn { l__enumext_align_label_#2_str } { r },
-        align / center .code:n = \str_set:cn { l__enumext_align_label_#2_str } { c },
+        align / left    .code:n = \str_set:cn { l__enumext_align_label_#2_str } { l },
+        align / right   .code:n = \str_set:cn { l__enumext_align_label_#2_str } { r },
+        align / center  .code:n = \str_set:cn { l__enumext_align_label_#2_str } { c },
+        align / unknown .code:n =
+                          \msg_error:nneee { enumext } { unknown-choice }
+                            { align } { left, ~ right, ~  center } { \exp_not:n {##1} },
         align .initial:n = left,
         align .value_required:n = true,
       }
@@ -2120,9 +2126,9 @@
         mark-pos   .choice:,
         mark-pos / left    .code:n = \str_set:Nn \l__enumext_mark_position_str { l },
         mark-pos / right   .code:n = \str_set:Nn \l__enumext_mark_position_str { r },
-%%        mark-pos / unknown .code:n =
-%%                           \msg_error:nneee { enumext } { unknown-choice }
-%%                             { mark-pos } { left , right } { \exp_not:n {##1} },
+        mark-pos / unknown .code:n =
+                           \msg_error:nneee { enumext } { unknown-choice }
+                             { mark-pos } { left, ~ right } { \exp_not:n {##1} },
         mark-pos   .initial:n = right,
         mark-pos   .value_required:n = true,
         show-ans   .bool_set:N = \l__enumext_show_answer_bool,
@@ -4623,6 +4629,10 @@
   {
     The ~ counter ~ '#1' ~ is ~ already ~ defined ~ by ~ some ~ \\
     package ~ or ~ macro, ~ it ~ cannot ~ be ~ continued.
+  }
+\msg_new:nnn { enumext } { unknown-choice }
+  {
+    The ~ value ~ '#3' ~ for ~ '#1' ~ key ~ is ~ invalid ~ use ~ ('#2').
   }
 \msg_new:nnnn { enumext } { anskey-env-error }
   {

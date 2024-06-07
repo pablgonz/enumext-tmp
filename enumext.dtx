@@ -5230,21 +5230,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \keys_define:nn { enumext / #1 }
       {
         align .choice:,
-        align / left   .code:n =
-                         {
-                           \tl_clear:c { l_@@_label_fill_left_#2_tl  }
-                           \tl_set:cn  { l_@@_label_fill_right_#2_tl } { \hfill }
-                         },
-        align / right  .code:n =
-                         {
-                           \tl_set:cn  { l_@@_label_fill_left_#2_tl  } { \hfill }
-                           \tl_clear:c { l_@@_label_fill_right_#2_tl }
-                         },
-        align / center .code:n =
-                         {
-                           \tl_set:cn { l_@@_label_fill_left_#2_tl  } { \hfill }
-                           \tl_set:cn { l_@@_label_fill_right_#2_tl } { \hfill }
+        align / left    .code:n =
+                          {
+                            \tl_clear:c { l_@@_label_fill_left_#2_tl  }
+                            \tl_set:cn  { l_@@_label_fill_right_#2_tl } { \hfill }
                           },
+        align / right   .code:n =
+                          {
+                            \tl_set:cn  { l_@@_label_fill_left_#2_tl  } { \hfill }
+                            \tl_clear:c { l_@@_label_fill_right_#2_tl }
+                          },
+        align / center  .code:n =
+                          {
+                            \tl_set:cn { l_@@_label_fill_left_#2_tl  } { \hfill }
+                            \tl_set:cn { l_@@_label_fill_right_#2_tl } { \hfill }
+                          },
+        align / unknown .code:n =
+                          \msg_error:nneee { enumext } { unknown-choice }
+                            { align } { left, ~ right, ~  center } { \exp_not:n {##1} },
         align .initial:n  = left,
         align .value_required:n  = true,
       }
@@ -5264,9 +5267,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \keys_define:nn { enumext / #1 }
       {
         align .choice:,
-        align / left   .code:n = \str_set:cn { l_@@_align_label_#2_str } { l },
-        align / right  .code:n = \str_set:cn { l_@@_align_label_#2_str } { r },
-        align / center .code:n = \str_set:cn { l_@@_align_label_#2_str } { c },
+        align / left    .code:n = \str_set:cn { l_@@_align_label_#2_str } { l },
+        align / right   .code:n = \str_set:cn { l_@@_align_label_#2_str } { r },
+        align / center  .code:n = \str_set:cn { l_@@_align_label_#2_str } { c },
+        align / unknown .code:n =
+                          \msg_error:nneee { enumext } { unknown-choice }
+                            { align } { left, ~ right, ~  center } { \exp_not:n {##1} },
         align .initial:n = left,
         align .value_required:n = true,
       }
@@ -8062,9 +8068,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         mark-pos   .choice:,
         mark-pos / left    .code:n = \str_set:Nn \l_@@_mark_position_str { l },
         mark-pos / right   .code:n = \str_set:Nn \l_@@_mark_position_str { r },
-%%        mark-pos / unknown .code:n =
-%%                           \msg_error:nneee { enumext } { unknown-choice }
-%%                             { mark-pos } { left , right } { \exp_not:n {##1} },
+        mark-pos / unknown .code:n =
+                           \msg_error:nneee { enumext } { unknown-choice }
+                             { mark-pos } { left, ~ right } { \exp_not:n {##1} },
         mark-pos   .initial:n = right,
         mark-pos   .value_required:n = true,
         show-ans   .bool_set:N = \l_@@_show_answer_bool,
@@ -12666,6 +12672,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     package ~ or ~ macro, ~ it ~ cannot ~ be ~ continued.
   }
 %    \end{macrocode}
+%
+% Message used by \mykey{align} and \mykey{mark-pos} keys.
+%    \begin{macrocode}
+\msg_new:nnn { enumext } { unknown-choice }
+  {
+    The ~ value ~ '#3' ~ for ~ '#1' ~ key ~ is ~ invalid ~ use ~ ('#2').
+  }
+%    \begin{macrocode}
 %
 % Message used by reserved \myenv*{anskey*} environment by \mypkg*{enumext} package.
 %    \begin{macrocode}
