@@ -8598,7 +8598,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \@@_store_internal_ref:
       }
-    \@@_store_anskey_show_left:n { #2 }
+    \@@_anskey_show_wrap_left:n { #2 }
 %    \end{macrocode}
 %   Now we start processing the \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 %   passed to the command to build our |\item| in the variable \cs{l_@@_store_anskey_arg_tl}
@@ -8800,15 +8800,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_store_anskey_show_wrap:n,}
-%    The function \cs{@@_store_anskey_show_wrap:n}
+% \begin{macro}{\@@_anskey_show_wrap_arg:n,}
+%    The function \cs{@@_anskey_show_wrap_arg:n}
 %    \emph{\enquote{wraps}} the \mymeta{argument} passed to \ics*{anskey}
 %    when using the \mykey{wrap-ans} key.
 % \iffalse
 %% Internal |wrap-ans| implementation for |\anskey|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_store_anskey_show_wrap:n #1
+\cs_new_protected:Npn \@@_anskey_show_wrap_arg:n #1
   {
     \par
     \bool_if:NT \l_@@_starred_bool
@@ -8823,8 +8823,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{ \@@_store_anskey_show_left:n }
-%    The function \cs{@@_store_anskey_show_left:n} will show the \emph{\enquote{mark}}
+% \begin{macro}{ \@@_anskey_show_wrap_left:n }
+%    The function \cs{@@_anskey_show_wrap_left:n} will show the \emph{\enquote{mark}}
 %    defined by the \mykey{mark-ans} key or the \emph{\enquote{position}} of the content
 %    stored in the \mymeta{prop list} when using the \mykey{show-pos} key on
 %    the left margin next to the \emph{\enquote{wraps}} \mymeta{argument}
@@ -8834,11 +8834,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal |show-ans| and |show-pos| implementation for |\anskey|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_store_anskey_show_left:n #1
+\cs_new_protected:Npn \@@_anskey_show_wrap_left:n #1
   {
     \bool_if:NT \l_@@_show_answer_bool
       {
-        \@@_store_anskey_show_wrap:n { #1 }
+        \@@_anskey_show_wrap_arg:n { #1 }
       }
     \bool_if:NT \l_@@_show_position_bool
       {
@@ -8853,7 +8853,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               ]
             \group_end:
           }
-        \@@_store_anskey_show_wrap:n { #1 }
+        \@@_anskey_show_wrap_arg:n { #1 }
       }
   }
 %    \end{macrocode}
