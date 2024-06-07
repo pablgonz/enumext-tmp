@@ -4017,7 +4017,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-06-06}
+  {2024-06-07}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4070,14 +4070,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{\l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_first_bool,
 %                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_first_bool,
-%                       \l_@@_keyans_env_bool,}
+%                       \l_@@_keyans_env_bool,\g_@@_start_line_tl, \g_@@_envir_name_tl }
+%   Internal variables used by functions \cs{@@_is_not_nested:},
+%   \cs{@@_is_on_first_level:} and \cs{@@_keyans_start_line:} (\S\ref{fun:utilities}).
 %
-%    The boolean variables \myvarenv{g__@@_starred_bool} and
-%    \myvarenv{g__@@_standar_bool} will be set to \emph{\enquote{true}} when the
-%    \myenv*{enumext} and \myenv*{enumext*} environments are not nested with
-%    each other.
+%^^A    The boolean variables \myvarenv{g__@@_starred_bool} and
+%^^A    \myvarenv{g__@@_standar_bool} will be set to \emph{\enquote{true}} when the
+%^^A    \myenv*{enumext} and \myenv*{enumext*} environments are not nested with
+%^^A    each other.
 % \iffalse
-%% Bool vars for levels and nesting off all environments.
+%% Internal vars for levels and nesting off all environments.
 % \fi
 %    \begin{macrocode}
 \bool_new:N \l_@@_starred_bool
@@ -4087,6 +4089,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \g_@@_standar_bool
 \bool_new:N \l_@@_standar_first_bool
 \bool_new:N \l_@@_keyans_env_bool
+\tl_new:N   \g_@@_start_line_tl
+\tl_new:N   \g_@@_envir_name_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -4392,9 +4396,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}{\l_@@_check_answers_bool,\g_@@_check_ans_key_bool,
-%                  \l_@@_check_start_line_env_tl, \g_@@_start_line_tl,
-%                  \g_@@_check_starred_cmd_int,  \g_@@_item_anskey_int,
-%                  \g_@@_item_number_int,}
+%                  \l_@@_check_start_line_env_tl, \g_@@_check_starred_cmd_int,
+%                  \g_@@_item_anskey_int, \g_@@_item_number_int,}
 %    Internal variables used by \emph{\enquote{check answer}} mechanism
 %    (\S\ref{int:check-answer}) used by the \mykey{check-ans} and
 %    \mykey{no-store} keys and check for starred commands \ics*{item*}
@@ -4407,8 +4410,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \l_@@_check_answers_bool
 \bool_new:N \g_@@_check_ans_key_bool
 \tl_new:N   \l_@@_check_start_line_env_tl
-\tl_new:N   \g_@@_start_line_tl
-\tl_new:N   \g_@@_envir_name_tl
 \int_new:N  \g_@@_check_starred_cmd_int
 \int_new:N  \g_@@_item_anskey_int
 \int_new:N  \g_@@_item_number_int
@@ -4432,17 +4433,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}[int]{ \l_@@_newlabel_arg_one_tl, \l_@@_newlabel_arg_two_tl,
-%                        \l_@@_store_write_aux_file_tl, \l_@@_label_copy_X_tl, }
+%                        \l_@@_write_aux_file_tl, \l_@@_label_copy_X_tl, }
 %
-%    Internal variables are used when executing the \mykey{save-ref} key.
+%    Internal variables used by \mykey{save-ref} key (\S\ref{int:storage-system}).
 %    The variables \myvarenv{l__@@_label_copy_X_tl} correspond to temporary
-%    copies of the labels defined by level on which operations will be performed.
+%    copies of the \mymeta{labels} defined by level on which operations will be performed.
 %
 %    \smallskip
 %
 %    The variables \cs{l_@@_newlabel_arg_one_tl} and \cs{l_@@_newlabel_arg_two_tl}
 %    will be used to form the arguments passed to the function
-%    \cs{@@_newlabel:nn} and the variable \cs{l_@@_store_write_aux_file_tl}
+%    \cs{@@_newlabel:nn} (\S\ref{fun:newlabel}) and the variable \cs{l_@@_write_aux_file_tl}
 %    will be in charge of executing the writing code in the |.aux| file.
 % \iffalse
 %% Variables used by |save-ref| key (internal label and ref).
@@ -4450,7 +4451,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \tl_new:N \l_@@_newlabel_arg_one_tl
 \tl_new:N \l_@@_newlabel_arg_two_tl
-\tl_new:N \l_@@_store_write_aux_file_tl
+\tl_new:N \l_@@_write_aux_file_tl
 \cs_set_protected:Npn \@@_tmp:n #1
   {
     \tl_new:c { l_@@_label_copy_#1_tl }
@@ -4460,7 +4461,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}{ \g_@@_footnote_int, \g_@@_footnote_arg_seq, \g_@@_footnote_int_seq,}
-%    Internal variables used for redefinition of |\footnote|.
+%    Internal variables used for redefinition of |\footnote| (\S\ref{ltx:footnote}).
 % \iffalse
 %% Variables used by |footnote|.
 % \fi
@@ -4624,7 +4625,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Utilities for environments and levels}
+% \subsubsection{Utilities for environments and levels}\label{fun:utilities}
 %
 % \begin{macro}{\@@_is_not_nested:, \@@_is_on_first_level:}
 %   The function \cs{@@_is_not_nested:} set the variables \cs{g_@@_standar_bool} and
@@ -4704,8 +4705,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_keyans_save_start_line:}
-%   The function \cs{@@_keyans_save_start_line:} will save the start line
+% \begin{macro}{\@@_keyans_start_line:}
+%   The function \cs{@@_keyans_start_line:} will save the start line
 %   number of the environments \myenv*{keyans}, \myenv*{keyans*} and
 %   \myenv*{keyanspic} in the variable \cs{l_@@ _check_start_line_env_tl}
 %   to use in the \cs{@@_check_starred_cmd:n} function.
@@ -4713,7 +4714,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Function to save the current environment start line for |keyans|, |keyans*| and |keyanspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_save_start_line:
+\cs_new_protected:Nn \@@_keyans_start_line:
   {
     \str_case:en { \@currenvir }
       {
@@ -5003,7 +5004,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_newlabel:nn,}
+% \begin{macro}{\@@_newlabel:nn,}\label{fun:newlabel}
 %    The function \cs{@@_newlabel:nn} write the information
 %    to the |.aux| file when using the \mykey{save-ref} key. The
 %    arguments taken by the function are:
@@ -8785,16 +8786,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
 %    \end{macrocode}
 %    Now execute the function \cs{@@_newlabel:nn} and save the
-%    result in the variable \cs{l_@@_store_write_aux_file_tl} and
+%    result in the variable \cs{l_@@_write_aux_file_tl} and
 %    finally we write in the |.aux| file.
 %    \begin{macrocode}
-    \tl_put_right:Ne \l_@@_store_write_aux_file_tl
+    \tl_put_right:Ne \l_@@_write_aux_file_tl
       {
         \@@_newlabel:nn
           { \exp_not:V \l_@@_newlabel_arg_one_tl }
           { \l_@@_newlabel_arg_two_tl }
       }
-    \l_@@_store_write_aux_file_tl
+    \l_@@_write_aux_file_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9128,7 +9129,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   The function \cs{@@_anskey_env_store:} will be responsible for storing
 %   the content of the environment, we will execute the code within a group
 %   and only if the variable \cs{l_@@_store_anskey_env_tl} is not empty
-%   using the function \cs[no-index]{scontents_rescan_tokens:x} from
+%   using the function \cs{@@_rescan_anskey_env:n} from
 %   package \mypkg{scontents}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_store:
@@ -9139,12 +9140,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \tl_if_empty:NTF \l_@@_store_anskey_opt_tl
             {
               \exp_args:Ne
-                \anskey{ \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl } }
+                \anskey
+                  {
+                    \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl }
+                  }
             }
             {
               \keys_set:nV { enumext / anskey } \l_@@_store_anskey_opt_tl
               \exp_args:Ne
-                \anskey{ \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl } }
+                \anskey
+                  {
+                    \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl }
+                  }
             }
         }
     \group_end:
@@ -9205,9 +9212,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{The \texttt{save-ref} key for \env{keyans}, \env{keyans*} and \env{keyanspic}}
+% \subsubsection{The \texttt{save-ref} key for \env{keyans}, \env{keyans*} and \env{keyanspic}}\label{fun:save-ref-keyans}
 %
-% The internal \emph{\enquote{label and ref}} system for the \myenv*{keyans}, \myenv*{keyans*} and
+% The \emph{\enquote{internal label and ref}} system for the \myenv*{keyans}, \myenv*{keyans*} and
 % \myenv*{keyanspic} environments has slight differences with the one
 % implemented for the \ics*{anskey} command, basically because in this
 % environments we are interested in the current \mymeta{label}. The
@@ -9279,18 +9286,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %    Now auxiliary function \cs{@@_keyans_store_ref_aux_ii:} save the
-%    result in the variable \cs{l_@@_store_write_aux_file_tl} and
+%    result in the variable \cs{l_@@_write_aux_file_tl} and
 %    finally we write in the |.aux| file.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_store_ref_aux_ii:
   {
-    \tl_put_right:Ne \l_@@_store_write_aux_file_tl
+    \tl_put_right:Ne \l_@@_write_aux_file_tl
       {
         \@@_newlabel:nn
           { \exp_not:V \l_@@_newlabel_arg_one_tl }
           { \l_@@_newlabel_arg_two_tl }
       }
-    \l_@@_store_write_aux_file_tl
+    \l_@@_write_aux_file_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10510,7 +10517,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \int_incr:N \l_@@_keyans_level_int
     \bool_set_true:N \l_@@_keyans_env_bool
-    \@@_keyans_save_start_line:
+    \@@_keyans_start_line:
     % Set false for interfering with enumext nested in keyans (yes, its possible and crayze)
     \bool_set_false:N \l_@@_store_active_bool
     \int_compare:nNnT { \l_@@_keyans_level_int } > { 1 }
@@ -10932,7 +10939,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nn { enumext } { keyanspic-nested }
       }
-    \@@_keyans_save_start_line:
+    \@@_keyans_start_line:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11902,7 +11909,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nn { enumext } { nested }
       }
-    \@@_keyans_save_start_line:
+    \@@_keyans_start_line:
     % Set false for interfering with enumext nested in keyans* (yes, its possible and crayze)
     \bool_set_false:N \l_@@_store_active_bool
     \int_compare:nNnT { \l_@@_level_int } > { 1 }

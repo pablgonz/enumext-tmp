@@ -6,25 +6,25 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%% 
+%%
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%% 
+%%
 %%  https://www.latex-project.org/lppl.txt
-%% 
+%%
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%% 
+%%
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%% 
+%%
 %% This work consists of the files enumext.dtx and enumext.sty.
-%% 
+%%
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-06-06}
+  {2024-06-07}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -53,7 +53,7 @@
 \int_new:N  \l__enumext_keyans_level_int
 \int_new:N  \l__enumext_keyans_level_h_int
 \int_new:N  \l__enumext_keyans_pic_level_int
-%% Bool vars for levels and nesting off all environments.
+%% Internal vars for levels and nesting off all environments.
 \bool_new:N \l__enumext_starred_bool
 \bool_new:N \g__enumext_starred_bool
 \bool_new:N \l__enumext_starred_first_bool
@@ -61,6 +61,8 @@
 \bool_new:N \g__enumext_standar_bool
 \bool_new:N \l__enumext_standar_first_bool
 \bool_new:N \l__enumext_keyans_env_bool
+\tl_new:N   \g__enumext_start_line_tl
+\tl_new:N   \g__enumext_envir_name_tl
 %% Variable for counters
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
@@ -173,8 +175,6 @@
 \bool_new:N \l__enumext_check_answers_bool
 \bool_new:N \g__enumext_check_ans_key_bool
 \tl_new:N   \l__enumext_check_start_line_env_tl
-\tl_new:N   \g__enumext_start_line_tl
-\tl_new:N   \g__enumext_envir_name_tl
 \int_new:N  \g__enumext_check_starred_cmd_int
 \int_new:N  \g__enumext_item_anskey_int
 \int_new:N  \g__enumext_item_number_int
@@ -185,7 +185,7 @@
 %% Variables used by |save-ref| key (internal label and ref).
 \tl_new:N \l__enumext_newlabel_arg_one_tl
 \tl_new:N \l__enumext_newlabel_arg_two_tl
-\tl_new:N \l__enumext_store_write_aux_file_tl
+\tl_new:N \l__enumext_write_aux_file_tl
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \tl_new:c { l__enumext_label_copy_#1_tl }
@@ -320,7 +320,7 @@
       }
   }
 %% Function to save the current environment start line for |keyans|, |keyans*| and |keyanspic|.
-\cs_new_protected:Nn \__enumext_keyans_save_start_line:
+\cs_new_protected:Nn \__enumext_keyans_start_line:
   {
     \str_case:en { \@currenvir }
       {
@@ -2533,13 +2533,13 @@
         \l__enumext_store_name_tl \c_colon_str
         \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
       }
-    \tl_put_right:Ne \l__enumext_store_write_aux_file_tl
+    \tl_put_right:Ne \l__enumext_write_aux_file_tl
       {
         \__enumext_newlabel:nn
           { \exp_not:V \l__enumext_newlabel_arg_one_tl }
           { \l__enumext_newlabel_arg_two_tl }
       }
-    \l__enumext_store_write_aux_file_tl
+    \l__enumext_write_aux_file_tl
   }
 %% Internal |wrap-ans| implementation for |\anskey|.
 \cs_new_protected:Npn \__enumext_store_anskey_show_wrap:n #1
@@ -2726,12 +2726,20 @@
           \tl_if_empty:NTF \l__enumext_store_anskey_opt_tl
             {
               \exp_args:Ne
-                \anskey{ \__enumext_rescan_anskey_env:n { \l__enumext_store_anskey_env_tl } }
+                \anskey
+                  {
+                    \__enumext_rescan_anskey_env:n { \l__enumext_store_anskey_env_tl }
+                  }
             }
             {
               \keys_set:nV { enumext / anskey } \l__enumext_store_anskey_opt_tl
-              \exp_args:Ne
-                \anskey{ \__enumext_rescan_anskey_env:n { \l__enumext_store_anskey_env_tl } }
+              %%\exp_args:Ne
+              %%  \anskey
+              \exp_args:Nee
+              \__enumext_store_anskey_code:nn { }
+                  {
+                    \__enumext_rescan_anskey_env:n { \l__enumext_store_anskey_env_tl }
+                  }
             }
         }
     \group_end:
@@ -2812,13 +2820,13 @@
   }
 \cs_new_protected:Nn \__enumext_keyans_store_ref_aux_ii:
   {
-    \tl_put_right:Ne \l__enumext_store_write_aux_file_tl
+    \tl_put_right:Ne \l__enumext_write_aux_file_tl
       {
         \__enumext_newlabel:nn
           { \exp_not:V \l__enumext_newlabel_arg_one_tl }
           { \l__enumext_newlabel_arg_two_tl }
       }
-    \l__enumext_store_write_aux_file_tl
+    \l__enumext_write_aux_file_tl
   }
 %% Function for storing in sequence for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_addto_seq:n #1
@@ -3439,7 +3447,7 @@
       }
     \int_incr:N \l__enumext_keyans_level_int
     \bool_set_true:N \l__enumext_keyans_env_bool
-    \__enumext_keyans_save_start_line:
+    \__enumext_keyans_start_line:
     % Set false for interfering with enumext nested in keyans (yes, its possible and crayze)
     \bool_set_false:N \l__enumext_store_active_bool
     \int_compare:nNnT { \l__enumext_keyans_level_int } > { 1 }
@@ -3605,7 +3613,7 @@
       {
         \msg_error:nn { enumext } { keyanspic-nested }
       }
-    \__enumext_keyans_save_start_line:
+    \__enumext_keyans_start_line:
   }
 \cs_new_protected:Npn \__enumext_keyans_pic_skip_abs:N #1
   {
@@ -4177,7 +4185,7 @@
       {
         \msg_error:nn { enumext } { nested }
       }
-    \__enumext_keyans_save_start_line:
+    \__enumext_keyans_start_line:
     % Set false for interfering with enumext nested in keyans* (yes, its possible and crayze)
     \bool_set_false:N \l__enumext_store_active_bool
     \int_compare:nNnT { \l__enumext_level_int } > { 1 }
@@ -4805,6 +4813,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%% 
+%%
 %%
 %% End of file `enumext.sty'.

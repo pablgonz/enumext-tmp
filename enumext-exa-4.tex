@@ -10,8 +10,15 @@
 \pagestyle{empty}
 \begin{document}
 \begin{enumext}[save-ans=simplews,columns=2,check-ans=true,show-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
-  \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
-  \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
+  \item Factor $x^{2}-2x+1$
+    \begin{anskeyenv}
+    $\left(x-1\right)^{2}$ \verb+XXZZ+
+    \end{anskeyenv}
+
+  \item Factor $3x+3y+3z$
+    \begin{anskeyenv}[item-star]
+    $\left(x-1\right)^{2}$ \verb+YYY+
+    \end{anskeyenv}
   \item True False
     \begin{enumext}[nosep]
       \item $\alpha > \delta$ \anskey{False}
