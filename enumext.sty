@@ -86,7 +86,6 @@
 \bool_new:N \l__enumext_resume_active_bool
 \tl_new:N   \g__enumext_standar_series_tl
 \tl_new:N   \g__enumext_starred_series_tl
-\tl_new:N   \g__enumext_item_symbol_tl
 %% Variables used by |label|, |ref| and |widest| keys.
 \dim_new:N \l__enumext_current_widest_dim
 \tl_new:N  \g__enumext_counter_styles_tl
@@ -143,34 +142,27 @@
 \tl_new:N   \l__enumext_store_anskey_arg_tl
 \tl_new:N   \l__enumext_store_anskey_env_tl
 \tl_new:N   \l__enumext_store_anskey_opt_tl
-\int_new:N  \l__enumext_store_columns_join_int
-\tl_new:N   \l__enumext_store_keyans_label_tl
-\tl_new:N   \l__enumext_store_keyans_item_opt_tl
-\tl_new:N   \l__enumext_keyans_item_opt_tl
-\tl_new:N   \l__enumext_keyans_tmpa_tl
+\tl_new:N   \l__enumext_store_current_label_tl
+\tl_new:N   \l__enumext_store_current_opt_arg_tl
+\tl_new:N   \l__enumext_store_current_label_tmp_tl
 %% Variables used by |\setenumext|.
 \tl_new:N  \l__enumext_setkey_tmpa_tl
 \tl_new:N  \l__enumext_setkey_tmpb_tl
 \int_new:N \l__enumext_setkey_tmpa_int
 \seq_new:N \l__enumext_setkey_tmpa_seq
 \seq_new:N \l__enumext_setkey_tmpb_seq
-%% Variables used by store level, |save-key| and |\printkeyans| in |enumext| and |enumext*|.
-\tl_new:N \l__enumext_print_keyans_starred_tl
+%% Variables used by|\printkeyans|, |mark-pos|, |item-sym*|, |save-key| and  store level in |enumext| and |enumext*|.
+\tl_new:N  \l__enumext_print_keyans_starred_tl
+\str_new:N \l__enumext_mark_position_str
+\tl_new:N  \g__enumext_item_symbol_tl
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
-    \tl_new:c   { l__enumext_store_save_key_#1_tl    }
-    \bool_new:c { l__enumext_store_save_key_#1_bool  }
-    \tl_new:c   { l__enumext_store_active_keys_#1_tl }
-    \tl_new:c   { l__enumext_print_keyans_#1_tl      }
+    \tl_new:c   { l__enumext_print_keyans_#1_tl        }
+    \tl_new:c   { l__enumext_store_save_key_#1_tl      }
+    \bool_new:c { l__enumext_store_save_key_#1_bool    }
     \bool_new:c { l__enumext_store_upper_level_#1_bool }
   }
 \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {#1} }
-%% Variables used by |show-ans|, |show-pos|, |mark-ans|, |mark-ref| and |\anskey|.
-\bool_new:N \l__enumext_show_answer_bool
-\bool_new:N \l__enumext_show_position_bool
-\tl_new:N   \l__enumext_mark_ref_sym_tl
-\tl_new:N   \l__enumext_mark_answer_sym_tl
-\str_new:N  \l__enumext_mark_position_str
 %% Variables used by |\anspic| and |keyanspic|.
 \seq_new:N  \l__enumext_keyans_pic_body_seq
 \dim_new:N  \l__enumext_keyans_pic_width_dim
@@ -179,7 +171,6 @@
 \skip_new:N \l__enumext_keyans_pic_above_skip
 %% Variables used by check-answer mechanism, |check-ans| and |no-store| keys.
 \bool_new:N \l__enumext_check_answers_bool
-\bool_new:N \l__enumext_check_ans_key_bool
 \bool_new:N \g__enumext_check_ans_key_bool
 \tl_new:N   \l__enumext_check_start_line_env_tl
 \tl_new:N   \g__enumext_start_line_tl
@@ -2756,24 +2747,24 @@
 %% Function for storing in prop list for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_addto_prop:n #1
   {
-    \tl_clear:N \l__enumext_store_keyans_label_tl
+    \tl_clear:N \l__enumext_store_current_label_tl
     \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
       {
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \l__enumext_label_vi_tl }
+        \tl_put_right:Ne \l__enumext_store_current_label_tl { \l__enumext_label_vi_tl }
       }
       {
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \l__enumext_label_v_tl }
+        \tl_put_right:Ne \l__enumext_store_current_label_tl { \l__enumext_label_v_tl }
       }
     \tl_if_novalue:nF { #1 }
       {
         % Set save-sep
         \tl_if_empty:NF \l__enumext_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \l__enumext_store_keyans_item_opt_sep_tl }
+            \tl_put_right:Ne \l__enumext_store_current_label_tl { \l__enumext_store_keyans_item_opt_sep_tl }
           }
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { #1 }
+        \tl_put_right:Ne \l__enumext_store_current_label_tl { #1 }
       }
-    \__enumext_store_addto_prop:V \l__enumext_store_keyans_label_tl
+    \__enumext_store_addto_prop:V \l__enumext_store_current_label_tl
   }
 %% Internal label and ref function for |keyans|, |keyans*| and |keyanspic|.
 \cs_new_protected:Nn \__enumext_keyans_store_ref:
@@ -2832,24 +2823,24 @@
 %% Function for storing in sequence for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_addto_seq:n #1
   {
-    \tl_clear:N \l__enumext_store_keyans_label_tl
+    \tl_clear:N \l__enumext_store_current_label_tl
     \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
       {
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \item \l__enumext_label_vi_tl }
+        \tl_put_right:Ne \l__enumext_store_current_label_tl { \item \l__enumext_label_vi_tl }
       }
       {
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \item \l__enumext_label_v_tl }
+        \tl_put_right:Ne \l__enumext_store_current_label_tl { \item \l__enumext_label_v_tl }
       }
     \tl_if_novalue:nF { #1 }
       {
         \tl_if_empty:NF \l__enumext_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l__enumext_store_keyans_label_tl
+            \tl_put_right:Ne \l__enumext_store_current_label_tl
               {
                 \l__enumext_store_keyans_item_opt_sep_tl
               }
           }
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl { #1 }
+        \tl_put_right:Ne \l__enumext_store_current_label_tl { #1 }
       }
     \__enumext_keyans_addto_seq_link:
   }
@@ -2859,7 +2850,7 @@
       { \bool_if_p:N \l__enumext_store_ref_key_bool }
       { \bool_if_p:N \l__enumext_hyperref_bool }
       {
-        \tl_put_right:Ne \l__enumext_store_keyans_label_tl
+        \tl_put_right:Ne \l__enumext_store_current_label_tl
           {
             \hfill \exp_not:N \hyperlink
               {
@@ -2868,7 +2859,7 @@
               { \exp_not:V \l__enumext_mark_ref_sym_tl }
           }
       }
-    \__enumext_store_addto_seq:V \l__enumext_store_keyans_label_tl
+    \__enumext_store_addto_seq:V \l__enumext_store_current_label_tl
     \bool_if:NT \l__enumext_check_answers_bool
       {
         \int_gincr:N \g__enumext_item_anskey_int
@@ -2879,7 +2870,7 @@
   {
     \tl_if_novalue:nF { #1 }
       {
-        \tl_set:Ne \l__enumext_keyans_item_opt_tl { #1 }
+        \tl_set:Ne \l__enumext_store_current_opt_arg_tl { #1 }
       }
     \bool_if:NT \l__enumext_show_answer_bool
       {
@@ -2892,13 +2883,13 @@
   }
 \cs_new_protected:Nn \__enumext_keyans_show_item_opt:
   {
-    \tl_if_empty:NF \l__enumext_keyans_item_opt_tl
+    \tl_if_empty:NF \l__enumext_store_current_opt_arg_tl
       {
         \bool_lazy_or:nnT
           { \bool_if_p:N \l__enumext_show_answer_bool }
           { \bool_if_p:N \l__enumext_show_position_bool }
           {
-            \__enumext_keyans_wrapper_opt:n { \l__enumext_keyans_item_opt_tl } \c_space_tl
+            \__enumext_keyans_wrapper_opt:n { \l__enumext_store_current_opt_arg_tl } \c_space_tl
           }
       }
   }
@@ -3065,11 +3056,11 @@
   }
 \cs_new_protected:Npn \__enumext_keyans_starred_item:n #1
   {
-    \tl_set_eq:NN \l__enumext_keyans_tmpa_tl \l__enumext_label_v_tl
+    \tl_set_eq:NN \l__enumext_store_current_label_tmp_tl \l__enumext_label_v_tl
     \__enumext_keyans_show_left:n { #1 }
     \bool_set_true:N \l__enumext_wrap_label_v_bool
     \__enumext_item_std:w \tl_use:N \l__enumext_fake_item_indent_v_tl \__enumext_keyans_show_item_opt:
-    \tl_set_eq:NN \l__enumext_label_v_tl \l__enumext_keyans_tmpa_tl
+    \tl_set_eq:NN \l__enumext_label_v_tl \l__enumext_store_current_label_tmp_tl
     \__enumext_keyans_addto_prop:n { #1 }
     \__enumext_keyans_store_ref:
     \__enumext_keyans_addto_seq:n { #1 }
@@ -4265,15 +4256,15 @@
   }
 \cs_new_protected:Npn \__enumext_starred_item_viii_aux_i:w [#1]
   {
-    \tl_clear:N \l__enumext_store_keyans_label_tl
+    \tl_clear:N \l__enumext_store_current_label_tl
     \tl_if_novalue:nF { #1 }
       {
         \tl_if_empty:NF \l__enumext_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l__enumext_store_keyans_label_tl { \l__enumext_store_keyans_item_opt_sep_tl }
-            \tl_put_right:Ne \l__enumext_store_keyans_label_tl { #1 }
+            \tl_put_right:Ne \l__enumext_store_current_label_tl { \l__enumext_store_keyans_item_opt_sep_tl }
+            \tl_put_right:Ne \l__enumext_store_current_label_tl { #1 }
           }
-        \tl_set:Ne \l__enumext_keyans_item_opt_tl { #1 }
+        \tl_set:Ne \l__enumext_store_current_opt_arg_tl { #1 }
       }
     \__enumext_starred_item_viii_aux_ii:w
   }
@@ -4285,10 +4276,10 @@
 %% Set \item*[content] for |keyans*| environment.
 \cs_new_protected:Nn \__enumext_starred_item_exec:
   {
-    \tl_put_left:Ne \l__enumext_store_keyans_label_tl { \l__enumext_label_viii_tl }
-    \__enumext_store_addto_prop:V \l__enumext_store_keyans_label_tl
+    \tl_put_left:Ne \l__enumext_store_current_label_tl { \l__enumext_label_viii_tl }
+    \__enumext_store_addto_prop:V \l__enumext_store_current_label_tl
     \__enumext_keyans_store_ref:
-    \tl_put_left:Ne \l__enumext_store_keyans_label_tl { \item }
+    \tl_put_left:Ne \l__enumext_store_current_label_tl { \item }
     \__enumext_keyans_addto_seq_link:
     \int_gincr:N \g__enumext_check_starred_cmd_int
     \bool_if:NT \l__enumext_show_answer_bool

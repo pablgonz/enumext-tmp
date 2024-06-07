@@ -3949,6 +3949,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % feature requests should be reported through the issue
 % tracker: \textcolor{gray}{\scriptsize\faIcon[regular]{github}} \url{https://github.com/pablgonz/enumext/issues}.
 %
+% \smallskip
+%
 % \begin{important}*
 % The documentation presented here is far from professional, it contains
 % a lot of obvious information that to the eye of a \hologo{TeX}pert are
@@ -4141,8 +4143,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                  \g_@@_item_symbol_tl,}
 %
 %    Internal variables used by \mykey{resume}, \mykey{resume*} and
-%    \mykey{series} keys (\S\ref{key:series}). The global token list
-%    \cs{g_@@_item_symbol_tl} is used by \mykey{item-sym*} key (\S\ref{key:item-starred}).
+%    \mykey{series} keys (\S\ref{key:series}).
 % \iffalse
 %% Variables used by |series|, |resume|, |resume*| and |item-sym*| key implementation.
 % \fi
@@ -4153,7 +4154,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \l_@@_resume_active_bool
 \tl_new:N   \g_@@_standar_series_tl
 \tl_new:N   \g_@@_starred_series_tl
-\tl_new:N   \g_@@_item_symbol_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -4277,33 +4277,42 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}[int]{\l_@@_store_active_bool, \l_@@_store_name_tl,
-%                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl, \l_@@_store_anskey_env_tl,
-%                       \l_@@_store_anskey_opt_tl, \l_@@_store_columns_join_int,
-%                       \l_@@_store_keyans_label_tl, \l_@@_store_keyans_item_opt_tl,
-%                       \l_@@_keyans_item_opt_tl, \l_@@_keyans_tmpa_tl,}
+%                       \g_@@_store_name_tl, \l_@@_store_anskey_arg_tl,
+%                       \l_@@_store_anskey_env_tl, \l_@@_store_anskey_opt_tl,
+%                       \l_@@_store_current_label_tl, \l_@@_store_current_opt_arg_tl,
+%                       \l_@@_store_current_label_tmp_tl,}
 %
-%    The boolean variable \cs{l_@@_store_active_bool} setting by
+%    The variable \cs{l_@@_store_active_bool} setting by
 %    \mykey{save-ans} key (\S\ref{key:save-ans}) activates all the
 %    mechanism related to \ics*{anskey}, \myenv*{anskeyenv}, \myenv*{keyans},
 %    \myenv*{keyans*} and \myenv*{keyanspic} environments.
 %
 %    \smallskip
 %
-%    The variable \cs{l_@@_store_name_tl} save the name for the storage in
-%    \mymeta{sequence} and \mymeta{prop list}, the variable \cs{g_@@_store_name_tl} is
-%    just a copy of the storage name used by the \mykey{check-ans} key (\S\ref{key:resume}).
+%    The variable \cs{l_@@_store_name_tl} saves the \mymarg{store name}
+%    set by the \mykey{save-ans} key of the \emph{sequence} and \emph{prop
+%    list} in which we will store, the variable \cs{g_@@_store_name_tl}
+%    it's just a global copy of \mymarg{store name} used by different functions.
 %
 %    \smallskip
 %
-%    The variable \cs{l_@@_store_anskey_arg_tl} stores the contents of \ics*{anskey} (\S\ref{cmd:anskey})
-%    and the variable \cs{l_@@_store_keyans_label_tl} stores the contents of
-%    \ics*{item*} (\S\ref{cmd:item-starred}) for the \myenv*{keyans} and \myenv*{keyans*} environments and the contents of
-%    \ics*{anspic*} (\S\ref{cmd:anspic}) for the \myenv*{keyanspic} environment.
+%    The variable \cs{l_@@_store_anskey_arg_tl} save the
+%    \emph{argument} of \ics*{anskey} (\S\ref{cmd:anskey}) and the variables
+%    \cs{l_@@_store_anskey_env_tl}, \cs{l_@@_store_anskey_opt_tl} save the
+%    \mymeta{body} and \mymeta{keys} of the environment \myenv*{anskeyenv} (\S\ref{env:anskeyenv}).
 %
 %    \smallskip
 %
-%    The variable \cs{l_@@_keyans_tmpa_tl} is a temporary variable used
-%    by \myenv*{keyans} and \myenv*{keyanspic} at various points.
+%    The variables \cs{l_@@_store_current_label_tl} and
+%    \cs{l_@@_store_current_opt_arg_tl} save the \emph{current label} and
+%    \emph{optional argument} of \ics*{item*} (\S\ref{cmd:item-starred}) and \ics*{anspic*}
+%    (\S\ref{cmd:anspic}) for the \myenv*{keyans}, \myenv*{keyans*} and
+%    \myenv*{keyanspic} environments.
+%
+%    \smallskip
+%
+%    The variable \cs{l_@@_store_current_label_tmp_tl} is a temporary variable used
+%    by \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} at various points.
 % \iffalse
 %% Variables used by |save-ans| key.
 % \fi
@@ -4314,11 +4323,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \tl_new:N   \l_@@_store_anskey_arg_tl
 \tl_new:N   \l_@@_store_anskey_env_tl
 \tl_new:N   \l_@@_store_anskey_opt_tl
-\int_new:N  \l_@@_store_columns_join_int
-\tl_new:N   \l_@@_store_keyans_label_tl
-\tl_new:N   \l_@@_store_keyans_item_opt_tl
-\tl_new:N   \l_@@_keyans_item_opt_tl
-\tl_new:N   \l_@@_keyans_tmpa_tl
+\tl_new:N   \l_@@_store_current_label_tl
+\tl_new:N   \l_@@_store_current_opt_arg_tl
+\tl_new:N   \l_@@_store_current_label_tmp_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -4338,48 +4345,29 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}[int]{\l_@@_print_keyans_starred_tl, \l_@@_store_save_key_X_tl,
-%                       \l_@@_print_keyans_X_tl, \l_@@_store_upper_level_X_bool, }
-%
-%    Internal variables used by \myoarg{key
-%    \textnormal{\textcolor{gray}{=}} val} in \myenv*{enumext} and
-%    \myenv*{enumext*} environment, the command \ics*{printkeyans}
-%    (\S\ref{cmd:printkeyans}) and \mykey{save-key} key.
-%
+% \begin{variable}[int]{\l_@@_print_keyans_starred_tl, \l_@@_mark_position_str,
+%                       \g_@@_item_symbol_tl, \l_@@_print_keyans_X_tl,
+%                       \l_@@_store_save_key_X_tl, \l_@@_store_save_key_X_bool,
+%                       \l_@@_store_upper_level_X_bool,}
+%    Internal variables used by command \ics*{printkeyans}
+%    (\S\ref{cmd:printkeyans}), \mykey{show-pos} key (\S\ref{int:storage-system}),
+%    \mykey{item-sym*} key (\S\ref{key:item-starred}), \mykey{save-key} key
+%    (\S\ref{key:save-key}) and \emph{“storage level system”}.
 % \iffalse
-%% Variables used by store level, |save-key| and |\printkeyans| in |enumext| and |enumext*|.
+%% Variables used by|\printkeyans|, |mark-pos|, |item-sym*|, |save-key| and  store level in |enumext| and |enumext*|.
 % \fi
 %    \begin{macrocode}
-\tl_new:N \l_@@_print_keyans_starred_tl
+\tl_new:N  \l_@@_print_keyans_starred_tl
+\str_new:N \l_@@_mark_position_str
+\tl_new:N  \g_@@_item_symbol_tl
 \cs_set_protected:Npn \@@_tmp:n #1
   {
-    \tl_new:c   { l_@@_store_save_key_#1_tl    }
-    \bool_new:c { l_@@_store_save_key_#1_bool  }
-    \tl_new:c   { l_@@_store_active_keys_#1_tl }
-    \tl_new:c   { l_@@_print_keyans_#1_tl      }
+    \tl_new:c   { l_@@_print_keyans_#1_tl        }
+    \tl_new:c   { l_@@_store_save_key_#1_tl      }
+    \bool_new:c { l_@@_store_save_key_#1_bool    }
     \bool_new:c { l_@@_store_upper_level_#1_bool }
   }
 \clist_map_inline:nn { i, ii, iii, iv, vii } { \@@_tmp:n {#1} }
-%    \end{macrocode}
-% \end{variable}
-%
-% \begin{variable}[int]{\l_@@_show_answer_bool, \l_@@_show_position_bool,
-%                       \l_@@_mark_ref_sym_tl, \l_@@_mark_answer_sym_tl,
-%                       \l_@@_mark_position_str}
-%    Internal variables for \emph{\enquote{storage system}} mechanism
-%    used by \ics*{anskey} (\S\ref{cmd:anskey}), \myenv*{keyans} and
-%    \myenv*{keyanspic} environments. These variables are
-%    used by \mykey{show-ans}, \mykey{show-pos}, \mykey{mark-ans}, \mykey{save-key} and
-%    \mykey{mark-ref} keys (\S\ref{int:storage-system}).
-% \iffalse
-%% Variables used by |show-ans|, |show-pos|, |mark-ans|, |mark-ref| and |\anskey|.
-% \fi
-%    \begin{macrocode}
-\bool_new:N \l_@@_show_answer_bool
-\bool_new:N \l_@@_show_position_bool
-\tl_new:N   \l_@@_mark_ref_sym_tl
-\tl_new:N   \l_@@_mark_answer_sym_tl
-\str_new:N  \l_@@_mark_position_str
 %    \end{macrocode}
 % \end{variable}
 %
@@ -4399,7 +4387,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\l_@@_check_answers_bool,\l_@@_check_ans_key_bool, \g_@@_check_ans_key_bool,
+% \begin{variable}{\l_@@_check_answers_bool,\g_@@_check_ans_key_bool,
 %                  \l_@@_check_start_line_env_tl, \g_@@_start_line_tl,
 %                  \g_@@_check_starred_cmd_int,  \g_@@_item_anskey_int,
 %                  \g_@@_item_number_int,}
@@ -4413,7 +4401,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \fi
 %    \begin{macrocode}
 \bool_new:N \l_@@_check_answers_bool
-\bool_new:N \l_@@_check_ans_key_bool
 \bool_new:N \g_@@_check_ans_key_bool
 \tl_new:N   \l_@@_check_start_line_env_tl
 \tl_new:N   \g_@@_start_line_tl
@@ -4429,7 +4416,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The boolean variable \cs{l_@@_hyperref_bool} will determine if the
 %    \mypkg{hyperref} package is present or load in memory
 %    (\S\ref{pkg:hyperref}). The boolean variable \cs{l_@@_footnotes_key_bool}
-%    determine if \mypkg{hyperref} is load with key \texttt{hyperfootnotes=true}.
+%    determine if \mypkg{hyperref} is load with key |hyperfootnotes=true|.
 %
 % \iffalse
 %% Variables used for hyperref detection.
@@ -9183,7 +9170,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{keyans} environment and the current \mymeta{label} \cs{l_@@_label_vi_tl}
 %    for the \myenv*{keyanspic} environment when using
 %    \ics*{item*} and \ics*{anspic*}, followed by the \emph{contents} of the
-%    optional argument of both commands to the \cs{l_@@_store_keyans_label_tl}
+%    optional argument of both commands to the \cs{l_@@_store_current_label_tl}
 %    variable, which will be passed to the \mymeta{prop list} defined by the
 %    \mykey{save-ans} key using the \cs{@@_store_addto_prop:V}.
 % \iffalse
@@ -9192,24 +9179,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_addto_prop:n #1
   {
-    \tl_clear:N \l_@@_store_keyans_label_tl
+    \tl_clear:N \l_@@_store_current_label_tl
     \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_label_vi_tl }
+        \tl_put_right:Ne \l_@@_store_current_label_tl { \l_@@_label_vi_tl }
       }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_label_v_tl }
+        \tl_put_right:Ne \l_@@_store_current_label_tl { \l_@@_label_v_tl }
       }
     \tl_if_novalue:nF { #1 }
       {
         % Set save-sep
         \tl_if_empty:NF \l_@@_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_store_keyans_item_opt_sep_tl }
+            \tl_put_right:Ne \l_@@_store_current_label_tl { \l_@@_store_keyans_item_opt_sep_tl }
           }
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { #1 }
+        \tl_put_right:Ne \l_@@_store_current_label_tl { #1 }
       }
-    \@@_store_addto_prop:V \l_@@_store_keyans_label_tl
+    \@@_store_addto_prop:V \l_@@_store_current_label_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9311,7 +9298,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    contents of the current \mymeta{label} \cs{l_@@_label_v_tl} for the
 %    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} for the \myenv*{keyanspic} environment when using
 %    \ics*{item*} and \ics*{anspic*}, followed by the \mymeta{contents} of the
-%    optional argument of both commands to the \cs{l_@@_store_keyans_label_tl}
+%    optional argument of both commands to the \cs{l_@@_store_current_label_tl}
 %    variable to the sequence defined by the \mykey{save-ans} key.
 % \iffalse
 %% Function for storing in sequence for |keyans| and |keyanspic|.
@@ -9319,24 +9306,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_addto_seq:n #1
   {
-    \tl_clear:N \l_@@_store_keyans_label_tl
+    \tl_clear:N \l_@@_store_current_label_tl
     \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \item \l_@@_label_vi_tl }
+        \tl_put_right:Ne \l_@@_store_current_label_tl { \item \l_@@_label_vi_tl }
       }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { \item \l_@@_label_v_tl }
+        \tl_put_right:Ne \l_@@_store_current_label_tl { \item \l_@@_label_v_tl }
       }
     \tl_if_novalue:nF { #1 }
       {
         \tl_if_empty:NF \l_@@_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l_@@_store_keyans_label_tl
+            \tl_put_right:Ne \l_@@_store_current_label_tl
               {
                 \l_@@_store_keyans_item_opt_sep_tl
               }
           }
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl { #1 }
+        \tl_put_right:Ne \l_@@_store_current_label_tl { #1 }
       }
     \@@_keyans_addto_seq_link:
   }
@@ -9345,7 +9332,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \mypkg{hyperref} package load, if both conditions are met, it will
 %    create the \ics{hyperlink} and then store using the
 %    \cs{@@_store_addto_seq:V} function.
-%    Finally, copy the contents of the variable \cs{l_@@_store_keyans_label_tl}
+%    Finally, copy the contents of the variable \cs{l_@@_store_current_label_tl}
 %    into the global variable \cs{g_@@_check_ans_item_tl} to be used
 %    by the function \cs{@@_check_starred_cmd:n} and increment
 %    the value of the integer variable \cs{g_@@_item_anskey_int} handled
@@ -9357,7 +9344,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \bool_if_p:N \l_@@_store_ref_key_bool }
       { \bool_if_p:N \l_@@_hyperref_bool }
       {
-        \tl_put_right:Ne \l_@@_store_keyans_label_tl
+        \tl_put_right:Ne \l_@@_store_current_label_tl
           {
             \hfill \exp_not:N \hyperlink
               {
@@ -9366,7 +9353,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               { \exp_not:V \l_@@_mark_ref_sym_tl }
           }
       }
-    \@@_store_addto_seq:V \l_@@_store_keyans_label_tl
+    \@@_store_addto_seq:V \l_@@_store_current_label_tl
     \bool_if:NT \l_@@_check_answers_bool
       {
         \int_gincr:N \g_@@_item_anskey_int
@@ -9392,7 +9379,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_if_novalue:nF { #1 }
       {
-        \tl_set:Ne \l_@@_keyans_item_opt_tl { #1 }
+        \tl_set:Ne \l_@@_store_current_opt_arg_tl { #1 }
       }
     \bool_if:NT \l_@@_show_answer_bool
       {
@@ -9405,13 +9392,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_keyans_show_item_opt:
   {
-    \tl_if_empty:NF \l_@@_keyans_item_opt_tl
+    \tl_if_empty:NF \l_@@_store_current_opt_arg_tl
       {
         \bool_lazy_or:nnT
           { \bool_if_p:N \l_@@_show_answer_bool }
           { \bool_if_p:N \l_@@_show_position_bool }
           {
-            \@@_keyans_wrapper_opt:n { \l_@@_keyans_item_opt_tl } \c_space_tl
+            \@@_keyans_wrapper_opt:n { \l_@@_store_current_opt_arg_tl } \c_space_tl
           }
       }
   }
@@ -9730,7 +9717,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_starred_item:n #1
   {
-    \tl_set_eq:NN \l_@@_keyans_tmpa_tl \l_@@_label_v_tl
+    \tl_set_eq:NN \l_@@_store_current_label_tmp_tl \l_@@_label_v_tl
     \@@_keyans_show_left:n { #1 }
     \bool_set_true:N \l_@@_wrap_label_v_bool
     \@@_item_std:w \tl_use:N \l_@@_fake_item_indent_v_tl \@@_keyans_show_item_opt:
@@ -9740,7 +9727,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    internal \emph{\enquote{label and ref}} system if the \mykey{save-ref} key is active and
 %    finally \emph{store} it in the \mymeta{sequence}.
 %    \begin{macrocode}
-    \tl_set_eq:NN \l_@@_label_v_tl \l_@@_keyans_tmpa_tl
+    \tl_set_eq:NN \l_@@_label_v_tl \l_@@_store_current_label_tmp_tl
     \@@_keyans_addto_prop:n { #1 }
     \@@_keyans_store_ref:
     \@@_keyans_addto_seq:n { #1 }
@@ -12099,27 +12086,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The function \cs{@@_starred_item_viii_aux_i:w} will save the optional
-%   argument to |\item*| in \cs{l_@@_keyans_item_opt_tl} and will save this
+%   argument to |\item*| in \cs{l_@@_store_current_opt_arg_tl} and will save this
 %   argument along with the spacing set by the key \mykey{save-sep} in
-%   variable \cs{l_@@_store_keyans_label_tl} if present, then call the
+%   variable \cs{l_@@_store_current_label_tl} if present, then call the
 %   function \cs{@@_starred_item_viii_aux_ii:w}.
 %^^A The optional argument will be captured in the variables
-%^^A \cs{l_@@_keyans_tmpa_tl} and \cs{l_@@_keyans_tmpb_tl} which we will use
+%^^A \cs{l_@@_store_current_label_tmp_tl} and \cs{l_@@_keyans_tmpb_tl} which we will use
 %^^A later for the implementation of the \mykey{show-ans} and
 %^^A \mykey{show-pos} keys together with the stored in \mymeta{sequence} and
 %^^A \mymeta{prop list}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_item_viii_aux_i:w [#1]
   {
-    \tl_clear:N \l_@@_store_keyans_label_tl
+    \tl_clear:N \l_@@_store_current_label_tl
     \tl_if_novalue:nF { #1 }
       {
         \tl_if_empty:NF \l_@@_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l_@@_store_keyans_label_tl { \l_@@_store_keyans_item_opt_sep_tl }
-            \tl_put_right:Ne \l_@@_store_keyans_label_tl { #1 }
+            \tl_put_right:Ne \l_@@_store_current_label_tl { \l_@@_store_keyans_item_opt_sep_tl }
+            \tl_put_right:Ne \l_@@_store_current_label_tl { #1 }
           }
-        \tl_set:Ne \l_@@_keyans_item_opt_tl { #1 }
+        \tl_set:Ne \l_@@_store_current_opt_arg_tl { #1 }
       }
     \@@_starred_item_viii_aux_ii:w
   }
@@ -12145,10 +12132,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_starred_item_exec:
   {
-    \tl_put_left:Ne \l_@@_store_keyans_label_tl { \l_@@_label_viii_tl }
-    \@@_store_addto_prop:V \l_@@_store_keyans_label_tl
+    \tl_put_left:Ne \l_@@_store_current_label_tl { \l_@@_label_viii_tl }
+    \@@_store_addto_prop:V \l_@@_store_current_label_tl
     \@@_keyans_store_ref:
-    \tl_put_left:Ne \l_@@_store_keyans_label_tl { \item }
+    \tl_put_left:Ne \l_@@_store_current_label_tl { \item }
     \@@_keyans_addto_seq_link:
     \int_gincr:N \g_@@_check_starred_cmd_int
     \bool_if:NT \l_@@_show_answer_bool
