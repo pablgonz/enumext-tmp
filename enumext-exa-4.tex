@@ -10,9 +10,7 @@
 \pagestyle{empty}
 \begin{document}
 
-%\newenvsc{anskey*}
-
-    \begin{scontents}[store-env=simple]
+    \begin{scontents}[store-env=simplews]
     $\left(x-1\right)^{2}$ \verb+CCCCCC+
     \end{scontents}
 
@@ -23,6 +21,10 @@
     \begin{anskey*}
     $\left(x-1\right)^{2}$ \verb+XXZZ+
     \end{anskey*}
+
+            \begin{scontents}[store-env=simple,print-env=true]
+          $\left(x-1\right)^{2}$ \verb+CCCCCC+
+        \end{scontents}
 
   \item Factor $3x+3y+3z$
     \begin{anskey*}[item-star]
@@ -46,9 +48,7 @@
     \end{enumext}
 \end{enumext}
 
-        \begin{scontents}[store-env=simple,print-env=true]
-          $\left(x-1\right)^{2}$ \verb+CCCCCC+
-        \end{scontents}
+
 
 The answer to \ref{simplews:1} is \getkeyans{simplews:1} and the answer
 to \ref{simplews:3} is \getkeyans{simplews:3}.

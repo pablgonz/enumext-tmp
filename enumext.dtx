@@ -1505,7 +1505,7 @@ This work consists of the files enumext.dtx and enumext.sty.
   \item The sixth
   \item the seventh
   \item(2)[X] The eighth item is way too long for this and needs two columns
-  \item[Z] The nineth
+  \item[Z] The ninth
   \item The tenth
 \end{enumext*}
 \end{examplecode}
@@ -1522,7 +1522,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  \item The sixth
 %  \item the seventh
 %  \item(2)[X] The eighth item is way too long for this and needs two columns
-%  \item[Z] The nineth
+%  \item[Z] The ninth
 %  \item The tenth
 % \end{enumext*}
 %
@@ -2273,7 +2273,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % referenced by |{#1}| when using the \mykey{show-ans} or \mykey{show-pos} keys.
 % The \mymarg{code} must be passed between  braces and only affects the
 % \emph{argument} or \emph{body} and NOT the \emph{\enquote{stored
-% content}} in the \emph{secuence} and \emph{prop list} \mymarg{store
+% content}} in the \emph{sequence} and \emph{prop list} \mymarg{store
 % name} set by \mykey{save-ans} key. If this key is passed using
 % \ics*{setenumext} it is necessary to use double ‘|{##1}|’.
 %
@@ -2286,7 +2286,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % environments when using the \mykey{show-ans} or \mykey{show-pos} keys.
 % The \mymarg{code} must be passed between braces
 % and only affects the current \emph{optional argument} and NOT the
-% \emph{\enquote{stored content}} in the \emph{secuence} and \emph{prop list}
+% \emph{\enquote{stored content}} in the \emph{sequence} and \emph{prop list}
 % \mymarg{store name} set by \mykey{save-ans} key.
 % If this key is passed using \ics*{setenumext} it is necessary to use double ‘|{##1}|’.
 %
@@ -8883,40 +8883,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \item A better (perhaps a bit paranoid) option is to define it within the
 %  environment in which the |save-ans| key is executed. and have it
 %  available only when that key is executed, here I would have absolute
-%  control of the keys and I make sure that |write-out| is not used, then
+%  control of the \mymeta{keys} and I make sure that |write-out| is not used, then
 %  using \emph{hooks after} I undefine it and using \emph{hook before} I check if it has
-%  been created by any package, class or user and I return a fatal
-%  error, then the user will have to see how to solve the problem.
+%  been created by any package, class or user and I return a error,
+%  then the user will have to see how to solve the problem.
 % \end{itemize}
 %
 % \begin{macro}[int]{\@@_undefine_anskey_env:,}
-%    Detection of the \myenv*{anskey*} environment outside the
-%    \myenv*{enumext} and \myenv*{enumext*} environments.
-% \iffalse
-%% Hooks for |anskey*| environment out off enumext and enumext*.
-% \fi
-%    \begin{macrocode}
-\@@_before_env:nn { enumext }
-  {
-    \int_compare:nNnT { \l_@@_level_int } = { 0 }
-      {
-        \cs_if_free:cF { __scontents_anskey*_env_begin: }
-          {
-            \msg_fatal:nnn { enumext } { anskey*-defined } { anskey* }
-          }
-      }
-  }
-\@@_before_env:nn { enumext* }
-  {
-    \int_compare:nNnT { \l_@@_level_int } = { 0 }
-      {
-        \cs_if_free:cF { __scontents_anskey*_env_begin: }
-          {
-            \msg_fatal:nnn { enumext } { anskey*-defined } { anskey* }
-          }
-      }
-  }
-%    \end{macrocode}
 %   The function \cs{@@_undefine_anskey_env:} will undefine the environment
 %   \myenv*{anskey*} and will be passed to the function
 %   \cs{@@_execute_after_env:} (\S\ref{fun:exec-after-env}) which is
@@ -8930,14 +8903,64 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \cs_undefine:c { __scontents_anskey*_env_end: }
   }
 %    \end{macrocode}
+%    Detection of the \myenv*{anskey*} environment outside the
+%    \myenv*{enumext} and \myenv*{enumext*} environments.
+% \iffalse
+%% Hooks for |anskey*| environment out off enumext and enumext*.
+% \fi
+%    \begin{macrocode}
+\@@_before_env:nn { enumext }
+  {
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
+      {
+        \cs_if_free:cF { __scontents_anskey*_env_begin: }
+          {
+            \msg_error:nnn { enumext } { anskey-env-error } { anskey* }
+          }
+      }
+  }
+\@@_before_env:nn { enumext* }
+  {
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
+      {
+        \cs_if_free:cF { __scontents_anskey*_env_begin: }
+          {
+            \msg_error:nnn { enumext } { anskey-env-error } { anskey* }
+          }
+      }
+  }
+%    \end{macrocode}
+%    Detection of the \myenv*{anskey*} environment inside the
+%    \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} environments.
+% \iffalse
+%% Hooks for |anskey*| inside the keyans, keyans* and keyanspic.
+% \fi
+%    \begin{macrocode}
+\@@_before_env:nn { anskey* }
+  {
+    \int_compare:nNnT { \l_@@_keyans_level_int } = { 1 }
+      {
+        \msg_error:nnn { enumext } { anskey-env-wrong }{ keyans }
+      }
+    \int_compare:nNnT { \l_@@_keyans_level_h_int } = { 1 }
+      {
+        \msg_error:nnn { enumext } { anskey-env-wrong } { keyans* }
+      }
+    \int_compare:nNnT { \l_@@_keyans_pic_level_int } = { 1 }
+      {
+        \msg_error:nnn { enumext } { anskey-env-wrong } { keyanspic }
+      }
+  }
+%    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_anskey_env_make:n, \@@_anskey_env_make:V,
-%                    anskey*, \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:
+% \begin{macro}{anskey*, \@@_anskey_env_make:n, \@@_anskey_env_make:V,
+%                   \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:
 %                    \@@_rescan_anskey_env:n}
 %    The function \cs{@@_anskey_env_make:n} creates the environment
-%    \myenv*{anskey*} (\emph{custom version} of \myenv{scontents} environment) by setting the
-%    initial keys |store-env=|\mymarg{store name} and |print-env=false|.
+%    \myenv*{anskey*} (\emph{custom version} of \myenv{scontents}
+%    environment) by setting the initial keys |store-env=|\mymarg{store name}
+%    and |print-env=false|.
 %
 %    To maintain the \emph{scope} of the environment and that it is only active
 %    when the key \mykey{save-ans} is active we will pass this function to
@@ -8950,6 +8973,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_anskey_env_make:n #1
   {
     \newenvsc{anskey*}[store-env=enumextanskey*#1,print-env=false]
+    \seq_gclear_new:c
+      { g__scontents_name_enumextanskey*#1_seq }
     \@@_anskey_env_exec:
   }
 \cs_generate_variant:Nn \@@_anskey_env_make:n { V }
@@ -9004,6 +9029,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         item-star .undefine:,
         item-sym* .undefine:,
         item-pos* .undefine:,
+        write-out .code:n = {
+                              \bool_set_false:N \l__scontents_storing_bool
+                              \bool_set_true:N  \l__scontents_writing_bool
+                              \tl_set:Nn \l__scontents_fname_out_tl {##1}
+                            },
+        write-out .value_required:n = true,
+        print-env .meta:nn   = { scontents } { print-env = ##1 },
+        print-env .default:n = true,
+        store-env .meta:nn   = { scontents } { store-env = ##1 },
+        unknown   .code:n    = { \__scontents_parse_environment_keys:n {##1} }
       }
   }
 %    \end{macrocode}
@@ -9048,18 +9083,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
     \@@_after_env:nn { anskey* }
       {
-        \int_compare:nNnT { \l_@@_keyans_level_int } = { 1 }
-          {
-            \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans }
-          }
-        \int_compare:nNnT { \l_@@_keyans_level_h_int } = { 1 }
-          {
-            \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans* }
-          }
-        \int_compare:nNnT { \l_@@_keyans_pic_level_int } = { 1 }
-          {
-            \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
-          }
         \tl_clear:N  \l_@@_store_anskey_env_tl
         \tl_clear:N  \l_@@_store_anskey_opt_tl
         \seq_gpop_right:cNT
@@ -12073,7 +12096,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   true to execute the enumerated version of \ics*{item} by means of the
 %   function \cs{@@_start_item_viii:w} |[| \myvarenv{l__@@_label_viii_tl} |]|.
 % \iffalse
-%% Set standar \item[opt] for |keyans*| environment.
+%% Set standard \item[opt] for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_standar_item_viii:w
@@ -12646,10 +12669,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % Message used by reserved \myenv*{anskey*} environment by \mypkg*{enumext} package.
 %    \begin{macrocode}
-\msg_new:nnn { enumext } { anskey*-defined }
+\msg_new:nnnn { enumext } { anskey-env-error }
   {
-    The ~ '#1' ~ environment ~ is ~ reserved ~ by ~\\
-    'enumext'~ package, ~ it ~ cannot ~ be ~ continued.
+    The ~ '#1' ~ environment ~is ~ reserved ~ by ~\\
+    'enumext' ~ package, ~ It~ is~ already~ defined.
+  }
+  {
+    The ~ anskey* ~ environment ~ is ~ defined ~ internally ~
+    for ~ the ~ 'save-ans' ~ key.\\
   }
 %    \end{macrocode}
 %
@@ -12657,26 +12684,34 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { store-prop }
   {
-    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g_@@_#1_prop ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Creating ~
+     \c_backslash_str g_@@_#1_prop ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { store-seq }
   {
-    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g_@@_#1_seq ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Creating ~
+    \c_backslash_str g_@@_#1_seq ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { store-int }
   {
-    * ~ Package ~ enumext: ~ Creating ~ \c_backslash_str g_@@_resume_#1_int ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Creating ~
+    \c_backslash_str g_@@_resume_#1_int ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { prop-seq-int-hook }
   {
-    * ~ Package ~ enumext: ~ Elements ~ in ~ \c_backslash_str g_@@_#1_prop ~ = ~ #2.\\
-    * ~ Package ~ enumext: ~ Elements ~ in ~ \c_backslash_str g_@@_#1_seq ~ = ~ #3.\\
-    * ~ Package ~ enumext: ~ Value ~ off ~ \c_backslash_str g_@@_resume_#1_int ~ = ~ #4.
+    * ~ Package ~ enumext: ~ Elements ~ in ~
+    \c_backslash_str g_@@_#1_prop ~ = ~ #2.\\
+    * ~ Package ~ enumext: ~ Elements ~ in ~
+    \c_backslash_str g_@@_#1_seq ~ = ~ #3.\\
+    * ~ Package ~ enumext: ~ Value ~ off ~
+    \c_backslash_str g_@@_resume_#1_int ~ = ~ #4.
   }
 \msg_new:nnn { enumext } { item-answer-hook }
   {
-    * ~ Package ~ enumext: ~ Value ~ off ~ \c_backslash_str g_@@_item_number_int ~ = ~ #1.\\
-    * ~ Package ~ enumext: ~ Value ~ off ~ \c_backslash_str g_@@_item_anskey_int ~ = ~ #2.\\
+    * ~ Package ~ enumext: ~ Value ~ off ~
+    \c_backslash_str g_@@_item_number_int ~ = ~ #1.\\
+    * ~ Package ~ enumext: ~ Value ~ off ~
+    \c_backslash_str g_@@_item_anskey_int ~ = ~ #2.\\
     * ~ Package ~ enumext: ~ Difference ~ item_number_int ~ - ~ item_anskey_int ~ = ~ #3.
   }
 %    \end{macrocode}
@@ -12761,11 +12796,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \msg_new:nnn { enumext } { save-ans-log }
   {
-    * ~ Package ~ enumext: ~ Start ~ \c_left_brace_str#1\c_right_brace_str \c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Start ~ #1\c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { save-ans-log-hook }
   {
-    * ~ Package ~ enumext: ~ Stop ~ \c_left_brace_str#1\c_right_brace_str \c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
+    * ~ Package ~ enumext: ~ Stop ~ #1\c_space_tl with ~ save-ans=#2 ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { save-ans-hook }
   {
@@ -12783,8 +12818,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \msg_new:nnn { enumext } { items-same-answer }
   {
     ****************************************\\
-    * ~ Package ~ enumext: ~ Checking ~ answers ~ in ~ '#1' ~ for ~ \c_left_brace_str #2 \c_right_brace_str\\
-    * ~ started ~ #3 ~ and ~ close ~ \msg_line_context: : ~ 'OK', ~ all ~ items ~ with ~ answer.\\
+    * ~ Package ~ enumext: ~ Checking ~ answers ~ in ~ '#1' ~
+    for ~ \c_left_brace_str #2 \c_right_brace_str\\
+    * ~ started ~ #3 ~ and ~ close ~ \msg_line_context: : ~
+    'OK', ~ all ~ items ~ with ~ answer.\\
     ****************************************
   }
 \msg_new:nnn { enumext } { item-greater-answer }
@@ -12843,9 +12880,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     The ~ command ~ \c_backslash_str anskey~ can't ~ be ~ nested ~ \msg_line_context:.
   }
-\msg_new:nnn { enumext } { anskey-nested-env }
+\msg_new:nnn { enumext } { anskey-env-wrong }
   {
-    The ~ environment ~ anskey* ~ can't ~ be ~ nested ~ \msg_line_context:.
+    The ~ environment ~ anskey* ~ cannot ~ use ~ in ~ '#1' ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { anspic-wrong-place }
   {
