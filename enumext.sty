@@ -2378,6 +2378,10 @@
       {
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans }
       }
+    \int_compare:nNnT { \l__enumext_keyans_level_h_int } = { 1 }
+      {
+        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans* }
+      }
     \int_compare:nNnT { \l__enumext_keyans_pic_level_int } = { 1 }
       {
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
@@ -2577,14 +2581,14 @@
         \__enumext_anskey_show_wrap_arg:n { #1 }
       }
   }
-%% Hooks for |anskeyenv| environment out off enumext and enumext*.
+%% Hooks for |anskey*| environment out off enumext and enumext*.
 \__enumext_before_env:nn { enumext }
   {
     \int_compare:nNnT { \l__enumext_level_int } = { 0 }
       {
-        \cs_if_free:NF \__scontents_anskeyenv_env_begin:
+        \cs_if_free:cF { __scontents_anskey*_env_begin: }
           {
-            \msg_fatal:nnn { enumext } { anskeyenv-defined } { anskeyenv }
+            \msg_fatal:nnn { enumext } { anskey*-defined } { anskey* }
           }
       }
   }
@@ -2592,27 +2596,27 @@
   {
     \int_compare:nNnT { \l__enumext_level_int } = { 0 }
       {
-        \cs_if_free:NF \__scontents_anskeyenv_env_begin:
+        \cs_if_free:cF { __scontents_anskey*_env_begin: }
           {
-            \msg_fatal:nnn { enumext } { anskeyenv-defined } { anskeyenv }
+            \msg_fatal:nnn { enumext } { anskey*-defined } { anskey* }
           }
       }
   }
 \cs_new_protected:Nn \__enumext_undefine_anskey_env:
   {
-    \cs_undefine:N \anskeyenv
-    \cs_undefine:N \endanskeyenv
-    \cs_undefine:N \__scontents_anskeyenv_env_begin:
-    \cs_undefine:N \__scontents_anskeyenv_env_end:
+    \cs_undefine:c { anskey* }
+    \cs_undefine:c { endanskey* }
+    \cs_undefine:c { __scontents_anskey*_env_begin: }
+    \cs_undefine:c { __scontents_anskey*_env_end: }
   }
-%% Function for define |anskeyenv| environment using scontents.
+%% Function for define |anskey*| environment using scontents.
 \cs_new_protected:Npn \__enumext_anskey_env_make:n #1
   {
-    \newenvsc{anskeyenv}[store-env=#1,print-env=false]
+    \newenvsc{anskey*}[store-env=enumextanskey*#1,print-env=false]
     \__enumext_anskey_env_exec:
   }
 \cs_generate_variant:Nn \__enumext_anskey_env_make:n { V }
-%% Define keys for |anskeyenv| environment using scontents PATH.
+%% Define keys for |anskey*| environment using scontents PATH.
 \cs_new_protected:Nn \__enumext_anskey_env_define_keys:
   {
     \keys_define:nn { scontents / scontents }
@@ -2656,20 +2660,33 @@
          #1
         }
   }
-%% Function for exec all code for |anskeyenv| environment.
+%% Function for exec all code for |anskey*| environment.
 \cs_new_protected:Nn \__enumext_anskey_env_exec:
   {
-    \__enumext_before_env:nn { anskeyenv }
+    \__enumext_before_env:nn { anskey* }
       {
         \__enumext_anskey_env_define_keys:
       }
-    \__enumext_after_env:nn { anskeyenv }
+    \__enumext_after_env:nn { anskey* }
       {
+        \int_compare:nNnT { \l__enumext_keyans_level_int } = { 1 }
+          {
+            \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans }
+          }
+        \int_compare:nNnT { \l__enumext_keyans_level_h_int } = { 1 }
+          {
+            \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans* }
+          }
+        \int_compare:nNnT { \l__enumext_keyans_pic_level_int } = { 1 }
+          {
+            \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
+          }
         \tl_clear:N  \l__enumext_store_anskey_env_tl
         \tl_clear:N  \l__enumext_store_anskey_opt_tl
         \seq_gpop_right:cNT
-          { g__scontents_name_ \g__enumext_store_name_tl _seq } \l__enumext_store_anskey_env_tl
-          { \seq_item:ce { g__scontents_name_ \g__enumext_store_name_tl _seq } { -1 }  }
+          { g__scontents_name_enumextanskey* \g__enumext_store_name_tl _seq }
+          \l__enumext_store_anskey_env_tl
+          { \seq_item:ce { g__scontents_name_enumextanskey* \g__enumext_store_name_tl _seq } { -1 }  }
         \__enumext_anskey_env_keys:
         \__enumext_anskey_env_store:
         \__enumext_anskey_env_clean:
@@ -4591,7 +4608,7 @@
     The ~ counter ~ '#1' ~ is ~ already ~ defined ~ by ~ some ~ \\
     package ~ or ~ macro, ~ it ~ cannot ~ be ~ continued.
   }
-\msg_new:nnn { enumext } { anskeyenv-defined }
+\msg_new:nnn { enumext } { anskey*-defined }
   {
     The ~ '#1' ~ environment ~ is ~ reserved ~ by ~\\
     'enumext'~ package, ~ it ~ cannot ~ be ~ continued.

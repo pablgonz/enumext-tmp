@@ -589,7 +589,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywords      = [3]{document,article,setlength,pagestyle,definecolor},%
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
-    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskeyenv,%
+    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*,%
                     setenumext,printkeyans,miniright,parleft,itembx, descitemwd,theenumXi,theenumXii,theenumXiii,theenumXiv,theenumXv, theenumXvii, theenumXviii},%
 % Reserved words 5 (plain TeX)
     keywordstyle  = [5]{\color{red}},%
@@ -1184,7 +1184,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \label{sec:interface}
 %
 % The user interface consists in \myenv*{enumext}, \myenv*{enumext*},
-% \myenv*{anskeyenv}, \myenv*{keyans}, \myenv*{keyans*} and
+% \myenv*{anskey*}, \myenv*{keyans}, \myenv*{keyans*} and
 % \myenv*{keyanspic} environments, \ics*{anskey}, \ics*{item*} and
 % \ics*{anspic}|*| commands to \emph{stored content}, \ics*{getkeyans}
 % command to get the individual \emph{stored content}, \ics*{printkeyans}
@@ -2127,7 +2127,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{first level}} of \myenv*{enumext} or \myenv*{enumext*}
 % environments and it is ignored if they are established when they are
 % nested inside each other. Only when this \mymeta{key} is \emph{\enquote{active}}
-% the \ics*{anskey} command and the environments \myenv*{anskeyenv},
+% the \ics*{anskey} command and the environments \myenv*{anskey*},
 % \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} are available.
 %
 % \iffalse
@@ -2195,7 +2195,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{save-ans}{store name}{not set}
 % Sets the \emph{name} of the \mymeta{sequence} and
 % \mymeta{prop list} in which the contents will be \emph{\enquote{stored}} by
-% \ics*{anskey} and \myenv*{anskeyenv} in \myenv*{enumext} and \myenv*{enumext*} environments, \ics*{item*} in
+% \ics*{anskey} and \myenv*{anskey*} in \myenv*{enumext} and \myenv*{enumext*} environments, \ics*{item*} in
 % \myenv*{keyans} and \myenv*{keyans*} environments and \ics*{anspic}|*| in \myenv*{keyanspic}
 % environment. If the \mymeta{sequence} or \mymeta{prop list} does not
 % exist, it will be created globally and will not be overwritten if the key is used again.
@@ -2269,7 +2269,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsubsection{Keys for \texttt{wrap} and \texttt{display}}\label{subsec:wrap-display}
 %
 % \keyexamp{wrap-ans}{code{} \space\usebox{\hashbox} more code}{\textbackslash{}fbox\{\#1\}}
-% Wraps the \emph{argument} passed to the \ics*{anskey} and the \emph{body} in \myenv*{anskeyenv} environment
+% Wraps the \emph{argument} passed to the \ics*{anskey} and the \emph{body} in \myenv*{anskey*} environment
 % referenced by |{#1}| when using the \mykey{show-ans} or \mykey{show-pos} keys.
 % The \mymarg{code} must be passed between  braces and only affects the
 % \emph{argument} or \emph{body} and NOT the \emph{\enquote{stored
@@ -2294,7 +2294,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{show-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Displays the \emph{argument} passed to the \ics*{anskey}, the
-% \emph{body} for \myenv*{anskeyenv} environment, the \mymeta{label}
+% \emph{body} for \myenv*{anskey*} environment, the \mymeta{label}
 % for \ics*{item*} and \ics*{anspic}|*| at the place where it is executed. If the optional
 % argument is present in \ics*{item*} or \ics*{anspic}|*| it will
 % be shown using \mykey{wrap-opt} key.
@@ -2303,7 +2303,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{mark-ans}{symbol}{\textbackslash{}textasteriskcentered}
 % Sets the \emph{symbol} to be displayed in the left margin for
-% \ics*{anskey}, \myenv*{anskeyenv}, \ics*{item*} and \ics*{anspic}|*| in the place
+% \ics*{anskey}, \myenv*{anskey*}, \ics*{item*} and \ics*{anspic}|*| in the place
 % where they are executed when using the key \mykey{show-ans}.
 %
 % \smallskip
@@ -2318,7 +2318,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{show-pos}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Displays the \emph{position} occupied by the \emph{\enquote{stored content}} by
-% \ics*{anskey}, \myenv*{anskeyenv}, \ics*{item*} and \ics*{anspic}|*| in the
+% \ics*{anskey}, \myenv*{anskey*}, \ics*{item*} and \ics*{anspic}|*| in the
 % \emph{prop list} \mymarg{store name} set by \mykey{save-ans} key.
 % This position is used by the \ics*{getkeyans} command and by the |\ref|
 % command if the \mykey{save-ref} key is active.
@@ -2331,7 +2331,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % that each \ics*{item} or \ics*{item*} that does not open an
 % inner level or nested environment contains \emph{\enquote{only one
 % answer}} or \emph{\enquote{only one execution}} of the \ics*{anskey}
-% or \myenv*{anskeyenv}. It is intended to be used in conjunction with the
+% or \myenv*{anskey*}. It is intended to be used in conjunction with the
 % \mykey{no-store} key.
 %
 % \smallskip
@@ -2344,7 +2344,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % is intended for use in internal levels or nested \myenv*{enumext} or
 % \myenv*{enumext*} environments in which
 % you want to use \myenv*{enumext} or \myenv*{enumext*} but \emph{\enquote{without}} using
-% the \ics*{anskey},\emph{\enquote{without}} use \myenv*{anskeyenv}, \emph{\enquote{without}} interfering with the
+% the \ics*{anskey},\emph{\enquote{without}} use \myenv*{anskey*}, \emph{\enquote{without}} interfering with the
 % \mykey{check-ans} key and \emph{\enquote{without}} storing an unwanted
 % structure in the \emph{sequence} \mymarg{store name}.
 %
@@ -2443,16 +2443,16 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \item Text containing our instructions or questions. \anskey{fourth answer}
 % \end{enumext}
 %
-% \subsection{The environment \env{anskeyenv}}
+% \subsection{The environment \env{anskey*}}
 %
 % \vspace*{-\baselineskip}
 %
-% \begin{function}{anskeyenv}
+% \begin{function}{anskey*}
 %   \begin{syntax}
-%     |\begin{anskeyenv}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \mymeta{body content} |\end{anskeyenv}|
+%     |\begin{anskey*}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \mymeta{body content} |\end{anskey*}|
 %   \end{syntax}
 %
-%  The environment \myenv*{anskeyenv} takes a mandatory \mymarg{body content}
+%  The environment \myenv*{anskey*} takes a mandatory \mymarg{body content}
 %  and \emph{\enquote{stores}} it in the \emph{sequence} and \emph{prop
 %  list} \mymarg{store name} set by \mykey{save-ans} key.
 %  If \mykey{save-ref} key are active and the
@@ -2470,22 +2470,22 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 %  \smallskip
 %
-%  The \myenv*{anskeyenv} environment is implemented using the
+%  The \myenv*{anskey*} environment is implemented using the
 %  \mypkg{scontents} package, for the correct operation
-%  |\begin{anskeyenv}| and |\end{anskeyenv}| must
+%  |\begin{anskey*}| and |\end{anskey*}| must
 %  be in different lines, all \mymeta{keys} must be passed separated by
 %  commas and \enquote{without separation} of the start of the environment.
 %  Comments \enquote{\textcolor{gray}{\%}} or \enquote{any character}
-%  after |\begin{anskeyenv}| or \myoarg{key \textnormal{\textcolor{gray}{=}} val}
+%  after |\begin{anskey*}| or \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 %  on the same line are NOT supported, the package \mypkg{scontents} will return an
 %  \enquote{error} message if this happens. In a similar way comments
 %  \enquote{\textcolor{gray}{\%}} or \enquote{any character} after %
-%  |\end{anskeyenv}| on the same line the package \mypkg{scontents} will
+%  |\end{anskey*}| on the same line the package \mypkg{scontents} will
 %  return a \enquote{warning} message.
 %
 %  \smallskip
 %
-%  The \myenv*{anskeyenv} environment uses the same \mymeta{keys} as the
+%  The \myenv*{anskey*} environment uses the same \mymeta{keys} as the
 %  \ics*{anskey} command  next to the keys |write-env|, |force-eol| and
 %  |overwrite| inherited from package \mypkg{scontents}.
 %  The environment and is available for all levels of the
@@ -2508,24 +2508,24 @@ This work consists of the files enumext.dtx and enumext.sty.
 \begin{examplecode}[frame=single]
 \begin{enumext}[save-ans=test,show-pos=true,start=5]
   \item* Text containing our instructions or questions.
-    \begin{anskeyenv}[item-star]
+    \begin{anskey*}[item-star]
       `\mymeta{first answer}`
-    \end{anskeyenv}
+    \end{anskey*}
   \item Text containing our instructions or questions.
     \begin{enumext}
       \item Question.
-        \begin{anskeyenv}
+        \begin{anskey*}
           `\mymeta{second answer}`
-        \end{anskeyenv}
+        \end{anskey*}
     \end{enumext}
   \item Text containing our instructions or questions.
-    \begin{anskeyenv}
+    \begin{anskey*}
       `\mymeta{third answer}`
-    \end{anskeyenv}
+    \end{anskey*}
   \item Text containing our instructions or questions.
-    \begin{anskeyenv}
+    \begin{anskey*}
       `\mymeta{fourth answer}`
-    \end{anskeyenv}
+    \end{anskey*}
 \end{enumext}
 \end{examplecode}
 % \iffalse
@@ -2534,9 +2534,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{enumext}[save-ans=test,show-pos=true,columns=2,nosep,start=5]
 %   \item* Text containing our instructions or questions.
-%      \begin{anskeyenv}
+%      \begin{anskey*}
 %        First answer with \verb+verbatim+
-%      \end{anskeyenv}
+%      \end{anskey*}
 %   \item Text containing our instructions or questions.
 %     \begin{enumext}
 %       \item Question.\anskey{second answer}
@@ -4292,7 +4292,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %    The variable \cs{l_@@_store_active_bool} setting by
 %    \mykey{save-ans} key (\S\ref{key:save-ans}) activates all the
-%    mechanism related to \ics*{anskey}, \myenv*{anskeyenv}, \myenv*{keyans},
+%    mechanism related to \ics*{anskey}, \myenv*{anskey*}, \myenv*{keyans},
 %    \myenv*{keyans*} and \myenv*{keyanspic} environments.
 %
 %    \smallskip
@@ -4307,7 +4307,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The variable \cs{l_@@_store_anskey_arg_tl} save the
 %    \emph{argument} of \ics*{anskey} (\S\ref{cmd:anskey}) and the variables
 %    \cs{l_@@_store_anskey_env_tl}, \cs{l_@@_store_anskey_opt_tl} save the
-%    \mymeta{body} and \mymeta{keys} of the environment \myenv*{anskeyenv} (\S\ref{env:anskeyenv}).
+%    \mymeta{body} and \mymeta{keys} of the environment \myenv*{anskey*} (\S\ref{env:anskey*}).
 %
 %    \smallskip
 %
@@ -7626,7 +7626,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mykey{check-ans} and \mykey{no-store} keys, copy \mymarg{store
 %   name} into the global variable \cs{g_@@_store_name_tl} and execute the
 %   function \cs{@@_anskey_env_make:V} creating the environment
-%   \myenv*{anskeyenv} (\S\ref{env:anskeyenv}).
+%   \myenv*{anskey*} (\S\ref{env:anskey*}).
 %   The \mymeta{prop list} \myvarenv{g__@@_series_\mymeta[cf=gray]{store
 %   name}_prop} and the \mymeta{sequence}
 %   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_seq} will be
@@ -7995,7 +7995,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mykey{check-ans} is active it will execute the function
 %   \cs{@@_check_ans_show:} and show the result in the terminal, otherwise
 %   it will execute the function \cs{@@_check_ans_log:} and write the
-%   results in the |.log| file, undefine the environment \myenv*{anskeyenv} (\S\ref{env:anskeyenv})
+%   results in the |.log| file, undefine the environment \myenv*{anskey*} (\S\ref{env:anskey*})
 %   through the function \cs{@@_undefine_anskey_env:} and finally we execute the function
 %   \cs{@@_reset_global_vars:} returning the used variables to their
 %   original state.
@@ -8550,6 +8550,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans }
       }
+    \int_compare:nNnT { \l_@@_keyans_level_h_int } = { 1 }
+      {
+        \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans* }
+      }
     \int_compare:nNnT { \l_@@_keyans_pic_level_int } = { 1 }
       {
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
@@ -8859,7 +8863,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{The environment \env{anskeyenv}}\label{env:anskeyenv}
+% \subsection{The environment \env{anskey*}}\label{env:anskey*}
 %
 % Managing \emph{verbatim content} in an environment is quite complicated, I
 % learned that when creating the \mypkg{scontents} package, so to be able
@@ -8886,19 +8890,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{itemize}
 %
 % \begin{macro}[int]{\@@_undefine_anskey_env:,}
-%    Detection of the \myenv*{anskeyenv} environment outside the
+%    Detection of the \myenv*{anskey*} environment outside the
 %    \myenv*{enumext} and \myenv*{enumext*} environments.
 % \iffalse
-%% Hooks for |anskeyenv| environment out off enumext and enumext*.
+%% Hooks for |anskey*| environment out off enumext and enumext*.
 % \fi
 %    \begin{macrocode}
 \@@_before_env:nn { enumext }
   {
     \int_compare:nNnT { \l_@@_level_int } = { 0 }
       {
-        \cs_if_free:NF \__scontents_anskeyenv_env_begin:
+        \cs_if_free:cF { __scontents_anskey*_env_begin: }
           {
-            \msg_fatal:nnn { enumext } { anskeyenv-defined } { anskeyenv }
+            \msg_fatal:nnn { enumext } { anskey*-defined } { anskey* }
           }
       }
   }
@@ -8906,33 +8910,33 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \int_compare:nNnT { \l_@@_level_int } = { 0 }
       {
-        \cs_if_free:NF \__scontents_anskeyenv_env_begin:
+        \cs_if_free:cF { __scontents_anskey*_env_begin: }
           {
-            \msg_fatal:nnn { enumext } { anskeyenv-defined } { anskeyenv }
+            \msg_fatal:nnn { enumext } { anskey*-defined } { anskey* }
           }
       }
   }
 %    \end{macrocode}
 %   The function \cs{@@_undefine_anskey_env:} will undefine the environment
-%   \myenv*{anskeyenv} and will be passed to the function
+%   \myenv*{anskey*} and will be passed to the function
 %   \cs{@@_execute_after_env:} (\S\ref{fun:exec-after-env}) which is
 %   executed after the environment in which the key \mykey{save-ans} is active.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_undefine_anskey_env:
   {
-    \cs_undefine:N \anskeyenv
-    \cs_undefine:N \endanskeyenv
-    \cs_undefine:N \__scontents_anskeyenv_env_begin:
-    \cs_undefine:N \__scontents_anskeyenv_env_end:
+    \cs_undefine:c { anskey* }
+    \cs_undefine:c { endanskey* }
+    \cs_undefine:c { __scontents_anskey*_env_begin: }
+    \cs_undefine:c { __scontents_anskey*_env_end: }
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_anskey_env_make:n, \@@_anskey_env_make:V,
-%                    anskeyenv, \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:
+%                    anskey*, \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:
 %                    \@@_rescan_anskey_env:n}
 %    The function \cs{@@_anskey_env_make:n} creates the environment
-%    \myenv*{anskeyenv} (\emph{custom version} of \myenv{scontents} environment) by setting the
+%    \myenv*{anskey*} (\emph{custom version} of \myenv{scontents} environment) by setting the
 %    initial keys |store-env=|\mymarg{store name} and |print-env=false|.
 %
 %    To maintain the \emph{scope} of the environment and that it is only active
@@ -8940,12 +8944,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    the function \cs{@@_storing_exec:} (\S\ref{key:save-ans}).
 %
 % \iffalse
-%% Function for define |anskeyenv| environment using scontents.
+%% Function for define |anskey*| environment using scontents.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_anskey_env_make:n #1
   {
-    \newenvsc{anskeyenv}[store-env=#1,print-env=false]
+    \newenvsc{anskey*}[store-env=enumextanskey*#1,print-env=false]
     \@@_anskey_env_exec:
   }
 \cs_generate_variant:Nn \@@_anskey_env_make:n { V }
@@ -8957,7 +8961,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  undefined. We will apply this function using the \emph{hook} function
 %  \cs{@@_before_env:nn}.
 % \iffalse
-%% Define keys for |anskeyenv| environment using scontents PATH.
+%% Define keys for |anskey*| environment using scontents PATH.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_define_keys:
@@ -9026,29 +9030,42 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   processing all the code necessary for the execution of the environment.
 %   The first thing will be to add our \mymeta{keys}.
 % \iffalse
-%% Function for exec all code for |anskeyenv| environment.
+%% Function for exec all code for |anskey*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_exec:
   {
-    \@@_before_env:nn { anskeyenv }
+    \@@_before_env:nn { anskey* }
       {
         \@@_anskey_env_define_keys:
       }
 %    \end{macrocode}
-%   Now we will execute our actions after the \myenv*{anskeyenv}
+%   Now we will execute our actions after the \myenv*{anskey*}
 %   environment is closed. We'll fetch the contents of the
 %   \emph{environment body} that is now saved in
 %   \myvarenv{g__scontents_name_\mymeta[cf=gray]{store name}_seq} and store it in
 %   the variable \cs{l_@@_store_anskey_env_tl} then we execute the rest of the functions.
 %    \begin{macrocode}
-    \@@_after_env:nn { anskeyenv }
+    \@@_after_env:nn { anskey* }
       {
+        \int_compare:nNnT { \l_@@_keyans_level_int } = { 1 }
+          {
+            \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans }
+          }
+        \int_compare:nNnT { \l_@@_keyans_level_h_int } = { 1 }
+          {
+            \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyans* }
+          }
+        \int_compare:nNnT { \l_@@_keyans_pic_level_int } = { 1 }
+          {
+            \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
+          }
         \tl_clear:N  \l_@@_store_anskey_env_tl
         \tl_clear:N  \l_@@_store_anskey_opt_tl
         \seq_gpop_right:cNT
-          { g__scontents_name_ \g_@@_store_name_tl _seq } \l_@@_store_anskey_env_tl
-          { \seq_item:ce { g__scontents_name_ \g_@@_store_name_tl _seq } { -1 }  }
+          { g__scontents_name_enumextanskey* \g_@@_store_name_tl _seq }
+          \l_@@_store_anskey_env_tl
+          { \seq_item:ce { g__scontents_name_enumextanskey* \g_@@_store_name_tl _seq } { -1 }  }
         \@@_anskey_env_keys:
         \@@_anskey_env_store:
         \@@_anskey_env_clean:
@@ -12627,9 +12644,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-% Message used by reserved \myenv*{anskeyenv} environment by \mypkg*{enumext} package.
+% Message used by reserved \myenv*{anskey*} environment by \mypkg*{enumext} package.
 %    \begin{macrocode}
-\msg_new:nnn { enumext } { anskeyenv-defined }
+\msg_new:nnn { enumext } { anskey*-defined }
   {
     The ~ '#1' ~ environment ~ is ~ reserved ~ by ~\\
     'enumext'~ package, ~ it ~ cannot ~ be ~ continued.
