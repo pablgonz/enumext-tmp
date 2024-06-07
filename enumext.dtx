@@ -1183,9 +1183,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{User interface}
 % \label{sec:interface}
 %
-% The user interface consists in \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans}, \myenv*{keyans*} and
+% The user interface consists in \myenv*{enumext}, \myenv*{enumext*},
+% \myenv*{anskeyenv}, \myenv*{keyans}, \myenv*{keyans*} and
 % \myenv*{keyanspic} environments, \ics*{anskey}, \ics*{item*} and
-% \ics*{anspic*} commands to \emph{stored content}, \ics*{getkeyans}
+% \ics*{anspic}|*| commands to \emph{stored content}, \ics*{getkeyans}
 % command to get the individual \emph{stored content}, \ics*{printkeyans}
 % to print all \emph{stored content}, \ics*{miniright} for \myenv{minipage}
 % and \ics*{setenumext} to config all \myoarg{key \textnormal{\textcolor{gray}{=}} val}
@@ -1203,7 +1204,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{important}*
 % If any package defines these counters or they are user-defined
-% in the document, the package will return a missing error and abort the
+% in the document, the package will return a fatal error and abort the
 % load.
 % \end{important}
 %
@@ -2126,8 +2127,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{first level}} of \myenv*{enumext} or \myenv*{enumext*}
 % environments and it is ignored if they are established when they are
 % nested inside each other. Only when this \mymeta{key} is \emph{\enquote{active}}
-% the \ics*{anskey} command and the environments \myenv*{keyans}, \myenv*{keyans*}
-% and \myenv*{keyanspic} are available.
+% the \ics*{anskey} command and the environments \myenv*{anskeyenv},
+% \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} are available.
 %
 % \iffalse
 %<*example>
@@ -2165,7 +2166,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % structure of the environment (excluding the first level) including the
 % optional arguments passed to the inner levels or the environment nested
 % in it, along with the content passed to \ics*{anskey}, the current
-% \mymeta{labels} for \ics*{item*} and \ics*{anspic*} in the environments
+% \mymeta{labels} for \ics*{item*} and \ics*{anspic}|*| in the environments
 % \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} will be stored
 % in a \mymeta{sequence} and at the same time will be stored (without the
 % environment structure or optional arguments) in a \mymeta{prop list}.
@@ -2194,8 +2195,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{save-ans}{store name}{not set}
 % Sets the \emph{name} of the \mymeta{sequence} and
 % \mymeta{prop list} in which the contents will be \emph{\enquote{stored}} by
-% \ics*{anskey} in \myenv*{enumext} and \myenv*{enumext*} environments, \ics*{item*} in
-% \myenv*{keyans} and \myenv*{keyans*} environments and \ics*{anspic*} in \myenv*{keyanspic}
+% \ics*{anskey} and \myenv*{anskeyenv} in \myenv*{enumext} and \myenv*{enumext*} environments, \ics*{item*} in
+% \myenv*{keyans} and \myenv*{keyans*} environments and \ics*{anspic}|*| in \myenv*{keyanspic}
 % environment. If the \mymeta{sequence} or \mymeta{prop list} does not
 % exist, it will be created globally and will not be overwritten if the key is used again.
 %
@@ -2235,7 +2236,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{save-sep}{text symbol}{\{, \}}
 % Sets the \emph{text symbol} that will separate the current
 % \mymeta{label} to the \emph{optional argument} passed to the
-% \ics*{item*} and \ics*{anspic*} in the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
+% \ics*{item*} and \ics*{anspic}|*| in the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
 % environments and storing them in the \mymeta{store name} defined by the \mykey{save-ans} key.
 % The \mymarg{text symbol} must always be passed between
 % braces, whitespace ‘\verb*+ +’ is preserved within the braces and only
@@ -2268,40 +2269,41 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsubsection{Keys for \texttt{wrap} and \texttt{display}}\label{subsec:wrap-display}
 %
 % \keyexamp{wrap-ans}{code{} \space\usebox{\hashbox} more code}{\textbackslash{}fbox\{\#1\}}
-% Wraps the \emph{current argument} passed to the \ics*{anskey} command to
+% Wraps the \emph{argument} passed to the \ics*{anskey} and the \emph{body} in \myenv*{anskeyenv} environment
 % referenced by |{#1}| when using the \mykey{show-ans} or \mykey{show-pos} keys.
-% The \mymarg{code} must be passed between
-% braces and only affects the \mymeta{current argument} passed to
-% \ics*{anskey} and NOT the \emph{\enquote{stored content}} in the \mymeta{store name}
-% set by \mykey{save-ans} key.
-% If this key is passed using the \ics*{setenumext} command it is necessary to use double ‘|{##1}|’.
+% The \mymarg{code} must be passed between  braces and only affects the
+% \emph{argument} or \emph{body} and NOT the \emph{\enquote{stored
+% content}} in the \emph{secuence} and \emph{prop list} \mymarg{store
+% name} set by \mykey{save-ans} key. If this key is passed using
+% \ics*{setenumext} it is necessary to use double ‘|{##1}|’.
 %
 % \smallskip
 %
 % \keyexamp{wrap-opt}{code{} \space\usebox{\hashbox} more code}{[\{\#1\}]}
 % Wraps the \emph{optional argument} passed to the
-% \ics*{item*} and \ics*{anspic*} commands referenced by |{#1}|
+% \ics*{item*} and \ics*{anspic}|*| referenced by |{#1}|
 % in the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
 % environments when using the \mykey{show-ans} or \mykey{show-pos} keys.
 % The \mymarg{code} must be passed between braces
-% and only affects the current \mymeta{optional argument} and NOT the
-% \emph{\enquote{stored content}} in \mymeta{store name} set by
-% \mykey{save-ans} key.
-% If this key is passed using the \ics*{setenumext} command it is necessary to use double ‘|{##1}|’.
+% and only affects the current \emph{optional argument} and NOT the
+% \emph{\enquote{stored content}} in the \emph{secuence} and \emph{prop list}
+% \mymarg{store name} set by \mykey{save-ans} key.
+% If this key is passed using \ics*{setenumext} it is necessary to use double ‘|{##1}|’.
 %
 % \smallskip
 %
 % \keyexamp{show-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
-% Displays the \emph{current} \mymeta{argument} passed to the \ics*{anskey} command, the current \mymeta{label}
-% for \ics*{item*} and \ics*{anspic*} commands at the place where it is executed. If the optional
-% argument is present in \ics*{item*} or \ics*{anspic*} it will
+% Displays the \emph{argument} passed to the \ics*{anskey}, the
+% \emph{body} for \myenv*{anskeyenv} environment, the \mymeta{label}
+% for \ics*{item*} and \ics*{anspic}|*| at the place where it is executed. If the optional
+% argument is present in \ics*{item*} or \ics*{anspic}|*| it will
 % be shown using \mykey{wrap-opt} key.
 %
 % \smallskip
 %
 % \keyexamp{mark-ans}{symbol}{\textbackslash{}textasteriskcentered}
-% Sets the \emph{symbol} to be displayed in the left margin for the
-% commands \ics*{anskey}, \ics*{item*} and \ics*{anspic*} in the place
+% Sets the \emph{symbol} to be displayed in the left margin for
+% \ics*{anskey}, \myenv*{anskeyenv}, \ics*{item*} and \ics*{anspic}|*| in the place
 % where they are executed when using the key \mykey{show-ans}.
 %
 % \smallskip
@@ -2316,33 +2318,35 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{show-pos}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Displays the \emph{position} occupied by the \emph{\enquote{stored content}} by
-% commands \ics*{anskey}, \ics*{item*} and \ics*{anspic*} in the
-% \emph{prop list} \mymeta{store name} set by \mykey{save-ans} key.
+% \ics*{anskey}, \myenv*{anskeyenv}, \ics*{item*} and \ics*{anspic}|*| in the
+% \emph{prop list} \mymarg{store name} set by \mykey{save-ans} key.
 % This position is used by the \ics*{getkeyans} command and by the |\ref|
 % command if the \mykey{save-ref} key is active.
 %
 % \smallskip
 %
 % \keyexamp{check-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
-% Enables the  \emph{checking answer} mechanism by displaying an
+% Enables the  \emph{checking answer} mechanism displaying an
 % appropriate message on the terminal. This key works under the logic
 % that each \ics*{item} or \ics*{item*} that does not open an
 % inner level or nested environment contains \emph{\enquote{only one
 % answer}} or \emph{\enquote{only one execution}} of the \ics*{anskey}
-% command. It is intended to be used in conjunction with the
+% or \myenv*{anskeyenv}. It is intended to be used in conjunction with the
 % \mykey{no-store} key.
 %
 % \smallskip
 %
 % \keyexamp*{no-store}{value forbidden}{not used}
 % This is a \emph{meta-key} that does not receive an argument
-% and disables the environment structure stored in the \mymeta{sequence}
-% at the entire level or a nested environment in which it runs. This key
-% is intended for use in internal levels or nested environments in which
-% you want to use \myenv*{enumext} or \myenv*{enumext*} but without using
-% the \ics*{anskey} command, without interfering with the
-% \mykey{check-ans} key and without storing an unwanted environment
-% structure in the \mymeta{sequence}.
+% and disables the structure stored in the \emph{sequence}
+% \mymarg{store name} set by \mykey{save-ans} key at the entire level
+% or a nested environment in which it runs. This key
+% is intended for use in internal levels or nested \myenv*{enumext} or
+% \myenv*{enumext*} environments in which
+% you want to use \myenv*{enumext} or \myenv*{enumext*} but \emph{\enquote{without}} using
+% the \ics*{anskey},\emph{\enquote{without}} use \myenv*{anskeyenv}, \emph{\enquote{without}} interfering with the
+% \mykey{check-ans} key and \emph{\enquote{without}} storing an unwanted
+% structure in the \emph{sequence} \mymarg{store name}.
 %
 % \subsection{The command \cs[no-index]{anskey}}
 % \label{sec:anskey}
@@ -2356,7 +2360,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  The command \ics*{anskey} takes a mandatory argument \mymarg{content}
 %  and \emph{\enquote{stores}} it in the \emph{sequence} and \emph{prop
 %  list} \mymarg{store name} set by \mykey{save-ans} key.
-%  By design the command cannot be nested or passed \emph{verbatim} in the
+%  By design the command cannot be nested or passed \emph{verbatim material} in the
 %  argument and it is assumed that each |\item| or |\item*| within the
 %  environment in which it is active it has a \emph{\enquote{single
 %  execution}} of |\anskey| unless |\item| or |\item*| open a nested level
@@ -2379,7 +2383,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsubsection{Keys for \cs[no-index]{anskey}}
 %
-% By default the \mymarg{content} argument passed to |\anskey| when
+% By default the \mymarg{content} passed to |\anskey| when
 % \emph{\enquote{storing}} in the \emph{sequence} \mymarg{store name} has
 % the form |\item| \mymeta{content}, the following \mymeta{keys} allow
 % modifying the way in which it is \emph{\enquote{stored}} in the
@@ -2458,7 +2462,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 %  \smallskip
 %
-%  By design the environment cannot be nested but full supports \emph{verbatim material} in the
+%  By design the environment cannot be nested but full supports \emph{\enquote{verbatim material}} in the
 %  body and it is assumed that each |\item| or |\item*| within the
 %  environment in which it is active it has a \emph{\enquote{single
 %  execution}} unless |\item| or |\item*| open a nested level
