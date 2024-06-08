@@ -4477,7 +4477,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \l_@@_item_text_X_box, \l_@@_joined_width_X_dim,
 %                       \l_@@_item_width_X_dim, \g_@@_item_symbol_aux_X_tl,
 %                       \l_@@_align_label_X_str, \g_@@_minipage_active_X_bool,
-%                       \g_@@_miniright_code_X_tl , \g_@@_minipage_center_X_bool,
+%                       \l_@@_miniright_code_X_box , \g_@@_minipage_center_X_bool,
 %                       \g_@@_minipage_right_X_dim, \g_@@_minipage_right_X_skip,}
 %    Internal variables used by \myenv*{enumext*} and \myenv*{keyans*} environments.
 % \iffalse
@@ -4498,7 +4498,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_new:c   { g_@@_item_symbol_aux_#1_tl   }
     \str_new:c  { l_@@_align_label_#1_str      }
     \bool_new:c { g_@@_minipage_active_#1_bool }
-    \tl_new:c   { g_@@_miniright_code_#1_tl    }
+    \box_new:c  { l_@@_miniright_code_#1_box   }
     \bool_new:c { g_@@_minipage_center_#1_bool }
     \dim_new:c  { g_@@_minipage_right_#1_dim   }
     \skip_new:c { g_@@_minipage_right_#1_skip  }
@@ -11326,11 +11326,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
    }
 %    \end{macrocode}
-%  Finally we execute the \mymarg{code} passed to the \mykey{mini-right} or \mykey{mini-right*} keys
-%  stored in the variable \cs{g_@@_miniright_code_vii_tl} in the
-%  \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{right side}}.
+%  Finally we execute the \mymarg{code} passed to the \mykey{mini-right}
+%  or \mykey{mini-right*} keys stored in the variable \cs{g_@@_miniright_code_vii_tl}
+%  in the \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{right
+%  side}}. For compatibility with the \mypkg{caption} package and possibly
+%  other \mymarg{code} passed to this key, we will pass it to a box and
+%  then print it.
 % \iffalse
-%% Exec |miniright| key in |enumext*| environment
+%% Exec |mini-right|, |mini-right*| keys in |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \@@_after_env:nn {enumext*}
@@ -11341,9 +11344,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \par\addvspace { \g_@@_minipage_right_skip }
           \bool_if:NF \g_@@_minipage_center_vii_bool
             {
-              \centering
+              \tl_put_left:Nn \g_@@_miniright_code_vii_tl
+                {
+                  \centering
+                }
             }
-          \tl_use:N \g_@@_miniright_code_vii_tl % the code
+          \vbox_set_top:Nn \l_@@_miniright_code_vii_box
+            {
+              \tl_use:N \g_@@_miniright_code_vii_tl
+            }
+          \box_use_drop:N \l_@@_miniright_code_vii_box
         \end{@@_mini_env*}
         \par\addvspace{ \g_@@_minipage_after_skip }
       }
@@ -11361,7 +11371,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mykey{mini-right*} keys is identical to the one used in the
 %   \myenv*{enumext*} environment.
 % \iffalse
-%% Start support for |mini-env| key in |keyans*| environment
+%% Start support for |mini-env|, |mini-right| and |mini-right*| key in |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_mini_viii:
@@ -11400,9 +11410,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \par\addvspace { \g_@@_minipage_right_skip }
           \bool_if:NF \g_@@_minipage_center_viii_bool
             {
-              \centering
+              \tl_put_left:Nn \g_@@_miniright_code_viii_tl
+                {
+                  \centering
+                }
             }
-          \tl_use:N \g_@@_miniright_code_viii_tl % the code
+          \vbox_set_top:Nn \l_@@_miniright_code_viii_box
+            {
+              \tl_use:N \g_@@_miniright_code_viii_tl
+            }
+          \box_use_drop:N \l_@@_miniright_code_viii_box
         \end{@@_mini_env*}
         \par\addvspace{ \g_@@_minipage_after_skip }
       }

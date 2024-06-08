@@ -210,7 +210,7 @@
     \tl_new:c   { g__enumext_item_symbol_aux_#1_tl   }
     \str_new:c  { l__enumext_align_label_#1_str      }
     \bool_new:c { g__enumext_minipage_active_#1_bool }
-    \tl_new:c   { g__enumext_miniright_code_#1_tl    }
+    \box_new:c  { l__enumext_miniright_code_#1_box   }
     \bool_new:c { g__enumext_minipage_center_#1_bool }
     \dim_new:c  { g__enumext_minipage_right_#1_dim   }
     \skip_new:c { g__enumext_minipage_right_#1_skip  }
@@ -3868,7 +3868,7 @@
         \bool_gset_true:N \g__enumext_minipage_active_vii_bool
       }
    }
-%% Exec |miniright| key in |enumext*| environment
+%% Exec |mini-right|, |mini-right*| keys in |enumext*| environment.
 \__enumext_after_env:nn {enumext*}
   {
     \bool_if:NT \g__enumext_minipage_active_vii_bool
@@ -3877,9 +3877,16 @@
           \par\addvspace { \g__enumext_minipage_right_skip }
           \bool_if:NF \g__enumext_minipage_center_vii_bool
             {
-              \centering
+              \tl_put_left:Nn \g__enumext_miniright_code_vii_tl
+                {
+                  \centering
+                }
             }
-          \tl_use:N \g__enumext_miniright_code_vii_tl % the code
+          \vbox_set_top:Nn \l__enumext_miniright_code_vii_box
+            {
+              \tl_use:N \g__enumext_miniright_code_vii_tl
+            }
+          \box_use_drop:N \l__enumext_miniright_code_vii_box
         \end{__enumext_mini_env*}
         \par\addvspace{ \g__enumext_minipage_after_skip }
       }
@@ -3889,7 +3896,7 @@
     \dim_gzero:N \g__enumext_minipage_right_vii_dim
     \bool_gset_false:N \g__enumext_starred_bool
   }
-%% Start support for |mini-env| key in |keyans*| environment
+%% Start support for |mini-env|, |mini-right| and |mini-right*| key in |keyans*| environment.
 \cs_new_protected:Nn \__enumext_start_mini_viii:
   {
     \dim_compare:nNnT { \l__enumext_minipage_right_viii_dim } > { \c_zero_dim }
@@ -3926,9 +3933,16 @@
           \par\addvspace { \g__enumext_minipage_right_skip }
           \bool_if:NF \g__enumext_minipage_center_viii_bool
             {
-              \centering
+              \tl_put_left:Nn \g__enumext_miniright_code_viii_tl
+                {
+                  \centering
+                }
             }
-          \tl_use:N \g__enumext_miniright_code_viii_tl % the code
+          \vbox_set_top:Nn \l__enumext_miniright_code_viii_box
+            {
+              \tl_use:N \g__enumext_miniright_code_viii_tl
+            }
+          \box_use_drop:N \l__enumext_miniright_code_viii_box
         \end{__enumext_mini_env*}
         \par\addvspace{ \g__enumext_minipage_after_skip }
       }
