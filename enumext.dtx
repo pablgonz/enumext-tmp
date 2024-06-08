@@ -7989,7 +7989,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Writing \texttt{.log}, executing \texttt{check-ans} key and more}\label{fun:exec-after-env}
+% \subsection{Executing \texttt{anskey*} environment, \texttt{check-ans} key writing \texttt{.log}}\label{fun:exec-after-env}
 %
 % \begin{macro}{\@@_execute_after_env:}
 %   The \cs{@@_execute_after_env:} function will first return the
@@ -11090,7 +11090,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{The environment \env{enumext*}}\label{env:starred}
+% \subsection{The horizontal list environments}\label{env:horizontal}
 %
 % Generating horizontal list environments is NOT as simple as standard
 % \hologo{LaTeX} list environments. The fundamental part of the code is adapted
@@ -11111,11 +11111,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Functions for item box width}
 %
-% \begin{macro}{\@@_starred_columns_set_vii:}
+% \begin{macro}{\@@_starred_columns_set_vii:, \@@_starred_columns_set_viii:,}
 %    We set the default value for the width of the box containing the
 %    content of the items and create \ics*{itemwidth} in a public form.
 % \iffalse
-%% Define default columns width
+%% Define default columns width for |enumext*| and |keyans*|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_starred_columns_set_vii:
@@ -11137,16 +11137,36 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \dim_zero_new:N \itemwidth
   }
+\cs_new_protected:Nn \@@_starred_columns_set_viii:
+  {
+    \dim_compare:nNnT { \l_@@_columns_sep_viii_dim } = { \c_zero_dim }
+      {
+        \dim_set:Nn \l_@@_columns_sep_viii_dim
+          {
+            ( \l_@@_labelwidth_viii_dim + \l_@@_labelsep_viii_dim )
+            / \l_@@_columns_viii_int
+          }
+      }
+    \int_set:Nn \l_@@_tmpa_viii_int { \l_@@_columns_viii_int - \c_one_int }
+    \dim_set:Nn \l_@@_item_width_viii_dim
+      {
+        ( \linewidth - \l_@@_columns_sep_viii_dim * \l_@@_tmpa_viii_int )
+        / \l_@@_columns_viii_int - \l_@@_labelwidth_viii_dim
+        - \l_@@_labelsep_viii_dim
+      }
+    \dim_zero_new:N \itemwidth
+  }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_starred_joined_item_vii:n}
-%    The function \cs{@@_starred_joined_item_vii:n} will set the \emph{width} of the
-%    box in which the content passed to \ics*{item}\myparg{number} will be
-%    stored together with the value of \ics*{itemwidth}.
+% \subsubsection{Functions for join item columns}
 %
+% \begin{macro}{\@@_starred_joined_item_vii:n, \@@_starred_joined_item_viii:n,}
+%    The functions \cs{@@_starred_joined_item_vii:n} and \cs{@@_starred_joined_item_viii:n}  will set the \emph{width} of the
+%    box in which the content passed to \ics*{item}\myparg{columns} will be
+%    stored together with the value of \ics*{itemwidth}.
 % \iffalse
-%% Set width for joined item's for |enumext*|
+%% Set width for joined item's for |enumext*| and |keyans*|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_joined_item_vii:n #1
@@ -11178,9 +11198,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \l_@@_columns_vii_int - \l_@@_item_column_pos_vii_int + \c_one_int
           }
       }
-%    \end{macrocode}
-%    Only need if |#1 > 1| (default are set before).
-%    \begin{macrocode}
     \int_compare:nNnTF { \l_@@_joined_item_vii_int } > { \c_one_int }
       {
         \int_set_eq:NN \l_@@_joined_item_aux_vii_int \l_@@_joined_item_vii_int
@@ -11199,6 +11216,55 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \dim_set_eq:NN \l_@@_joined_width_vii_dim \l_@@_item_width_vii_dim
         \dim_set_eq:NN \itemwidth \l_@@_item_width_vii_dim
+      }
+  }
+\cs_new_protected:Npn \@@_starred_joined_item_viii:n #1
+  {
+    \int_set:Nn \l_@@_joined_item_viii_int {#1}
+    \int_compare:nNnT { \l_@@_joined_item_viii_int } > { \l_@@_columns_viii_int }
+      {
+        \msg_warning:nnee { enumext } { item-joined }
+          { \int_use:N \l_@@_joined_item_viii_int }
+          { \int_use:N \l_@@_columns_viii_int }
+        \int_set:Nn \l_@@_joined_item_viii_int
+          {
+            \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int
+          }
+      }
+    \int_compare:nNnT
+      { \l_@@_joined_item_viii_int }
+        >
+      { \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int }
+      {
+        \msg_warning:nnee { enumext } { item-joined-columns }
+          { \int_use:N \l_@@_joined_item_viii_int }
+          {
+            \int_eval:n
+              { \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int }
+          }
+        \int_set:Nn \l_@@_joined_item_viii_int
+          {
+            \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int
+          }
+      }
+    \int_compare:nNnTF { \l_@@_joined_item_viii_int } > { \c_one_int }
+      {
+        \int_set_eq:NN \l_@@_joined_item_aux_viii_int \l_@@_joined_item_viii_int
+        \int_decr:N \l_@@_joined_item_aux_viii_int
+        \int_add:Nn \l_@@_item_column_pos_viii_int { \l_@@_joined_item_aux_viii_int }
+        \int_gadd:Nn \g_@@_item_count_all_viii_int { \l_@@_joined_item_aux_viii_int }
+        \dim_set:Nn \l_@@_joined_width_viii_dim
+          {
+            \l_@@_item_width_viii_dim * \l_@@_joined_item_viii_int
+            + (  \l_@@_labelwidth_viii_dim + \l_@@_labelsep_viii_dim
+               + \l_@@_columns_sep_viii_dim
+              )*\l_@@_joined_item_aux_viii_int
+          }
+        \dim_set_eq:NN \itemwidth \l_@@_joined_width_viii_dim
+      }
+      {
+        \dim_set_eq:NN \l_@@_joined_width_viii_dim \l_@@_item_width_viii_dim
+        \dim_set_eq:NN \itemwidth \l_@@_item_width_viii_dim
       }
   }
 %    \end{macrocode}
@@ -11291,6 +11357,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
+%
+% \subsection{The environment \env{enumext*}}\label{env:starred}
 %
 % \begin{macro}{enumext*}
 %    First we will generate the environment and we will give a
@@ -11755,98 +11823,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %
 % \subsection{The environment \env{keyans*}}\label{env:keyans-starred}
-%
-% \subsubsection{Functions for item box width}
-%
-% \begin{macro}{\@@_starred_columns_set_viii:}
-%    We set the default value for the width of the box containing the
-%    content of the items and create \ics*{itemwidth} in a public form.
-% \iffalse
-%% Define default columns width for |keyans*|
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_starred_columns_set_viii:
-  {
-    \dim_compare:nNnT { \l_@@_columns_sep_viii_dim } = { \c_zero_dim }
-      {
-        \dim_set:Nn \l_@@_columns_sep_viii_dim
-          {
-            ( \l_@@_labelwidth_viii_dim + \l_@@_labelsep_viii_dim )
-            / \l_@@_columns_viii_int
-          }
-      }
-    \int_set:Nn \l_@@_tmpa_viii_int { \l_@@_columns_viii_int - \c_one_int }
-    \dim_set:Nn \l_@@_item_width_viii_dim
-      {
-        ( \linewidth - \l_@@_columns_sep_viii_dim * \l_@@_tmpa_viii_int )
-        / \l_@@_columns_viii_int - \l_@@_labelwidth_viii_dim
-        - \l_@@_labelsep_viii_dim
-      }
-    \dim_zero_new:N \itemwidth
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_starred_joined_item_viii:n}
-%    The function \cs{@@_starred_joined_item_viii:n} will set the \emph{width} of the
-%    box in which the content passed to \ics*{item}\myparg{number} will be
-%    stored together with the value of \ics*{itemwidth}.
-%
-% \iffalse
-%% Set width for joined item's for |keyans*|
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_starred_joined_item_viii:n #1
-  {
-    \int_set:Nn \l_@@_joined_item_viii_int {#1}
-    \int_compare:nNnT { \l_@@_joined_item_viii_int } > { \l_@@_columns_viii_int }
-      {
-        \msg_warning:nnee { enumext } { item-joined }
-          { \int_use:N \l_@@_joined_item_viii_int }
-          { \int_use:N \l_@@_columns_viii_int }
-        \int_set:Nn \l_@@_joined_item_viii_int
-          {
-            \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int
-          }
-      }
-    \int_compare:nNnT
-      { \l_@@_joined_item_viii_int }
-        >
-      { \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int }
-      {
-        \msg_warning:nnee { enumext } { item-joined-columns }
-          { \int_use:N \l_@@_joined_item_viii_int }
-          {
-            \int_eval:n
-              { \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int }
-          }
-        \int_set:Nn \l_@@_joined_item_viii_int
-          {
-            \l_@@_columns_viii_int - \l_@@_item_column_pos_viii_int + \c_one_int
-          }
-      }
-    \int_compare:nNnTF { \l_@@_joined_item_viii_int } > { \c_one_int }
-      {
-        \int_set_eq:NN \l_@@_joined_item_aux_viii_int \l_@@_joined_item_viii_int
-        \int_decr:N \l_@@_joined_item_aux_viii_int
-        \int_add:Nn \l_@@_item_column_pos_viii_int { \l_@@_joined_item_aux_viii_int }
-        \int_gadd:Nn \g_@@_item_count_all_viii_int { \l_@@_joined_item_aux_viii_int }
-        \dim_set:Nn \l_@@_joined_width_viii_dim
-          {
-            \l_@@_item_width_viii_dim * \l_@@_joined_item_viii_int
-            + (  \l_@@_labelwidth_viii_dim + \l_@@_labelsep_viii_dim
-               + \l_@@_columns_sep_viii_dim
-              )*\l_@@_joined_item_aux_viii_int
-          }
-        \dim_set_eq:NN \itemwidth \l_@@_joined_width_viii_dim
-      }
-      {
-        \dim_set_eq:NN \l_@@_joined_width_viii_dim \l_@@_item_width_viii_dim
-        \dim_set_eq:NN \itemwidth \l_@@_item_width_viii_dim
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
 %
 % \begin{macro}{\@@_start_mini_viii:,\@@_stop_mini_viii:}
 %

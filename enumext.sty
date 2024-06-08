@@ -6,21 +6,21 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%%
+%% 
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%%
+%% 
 %%  https://www.latex-project.org/lppl.txt
-%%
+%% 
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%%
+%% 
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%%
+%% 
 %% This work consists of the files enumext.dtx and enumext.sty.
-%%
+%% 
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
@@ -2717,7 +2717,6 @@
         \__enumext_anskey_env_undefine_keys:
       }
   }
-\hook_show:n {env/enumext*/before}
 \cs_new_protected:Nn \__enumext_anskey_env_keys:
   {
     \bool_lazy_and:nnT
@@ -3701,7 +3700,7 @@
       }
     \par
   }
-%% Define default columns width
+%% Define default columns width for |enumext*| and |keyans*|.
 \cs_new_protected:Nn \__enumext_starred_columns_set_vii:
   {
     \dim_compare:nNnT { \l__enumext_columns_sep_vii_dim } = { \c_zero_dim }
@@ -3721,7 +3720,26 @@
       }
     \dim_zero_new:N \itemwidth
   }
-%% Set width for joined item's for |enumext*|
+\cs_new_protected:Nn \__enumext_starred_columns_set_viii:
+  {
+    \dim_compare:nNnT { \l__enumext_columns_sep_viii_dim } = { \c_zero_dim }
+      {
+        \dim_set:Nn \l__enumext_columns_sep_viii_dim
+          {
+            ( \l__enumext_labelwidth_viii_dim + \l__enumext_labelsep_viii_dim )
+            / \l__enumext_columns_viii_int
+          }
+      }
+    \int_set:Nn \l__enumext_tmpa_viii_int { \l__enumext_columns_viii_int - \c_one_int }
+    \dim_set:Nn \l__enumext_item_width_viii_dim
+      {
+        ( \linewidth - \l__enumext_columns_sep_viii_dim * \l__enumext_tmpa_viii_int )
+        / \l__enumext_columns_viii_int - \l__enumext_labelwidth_viii_dim
+        - \l__enumext_labelsep_viii_dim
+      }
+    \dim_zero_new:N \itemwidth
+  }
+%% Set width for joined item's for |enumext*| and |keyans*|.
 \cs_new_protected:Npn \__enumext_starred_joined_item_vii:n #1
   {
     \int_set:Nn \l__enumext_joined_item_vii_int {#1}
@@ -3769,6 +3787,55 @@
       {
         \dim_set_eq:NN \l__enumext_joined_width_vii_dim \l__enumext_item_width_vii_dim
         \dim_set_eq:NN \itemwidth \l__enumext_item_width_vii_dim
+      }
+  }
+\cs_new_protected:Npn \__enumext_starred_joined_item_viii:n #1
+  {
+    \int_set:Nn \l__enumext_joined_item_viii_int {#1}
+    \int_compare:nNnT { \l__enumext_joined_item_viii_int } > { \l__enumext_columns_viii_int }
+      {
+        \msg_warning:nnee { enumext } { item-joined }
+          { \int_use:N \l__enumext_joined_item_viii_int }
+          { \int_use:N \l__enumext_columns_viii_int }
+        \int_set:Nn \l__enumext_joined_item_viii_int
+          {
+            \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int
+          }
+      }
+    \int_compare:nNnT
+      { \l__enumext_joined_item_viii_int }
+        >
+      { \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int }
+      {
+        \msg_warning:nnee { enumext } { item-joined-columns }
+          { \int_use:N \l__enumext_joined_item_viii_int }
+          {
+            \int_eval:n
+              { \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int }
+          }
+        \int_set:Nn \l__enumext_joined_item_viii_int
+          {
+            \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int
+          }
+      }
+    \int_compare:nNnTF { \l__enumext_joined_item_viii_int } > { \c_one_int }
+      {
+        \int_set_eq:NN \l__enumext_joined_item_aux_viii_int \l__enumext_joined_item_viii_int
+        \int_decr:N \l__enumext_joined_item_aux_viii_int
+        \int_add:Nn \l__enumext_item_column_pos_viii_int { \l__enumext_joined_item_aux_viii_int }
+        \int_gadd:Nn \g__enumext_item_count_all_viii_int { \l__enumext_joined_item_aux_viii_int }
+        \dim_set:Nn \l__enumext_joined_width_viii_dim
+          {
+            \l__enumext_item_width_viii_dim * \l__enumext_joined_item_viii_int
+            + (  \l__enumext_labelwidth_viii_dim + \l__enumext_labelsep_viii_dim
+               + \l__enumext_columns_sep_viii_dim
+              )*\l__enumext_joined_item_aux_viii_int
+          }
+        \dim_set_eq:NN \itemwidth \l__enumext_joined_width_viii_dim
+      }
+      {
+        \dim_set_eq:NN \l__enumext_joined_width_viii_dim \l__enumext_item_width_viii_dim
+        \dim_set_eq:NN \itemwidth \l__enumext_item_width_viii_dim
       }
   }
 %% Start support for |mini-env| key in |enumext*| environment
@@ -4076,76 +4143,6 @@
   }
 %% Execute |check-ans| key out of |enumext*|.
 \__enumext_after_env:nn {enumext*} { \__enumext_execute_after_env: }
-%% Define default columns width for |keyans*|
-\cs_new_protected:Nn \__enumext_starred_columns_set_viii:
-  {
-    \dim_compare:nNnT { \l__enumext_columns_sep_viii_dim } = { \c_zero_dim }
-      {
-        \dim_set:Nn \l__enumext_columns_sep_viii_dim
-          {
-            ( \l__enumext_labelwidth_viii_dim + \l__enumext_labelsep_viii_dim )
-            / \l__enumext_columns_viii_int
-          }
-      }
-    \int_set:Nn \l__enumext_tmpa_viii_int { \l__enumext_columns_viii_int - \c_one_int }
-    \dim_set:Nn \l__enumext_item_width_viii_dim
-      {
-        ( \linewidth - \l__enumext_columns_sep_viii_dim * \l__enumext_tmpa_viii_int )
-        / \l__enumext_columns_viii_int - \l__enumext_labelwidth_viii_dim
-        - \l__enumext_labelsep_viii_dim
-      }
-    \dim_zero_new:N \itemwidth
-  }
-%% Set width for joined item's for |keyans*|
-\cs_new_protected:Npn \__enumext_starred_joined_item_viii:n #1
-  {
-    \int_set:Nn \l__enumext_joined_item_viii_int {#1}
-    \int_compare:nNnT { \l__enumext_joined_item_viii_int } > { \l__enumext_columns_viii_int }
-      {
-        \msg_warning:nnee { enumext } { item-joined }
-          { \int_use:N \l__enumext_joined_item_viii_int }
-          { \int_use:N \l__enumext_columns_viii_int }
-        \int_set:Nn \l__enumext_joined_item_viii_int
-          {
-            \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int
-          }
-      }
-    \int_compare:nNnT
-      { \l__enumext_joined_item_viii_int }
-        >
-      { \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int }
-      {
-        \msg_warning:nnee { enumext } { item-joined-columns }
-          { \int_use:N \l__enumext_joined_item_viii_int }
-          {
-            \int_eval:n
-              { \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int }
-          }
-        \int_set:Nn \l__enumext_joined_item_viii_int
-          {
-            \l__enumext_columns_viii_int - \l__enumext_item_column_pos_viii_int + \c_one_int
-          }
-      }
-    \int_compare:nNnTF { \l__enumext_joined_item_viii_int } > { \c_one_int }
-      {
-        \int_set_eq:NN \l__enumext_joined_item_aux_viii_int \l__enumext_joined_item_viii_int
-        \int_decr:N \l__enumext_joined_item_aux_viii_int
-        \int_add:Nn \l__enumext_item_column_pos_viii_int { \l__enumext_joined_item_aux_viii_int }
-        \int_gadd:Nn \g__enumext_item_count_all_viii_int { \l__enumext_joined_item_aux_viii_int }
-        \dim_set:Nn \l__enumext_joined_width_viii_dim
-          {
-            \l__enumext_item_width_viii_dim * \l__enumext_joined_item_viii_int
-            + (  \l__enumext_labelwidth_viii_dim + \l__enumext_labelsep_viii_dim
-               + \l__enumext_columns_sep_viii_dim
-              )*\l__enumext_joined_item_aux_viii_int
-          }
-        \dim_set_eq:NN \itemwidth \l__enumext_joined_width_viii_dim
-      }
-      {
-        \dim_set_eq:NN \l__enumext_joined_width_viii_dim \l__enumext_item_width_viii_dim
-        \dim_set_eq:NN \itemwidth \l__enumext_item_width_viii_dim
-      }
-  }
 %% Start support for |mini-env| key in |keyans*| environment
 \cs_new_protected:Nn \__enumext_start_mini_viii:
   {
@@ -4871,6 +4868,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%%
+%% 
 %%
 %% End of file `enumext.sty'.
