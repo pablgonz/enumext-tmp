@@ -6,21 +6,21 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%% 
+%%
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%% 
+%%
 %%  https://www.latex-project.org/lppl.txt
-%% 
+%%
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%% 
+%%
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%% 
+%%
 %% This work consists of the files enumext.dtx and enumext.sty.
-%% 
+%%
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
@@ -2634,9 +2634,7 @@
 %% Function for define |anskey*| environment using scontents.
 \cs_new_protected:Npn \__enumext_anskey_env_make:n #1
   {
-    \newenvsc{anskey*}[store-env=enumextanskey*#1,print-env=false]
-    \seq_gclear_new:c
-      { g__scontents_name_enumextanskey*#1_seq }
+    \newenvsc{anskey*}[store-env=#1,print-env=false]
     \__enumext_anskey_env_exec:
   }
 \cs_generate_variant:Nn \__enumext_anskey_env_make:n { V }
@@ -2701,20 +2699,25 @@
       {
         \__enumext_anskey_env_define_keys:
       }
+    \hook_if_empty:nF {env/anskey*/after}
+      {
+        \hook_gremove_code:nn {env/anskey*/after} { * }
+      }
     \__enumext_after_env:nn { anskey* }
       {
-        \tl_clear:N  \l__enumext_store_anskey_env_tl
-        \tl_clear:N  \l__enumext_store_anskey_opt_tl
-        \seq_gpop_right:cNT
-          { g__scontents_name_enumextanskey* \g__enumext_store_name_tl _seq }
-          \l__enumext_store_anskey_env_tl
-          { \seq_item:ce { g__scontents_name_enumextanskey* \g__enumext_store_name_tl _seq } { -1 }  }
+        \tl_clear:N \l__enumext_store_anskey_env_tl
+        \tl_clear:N \l__enumext_store_anskey_opt_tl
+        \tl_gset:Ne \l__enumext_store_anskey_env_tl
+          {
+            \seq_item:ce { g__scontents_name_ \l__enumext_store_name_tl _seq } { -1 }
+          }
         \__enumext_anskey_env_keys:
         \__enumext_anskey_env_store:
         \__enumext_anskey_env_clean:
         \__enumext_anskey_env_undefine_keys:
       }
   }
+\hook_show:n {env/enumext*/before}
 \cs_new_protected:Nn \__enumext_anskey_env_keys:
   {
     \bool_lazy_and:nnT
@@ -4868,6 +4871,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%% 
+%%
 %%
 %% End of file `enumext.sty'.

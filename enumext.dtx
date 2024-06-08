@@ -3480,7 +3480,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \printkeyans[columns=2]{simplews}
-% \vfill
 %
 % \subsubsection*{Example 5}
 %
@@ -8978,9 +8977,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_anskey_env_make:n #1
   {
-    \newenvsc{anskey*}[store-env=enumextanskey*#1,print-env=false]
-    \seq_gclear_new:c
-      { g__scontents_name_enumextanskey*#1_seq }
+    \newenvsc{anskey*}[store-env=#1,print-env=false]
     \@@_anskey_env_exec:
   }
 \cs_generate_variant:Nn \@@_anskey_env_make:n { V }
@@ -9087,14 +9084,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \myvarenv{g__scontents_name_\mymeta[cf=gray]{store name}_seq} and store it in
 %   the variable \cs{l_@@_store_anskey_env_tl} then we execute the rest of the functions.
 %    \begin{macrocode}
+    \hook_if_empty:nF {env/anskey*/after}
+      {
+        \hook_gremove_code:nn {env/anskey*/after} { * }
+      }
     \@@_after_env:nn { anskey* }
       {
-        \tl_clear:N  \l_@@_store_anskey_env_tl
-        \tl_clear:N  \l_@@_store_anskey_opt_tl
-        \seq_gpop_right:cNT
-          { g__scontents_name_enumextanskey* \g_@@_store_name_tl _seq }
-          \l_@@_store_anskey_env_tl
-          { \seq_item:ce { g__scontents_name_enumextanskey* \g_@@_store_name_tl _seq } { -1 }  }
+        \tl_clear:N \l_@@_store_anskey_env_tl
+        \tl_clear:N \l_@@_store_anskey_opt_tl
+        \tl_gset:Ne \l_@@_store_anskey_env_tl
+          {
+            \seq_item:ce { g__scontents_name_ \l_@@_store_name_tl _seq } { -1 }
+          }
         \@@_anskey_env_keys:
         \@@_anskey_env_store:
         \@@_anskey_env_clean:
@@ -9103,13 +9104,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \begin{important}*
-% Using \cs[no-index]{seq_gpop_right:cNT} is correct here, while we have control of
-% the scope of the environment, we cannot know if a user is using the key
-% |store-env=|\mymarg{store name} in some other environment.
+% The use of \cs{hook_gremove_code:nn} is necessary here, otherwise the
+% \mymarg{code} passed to \cs{@@_after_env:nn}|{anskey*}| will be accumulated
+% for each execution.
 % The last function \cs{@@_anskey_env_undefine_keys:} is necessary so as
 % not to hinder any \myenv{scontents} environment running within
 % \myenv*{enumext} or \myenv*{enumext*}.
-%
 % \end{important}
 % \end{macro}
 %
