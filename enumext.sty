@@ -6,21 +6,21 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%% 
+%%
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%% 
+%%
 %%  https://www.latex-project.org/lppl.txt
-%% 
+%%
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%% 
+%%
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%% 
+%%
 %% This work consists of the files enumext.dtx and enumext.sty.
-%% 
+%%
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
@@ -298,6 +298,7 @@
       }
       {
         \bool_set_true:N \l__enumext_standar_first_bool
+        \bool_set_false:N \l__enumext_starred_first_bool
         \tl_gset:Nn \g__enumext_envir_name_tl { enumext }
         \tl_gset:Ne \g__enumext_start_line_tl
           {
@@ -312,6 +313,7 @@
       }
       {
         \bool_set_true:N \l__enumext_starred_first_bool
+        \bool_set_false:N \l__enumext_standar_first_bool
         \tl_gset:Nn \g__enumext_envir_name_tl { enumext* }
         \tl_gset:Ne \g__enumext_start_line_tl
           {
@@ -874,6 +876,44 @@
 \__enumext_tmp:nnnnnn { keyans* } { viii } { 4.0pt plus 2.0pt minus 1.0pt }
   { 2.0pt plus 1.0pt minus 1.0pt } { 2.0pt plus 1.0pt minus 1.0pt }
   { 2.0pt plus 1.0pt minus 1.0pt }
+%% Add |base-fix| key only on first level off |enumext| and |enumext*|.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        base-fix .bool_set:N = \l__enumext_base_line_fix_bool,
+        base-fix .initial:n  = true,
+        base-fix .value_forbidden:n = true,
+      }
+  }
+\clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
+%% Internal function for |base-fix| key.
+\cs_new_protected:Nn \__enumext_nested_base_line_fix:
+  {
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l__enumext_standar_first_bool }
+      { \bool_if_p:N \l__enumext_base_line_fix_bool }
+      {
+        \mode_leave_vertical:
+        \vspace { -\baselineskip }
+        \keys_set:nn { enumext / level-1 }
+          {
+            topsep = 0pt, above = 0pt, above* = 0pt,
+          }
+      }
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l__enumext_starred_first_bool }
+      { \bool_if_p:N \l__enumext_base_line_fix_bool }
+      {
+        \mode_leave_vertical:
+        \vspace { -\baselineskip }
+        \keys_set:nn { enumext / enumext* }
+          {
+            topsep = 0pt, above = 0pt, above* = 0pt,
+          }
+      }
+    \bool_set_false:N \l__enumext_base_line_fix_bool
+  }
 %% Add |itemindent|, |rightmargin|, |listparindent|, |list-offset| and |list-indent| keys.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
@@ -1893,11 +1933,17 @@
           }
       }
       {
-        \bool_lazy_or:nnT
-          { \l__enumext_standar_first_bool } { \l__enumext_starred_first_bool }
+        \bool_if:NT \l__enumext_standar_first_bool
           {
             \__enumext_start_save_ans_msg:
             \__enumext_storing_exec:
+            \__enumext_anskey_env_make:V \l__enumext_store_name_tl
+          }
+        \bool_if:NT \l__enumext_starred_first_bool
+          {
+            \__enumext_start_save_ans_msg:
+            \__enumext_storing_exec:
+            \__enumext_anskey_env_make:V \l__enumext_store_name_tl
           }
       }
   }
@@ -1906,7 +1952,6 @@
     \bool_set_true:N \l__enumext_store_active_bool
     \bool_set_true:N \l__enumext_check_answers_bool
     \tl_gset:NV \g__enumext_store_name_tl \l__enumext_store_name_tl
-    \__enumext_anskey_env_make:V \l__enumext_store_name_tl
     \prop_if_exist:cF { g__enumext_ \l__enumext_store_name_tl _prop }
       {
         \msg_log:nnV { enumext } { store-prop } \l__enumext_store_name_tl
@@ -2101,8 +2146,9 @@
                 \__enumext_check_ans_show:
               }
               { \__enumext_check_ans_log: }
-            \__enumext_undefine_anskey_env:
+
           }
+        \__enumext_undefine_anskey_env:
         \__enumext_reset_global_vars:
       }
   }
@@ -2301,9 +2347,10 @@
           {
             \__enumext_store_addto_seq:n
               {
-                \item \mode_leave_vertical:
-                  \vspace { -\skip_eval:n { \baselineskip + \parsep } }
-                  \begin{enumext*}[before={\setlength{\topsep}{0pt}},]
+                %\item \mode_leave_vertical:
+                %  \vspace { -\skip_eval:n { \baselineskip + \parsep } }
+                %  \begin{enumext*}[before={\setlength{\topsep}{0pt}},]
+                \item \begin{enumext*}[base-fix]
               }
           }
           {
@@ -2597,25 +2644,31 @@
 %% Hooks for |anskey*| environment out off enumext and enumext*.
 \__enumext_before_env:nn { enumext }
   {
-    \bool_lazy_and:nnT
-      { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
-      { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
+    \bool_lazy_all:nT
+      {
+        { \tl_if_empty_p:n { \g__enumext_store_name_tl } } %
+        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
+        { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
+      }
       {
         \cs_if_free:cF { __scontents_anskey*_env_begin: }
           {
-            \msg_error:nnn { enumext } { anskey-env-error } { anskey* }
+            \msg_error:nnn { enumext } { anskey-env-error } { ZZZanskey* }
           }
       }
   }
 \__enumext_before_env:nn { enumext* }
   {
-    \bool_lazy_and:nnT
-      { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
-      { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
+    \bool_lazy_all:nT
+      {
+        { \tl_if_empty_p:n { \g__enumext_store_name_tl } }
+        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
+        { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
+      }
       {
         \cs_if_free:cF { __scontents_anskey*_env_begin: }
           {
-            \msg_error:nnn { enumext } { anskey-env-error } { anskey* }
+            \msg_error:nnn { enumext } { anskey-env-error } { XXXXanskey* }
           }
       }
   }
@@ -2639,6 +2692,8 @@
 \cs_new_protected:Npn \__enumext_anskey_env_make:n #1
   {
     \newenvsc{anskey*}[store-env=#1,print-env=false]
+    \typeout{CREANDOZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZz}
+    \bool_show:N \l__enumext_starred_first_bool
     \__enumext_anskey_env_exec:
   }
 \cs_generate_variant:Nn \__enumext_anskey_env_make:n { V }
@@ -3329,6 +3384,7 @@
           {
             \keys_set:nn { enumext / level-1 } {#1}
             \__enumext_parse_series:n {#1}
+            \__enumext_nested_base_line_fix:
           }
           {
             \exp_args:Ne \keys_set:nn
@@ -4001,6 +4057,7 @@
         \keys_set:nn { enumext / enumext* } {#1}
         \__enumext_parse_series:n {#1}
         \__enumext_store_active_keys_vii:n {#1}
+        \__enumext_nested_base_line_fix:
       }
   }
 \cs_new_protected:Nn \__enumext_before_list_vii:
@@ -4886,6 +4943,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%% 
+%%
 %%
 %% End of file `enumext.sty'.

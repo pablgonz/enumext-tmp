@@ -581,7 +581,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     labelwidth,labelsep,labelindent,label,ref,topsep,parsep,includegraphics, itemize, description, %
                     multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, if@minipage, parbox, ignorespace %
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, %
-                    labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip,%
+                    labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
                     textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, if@hyper@item,%
                     triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean},%
 % Other words 3
@@ -5733,6 +5733,72 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsection{Setting \texttt{base-fix} key}\label{key:base-fix}
+%
+% When nesting starting right after |\item| (without material between them) there
+% is a problem with the alignment of the baseline between the two environments.
+% One way to get around this problem is to place |\mode_leave_vertical:|
+% and then apply |\vspace{-\baselineskip}| and set  |topsep=|\mydim{0pt} for
+% the \emph{\enquote{first level}} of the nested \myenv*{enumext} or
+% \myenv*{enumext*} environments.
+%
+% \begin{macro}[int]{base-fix, \@@_nested_base_line_fix:}
+%     We define the key \mykey{base-fix} only for the \emph{\enquote{first level}}
+%     of \myenv*{enumext} and \myenv*{enumext*}.
+% \iffalse
+%% Add |base-fix| key only on first level off |enumext| and |enumext*|.
+% \fi
+%    \begin{macrocode}
+\cs_set_protected:Npn \@@_tmp:n #1
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        base-fix .bool_set:N = \l_@@_base_line_fix_bool,
+        base-fix .initial:n  = true,
+        base-fix .value_forbidden:n = true,
+      }
+  }
+\clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
+%    \end{macrocode}
+%   The function \cs{@@_nested_base_line_fix:} will be in charge of
+%   applying the baseline correction and adjusting the \mymeta{keys}.
+%   This function is passed to the function \cs{@@_parse_keys:n}
+%   in the \myenv*{enumext} environment definition (\S\ref{env:enumext})
+%   and to the function \cs{@@_parse_keys_vii:n} in the \myenv*{enumext*}
+%   environment definition (\S\ref{env:starred})
+% \iffalse
+%% Internal function for |base-fix| key.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_nested_base_line_fix:
+  {
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l_@@_standar_first_bool }
+      { \bool_if_p:N \l_@@_base_line_fix_bool }
+      {
+        \mode_leave_vertical:
+        \vspace { -\baselineskip }
+        \keys_set:nn { enumext / level-1 }
+          {
+            topsep = 0pt, above = 0pt, above* = 0pt,
+          }
+      }
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l_@@_starred_first_bool }
+      { \bool_if_p:N \l_@@_base_line_fix_bool }
+      {
+        \mode_leave_vertical:
+        \vspace { -\baselineskip }
+        \keys_set:nn { enumext / enumext* }
+          {
+            topsep = 0pt, above = 0pt, above* = 0pt,
+          }
+      }
+    \bool_set_false:N \l_@@_base_line_fix_bool
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsection{Setting keys for horizontal spaces}\label{key:list-indent}
 %
 % \begin{macro}[int]{itemindent, rightmargin, listparindent, list-offset, list-indent}
@@ -7543,7 +7609,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Setting \texttt{save-ans} key}\label{key:save-ans}
 %
-% \begin{macro}[int]{save-ans }
+% \begin{macro}[int]{save-ans}
 %     We define the keys \mykey{save-ans} only for the \emph{\enquote{first level}}
 %     of \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
@@ -7989,7 +8055,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Executing \texttt{anskey*} environment, \texttt{check-ans} key writing \texttt{.log}}\label{fun:exec-after-env}
+% \subsection{Executing \texttt{anskey*}, \texttt{check-ans} and write \texttt{.log}}\label{fun:exec-after-env}
 %
 % \begin{macro}{\@@_execute_after_env:}
 %   The \cs{@@_execute_after_env:} function will first return the
@@ -8173,6 +8239,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{enumext} and \myenv*{enumext*} environments will override the
 %    values ​​of the \cs{l_@@_store_save_key_X_tl} variable set by the
 %    functions \cs{@@_store_active_keys:n} and \cs{@@_store_active_keys_vii:n}.
+%
+% \smallskip
+%
 %    Define the key \mykey{save-key} for all levels of \myenv*{enumext} and \myenv*{enumext*} environments.
 % \iffalse
 %% Add |save-key| key.
@@ -8399,9 +8468,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \@@_store_addto_seq:n
               {
-                \item \mode_leave_vertical:
-                  \vspace { -\skip_eval:n { \baselineskip + \parsep } }
-                  \begin{enumext*}[before={\setlength{\topsep}{0pt}},]
+                %\item \mode_leave_vertical:
+                %  \vspace { -\skip_eval:n { \baselineskip + \parsep } }
+                %  \begin{enumext*}[before={\setlength{\topsep}{0pt}},]
+                \item \begin{enumext*}[base-fix]
               }
           }
           {
@@ -10265,6 +10335,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \keys_set:nn { enumext / level-1 } {#1}
             \@@_parse_series:n {#1}
+            \@@_nested_base_line_fix:
           }
           {
             \exp_args:Ne \keys_set:nn
@@ -11512,6 +11583,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \keys_set:nn { enumext / enumext* } {#1}
         \@@_parse_series:n {#1}
         \@@_store_active_keys_vii:n {#1}
+        \@@_nested_base_line_fix:
       }
   }
 %    \end{macrocode}
