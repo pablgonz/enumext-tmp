@@ -15,31 +15,6 @@
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-
-\begin{enumext*}[save-ans=simplemc,columns=1,nosep,save-ref=true]
-\item \begin{enumext}[columns=1,noitemsep]
-    \item value
-    \item correct
-
-    \begin{anskey*}
-     Hola
-     \end{anskey*}
-
-    \item value
-    \item value
-  \end{enumext}
-\end{enumext*}
-
-\vspace*{1cm}
-
-\printkeyans{simplemc}
-
-\stop
-
-
-
-
-
 \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
 \begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
 \item First type of questions

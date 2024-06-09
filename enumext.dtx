@@ -4308,7 +4308,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The variable \cs{l_@@_store_anskey_arg_tl} save the
 %    \emph{argument} of \ics*{anskey} (\S\ref{cmd:anskey}) and the variables
 %    \cs{l_@@_store_anskey_env_tl}, \cs{l_@@_store_anskey_opt_tl} save the
-%    \mymeta{body} and \mymeta{keys} of the environment \myenv*{anskey*} (\S\ref{env:anskey*}).
+%    \mymeta{body} and \mymeta{keys} of the environment \myenv*{anskey*} (\S\ref{env:anskey}).
 %
 %    \smallskip
 %
@@ -4662,12 +4662,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The function \cs{@@_is_on_first_level:} will set the variables
-%   \cs{l_@@_standar_first_bool} and \cs{l_@@_starred_first_bool}
-%   to \emph{\enquote{true}} only if the environment is not nested and we
-%   are in the \emph{\enquote{first level}} of it . We will also save the
-%   start line number of each environment in the variable \cs{g_@@_start_line_tl}
-%   and the name of each environment in the variable \cs{g_@@_envir_name_tl}
-%   to use in messages related to the \mykey{check-ans} key and |.log| file.
+%   \cs{l_@@_standar_first_bool} (\S\ref{key:save-ans}),
+%   \cs{l_@@_starred_first_bool} (\S\ref{key:save-ans}) and
+%   \cs{l_@@_anskey_env_bool} (\S\ref{env:anskey}) to \emph{\enquote{true}}
+%   only if the environment is not nested and we are in the \emph{\enquote{first level}}
+%   of it . We will also save the \emph{start line number} of each environment
+%   in the variable \cs{g_@@_start_line_tl} and the \emph{name} of each
+%   environment in the variable \cs{g_@@_envir_name_tl} to use in messages
+%   related to the \mykey{check-ans} key and |.log| file.
 % \iffalse
 %% Function to check/set first level vars for |enumext| and |enumext*|.
 % \fi
@@ -7701,7 +7703,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mykey{check-ans} and \mykey{no-store} keys, copy \mymarg{store
 %   name} into the global variable \cs{g_@@_store_name_tl} and execute the
 %   function \cs{@@_anskey_env_make:V} creating the environment
-%   \myenv*{anskey*} (\S\ref{env:anskey*}).
+%   \myenv*{anskey*} (\S\ref{env:anskey}).
 %   The \mymeta{prop list} \myvarenv{g__@@_series_\mymeta[cf=gray]{store
 %   name}_prop} and the \mymeta{sequence}
 %   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_seq} will be
@@ -8070,7 +8072,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mykey{check-ans} is active it will execute the function
 %   \cs{@@_check_ans_show:} and show the result in the terminal, otherwise
 %   it will execute the function \cs{@@_check_ans_log:} and write the
-%   results in the |.log| file, undefine the environment \myenv*{anskey*} (\S\ref{env:anskey*})
+%   results in the |.log| file, undefine the environment \myenv*{anskey*} (\S\ref{env:anskey})
 %   through the function \cs{@@_undefine_anskey_env:} and finally we execute the function
 %   \cs{@@_reset_global_vars:} returning the used variables to their
 %   original state.
@@ -8942,7 +8944,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{The environment \env{anskey*}}\label{env:anskey*}
+% \subsection{The environment \env{anskey*}}\label{env:anskey}
 %
 % Managing \emph{verbatim content} in an environment is quite complicated, I
 % learned that when creating the \mypkg{scontents} package, so to be able
@@ -9038,8 +9040,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{anskey*, \@@_anskey_env_make:n, \@@_anskey_env_make:V,
-%                   \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:
-%                    \@@_rescan_anskey_env:n}
+%              \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:
+%              \@@_rescan_anskey_env:n,}
 %    The function \cs{@@_anskey_env_make:n} creates the environment
 %    \myenv*{anskey*} (\emph{custom version} of \myenv{scontents}
 %    environment) by setting the initial keys |store-env=|\mymarg{store name}
@@ -9047,7 +9049,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %    To maintain the \emph{scope} of the environment and that it is only active
 %    when the key \mykey{save-ans} is active we will pass this function to
-%    the function \cs{@@_storing_exec:} (\S\ref{key:save-ans}).
+%    the function \cs{@@_storing_exec:} (\S\ref{key:save-ans}) and we
+%    will execute it only if the variable \cs{l_@@_anskey_env_bool} is true,
+%    with this we prevent it from being executed again when the environment
+%    is nested and the key \mykey{save-ans} is active, which returns an
+%    error for part of the package \mypkg{scontents}.
 %
 % \iffalse
 %% Function for define |anskey*| environment using scontents.
