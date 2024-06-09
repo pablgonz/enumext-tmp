@@ -4016,7 +4016,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-06-07}
+  {2024-06-09}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4069,7 +4069,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{\l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_first_bool,
 %                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_first_bool,
-%                       \l_@@_keyans_env_bool,\g_@@_start_line_tl, \g_@@_envir_name_tl }
+%                       \l_@@_anskey_env_bool, \l_@@_keyans_env_bool,\g_@@_start_line_tl,
+%                       \g_@@_envir_name_tl, }
 %   Internal variables used by functions \cs{@@_is_not_nested:},
 %   \cs{@@_is_on_first_level:} and \cs{@@_keyans_start_line:} (\S\ref{fun:utilities}).
 %
@@ -4087,6 +4088,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \l_@@_standar_bool
 \bool_new:N \g_@@_standar_bool
 \bool_new:N \l_@@_standar_first_bool
+\bool_new:N \l_@@_anskey_env_bool
 \bool_new:N \l_@@_keyans_env_bool
 \tl_new:N   \g_@@_start_line_tl
 \tl_new:N   \g_@@_envir_name_tl
@@ -4680,6 +4682,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       {
         \bool_set_true:N \l_@@_standar_first_bool
+        \bool_set_true:N \l_@@_anskey_env_bool
         \tl_gset:Nn \g_@@_envir_name_tl { enumext }
         \tl_gset:Ne \g_@@_start_line_tl
           {
@@ -4694,6 +4697,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       {
         \bool_set_true:N \l_@@_starred_first_bool
+        \bool_set_true:N \l_@@_anskey_env_bool
         \tl_gset:Nn \g_@@_envir_name_tl { enumext* }
         \tl_gset:Ne \g_@@_start_line_tl
           {
@@ -9051,8 +9055,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_anskey_env_make:n #1
   {
-    \newenvsc{anskey*}[store-env=#1,print-env=false]
-    \@@_anskey_env_exec:
+    \bool_if:NT \l_@@_anskey_env_bool
+      {
+        \newenvsc{anskey*}[store-env=#1,print-env=false]
+        \@@_anskey_env_exec:
+      }
   }
 \cs_generate_variant:Nn \@@_anskey_env_make:n { V }
 %    \end{macrocode}
