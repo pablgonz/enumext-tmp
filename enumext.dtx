@@ -8474,18 +8474,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \@@_store_addto_seq:n
               {
-                %\item \mode_leave_vertical:
-                %  \vspace { -\skip_eval:n { \baselineskip + \parsep } }
-                %  \begin{enumext*}[before={\setlength{\topsep}{0pt}},]
                 \item \begin{enumext*}[base-fix]
               }
           }
           {
             \tl_put_left:Nn \l_@@_store_save_key_vii_tl
               {
-                \item \mode_leave_vertical:
-                  \vspace { -\skip_eval:n { \baselineskip + \parsep } }
-                  \begin{enumext*}[before={\setlength{\topsep}{0pt}},
+                \item \begin{enumext*}[base-fix,
               }
             \tl_put_right:Nn \l_@@_store_save_key_vii_tl
               {
