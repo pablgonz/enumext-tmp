@@ -4846,7 +4846,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_start_list:nn, \@@_stop_list:, \@@_item_std:w,}
 %    The functions \cs{@@_start_list:nn}, \cs{@@_stop_list:} and
-%    \cs{@@_item_std:w} correspond to copies of \ics{list}, \ics{endlist}
+%    \cs{@@_item_std:w} correspond to copies of |\list|, |\endlist|
 %    and \ics{item} from plain definition of \myenv{list} environment.
 % \iffalse
 %% Copy list tools.
@@ -4884,7 +4884,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_minipage:w, \@@_endminipage:}
 %   The functions \cs{@@_minipage:w}, \cs{@@_endminipage:} and
-%   correspond to copies of \ics{minipage}, \ics{endminipage}
+%   correspond to copies of |\minipage|, |\endminipage|
 %   from plain definition of \myenv{minipage} environment.
 % \iffalse
 %% Copy minipage tools.
@@ -9597,7 +9597,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Define and set \mykey{item-sym*} and \mykey{item-pos*} keys
 %    for \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
-%% Add |item-sym*| and |item*-sep| keys.
+%% Add |item-sym*| and |item-sep*| keys.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:nn #1 #2
@@ -9743,7 +9743,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   set by the key \mykey{item-sym*} or passed as optional argument in
 %   the global variable \cs{g_@@_item_symbol_tl}, followed by setting the
 %   variable \myvarenv{l__@@_item_symbol_sep_X_dim} set by the key
-%   \mykey{item*-sep} or by the second optional argument.
+%   \mykey{item-pos*} or by the second optional argument.
 %
 %   \smallskip
 %
