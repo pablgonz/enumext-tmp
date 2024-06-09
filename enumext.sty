@@ -883,7 +883,7 @@
     \keys_define:nn { enumext / #1 }
       {
         base-fix .bool_set:N = \l__enumext_base_line_fix_bool,
-        base-fix .initial:n  = true,
+        base-fix .initial:n  = false,
         base-fix .value_forbidden:n = true,
       }
   }
@@ -3027,7 +3027,7 @@
           \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
       }
   }
-%% Add |item-sym*| and |item*-sep| keys.
+%% Add |item-sym*| and |item-sep*| keys.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
@@ -4001,6 +4001,7 @@
   {
     \__enumext_safe_exec_vii:
     \__enumext_parse_keys_vii:n {#1}
+    \__enumext_starred_columns_set_vii:
     \__enumext_before_list_vii:
     \__enumext_start_store_level_vii:
     \__enumext_start_list:nn { }
@@ -4008,7 +4009,6 @@
         \__enumext_list_arg_two_vii:
         \__enumext_before_keys_exec_vii:
       }
-      \__enumext_starred_columns_set_vii:
       \item[] \scan_stop:
       \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \noindent
       \cs_set_eq:NN \item \__enumext_start_item_tmp_vii:
@@ -4256,13 +4256,13 @@
   {
     \__enumext_safe_exec_viii:
     \__enumext_parse_keys_viii:n {#1}
+    \__enumext_starred_columns_set_viii:
     \__enumext_before_list_viii:
     \__enumext_start_list:nn { }
       {
         \__enumext_list_arg_two_viii:
         \__enumext_before_keys_exec_viii:
       }
-      \__enumext_starred_columns_set_viii:
       \item[] \scan_stop:
       \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \noindent
       \cs_set_eq:NN \item \__enumext_start_item_tmp_viii:

@@ -5760,7 +5760,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \keys_define:nn { enumext / #1 }
       {
         base-fix .bool_set:N = \l_@@_base_line_fix_bool,
-        base-fix .initial:n  = true,
+        base-fix .initial:n  = false,
         base-fix .value_forbidden:n = true,
       }
   }
@@ -11529,6 +11529,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \@@_safe_exec_vii:
     \@@_parse_keys_vii:n {#1}
+    \@@_starred_columns_set_vii:
     \@@_before_list_vii:
     \@@_start_store_level_vii:
     \@@_start_list:nn { }
@@ -11536,7 +11537,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_list_arg_two_vii:
         \@@_before_keys_exec_vii:
       }
-      \@@_starred_columns_set_vii:
       \item[] \scan_stop:
       \cs_set_eq:NN \@@_stop_item_tmp_vii: \noindent
       \cs_set_eq:NN \item \@@_start_item_tmp_vii:
@@ -11994,13 +11994,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \@@_safe_exec_viii:
     \@@_parse_keys_viii:n {#1}
+    \@@_starred_columns_set_viii:
     \@@_before_list_viii:
     \@@_start_list:nn { }
       {
         \@@_list_arg_two_viii:
         \@@_before_keys_exec_viii:
       }
-      \@@_starred_columns_set_viii:
       \item[] \scan_stop:
       \cs_set_eq:NN \@@_stop_item_tmp_viii: \noindent
       \cs_set_eq:NN \item \@@_start_item_tmp_viii:
