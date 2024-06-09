@@ -15,6 +15,46 @@
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
+
+
+\begin{enumext*}[topsep=20pt,parsep=1cm, partopsep=4cm, itemsep=2cm,save-ans=JJJ]
+\item Algo
+\item
+%%%\leavevmode
+
+
+  \leavevmode
+
+  \vspace { -\dimeval{ \baselineskip  } }%+ \parsep
+  \begin{enumext}[columns=2, nosep]
+    \item value
+    \item* correct
+    \item value
+    \item value
+  \end{enumext}
+
+
+\item Second type of questions
+  \begin{enumext}[label=\Roman*.,nosep]
+    \item $2\alpha+2\delta=90^{\circ}$
+    \item $\alpha=\delta$
+    \item $\angle EDF=45^{\circ}$
+  \end{enumext}
+\end{enumext*}
+
+\stop
+
+
+
+
+
+
+
+
+
+
+
+
 \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
 \begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
 \item First type of questions

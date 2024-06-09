@@ -8382,8 +8382,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    starting right after \ics{item} (without material between them) there
 %    is a problem with the alignment of the labels with the baseline
 %    between the two environments. One way to get around this problem is to
-%    place |\mode_leave_vertical:| and then apply |\vspace| taking into account
-%    |\baselineskip|, the value of |\parsep| of the current level of
+%    place |\mode_leave_vertical:| and then apply |\vspace| taking
+%    into account |\baselineskip|, the value of |\parsep| of the current level of
 %    \myenv*{enumext} and the value of |\topsep| of the \myenv*{enumext*}
 %   environment.
 %
@@ -8916,7 +8916,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \@@_before_env:nn { enumext }
   {
-    \int_compare:nNnT { \l_@@_level_int } = { 0 }
+    \bool_lazy_and:nnT
+      { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
+      { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
       {
         \cs_if_free:cF { __scontents_anskey*_env_begin: }
           {
@@ -8926,7 +8928,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \@@_before_env:nn { enumext* }
   {
-    \int_compare:nNnT { \l_@@_level_int } = { 0 }
+    \bool_lazy_and:nnT
+      { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
+      { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
       {
         \cs_if_free:cF { __scontents_anskey*_env_begin: }
           {
@@ -11844,7 +11848,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         + \l_@@_labelsep_vii_dim
       }
     \int_set:Nn \hbadness { 10000 }
-    \box_use:N \l_@@_item_text_vii_box
+    \box_use_drop:N \l_@@_item_text_vii_box
     \bool_if:NF \l_@@_footnotes_key_bool
       {
         \@@_print_footnote:
@@ -12295,7 +12299,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         + \l_@@_labelsep_viii_dim
       }
     \int_set:Nn \hbadness { 10000 }
-    \box_use:N \l_@@_item_text_viii_box
+    \box_use_drop:N \l_@@_item_text_viii_box
     \bool_if:NF \l_@@_footnotes_key_bool
       {
         \@@_print_footnote:
