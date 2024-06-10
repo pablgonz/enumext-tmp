@@ -1816,6 +1816,18 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
+% \keyexamp*{base-fix}{value forbidden}{not used}
+% This is a \emph{\enquote{meta-key}} that does not receive an
+% argument available only for the \emph{first level} of environment
+% \myenv*{enumext} and environment \myenv*{enumext*}. Fix the \emph{baseline}
+% when an environment \myenv*{enumext} is nested  in \myenv*{enumext*} or
+% vice versa and there is no material between the |\item| and the start
+% of the environment for example |\item \begin{enumext*}| within the
+% environment \myenv*{enumext}. Internally sets the keys \mykey{topsep},
+% \mykey{above} and \mykey{above}|*| at \mydim{0pt}.
+%
+% \smallskip
+%
 % \begin{important}*
 % The following \mymeta{keys} should be used with \emph{\enquote{caution}}, they
 % are intended to be used at the \enquote{top} and \enquote{bottom} of
