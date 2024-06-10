@@ -4586,12 +4586,14 @@
                   {
                     \tl_use:N \l__enumext_print_keyans_starred_tl
                     \begin{enumext*}[#2]
+                      \keys_set:nn { enumext / level-1 }{ base-fix }
                       \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }
                     \end{enumext*}
                   }
               }
               {
                 \begin{enumext}[#2]
+                  \keys_set:nn { enumext / enumext* }{ base-fix }
                   \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }
                 \end{enumext}
               }

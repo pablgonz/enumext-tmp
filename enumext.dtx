@@ -2095,7 +2095,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsubsection{The command \cs[no-index]{miniright}}
 %
 % \vspace*{-1.75\baselineskip}
-% \begin{function}{\miniright,\miniright*}
+% \begin{function}{\miniright}
 %
 % The \ics*{miniright} command close the \myenv{minipage}
 % environment on the \emph{\enquote{left side}} and opens the
@@ -12609,6 +12609,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                   {
                     \tl_use:N \l_@@_print_keyans_starred_tl
                     \begin{enumext*}[#2]
+                      \keys_set:nn { enumext / level-1 }{ base-fix }
                       \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
                     \end{enumext*}
                   }
@@ -12619,6 +12620,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
               {
                 \begin{enumext}[#2]
+                  \keys_set:nn { enumext / enumext* }{ base-fix }
                   \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
                 \end{enumext}
               }
