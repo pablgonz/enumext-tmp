@@ -4429,7 +4429,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}{\l_@@_check_answers_bool,\g_@@_check_ans_key_bool,
 %                  \l_@@_check_start_line_env_tl, \g_@@_check_starred_cmd_int,
-%                  \g_@@_item_anskey_int, \g_@@_item_number_int,}
+%                  \g_@@_item_anskey_int, \g_@@_item_number_int,
+%                  \g_@@_item_number_bool, \g_@@_item_answer_diff_int}
 %    Internal variables used by \emph{\enquote{check answer}} mechanism
 %    (\S\ref{int:check-answer}) used by the \mykey{check-ans} and
 %    \mykey{no-store} keys and check for starred commands \ics*{item*}
@@ -4445,6 +4446,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N  \g_@@_check_starred_cmd_int
 \int_new:N  \g_@@_item_anskey_int
 \int_new:N  \g_@@_item_number_int
+\bool_new:N \l_@@_item_number_bool
 \int_new:N  \g_@@_item_answer_diff_int
 %    \end{macrocode}
 % \end{variable}
@@ -7260,14 +7262,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   The function \cs{@@_filter_series_key:n} will be responsible for
 %   filtering the \mymeta{keys} that are passed \emph{\enquote{without value}} by
-%   excluding the \mykey{resume} and \mykey{resume*} keys.
+%   excluding the \mykey{resume}, \mykey{resume*} and \mykey{base-fix} keys.
 %    \begin{macrocode}
 \cs_new:Npn \@@_filter_series_key:n #1
   {
     \str_case:nnF {#1}
       {
-        { resume } {}
-        { resume* } {}
+        { resume   } {}
+        { resume*  } {}
+        { base-fix } {}
       }
       { , { \exp_not:n {#1} } }
   }
@@ -7283,7 +7286,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         { series } {}
         { resume } {}
-        { start } {}
+        { start  } {}
         { save-ans } {}
         { save-key } {}
       }
@@ -7888,7 +7891,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \cs{g_@@_item_number_int} which keeps track of the executions of
 %   |\item| and |\item*| for each level of nesting of the environment
 %   \myenv*{enumext}, taking into account whether it is nested within
-%   \myenv*{enumext*} or the opposite.
+%   \myenv*{enumext*} or the opposite and set \cs{l_@@_item_number_bool}
+%   to \emph{\enquote{false}} .
 % \iffalse
 %% Decrementing \g_@@_item_number_int for nested level.
 % \fi
@@ -7905,16 +7909,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                  }
                  {
                    \int_gdecr:N \g_@@_item_number_int
+                   \bool_set_false:N \l_@@_item_number_bool
                  }
              }
         { 2 }{
                \int_gdecr:N \g_@@_item_number_int
+               \bool_set_false:N \l_@@_item_number_bool
              }
         { 3 }{
                \int_gdecr:N \g_@@_item_number_int
+               \bool_set_false:N \l_@@_item_number_bool
              }
         { 4 }{
                \int_gdecr:N \g_@@_item_number_int
+               \bool_set_false:N \l_@@_item_number_bool
              }
       }
 %    \end{macrocode}
@@ -7932,6 +7940,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                  }
                  {
                    \int_gdecr:N \g_@@_item_number_int
+                   \bool_set_false:N \l_@@_item_number_bool
                  }
              }
       }
@@ -8355,13 +8364,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   The function \cs{@@_filter_save_key_key:n} will be responsible for
 %   filtering the \mymeta{keys} that are passed \emph{\enquote{without value}} by
-%   excluding the \mykey{resume}, \mykey{resume*} and \mykey{no-store} keys.
+%   excluding the \mykey{resume}, \mykey{resume*}, \mykey{no-store} and \mykey{base-fix} keys.
 %    \begin{macrocode}
 \cs_new:Npn \@@_filter_save_key_key:n #1
   {
     \str_case:nnF {#1}
       {
-        { resume } {} { resume* } {} { no-store } {}
+        { resume } {} { resume* } {} { no-store } {} { base-fix } {}
       }
       { , { \exp_not:n {#1} } }
   }
@@ -8377,11 +8386,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \str_case:nnF {#1}
       {
-        { series    } {} { resume   } {} { save-ans } {}
-        { save-ref  } {} { save-key } {} { check-ans } {} { show-ans } {}
-        { show-pos  } {} { wrap-ans } {} { mark-ans  } {} { wrap-opt } {}
-        { save-sep  } {} { mark-ref } {} { mini-env  } {} { mini-sep } { }
-        { mini-right } {} { mini-right* } {}
+        { series   } {} { resume    } {} { save-ans } {} { save-ref   } {}
+        { save-key } {} { check-ans } {} { show-ans } {} { show-pos   } {}
+        { wrap-ans } {} { mark-ans  } {} { wrap-opt } {} { save-sep   } {}
+        { mark-ref } {} { mini-env  } {} { mini-sep } {} { mini-right } {}
+        { mini-right* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
@@ -8630,12 +8639,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \group_begin:
       \bool_if:NT \l_@@_check_answers_bool
         {
-          \int_gincr:N \g_@@_item_anskey_int
           \@@_anskey_safe_inner:n {#2}
           \tl_if_novalue:nF {#1}
             {
               \keys_set:nn { enumext / anskey } {#1}
             }
+          \int_gincr:N \g_@@_item_anskey_int
           \@@_store_anskey_code:n {#2}
         }
     \group_end:
@@ -8691,6 +8700,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nn { enumext } { anskey-nested }
       }
+    \bool_if:NF \l_@@_item_number_bool
+      {
+        \msg_error:nn { enumext } { anskey-unnumber-item }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8703,7 +8716,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \cs{@@_store_internal_ref:} for the internal \emph{\enquote{label
 %   and ref}} system. Followed by this if the \mykey{show-ans} or
 %   \mykey{show-pos} keys are active we will show the
-%   \emph{\enquote{wrapped}} \mymeta{argument} passed to the command.
+%   \emph{\enquote{wrapped}} \mymeta{argument}.
 % \iffalse
 %% Internal function of |\anskey| for store content.
 % \fi
@@ -9744,6 +9757,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \bool_if:NT \l_@@_check_answers_bool
           {
             \int_gincr:N \g_@@_item_number_int
+            \bool_set_true:N \l_@@_item_number_bool
           }
         \bool_set_true:c { l_@@_wrap_label_ \@@_level: _bool }
         \@@_item_std:w \tl_use:c { l_@@_fake_item_indent_ \@@_level: _tl }
@@ -9818,6 +9832,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_if:NT \l_@@_check_answers_bool
       {
         \int_gincr:N \g_@@_item_number_int
+        \bool_set_true:N \l_@@_item_number_bool
       }
     \bool_set_true:c { l_@@_wrap_label_ \@@_level: _bool }
     \@@_item_std:w \tl_use:c { l_@@_fake_item_indent_ \@@_level: _tl }
@@ -11888,6 +11903,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \bool_if:NT \l_@@_check_answers_bool
               {
                 \int_gincr:N \g_@@_item_number_int
+                \bool_set_true:N \l_@@_item_number_bool
               }
           }
       }
@@ -12996,6 +13012,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % Messages used by \ics*{anskey} and \ics*{anspic} commands.
 %    \begin{macrocode}
+\msg_new:nnn { enumext } { anskey-unnumber-item }
+  {
+    Can't ~ store ~ with ~ a ~ unnumbered ~ \c_backslash_str item ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { anskey-already-stored }
+  {
+    Content ~ has ~ already ~ been ~ stored ~ for ~ this ~ \c_backslash_str item ~ \msg_line_context:.
+  }
 \msg_new:nnn { enumext } { anskey-empty-arg }
   {
     Can't ~ store ~ empty ~ content ~ ~ \msg_line_context:.

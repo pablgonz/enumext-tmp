@@ -179,6 +179,7 @@
 \int_new:N  \g__enumext_check_starred_cmd_int
 \int_new:N  \g__enumext_item_anskey_int
 \int_new:N  \g__enumext_item_number_int
+\bool_new:N \l__enumext_item_number_bool
 \int_new:N  \g__enumext_item_answer_diff_int
 %% Variables used for hyperref detection.
 \bool_new:N \l__enumext_hyperref_bool
@@ -1673,8 +1674,9 @@
   {
     \str_case:nnF {#1}
       {
-        { resume } {}
-        { resume* } {}
+        { resume   } {}
+        { resume*  } {}
+        { base-fix } {}
       }
       { , { \exp_not:n {#1} } }
   }
@@ -1684,7 +1686,7 @@
       {
         { series } {}
         { resume } {}
-        { start } {}
+        { start  } {}
         { save-ans } {}
         { save-key } {}
       }
@@ -2008,16 +2010,20 @@
                  }
                  {
                    \int_gdecr:N \g__enumext_item_number_int
+                   \bool_set_false:N \l__enumext_item_number_bool
                  }
              }
         { 2 }{
                \int_gdecr:N \g__enumext_item_number_int
+               \bool_set_false:N \l__enumext_item_number_bool
              }
         { 3 }{
                \int_gdecr:N \g__enumext_item_number_int
+               \bool_set_false:N \l__enumext_item_number_bool
              }
         { 4 }{
                \int_gdecr:N \g__enumext_item_number_int
+               \bool_set_false:N \l__enumext_item_number_bool
              }
       }
     \int_case:nn { \l__enumext_level_h_int }
@@ -2030,6 +2036,7 @@
                  }
                  {
                    \int_gdecr:N \g__enumext_item_number_int
+                   \bool_set_false:N \l__enumext_item_number_bool
                  }
              }
       }
@@ -2269,7 +2276,7 @@
   {
     \str_case:nnF {#1}
       {
-        { resume } {} { resume* } {} { no-store } {}
+        { resume } {} { resume* } {} { no-store } {} { base-fix } {}
       }
       { , { \exp_not:n {#1} } }
   }
@@ -2277,11 +2284,11 @@
   {
     \str_case:nnF {#1}
       {
-        { series    } {} { resume   } {} { save-ans } {}
-        { save-ref  } {} { save-key } {} { check-ans } {} { show-ans } {}
-        { show-pos  } {} { wrap-ans } {} { mark-ans  } {} { wrap-opt } {}
-        { save-sep  } {} { mark-ref } {} { mini-env  } {} { mini-sep } { }
-        { mini-right } {} { mini-right* } {}
+        { series   } {} { resume    } {} { save-ans } {} { save-ref   } {}
+        { save-key } {} { check-ans } {} { show-ans } {} { show-pos   } {}
+        { wrap-ans } {} { mark-ans  } {} { wrap-opt } {} { save-sep   } {}
+        { mark-ref } {} { mini-env  } {} { mini-sep } {} { mini-right } {}
+        { mini-right* } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
@@ -2404,12 +2411,12 @@
     \group_begin:
       \bool_if:NT \l__enumext_check_answers_bool
         {
-          \int_gincr:N \g__enumext_item_anskey_int
           \__enumext_anskey_safe_inner:n {#2}
           \tl_if_novalue:nF {#1}
             {
               \keys_set:nn { enumext / anskey } {#1}
             }
+          \int_gincr:N \g__enumext_item_anskey_int
           \__enumext_store_anskey_code:n {#2}
         }
     \group_end:
@@ -2445,6 +2452,10 @@
     \int_compare:nNnT { \l__enumext_anskey_level_int } > { 1 }
       {
         \msg_error:nn { enumext } { anskey-nested }
+      }
+    \bool_if:NF \l__enumext_item_number_bool
+      {
+        \msg_error:nn { enumext } { anskey-unnumber-item }
       }
   }
 %% Internal function of |\anskey| for store content.
@@ -3086,6 +3097,7 @@
         \bool_if:NT \l__enumext_check_answers_bool
           {
             \int_gincr:N \g__enumext_item_number_int
+            \bool_set_true:N \l__enumext_item_number_bool
           }
         \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
         \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
@@ -3117,6 +3129,7 @@
     \bool_if:NT \l__enumext_check_answers_bool
       {
         \int_gincr:N \g__enumext_item_number_int
+        \bool_set_true:N \l__enumext_item_number_bool
       }
     \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
     \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
@@ -4171,6 +4184,7 @@
             \bool_if:NT \l__enumext_check_answers_bool
               {
                 \int_gincr:N \g__enumext_item_number_int
+                \bool_set_true:N \l__enumext_item_number_bool
               }
           }
       }
@@ -4848,6 +4862,14 @@
   {
     Too ~ deep ~ nesting  ~ for ~ 'enumext' ~ \msg_line_context:.~ \\
     The ~ maximum  ~ level  ~ of  ~ nesting  ~ is ~ 4.
+  }
+\msg_new:nnn { enumext } { anskey-unnumber-item }
+  {
+    Can't ~ store ~ with ~ a ~ unnumbered ~ \c_backslash_str item ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { anskey-already-stored }
+  {
+    Content ~ has ~ already ~ been ~ stored ~ for ~ this ~ \c_backslash_str item ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { anskey-empty-arg }
   {
