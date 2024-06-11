@@ -2406,7 +2406,11 @@
         {
           \int_gincr:N \g__enumext_item_anskey_int
           \__enumext_anskey_safe_inner:n {#2}
-          \__enumext_store_anskey_code:nn {#1} {#2}
+          \tl_if_novalue:nF {#1}
+            {
+              \keys_set:nn { enumext / anskey } {#1}
+            }
+          \__enumext_store_anskey_code:n {#2}
         }
     \group_end:
   }
@@ -2444,18 +2448,14 @@
       }
   }
 %% Internal function of |\anskey| for store content.
-\cs_new_protected:Npn \__enumext_store_anskey_code:nn #1 #2
+\cs_new_protected:Npn \__enumext_store_anskey_code:n #1
   {
-    \__enumext_store_addto_prop:n {#2}
+    \__enumext_store_addto_prop:n {#1}
     \bool_if:NT \l__enumext_store_ref_key_bool
       {
         \__enumext_store_internal_ref:
       }
-    \__enumext_anskey_show_wrap_left:n { #2 }
-    \tl_if_novalue:nF {#1}
-      {
-        \keys_set:nn { enumext / anskey } {#1}
-      }
+    \__enumext_anskey_show_wrap_left:n { #1 }
     \tl_clear:N \l__enumext_store_anskey_arg_tl
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_store_columns_break_bool }
@@ -2493,10 +2493,10 @@
                 [ \exp_not:V \l__enumext_store_item_symbol_sep_dim ]
               }
           }
-        \tl_put_right:Nn \l__enumext_store_anskey_arg_tl {#2}
+        \tl_put_right:Nn \l__enumext_store_anskey_arg_tl {#1}
       }
       {
-        \tl_put_right:Nn \l__enumext_store_anskey_arg_tl {#2}
+        \tl_put_right:Nn \l__enumext_store_anskey_arg_tl {#1}
       }
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_store_ref_key_bool }
@@ -2588,7 +2588,7 @@
       }
     \l__enumext_write_aux_file_tl
   }
-%% Internal |wrap-ans| implementation for |\anskey|.
+%% Internal |wrap-ans| implementation for |\anskey| and |anskey*|.
 \cs_new_protected:Npn \__enumext_anskey_show_wrap_arg:n #1
   {
     \par
@@ -2601,7 +2601,7 @@
       { l__enumext_labelsep_ \__enumext_level: _dim }
     \__enumext_anskey_wrapper:n { #1 }
   }
-%% Internal |show-ans| and |show-pos| implementation for |\anskey|.
+%% Internal |show-ans| and |show-pos| implementation for |\anskey| and |anskey*|.
 \cs_new_protected:Npn \__enumext_anskey_show_wrap_left:n #1
   {
     \bool_if:NT \l__enumext_show_answer_bool
@@ -2811,7 +2811,7 @@
           \tl_if_empty:NTF \l__enumext_store_anskey_opt_tl
             {
               \exp_args:Ne
-                \anskey
+                \__enumext_store_anskey_code:n
                   {
                     \__enumext_rescan_anskey_env:n { \l__enumext_store_anskey_env_tl }
                   }
@@ -2819,7 +2819,7 @@
             {
               \keys_set:nV { enumext / anskey } \l__enumext_store_anskey_opt_tl
               \exp_args:Ne
-                \anskey
+                \__enumext_store_anskey_code:n
                   {
                     \__enumext_rescan_anskey_env:n { \l__enumext_store_anskey_env_tl }
                   }

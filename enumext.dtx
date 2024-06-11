@@ -8616,8 +8616,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   if is true we will increment \cs{g_@@_item_anskey_int} for the internal
 %   \emph{\enquote{check answer}} system and execute the function
 %   \cs{@@_anskey_safe_inner:n} to ensure that the command is not
-%   nested and that the argument is not empty, finally we call the function
-%   \cs{@@_store_anskey_code:nn}.
+%   nested and that the argument is not empty, finally search the
+%   \myoarg{key \textnormal{\textcolor{gray}{=}} val} and call the
+%   function \cs{@@_store_anskey_code:n}.
 % \iffalse
 %% Define the user command |\anskey|.
 %% #1: key-val; #2: argument
@@ -8631,7 +8632,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         {
           \int_gincr:N \g_@@_item_anskey_int
           \@@_anskey_safe_inner:n {#2}
-          \@@_store_anskey_code:nn {#1} {#2}
+          \tl_if_novalue:nF {#1}
+            {
+              \keys_set:nn { enumext / anskey } {#1}
+            }
+          \@@_store_anskey_code:n {#2}
         }
     \group_end:
   }
@@ -8690,8 +8695,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_store_anskey_code:nn}
-%   The internal function \cs{@@_store_anskey_code:nn} first we pass the
+% \begin{macro}{\@@_store_anskey_code:n}
+%   The internal function \cs{@@_store_anskey_code:n} first we pass the
 %   \mymeta{argument} to the \mymeta{prop list}, then checks the
 %   state of the variable \cs{l_@@_store_ref_key_bool} handled by the
 %   \mykey{save-ref} key and will call the function
@@ -8703,14 +8708,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal function of |\anskey| for store content.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_store_anskey_code:nn #1 #2
+\cs_new_protected:Npn \@@_store_anskey_code:n #1
   {
-    \@@_store_addto_prop:n {#2}
+    \@@_store_addto_prop:n {#1}
     \bool_if:NT \l_@@_store_ref_key_bool
       {
         \@@_store_internal_ref:
       }
-    \@@_anskey_show_wrap_left:n { #2 }
+    \@@_anskey_show_wrap_left:n { #1 }
 %    \end{macrocode}
 %   Now we start processing the \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 %   passed to the command to build our |\item| in the variable \cs{l_@@_store_anskey_arg_tl}
@@ -8720,10 +8725,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   the command is running under \myenv*{enumext} (not in \myenv*{enumext*})
 %   we will add \ics{columnbreak} and then |\item|.
 %    \begin{macrocode}
-    \tl_if_novalue:nF {#1}
-      {
-        \keys_set:nn { enumext / anskey } {#1}
-      }
     \tl_clear:N \l_@@_store_anskey_arg_tl
     \bool_lazy_and:nnT
       { \bool_if_p:N \l_@@_store_columns_break_bool }
@@ -8770,10 +8771,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                 [ \exp_not:V \l_@@_store_item_symbol_sep_dim ]
               }
           }
-        \tl_put_right:Nn \l_@@_store_anskey_arg_tl {#2}
+        \tl_put_right:Nn \l_@@_store_anskey_arg_tl {#1}
       }
       {
-        \tl_put_right:Nn \l_@@_store_anskey_arg_tl {#2}
+        \tl_put_right:Nn \l_@@_store_anskey_arg_tl {#1}
       }
 %    \end{macrocode}
 %    Finally we check if the \mykey{save-ref} key are active along with the
@@ -8915,9 +8916,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_anskey_show_wrap_arg:n,}
 %    The function \cs{@@_anskey_show_wrap_arg:n}
 %    \emph{\enquote{wraps}} the \mymeta{argument} passed to \ics*{anskey}
-%    when using the \mykey{wrap-ans} key.
+%    and the \mymeta{body} for \myenv*{anskey*} when using the \mykey{wrap-ans} key.
 % \iffalse
-%% Internal |wrap-ans| implementation for |\anskey|.
+%% Internal |wrap-ans| implementation for |\anskey| and |anskey*|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_anskey_show_wrap_arg:n #1
@@ -8940,10 +8941,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    defined by the \mykey{mark-ans} key or the \emph{\enquote{position}} of the content
 %    stored in the \mymeta{prop list} when using the \mykey{show-pos} key on
 %    the left margin next to the \emph{\enquote{wraps}} \mymeta{argument}
-%    passed to \ics*{anskey} on the right side when using the \mykey{show-ans}
-%    key.
+%    passed to \ics*{anskey} and the \mymeta{body} in \myenv*{anskey*}
+%    on the right side when using the \mykey{show-ans} key.
 % \iffalse
-%% Internal |show-ans| and |show-pos| implementation for |\anskey|.
+%% Internal |show-ans| and |show-pos| implementation for |\anskey| and |anskey*|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_anskey_show_wrap_left:n #1
@@ -9300,7 +9301,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \tl_if_empty:NTF \l_@@_store_anskey_opt_tl
             {
               \exp_args:Ne
-                \anskey
+                \@@_store_anskey_code:n
                   {
                     \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl }
                   }
@@ -9308,7 +9309,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             {
               \keys_set:nV { enumext / anskey } \l_@@_store_anskey_opt_tl
               \exp_args:Ne
-                \anskey
+                \@@_store_anskey_code:n
                   {
                     \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl }
                   }
