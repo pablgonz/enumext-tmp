@@ -3378,13 +3378,15 @@
         \__enumext_store_active_keys:n {#1}
       }
   }
+%% Save level-structure in sequence for |save-ans| key in enumext.
 \cs_new_protected:Nn \__enumext_start_store_level:
   {
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \l__enumext_store_active_bool }
         { \bool_not_p:n { \l__enumext_keyans_env_bool } }
-        { \bool_not_p:n { \g__enumext_starred_bool } }
+        %{ \bool_not_p:n { \g__enumext_starred_bool } }
+        { \bool_if_p:N \g__enumext_standar_bool }
       }
       {
         \int_compare:nNnT { \l__enumext_level_int } > { 1 }
@@ -3397,7 +3399,8 @@
       {
         { \bool_if_p:N \l__enumext_store_active_bool }
         { \bool_not_p:n { \l__enumext_keyans_env_bool } }
-        { \bool_if_p:N \g__enumext_starred_bool }
+        %{ \bool_if_p:N \g__enumext_starred_bool }
+        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 1 } }
       }
       {
         \int_compare:nNnT { \l__enumext_level_int } > { 0 }

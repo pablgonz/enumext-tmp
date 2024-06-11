@@ -10370,10 +10370,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_start_store_level:, \@@_stop_store_level:}
 %    The \cs{@@_start_store_level:} and \cs{@@_stop_store_level:}
 %    functions activate the level saving mechanism for storage in
-%    \mymeta{sequence} of the \ics*{anskey} command.
-%
-%    If \myenv*{enumext} are nested in \myenv*{enumext*} add \myvarenv{__@@_store_level_open:}
-%    to preserve the stored structure.
+%    \mymeta{sequence} for the command \ics*{anskey} and the
+%    environment \myenv*{anskey*}.
+% \iffalse
+%% Save level-structure in sequence for |save-ans| key in enumext.
+% \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level:
   {
@@ -10381,7 +10382,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         { \bool_if_p:N \l_@@_store_active_bool }
         { \bool_not_p:n { \l_@@_keyans_env_bool } }
-        { \bool_not_p:n { \g_@@_starred_bool } }
+        %{ \bool_not_p:n { \g_@@_starred_bool } }
+        { \bool_if_p:N \g_@@_standar_bool }
       }
       {
         \int_compare:nNnT { \l_@@_level_int } > { 1 }
@@ -10390,11 +10392,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \@@_store_level_open:
           }
       }
+%    \end{macrocode}
+%    If \myenv*{enumext} are nested in \myenv*{enumext*} add \myvarenv{__@@_store_level_open:}
+%    to preserve the stored structure.
+%    \begin{macrocode}
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \l_@@_store_active_bool }
         { \bool_not_p:n { \l_@@_keyans_env_bool } }
-        { \bool_if_p:N \g_@@_starred_bool }
+        %{ \bool_if_p:N \g_@@_starred_bool }
+        { \int_compare_p:nNn { \l_@@_level_h_int } = { 1 } }
       }
       {
         \int_compare:nNnT { \l_@@_level_int } > { 0 }
