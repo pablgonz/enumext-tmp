@@ -2333,7 +2333,7 @@
         \__enumext_store_addto_seq:n { \end{enumext} }
       }
   }
-%% Function for memorize level execution of |\anskey| on |enumext*|.
+%% Function for memorize level execution of |\anskey| and |anskey*| on |enumext*|.
 \cs_new_protected:Nn \__enumext_store_level_open_vii:
   {
     \bool_if:NT \l__enumext_check_answers_bool
@@ -2342,13 +2342,13 @@
           {
             \__enumext_store_addto_seq:n
               {
-                \item \begin{enumext*}[base-fix]
+                \item \begin{enumext*}
               }
           }
           {
             \tl_put_left:Nn \l__enumext_store_save_key_vii_tl
               {
-                \item \begin{enumext*}[base-fix,
+                \item \begin{enumext*}[
               }
             \tl_put_right:Nn \l__enumext_store_save_key_vii_tl
               {
@@ -3385,7 +3385,6 @@
       {
         { \bool_if_p:N \l__enumext_store_active_bool }
         { \bool_not_p:n { \l__enumext_keyans_env_bool } }
-        %{ \bool_not_p:n { \g__enumext_starred_bool } }
         { \bool_if_p:N \g__enumext_standar_bool }
       }
       {
@@ -3399,7 +3398,6 @@
       {
         { \bool_if_p:N \l__enumext_store_active_bool }
         { \bool_not_p:n { \l__enumext_keyans_env_bool } }
-        %{ \bool_if_p:N \g__enumext_starred_bool }
         { \int_compare_p:nNn { \l__enumext_level_h_int } = { 1 } }
       }
       {

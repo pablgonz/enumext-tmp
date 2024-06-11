@@ -8465,17 +8465,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_store_level_open_vii:, \@@_store_level_close_vii:,}
-%    When nesting the \myenv*{enumext*} environment in \myenv*{enumext}
-%    starting right after \ics{item} (without material between them) there
-%    is a problem with the alignment of the labels with the baseline
-%    between the two environments. One way to get around this problem is to
-%    place |\mode_leave_vertical:| and then apply |\vspace| taking
-%    into account |\baselineskip|, the value of |\parsep| of the current level of
-%    \myenv*{enumext} and the value of |\topsep| of the \myenv*{enumext*}
-%   environment.
+%    The memorization structure of the list is handled by the functions
+%    \cs{@@_store_level_open_vii:} and \cs{@@_store_level_close_vii:} which are
+%    executed in the \myenv*{enumext*} environment.
 %
 % \iffalse
-%% Function for memorize level execution of |\anskey| on |enumext*|.
+%% Function for memorize level execution of |\anskey| and |anskey*| on |enumext*|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open_vii:
@@ -8486,13 +8481,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \@@_store_addto_seq:n
               {
-                \item \begin{enumext*}[base-fix]
+                \item \begin{enumext*}
               }
           }
           {
             \tl_put_left:Nn \l_@@_store_save_key_vii_tl
               {
-                \item \begin{enumext*}[base-fix,
+                \item \begin{enumext*}[
               }
             \tl_put_right:Nn \l_@@_store_save_key_vii_tl
               {
@@ -10382,7 +10377,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         { \bool_if_p:N \l_@@_store_active_bool }
         { \bool_not_p:n { \l_@@_keyans_env_bool } }
-        %{ \bool_not_p:n { \g_@@_starred_bool } }
         { \bool_if_p:N \g_@@_standar_bool }
       }
       {
@@ -10400,7 +10394,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         { \bool_if_p:N \l_@@_store_active_bool }
         { \bool_not_p:n { \l_@@_keyans_env_bool } }
-        %{ \bool_if_p:N \g_@@_starred_bool }
         { \int_compare_p:nNn { \l_@@_level_h_int } = { 1 } }
       }
       {
