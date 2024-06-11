@@ -321,9 +321,9 @@ This work consists of the files enumext.dtx and enumext.sty.
         \raggedright\ttfamily\small
         \textcolor{gray}{\textbackslash begin\{\textcolor{pkgcolor}{{\tl_use:N \l_tempc_tl}}\}\myoarg
         [type=tt,sbc=gray,ac=lightgray,cf=optcolor]{keyval ~ list}}\par%
-        \hspace{0.25cm}\ics{item}\space\mymeta[type=tt,ac=lightgray,cf=gray]{item ~ content}\par%
-        \hspace{0.25cm}\ics{item}\space\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{custom}\space\mymeta[type=tt,ac=lightgray,cf=gray]{item ~ content}\par
-        \hspace{0.25cm}\ics*{item*}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{symbol}\myoarg[type=tt,sbc=gray,ac=lightgray,cf=optcolor]{offset}\space\mymeta[type=tt,ac=lightgray,cf=gray]{item ~ content}\par
+        \hspace{0.25cm}\ics*{item}\space\mymeta[ac=lightgray,cf=gray]{item ~ content}\par%
+        \hspace{0.25cm}\ics*{item}\space\myoarg[sbc=gray,ac=lightgray,cf=optcolor]{custom}\space\mymeta[ac=lightgray,cf=gray]{item ~ content}\par
+        \hspace{0.25cm}\ics*{item*}\myoarg[sbc=gray,ac=lightgray,cf=optcolor]{symbol}\myoarg[sbc=gray,ac=lightgray,cf=optcolor]{offset}\space\mymeta[ac=lightgray,cf=gray]{item ~ content}\par
         \textcolor{gray}{\textbackslash end\{{\textcolor{pkgcolor}{{\tl_use:N \l_tempc_tl}}}\}}\par
       \end{minipage}%
     \end{lrbox}%
@@ -1053,7 +1053,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The \mypkg*{enumext} package defines enumerated environments using the
 % \myenv{list} environment provided by \hologo{LaTeX}, but
 % \emph{\enquote{does not redefine}} any internal commands associated with
-% it such as |\list|, |\endlist| or \ics{item} outside of the
+% it such as |\list|, |\endlist| or |\item| outside of the
 % \emph{\enquote{scope}} in which they are defined.
 %
 % \smallskip
@@ -1183,14 +1183,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{User interface}
 % \label{sec:interface}
 %
-% The user interface consists in \myenv*{enumext}, \myenv*{enumext*},
-% \myenv*{anskey*}, \myenv*{keyans}, \myenv*{keyans*} and
-% \myenv*{keyanspic} environments, \ics*{anskey}, \ics*{item*} and
-% \ics*{anspic}|*| commands to \emph{stored content}, \ics*{getkeyans}
-% command to get the individual \emph{stored content}, \ics*{printkeyans}
-% to print all \emph{stored content}, \ics*{miniright} for \myenv{minipage}
-% and \ics*{setenumext} to config all \myoarg{key \textnormal{\textcolor{gray}{=}} val}
-% options.
+% The user interface consists of two main list environments |enumext|
+% (vertical) and |enumext*| (horizontal), the environment |anskey*| and
+% the command |\anskey| to \emph{\enquote{store content}} and the
+% environments |keyans|, |keyans*| and |keyanspic| for multiple choice.
+% It also provides the commands |\getkeyans| to print individual
+% \emph{stored content}, |\printkeyans| to print all \emph{stored
+% content}, |\miniright| for \myenv{minipage} and |\setenumext| to config
+% all \myoarg{key \textnormal{\textcolor{gray}{=}} val} options.
 %
 % \subsubsection{Internal counters}
 %
@@ -1248,8 +1248,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The \emph{\enquote{non starred}} version of the \myenv{multicols}
 % environment is always used together with the \ics{raggedcolumns}
 % command and is controlled by \mykey{columns} and \mykey{columns-sep}
-% keys. The environment is available for all nesting levels, and can
-% can together with the \mykey{mini-env} key. If you need to force a
+% keys. It can be used in all nesting levels of the
+% environment |enumext| and the environment |keyans| and can
+% together with the \mykey{mini-env} key. If you need to force a
 % start a new column \ics{columnbreak} must be used (see \S\ref{key:multi}).
 %
 % \smallskip
@@ -1297,13 +1298,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \label{fig:five}
 % \end{figure}
 %
-% The \myenv{minipage} environments (left and right) is always used with
-% \emph{\enquote{aligned on top}} |[t]|, the \myenv{minipage}
-% environment on the \emph{\enquote{right side}} always starts with |\centering|. It
-% can be used at all nesting levels and is controlled by \mykey{mini-env}
-% and \mykey{mini-sep} keys. In order to switch from the \emph{\enquote{left}} side
-% \myenv{minipage} environment to the \emph{\enquote{right}} side one must use the command
-% \ics*{miniright} (see~\S\ref{key:mini}).
+% The \myenv{minipage} environments on \emph{\enquote{left side}} and
+% \emph{\enquote{right side}} is always used with \emph{\enquote{aligned
+% on top}} |[t]|. It can be used in all nesting levels of the
+% environment |enumext| and the environment |keyans| and is controlled
+% by \mykey{mini-env} and \mykey{mini-sep} keys. In order to switch from
+% the \emph{\enquote{left}} side \myenv{minipage} environment to the
+% \emph{\enquote{right}} side one must use the command |\miniright|
+% (see~\S\ref{key:mini}).
 %
 % \subsubsection{The \cs[no-index]{label} and \cs[no-index]{ref} system}
 %
@@ -1321,7 +1323,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % package.
 % \end{important}
 %
-% \subsubsection{Support for \cs[no-index]{footnote}}
+% \subsubsection{Support for \cs[no-index]{footnote}}\label{doc:footnote}
 %
 % This package provides an internal implementation for the |\footnote|
 % command which is compatible with the \mypkg{hyperref} package for the
@@ -1397,7 +1399,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsection{The environment \texttt{enumext*}}
 %
-% The \myenv*{enumext*} environment is a horizontal list environment
+% The \myenv*{enumext*} is a \emph{horizontal list environment}
 % similar to the \myenv{enumerate}|*| environment provided by the
 % \mypkg{enumitem} package or \myenv{task} environment provided by the
 % \mypkg{task} package , \ics*{item} and \ics*{item}\myoarg{custom}
@@ -1472,7 +1474,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{item-sym\textcolor{MediumOrchid}{*}}{symbol}{\$\textbackslash{}star\$}
 % Sets the \emph{symbol} to be displayed in the \emph{\enquote{left}} of the
 % box containing the current \mymeta{label} set by \mykey{labelwidth} key for \ics*{item*} in
-% \myenv*{enumext}. The \emph{symbol} can be in text or math mode, for
+% \myenv*{enumext} and \myenv*{enumext*}. The \emph{symbol} can be in text or math mode, for
 % example \mykey{item-sym*}|={$\ast$}|.
 %
 % \smallskip
@@ -1557,7 +1559,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % The \mymeta{keys} set in the optional arguments of environments and
-% commands have the highest precedence, overriding both
+% commands have the \emph{highest precedence}, overriding both
 % options passed by \ics*{setenumext}. If the optional argument is not
 % passed, the first level of the environment \myenv*{enumext} will be
 % taken by default.
@@ -2094,8 +2096,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsubsection{The command \cs[no-index]{miniright}}
 %
-% \vspace*{-1.75\baselineskip}
+% \vspace*{-1.0\baselineskip}
 % \begin{function}{\miniright}
+%   \begin{syntax}
+%     |\begin{enumext}[mini-env=|\mymeta{rigid length}|]| \mymeta[cf=gray]{item's before} |\item \miniright| \mymeta[cf=gray]{content} |\end{enumext}|\par
+%     |\begin{enumext}[mini-env=|\mymeta{rigid length}|]| \mymeta[cf=gray]{item's before} |\item \miniright*|\mymeta[cf=gray]{content} |\end{enumext}|
+%   \end{syntax}
+% \end{function}
 %
 % The \ics*{miniright} command close the \myenv{minipage}
 % environment on the \emph{\enquote{left side}} and opens the
@@ -2108,14 +2115,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The \emph{starred argument} ‘|*|’ inhibits the use of |\centering|
 % command i.e. the usual \hologo{LaTeX} justification is maintained in
 % the \myenv{minipage} on the \emph{\enquote{right side}}.
-% \end{function}
 %
 % \begin{important}*
 % The |\footnote|\mymarg{text} command in \myenv{minipage} environment will work as
 % usual. If you prefer the footnotes to be numbered (not lowercase) and
 % outside the environment, use |\footnotemark|\myoarg{number} inside the
 % environment and |\footnotetext|\myoarg{number}\mymarg{text} outside the environment
-% or via the \mykey{after} key.
+% or via the \mykey{after} key (see \S\ref{doc:footnote} for full support).
 % \end{important}
 %
 % \subsubsection{The key \texttt{mini-right}}
@@ -2124,13 +2130,21 @@ This work consists of the files enumext.dtx and enumext.sty.
 % it is not possible to use the \ics*{miniright} command and the \mykey{mini-right}
 % key must be used instead.
 %
-% \keyexamp{mini-right}{code for drawing or tabular}{not used}
-% Set the \emph{code} for the drawing or tabular to be placed in the
+% \keyexamp{mini-right}{content}{not used}
+% Set the \emph{content} for the drawing or tabular to be placed in the
 % \myenv{minipage} environment on the \emph{\enquote{right side}} by
-% starting it with |\centering|.
+% starting it with |\centering|. The \mymarg{content} must be passed between braces.
 %
 % \keyexamp{mini-right\textcolor{MediumOrchid}{*}}{code for drawing or tabular}{not used}
 % Same as above, but \emph{without} starting with |\centering|.
+%
+% \smallskip
+%
+% \begin{important}*
+% The keys \mykey{mini-right} and \mykey{mini-right*} has a \emph{slightly different}
+% implementation, the argument \mymarg{content} is saved in a box
+% and then printed outside the environment using \emph{hooks}.
+% \end{important}
 %
 % \section{The storage system}\label{sec:storage system}
 %
@@ -4864,7 +4878,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_start_list:nn, \@@_stop_list:, \@@_item_std:w,}
 %    The functions \cs{@@_start_list:nn}, \cs{@@_stop_list:} and
 %    \cs{@@_item_std:w} correspond to copies of |\list|, |\endlist|
-%    and \ics{item} from plain definition of \myenv{list} environment.
+%    and |\item| from plain definition of \myenv{list} environment.
 % \iffalse
 %% Copy list tools.
 % \fi
@@ -6038,7 +6052,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_after_args_exec:} executes the \mymarg{code} set by the
 %    \mykey{first} key after the end of the second argument of the list
 %    defining the \myenv*{enumext} environment, just before the first
-%    occurrence of \ics{item}.
+%    occurrence of |\item|.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_args_exec:
   {
@@ -6088,7 +6102,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_after_args_exec_v:} executes the \mymarg{code} set by the
 %    \mykey{first} key after the end of \mymarg{arg two} of the list
 %    defining the \myenv*{keyans} environment, just before the first
-%    occurrence of \ics{item}.
+%    occurrence of |\item|.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_args_exec_v:
   {
@@ -6150,7 +6164,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_after_args_exec_v:} executes the \mymarg{code} set by the
 %    \mykey{first} key after the end of \mymarg{arg two} of the list
 %    defining the \myenv*{keyans} environment, just before the first
-%    occurrence of \ics{item}.
+%    occurrence of |\item|.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_args_exec_vii:
   {
@@ -9687,7 +9701,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{Redefining \cs{item} command }\label{ltx:item}
 %
-% Redefining the \ics{item} command is not as simple as I thought. This
+% Redefining the |\item| command is not as simple as I thought. This
 % command works in conjunction with the \ics{makelabel} command so I have
 % to redefine both of them, in addition to this, we will have to use a
 % couple of \emph{global} variables to pass the values from one command
@@ -10865,7 +10879,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % The \myenv*{keyanspic} environment is a list-based environment that
 % uses the same configuration for \emph{\enquote{spacing}} and \mymeta{label}
-% as the \myenv*{keyans} environment, but it does not use \ics{item}.
+% as the \myenv*{keyans} environment, but it does not use |\item|.
 %
 % The contents are passed to the environment by means of the \ics*{anspic}
 % command and are placed inside \myenv{minipage} environments, with the
@@ -10958,7 +10972,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    store the current \mymeta{label} next to the
 %    \myoarg{content} if it is present in the \mymeta{sequence} and \mymeta{prop list}
 %    defined by \mykey{save-ans} key. This command is used as a
-%    replacement for \ics{item} in the \myenv*{keyanspic} environment.
+%    replacement for |\item| in the \myenv*{keyanspic} environment.
 % \iffalse
 %% Define |\anspic| for |keyanspic|.
 % \fi
@@ -11143,7 +11157,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    We set the value of \cs{l_@@_keyans_pic_above_skip} which we will use
 %    to apply our \enquote{adjust} space above \myenv*{keyanspic}, finally
 %    we call \cs{@@_item_std:w} followed by \cs{scan_stop:} to prevent the error
-%    message returned by \hologo{LaTeX} when not using the \ics{item}
+%    message returned by \hologo{LaTeX} when not using the |\item|
 %    command.
 %    \begin{macrocode}
     \@@_keyans_pic_skip_abs:N \parsep
@@ -11201,17 +11215,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % Generating horizontal list environments is NOT as simple as standard
 % \hologo{LaTeX} list environments. The fundamental part of the code is adapted
 % from the \mypkg{shortlst} package to a more modern version using \mypkg{expl3}.
-% It is not possible to redefine \ics{item} and \ics{makelabel} as in
+% It is not possible to redefine |\item| and \ics{makelabel} as in
 % the non starred versions (at least I have not achieved it) and as we
 % will make it behave differently, we have no other option than to define
 % a cascade of functions.
 %
-% To achieve the horizontal list environment we will capture the \ics{item}
+% To achieve the horizontal list environment we will capture the |\item|
 % command and the content of this in an plain \myenv{lrbox} box using \ics{makebox} for
 % the \mykey{label} and a \myenv{minipage} environment for the content passed to
-% \ics{item}, we will also add the optional argument \myparg{number} to \ics{item}
+% |\item|, we will also add the optional argument \myparg{number} to |\item|
 % to be able to \emph{join columns} horizontally, in simple terms, we want
-% \ics{item} to behave in the same way as in the \myenv*{enumext} environment but
+% |\item| to behave in the same way as in the \myenv*{enumext} environment but
 % adding an optional first argument \myparg{number}.
 %
 %
@@ -11542,7 +11556,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{enumext*}
 %    First we will generate the environment and we will give a
 %    temporary definition to \cs{@@_stop_item_tmp_vii:} equal to
-%    \ics{noindent} and next to \ics{item} equal to
+%    \ics{noindent} and next to |\item| equal to
 %    \cs{@@_start_item_tmp_vii:} which we will redefine later.
 % \iffalse
 %% Define |enumext*|
@@ -12007,7 +12021,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{keyans*}
 %    First we will generate the environment and we will give a
 %    temporary definition to \cs{@@_stop_item_tmp_viii:} equal to
-%    \ics{noindent} and next to \ics{item} equal to
+%    \ics{noindent} and next to |\item| equal to
 %    \cs{@@_start_item_tmp_viii:} which we will redefine later.
 % \iffalse
 %% Define |keyans*|
