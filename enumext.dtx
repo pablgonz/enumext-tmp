@@ -12556,7 +12556,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\printkeyans}
 %    Create a user command to print \emph{\enquote{all stored content}}
-%    in \mymeta{sequence} for \ics*{anskey}, \ics*{item*} and \ics*{anspic*}.
+%    in \mymeta{sequence} for \ics*{anskey}, \myenv*{anskey*}, \ics*{item*} and \ics*{anspic*}.
 %    Within a group we will run our \emph{\enquote{precompiled keys}} and
 %    then call the internal function \cs{@@_printkeyans:nnn}.
 % \iffalse
@@ -12593,12 +12593,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             %%\seq_show:c { g_@@_#3_seq }
 %    \end{macrocode}
-%    If the starred if it is present we will check that the environment
+%    If the starred argument is present we will check that the environment
 %    \myenv*{enumext*} is not saved in the \mymeta{sequence}, then execute the variable
 %    \cs{l_@@_print_keyans_starred_tl} that contains the default \mymeta{keys} for
 %    the environment \myenv*{enumext*}, it will open the environment
-%    \myenv*{enumext*} passing the optional argument to the first level
-%    and then will map the \mymeta{sequence}
+%    \myenv*{enumext*} passing the optional argument to the \emph{\enquote{first level}},
+%    set the key \mykey{base-fix} and then will map the \mymeta{sequence}.
 %    \begin{macrocode}
             \bool_if:nTF {#1}
               {
@@ -12615,8 +12615,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                   }
               }
 %    \end{macrocode}
-%   Otherwise it will open the environment \myenv*{enumext} passing the optional argument to
-%   the first level and then map the \mymeta{sequence}.
+%    Otherwise it will open the environment \myenv*{enumext} passing
+%    the optional argument to the \emph{\enquote{first level}}, set the
+%    key \mykey{base-fix} and then map the \mymeta{sequence}.
 %    \begin{macrocode}
               {
                 \begin{enumext}[#2]
