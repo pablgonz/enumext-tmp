@@ -2713,7 +2713,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{function}{keyanspic}
 %   \begin{syntax}
-%     |\begin{keyanspic}|\myoarg{nº above, nº below}\ics*{anspic}\mymarg{drawing}\ics*{anspic*}\myoarg{content}\mymarg{drawing}
+%     |\begin{keyanspic}|\myoarg{nº above, nº below}\ics*{anspic}\mymarg{drawing}\ics*{anspic}|*|\myoarg{content}\mymarg{drawing}
 %   \end{syntax}
 % The \myenv*{keyanspic} is a \emph{\enquote{fake enumerated list}}
 % environment that which uses the \ics*{anspic} command instead of
@@ -2806,13 +2806,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \end{syntax}
 %    The \ics*{anspic} command take three arguments, the
 %    \emph{starred argument} ‘|*|’ store the current \mymeta{label} next to the \mymeta{content} (if it is present)
-%    in \mymeta{store name} set by \mykey{save-ans} key.
+%    in \emph{sequence} and \emph{prop list} \mymarg{store name} set by \mykey{save-ans} key.
 %
 %    \smallskip
 %
 %    The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
-%    from the command, i.e. \ics*{anspic*} and the optional argument does \emph{\enquote{not support}} verbatim
-%    content. By design it is assumed that the \emph{starred argument} ‘|*|’ will only
+%    from the command, i.e. \ics*{anspic}|*| and the optional argument
+%    does \emph{\enquote{not support}} verbatim content. By design it
+%    is assumed that the \emph{starred argument} ‘|*|’ will only
 %    appear \emph{\enquote{once}} within the environment.
 %
 % \end{function}
@@ -3895,9 +3896,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % Interfaces}. Available from
 % \textsc{ctan}, \url{https://www.ctan.org/pkg/l3kernel}, 2024.
 %
-% \bibitem{xparse} The \hologo{LaTeX} Project. \enquote{The \textsf{xparse}
-% package}. Available from
-% \textsc{ctan}, \url{https://www.ctan.org/pkg/xparse}, 2024.
+% \bibitem{latex2e} The \hologo{LaTeX} Project. \enquote{The \hologo{LaTeX2e}
+% sources}. Available from
+% \textsc{ctan}, \url{https://ctan.org/tex-archive/macros/latex/base}, 2024.
+%
+% \bibitem{userguide} The \hologo{LaTeX} Project. \enquote{\hologo{LaTeX} for authors
+% current version}. Available from
+% \textsc{ctan}, \url{https://ctan.org/pkg/latex-base}, 2024.
 %
 % \bibitem{luavisual} \textsc{Gundlach, Patrick}. \enquote{The \textsf{lua-visual-debug}
 % package}. Available from
@@ -5815,6 +5820,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_set_false:N \l_@@_base_line_fix_bool
   }
 %    \end{macrocode}
+%
+% \begin{important}*
+% This key is enabled by default in the command |\printkeyans|
+% (\S\ref{cmd:printkeyans}).
+% \end{important}
+%
 % \end{macro}
 %
 % \subsection{Setting keys for horizontal spaces}\label{key:list-indent}
