@@ -2682,6 +2682,10 @@
       {
         \msg_error:nnn { enumext } { anskey-env-wrong } { keyanspic }
       }
+    \bool_if:NF \l__enumext_item_number_bool
+      {
+        \msg_error:nn { enumext } { anskey-unnumber-item }
+      }
   }
 %% Function for define |anskey*| environment using scontents.
 \cs_new_protected:Npn \__enumext_anskey_env_make:n #1

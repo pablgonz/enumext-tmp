@@ -2387,7 +2387,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  and \emph{\enquote{stores}} it in the \emph{sequence} and \emph{prop
 %  list} \mymarg{store name} set by \mykey{save-ans} key.
 %  By design the command cannot be nested or passed \emph{verbatim material} in the
-%  argument and it is assumed that each |\item| or |\item*| within the
+%  argument and it is assumed that each numbered |\item| or |\item*| within the
 %  environment in which it is active it has a \emph{\enquote{single
 %  execution}} of |\anskey| unless |\item| or |\item*| open a nested level
 %  or use the \mykey{no-store} key.
@@ -2489,7 +2489,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  \smallskip
 %
 %  By design the environment cannot be nested but full supports \emph{\enquote{verbatim material}} in the
-%  body and it is assumed that each |\item| or |\item*| within the
+%  body and it is assumed that each numbered|\item| or |\item*| within the
 %  environment in which it is active it has a \emph{\enquote{single
 %  execution}} unless |\item| or |\item*| open a nested level
 %  or use the \mykey{no-store} key.
@@ -9075,6 +9075,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_compare:nNnT { \l_@@_keyans_pic_level_int } = { 1 }
       {
         \msg_error:nnn { enumext } { anskey-env-wrong } { keyanspic }
+      }
+    \bool_if:NF \l_@@_item_number_bool
+      {
+        \msg_error:nn { enumext } { anskey-unnumber-item }
       }
   }
 %    \end{macrocode}
