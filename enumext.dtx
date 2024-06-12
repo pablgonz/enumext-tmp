@@ -8649,7 +8649,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   function \cs{@@_store_anskey_code:n}.
 % \iffalse
 %% Define the user command |\anskey|.
-%% #1: key-val; #2: argument
 % \fi
 %    \begin{macrocode}
 \NewDocumentCommand \anskey { o +m }
@@ -12728,7 +12727,63 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The command \cs{setenumext}}\label{cmd:setenumext}
 %
-% First we define a \emph{\enquote{meta families}} of \mymeta{keys}
+% The command |\setenumext| will be in charge of managing the
+% \mymeta{keys} passed to all environments and to the |\printkeyans|
+% command. We must take precautions with the \myenv*{enumext*}
+% environment and \emph{\enquote{first level}} of the \myenv*{enumext}
+% environment so as not to capture \mymeta{keys} that complicate us.
+%
+% \begin{macro}{\@@_filter_first_level:n, \@@_filter_first_level_key:n,
+%               \@@_filter_first_level_pair:nn,}
+%   The function \cs{@@_filter_first_level:n} will be in charge of
+%   filtering the \mymeta{keys} passed to the environment \myenv*{enumext*}
+%   and \emph{\enquote{first level}} of the environment \myenv*{enumext}.
+% \iffalse
+%% Internal function for filter keys in |\setenumext| for first level.
+% \fi
+%    \begin{macrocode}
+\cs_new:Npn \@@_filter_first_level:n #1
+  {
+    \use:e
+      {
+        \keyval_parse:NNn
+          \@@_filter_first_level_key:n
+          \@@_filter_first_level_pair:nn {#1}
+      }
+  }
+%    \end{macrocode}
+%   The function \cs{@@_filter_first_level_key:n} will be responsible for
+%   filtering the \mymeta{keys} that are passed \emph{\enquote{without value}} by
+%   excluding the keys \mykey{resume} and \mykey{resume*}.
+%    \begin{macrocode}
+\cs_new:Npn \@@_filter_first_level_key:n #1
+  {
+    \str_case:nnF {#1}
+      {
+        { resume   } {}
+        { resume*  } {}
+      }
+      { , { \exp_not:n {#1} } }
+  }
+%    \end{macrocode}
+%   The function \cs{@@_filter_first_level_pair:nn} will be responsible for
+%   filtering the \mymeta{keys} that are passed \emph{\enquote{with value}} by
+%   excluding the \mykey{series}, \mykey{resume} and \mykey{save-ans} keys.
+%    \begin{macrocode}
+\cs_new:Npn \@@_filter_first_level_pair:nn #1#2
+  {
+    \str_case:nnF {#1}
+      {
+        { series } {}
+        { resume } {}
+        { save-ans } {}
+      }
+      { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% Now define a \emph{\enquote{meta families}} of \mymeta{keys}
 % to access from \ics*{setenumext}.
 % \iffalse
 %% Add keys for |\setenumext|.
@@ -12736,12 +12791,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \keys_define:nn { enumext / meta-families }
   {
-    enumext-1 .code:n = { \keys_set:nn { enumext / level-1  } {#1} } ,
+    enumext-1 .code:n =
+                {
+                  \keys_set:ne { enumext / level-1  }
+                    {
+                      \@@_filter_first_level:n {#1}
+                    }
+                } ,
     enumext-2 .code:n = { \keys_set:nn { enumext / level-2  } {#1} } ,
     enumext-3 .code:n = { \keys_set:nn { enumext / level-3  } {#1} } ,
     enumext-4 .code:n = { \keys_set:nn { enumext / level-4  } {#1} } ,
     keyans    .code:n = { \keys_set:nn { enumext / keyans   } {#1} } ,
-    enumext*  .code:n = { \keys_set:nn { enumext / enumext* } {#1} } ,
+    enumext*  .code:n =
+                {
+                  \keys_set:ne { enumext / enumext* }
+                    {
+                      \@@_filter_first_level:n {#1}
+                    }
+                } ,
     keyans*   .code:n = { \keys_set:nn { enumext / keyans*  } {#1} } ,
     print*    .code:n = { \keys_set:nn { enumext / print    } { print*  = {#1} } } ,
     print-1   .code:n = { \keys_set:nn { enumext / print    } { print-1 = {#1} } } ,

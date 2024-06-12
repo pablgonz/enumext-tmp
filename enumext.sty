@@ -2403,7 +2403,6 @@
     item-pos* .dim_set:N  = \l__enumext_store_item_symbol_sep_dim,
     item-pos* .value_required:n = true,
     unknown   .code:n     = { \__enumext_anskey_keys:n {#1} },
-
   }
 \cs_new_protected:Npn \__enumext_anskey_keys:n #1
   {
@@ -2420,7 +2419,6 @@
       }
   }
 %% Define the user command |\anskey|.
-%% #1: key-val; #2: argument
 \NewDocumentCommand \anskey { o +m }
   {
     \__enumext_anskey_safe_outer:
@@ -4661,15 +4659,56 @@
         \msg_error:nnn { enumext } { undefined-storage-anskey } {#3}
       }
   }
+%% Internal function for filter keys in |\setenumext| for first level.
+\cs_new:Npn \__enumext_filter_first_level:n #1
+  {
+    \use:e
+      {
+        \keyval_parse:NNn
+          \__enumext_filter_first_level_key:n
+          \__enumext_filter_first_level_pair:nn {#1}
+      }
+  }
+\cs_new:Npn \__enumext_filter_first_level_key:n #1
+  {
+    \str_case:nnF {#1}
+      {
+        { resume   } {}
+        { resume*  } {}
+      }
+      { , { \exp_not:n {#1} } }
+  }
+\cs_new:Npn \__enumext_filter_first_level_pair:nn #1#2
+  {
+    \str_case:nnF {#1}
+      {
+        { series } {}
+        { resume } {}
+        { save-ans } {}
+      }
+      { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
+  }
 %% Add keys for |\setenumext|.
 \keys_define:nn { enumext / meta-families }
   {
-    enumext-1 .code:n = { \keys_set:nn { enumext / level-1  } {#1} } ,
+    enumext-1 .code:n =
+                {
+                  \keys_set:ne { enumext / level-1  }
+                    {
+                      \__enumext_filter_first_level:n {#1}
+                    }
+                } ,
     enumext-2 .code:n = { \keys_set:nn { enumext / level-2  } {#1} } ,
     enumext-3 .code:n = { \keys_set:nn { enumext / level-3  } {#1} } ,
     enumext-4 .code:n = { \keys_set:nn { enumext / level-4  } {#1} } ,
     keyans    .code:n = { \keys_set:nn { enumext / keyans   } {#1} } ,
-    enumext*  .code:n = { \keys_set:nn { enumext / enumext* } {#1} } ,
+    enumext*  .code:n =
+                {
+                  \keys_set:ne { enumext / enumext* }
+                    {
+                      \__enumext_filter_first_level:n {#1}
+                    }
+                } ,
     keyans*   .code:n = { \keys_set:nn { enumext / keyans*  } {#1} } ,
     print*    .code:n = { \keys_set:nn { enumext / print    } { print*  = {#1} } } ,
     print-1   .code:n = { \keys_set:nn { enumext / print    } { print-1 = {#1} } } ,
