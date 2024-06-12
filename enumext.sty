@@ -2402,13 +2402,13 @@
     item-sym* .value_required:n = true,
     item-pos* .dim_set:N  = \l__enumext_store_item_symbol_sep_dim,
     item-pos* .value_required:n = true,
-    unknown   .code:n     = { \__enumext_anskey_keys:n {#1} },
+    unknown   .code:n     = { \__enumext_anskey_unknown:n {#1} },
   }
-\cs_new_protected:Npn \__enumext_anskey_keys:n #1
+\cs_new_protected:Npn \__enumext_anskey_unknown:n #1
   {
-    \exp_args:NV \__enumext_anskey_keys:nn \l_keys_key_str {#1}
+    \exp_args:NV \__enumext_anskey_unknown:nn \l_keys_key_str {#1}
   }
-\cs_new_protected:Npn \__enumext_anskey_keys:nn #1 #2
+\cs_new_protected:Npn \__enumext_anskey_unknown:nn #1 #2
   {
     \tl_if_blank:nTF {#2}
       {
@@ -2425,12 +2425,18 @@
     \group_begin:
       \bool_if:NT \l__enumext_check_answers_bool
         {
-          \__enumext_anskey_safe_inner:n {#2}
           \tl_if_novalue:nF {#1}
             {
               \keys_set:nn { enumext / anskey } {#1}
             }
-          \__enumext_store_anskey_code:n {#2}
+          \tl_if_blank:nTF {#2}
+           {
+             \msg_error:nn { enumext } { anskey-empty-arg }
+           }
+           {
+             \__enumext_anskey_safe_inner:
+             \__enumext_store_anskey_code:n {#2}
+           }
         }
     \group_end:
   }
@@ -2455,12 +2461,8 @@
       }
   }
 %% Internal function for msg when |\anskey| is inner and arg is empty.
-\cs_new_protected:Npn \__enumext_anskey_safe_inner:n #1
+\cs_new_protected:Nn \__enumext_anskey_safe_inner:
   {
-    \tl_if_blank:nT {#1}
-      {
-        \msg_error:nn { enumext } { anskey-empty-arg }
-      }
     \int_incr:N \l__enumext_anskey_level_int
     \int_compare:nNnT { \l__enumext_anskey_level_int } > { 1 }
       {
@@ -2739,14 +2741,14 @@
         print-env .undefine:,
         store-env .undefine:,
         write-out .undefine:,
-        unknown   .code:n      = { \__enumext_anskey_env_keys:n {##1} },
+        unknown   .code:n      = { \__enumext_anskey_env_unknown:n {##1} },
       }
   }
-\cs_new_protected:Npn \__enumext_anskey_env_keys:n #1
+\cs_new_protected:Npn \__enumext_anskey_env_unknown:n #1
   {
-    \exp_args:NV \__enumext_anskey_env_keys:nn \l_keys_key_str {#1}
+    \exp_args:NV \__enumext_anskey_env_unknown:nn \l_keys_key_str {#1}
   }
-\cs_new_protected:Npn \__enumext_anskey_env_keys:nn #1#2
+\cs_new_protected:Npn \__enumext_anskey_env_unknown:nn #1#2
   {
     \tl_if_blank:nTF {#2}
       {
@@ -2810,13 +2812,15 @@
               {
                 \seq_item:ce { g__scontents_name_ \l__enumext_store_name_tl _seq } { -1 }
               }
-            \regex_match:nVT
+            \regex_match:nVTF
               { ^\s* \z | ^\s* \u{c__scontents_hidden_space_str} \z }
               \l__enumext_store_anskey_env_tl
               {
                 \msg_error:nn { enumext } { anskey-empty-arg }
               }
-            \__enumext_anskey_env_store:
+              {
+                \__enumext_anskey_env_store:
+              }
           }
         \__enumext_anskey_env_clean_vars:
         \__enumext_anskey_env_reset_keys:
@@ -2867,24 +2871,21 @@
 \cs_new_protected:Nn \__enumext_anskey_env_store:
   {
     \group_begin:
-      \tl_if_empty:NF \l__enumext_store_anskey_env_tl
+      \tl_if_empty:NTF \l__enumext_store_anskey_opt_tl
         {
-          \tl_if_empty:NTF \l__enumext_store_anskey_opt_tl
-            {
-              \exp_args:Ne
-                \__enumext_store_anskey_code:n
-                  {
-                    \__enumext_rescan_anskey_env:n { \l__enumext_store_anskey_env_tl }
-                  }
-            }
-            {
-              \keys_set_known:nV { enumext / anskey } \l__enumext_store_anskey_opt_tl
-              \exp_args:Ne
-                \__enumext_store_anskey_code:n
-                  {
-                    \__enumext_rescan_anskey_env:n { \l__enumext_store_anskey_env_tl }
-                  }
-            }
+          \exp_args:Ne
+            \__enumext_store_anskey_code:n
+              {
+                \__enumext_rescan_anskey_env:n { \l__enumext_store_anskey_env_tl }
+              }
+        }
+        {
+          \keys_set_known:nV { enumext / anskey } \l__enumext_store_anskey_opt_tl
+          \exp_args:Ne
+            \__enumext_store_anskey_code:n
+              {
+                \__enumext_rescan_anskey_env:n { \l__enumext_store_anskey_env_tl }
+              }
         }
     \group_end:
   }

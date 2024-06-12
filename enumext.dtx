@@ -8609,17 +8609,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     item-sym* .value_required:n = true,
     item-pos* .dim_set:N  = \l_@@_store_item_symbol_sep_dim,
     item-pos* .value_required:n = true,
-    unknown   .code:n     = { \@@_anskey_keys:n {#1} },
+    unknown   .code:n     = { \@@_anskey_unknown:n {#1} },
   }
 %    \end{macrocode}
 %   The \mymeta{keys} are stored in \cs{l_keys_key_str} and the value (if any) is passed as an
-%   argument to the function \cs{@@_anskey_keys:n}.
+%   argument to the function \cs{@@_anskey_unknown:n}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_anskey_keys:n #1
+\cs_new_protected:Npn \@@_anskey_unknown:n #1
   {
-    \exp_args:NV \@@_anskey_keys:nn \l_keys_key_str {#1}
+    \exp_args:NV \@@_anskey_unknown:nn \l_keys_key_str {#1}
   }
-\cs_new_protected:Npn \@@_anskey_keys:nn #1 #2
+\cs_new_protected:Npn \@@_anskey_unknown:nn #1 #2
   {
     \tl_if_blank:nTF {#2}
       {
@@ -8657,12 +8657,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \group_begin:
       \bool_if:NT \l_@@_check_answers_bool
         {
-          \@@_anskey_safe_inner:n {#2}
           \tl_if_novalue:nF {#1}
             {
               \keys_set:nn { enumext / anskey } {#1}
             }
-          \@@_store_anskey_code:n {#2}
+          \tl_if_blank:nTF {#2}
+           {
+             \msg_error:nn { enumext } { anskey-empty-arg }
+           }
+           {
+             \@@_anskey_safe_inner:
+             \@@_store_anskey_code:n {#2}
+           }
         }
     \group_end:
   }
@@ -8671,7 +8677,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Internal functions for the command}
 %
-% \begin{macro}{\@@_anskey_safe_outer:, \@@_anskey_safe_inner:n}
+% \begin{macro}{\@@_anskey_safe_outer:, \@@_anskey_safe_inner:}
 %   The \cs{@@_store_anskey_safe_outer:} function will return the
 %   appropriate messages when the command is executed outside the
 %   environment in which the \mykey{save-ans} key was activated.
@@ -8699,20 +8705,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%   The \cs{@@_anskey_safe_inner:n} function will first check to see if
-%   the passed argument is \emph{empty} and then check to see if the
+%   The \cs{@@_anskey_safe_inner:} function will first check if the
 %   command is nested, if preceded by a not numbered |\item| or if it is in
 %  \emph{math mode} returning the appropriate messages.
 % \iffalse
 %% Internal function for msg when |\anskey| is inner and arg is empty.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_anskey_safe_inner:n #1
+\cs_new_protected:Nn \@@_anskey_safe_inner:
   {
-    \tl_if_blank:nT {#1}
-      {
-        \msg_error:nn { enumext } { anskey-empty-arg }
-      }
     \int_incr:N \l_@@_anskey_level_int
     \int_compare:nNnT { \l_@@_anskey_level_int } > { 1 }
       {
@@ -9170,18 +9171,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         print-env .undefine:,
         store-env .undefine:,
         write-out .undefine:,
-        unknown   .code:n      = { \@@_anskey_env_keys:n {##1} },
+        unknown   .code:n      = { \@@_anskey_env_unknown:n {##1} },
       }
   }
 %    \end{macrocode}
 %   The \mymeta{keys} are stored in \cs{l_keys_key_str} and the value (if any) is passed as an
-%   argument to the function \cs{@@_anskey_env_keys:n}.
+%   argument to the function \cs{@@_anskey_env_unknown:n}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_anskey_env_keys:n #1
+\cs_new_protected:Npn \@@_anskey_env_unknown:n #1
   {
-    \exp_args:NV \@@_anskey_env_keys:nn \l_keys_key_str {#1}
+    \exp_args:NV \@@_anskey_env_unknown:nn \l_keys_key_str {#1}
   }
-\cs_new_protected:Npn \@@_anskey_env_keys:nn #1#2
+\cs_new_protected:Npn \@@_anskey_env_unknown:nn #1#2
   {
     \tl_if_blank:nTF {#2}
       {
@@ -9277,13 +9278,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               {
                 \seq_item:ce { g__scontents_name_ \l_@@_store_name_tl _seq } { -1 }
               }
-            \regex_match:nVT
+            \regex_match:nVTF
               { ^\s* \z | ^\s* \u{c__scontents_hidden_space_str} \z }
               \l_@@_store_anskey_env_tl
               {
                 \msg_error:nn { enumext } { anskey-empty-arg }
               }
-            \@@_anskey_env_store:
+              {
+                \@@_anskey_env_store:
+              }
           }
         \@@_anskey_env_clean_vars:
         \@@_anskey_env_reset_keys:
@@ -9360,31 +9363,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The function \cs{@@_anskey_env_store:} will be responsible for storing
-%   the content of the environment, we will execute and only if the variable
-%   \cs{l_@@_store_anskey_env_tl} is not empty using the functions \cs{@@_store_anskey_code:n}
+%   the content of the environment using the functions \cs{@@_store_anskey_code:n}
 %   and \cs{@@_rescan_anskey_env:n}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_store:
   {
     \group_begin:
-      \tl_if_empty:NF \l_@@_store_anskey_env_tl
+      \tl_if_empty:NTF \l_@@_store_anskey_opt_tl
         {
-          \tl_if_empty:NTF \l_@@_store_anskey_opt_tl
-            {
-              \exp_args:Ne
-                \@@_store_anskey_code:n
-                  {
-                    \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl }
-                  }
-            }
-            {
-              \keys_set_known:nV { enumext / anskey } \l_@@_store_anskey_opt_tl
-              \exp_args:Ne
-                \@@_store_anskey_code:n
-                  {
-                    \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl }
-                  }
-            }
+          \exp_args:Ne
+            \@@_store_anskey_code:n
+              {
+                \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl }
+              }
+        }
+        {
+          \keys_set_known:nV { enumext / anskey } \l_@@_store_anskey_opt_tl
+          \exp_args:Ne
+            \@@_store_anskey_code:n
+              {
+                \@@_rescan_anskey_env:n { \l_@@_store_anskey_env_tl }
+              }
         }
     \group_end:
   }
