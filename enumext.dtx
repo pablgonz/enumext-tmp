@@ -9112,7 +9112,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{anskey*, \@@_anskey_env_make:n, \@@_anskey_env_make:V,
-%              \@@_anskey_env_define_keys:, \@@_anskey_env_undefine_keys:
+%              \@@_anskey_env_define_keys:, \@@_anskey_env_reset_keys:
 %              \@@_rescan_anskey_env:n,}
 %    The function \cs{@@_anskey_env_make:n} creates the environment
 %    \myenv*{anskey*} (\emph{custom version} of \myenv{scontents}
@@ -9192,7 +9192,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%   The function \cs{@@_anskey_env_undefine_keys:} will leave the keys
+%   The function \cs{@@_anskey_env_reset_keys:} will leave the keys
 %   \mykeycmd{break-col}, \mykeycmd{item-join}, \mykeycmd{item-join},
 %   \mykeycmd{item-star}, \mykeycmd{item-sym*} and \mykeycmd{item-pos*}
 %   undefined. We will apply this function using the \emph{hook} function
@@ -9201,7 +9201,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Restore keys for |scontents| environment.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_anskey_env_undefine_keys:
+\cs_new_protected:Nn \@@_anskey_env_reset_keys:
   {
     \keys_define:nn { scontents / scontents }
       {
@@ -9268,16 +9268,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \@@_after_env:nn { anskey* }
       {
+        \@@_anskey_env_keys:
         \tl_clear:N \l_@@_store_anskey_env_tl
         \tl_clear:N \l_@@_store_anskey_opt_tl
-        \tl_gset:Ne \l_@@_store_anskey_env_tl
+        \bool_if:NT \l_@@_check_answers_bool
           {
-            \seq_item:ce { g__scontents_name_ \l_@@_store_name_tl _seq } { -1 }
+            \tl_gset:Ne \l_@@_store_anskey_env_tl
+              {
+                \seq_item:ce { g__scontents_name_ \l_@@_store_name_tl _seq } { -1 }
+              }
+            \@@_anskey_env_store:
           }
-        \@@_anskey_env_keys:
-        \@@_anskey_env_store:
         \@@_anskey_env_clean:
-        \@@_anskey_env_undefine_keys:
+        \@@_anskey_env_reset_keys:
       }
   }
 %    \end{macrocode}
@@ -9285,7 +9288,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  The use of \cs{hook_gremove_code:nn} is necessary here, otherwise the
 %  \mymarg{code} passed to \cs{@@_after_env:nn}|{anskey*}| will be accumulated
 %  for each execution.
-%  The last function \cs{@@_anskey_env_undefine_keys:} is necessary so as
+%  The last function \cs{@@_anskey_env_reset_keys:} is necessary so as
 %  not to hinder any \myenv{scontents} environment running within
 %  \myenv*{enumext} or \myenv*{enumext*}.
 % \end{important}
@@ -9357,9 +9360,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_store:
   {
+    \regex_match:nVT { ^\s{0,}? \z } \l_@@_store_anskey_env_tl
+      {
+        \msg_error:nn { enumext } { anskey-empty-arg }
+      }
+    \regex_match:nVT { ^\s{0,}? \u{c__scontents_hidden_space_str} \z } \l_@@_store_anskey_env_tl
+      {
+        \msg_error:nn { enumext } { anskey-empty-arg }
+      }
     \group_begin:
       \tl_if_empty:NF \l_@@_store_anskey_env_tl
         {
+          \int_gincr:N \g__enumext_item_anskey_int
           \tl_if_empty:NTF \l_@@_store_anskey_opt_tl
             {
               \exp_args:Ne
