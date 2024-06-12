@@ -2383,11 +2383,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \begin{syntax}
 %    \cmdexamp{anskey}[keys]{content}
 %   \end{syntax}
-%  The command \ics*{anskey} takes a mandatory argument \mymarg{content}
+%  The command \ics*{anskey} takes a mandatory non empty argument \mymarg{content}
 %  and \emph{\enquote{stores}} it in the \emph{sequence} and \emph{prop
 %  list} \mymarg{store name} set by \mykey{save-ans} key.
 %  By design the command cannot be nested or passed \emph{verbatim material} in the
-%  argument and it is assumed that each numbered |\item| or |\item*| within the
+%  argument and it is assumed that each \emph{numbered} |\item| or |\item*| within the
 %  environment in which it is active it has a \emph{\enquote{single
 %  execution}} of |\anskey| unless |\item| or |\item*| open a nested level
 %  or use the \mykey{no-store} key.
@@ -4430,8 +4430,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{variable}{\l_@@_check_answers_bool,\g_@@_check_ans_key_bool,
 %                  \l_@@_check_start_line_env_tl, \g_@@_check_starred_cmd_int,
 %                  \g_@@_item_anskey_int, \g_@@_item_number_int,
-%                  \g_@@_item_number_bool, \g_@@_item_answer_diff_int}
-%    Internal variables used by \emph{\enquote{check answer}} mechanism
+%                  \g_@@_item_number_bool, \g_@@_item_answer_diff_int,
+%                  \l_@@_item_answer_diff_int,}
+%    Internal variables used by \emph{\enquote{internal check answer}} mechanism
 %    (\S\ref{int:check-answer}) used by the \mykey{check-ans} and
 %    \mykey{no-store} keys and check for starred commands \ics*{item*}
 %    in \myenv*{keyans} and \myenv*{keyans*} environments and \ics*{anspic*}
@@ -4448,6 +4449,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \int_new:N  \g_@@_item_number_int
 \bool_new:N \l_@@_item_number_bool
 \int_new:N  \g_@@_item_answer_diff_int
+\int_new:N  \l_@@_item_answer_diff_int
 %    \end{macrocode}
 % \end{variable}
 %
@@ -8682,9 +8684,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-% The \cs{@@_anskey_safe_inner:n} function will first check to see if the
-% passed argument is empty and then check to see if the command is nested
-% by returning the appropriate messages.
+%   The \cs{@@_anskey_safe_inner:n} function will first check to see if
+%   the passed argument is \emph{empty} and then check to see if the
+%   command is nested, if preceded by a not numbered |\item| or if it is in
+%  \emph{math mode} returning the appropriate messages.
 % \iffalse
 %% Internal function for msg when |\anskey| is inner and arg is empty.
 % \fi
@@ -8703,6 +8706,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_if:NF \l_@@_item_number_bool
       {
         \msg_error:nn { enumext } { anskey-unnumber-item }
+      }
+    \mode_if_math:T
+      {
+        \msg_error:nne { enumext } { anskey-math-mode } { \c_backslash_str anskey }
       }
   }
 %    \end{macrocode}
@@ -8762,7 +8769,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   And now we will review the keys \mykeycmd{item-star}, \mykeycmd{item-sym*} and
 %   \mykeycmd{item-pos*} and pass them to \cs{l_@@_store_anskey_arg_tl}
-%   along with the \mymeta{argument}.
+%   along with the \mymeta{argument} for |\anskey| or \mymeta{body} for |anskey*|.
 %    \begin{macrocode}
      \bool_if:NTF \l_@@_store_item_star_bool
       {
@@ -8815,14 +8822,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \emph{\enquote{label and ref}} system used by the \mykey{save-ref} and
 %    \mykey{mark-ref} keys for \ics*{anskey} will allow to execute
 %    \ics{ref}\mymarg{store name \textcolor{red}{:} position} and
-%    will return |1.(a).i.A|.
-%
-%    First we will remove the dots \enquote{\textcolor{red}{.}} from
+%    will return |1.(a).i.A|.  First we will remove the dots \enquote{\textcolor{red}{.}} from
 %    the current \mymeta{labels}, we do not want to get double
 %    dots in our references, then we will place this in the variable
 %    \cs{l_@@_newlabel_arg_two_tl}.
 % \iffalse
-%% Internal label and ref function for |\anskey|.
+%% Internal label and ref function for |\anskey| and |anskey*|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_internal_ref:
@@ -8840,9 +8845,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %
 %   Here we need to analyse the cases where the environment is started with
-%   \myenv*{enumext*} and if \ics*{anskey} is running alone in it or if it
-%   is running in a nested \myenv*{enumext} environment within the starting
-%   environment.
+%   \myenv*{enumext*} and if \ics*{anskey} or \myenv*{anskey*} is running
+%   alone in it or if it is running in a nested \myenv*{enumext} environment
+%   within the starting environment.
 %    \begin{macrocode}
     \bool_lazy_all:nT
       {
@@ -8867,9 +8872,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
 %    \end{macrocode}
-%   If started with \myenv*{enumext} and if \ics*{anskey} is running alone in it or if it
-%   is running in a nested \myenv*{enumext*} environment within the starting
-%   environment.
+%   If started with \myenv*{enumext} and if \ics*{anskey} or
+%   \myenv*{anskey*} is running alone in it or if it is running in a nested
+%   \myenv*{enumext*} environment within the starting environment.
 %    \begin{macrocode}
     \bool_lazy_all:nT
       {
@@ -8903,7 +8908,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
 %    \end{macrocode}
 %    Now we set the variable \cs{l_@@_newlabel_arg_one_tl} which will
-%    contain \mymarg{store name \textcolor{red}{:} position}.
+%    contain \mymarg{store name \textnormal{\textcolor{red}{:}} position}.
 %    \begin{macrocode}
     \tl_put_right:Ne \l_@@_newlabel_arg_one_tl
       {
@@ -9028,7 +9033,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Detection of the \myenv*{anskey*} environment outside the
 %    \myenv*{enumext} and \myenv*{enumext*} environments.
 % \iffalse
-%% Hooks for |anskey*| environment out off enumext and enumext*.
+%% Hooks for |anskey*| environment out off |enumext| and |enumext*|.
 % \fi
 %    \begin{macrocode}
 \@@_before_env:nn { enumext }
@@ -9057,9 +9062,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %    Detection of the \myenv*{anskey*} environment inside the
-%    \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} environments.
+%    \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
+%    environments, if preceded by a not numbered |\item| or if it is in
+%    \emph{math mode} returning the appropriate messages.
 % \iffalse
-%% Hooks for |anskey*| inside the keyans, keyans* and keyanspic.
+%% Hooks for |anskey*| inside the keyans, keyans* and keyanspic, math-mode ans not number |\item|.
 % \fi
 %    \begin{macrocode}
 \@@_before_env:nn { anskey* }
@@ -9079,6 +9086,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_if:NF \l_@@_item_number_bool
       {
         \msg_error:nn { enumext } { anskey-unnumber-item }
+      }
+    \mode_if_math:T
+      {
+        \msg_error:nnn { enumext } { anskey-math-mode } { anskey* }
       }
   }
 %    \end{macrocode}
@@ -9114,12 +9125,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_generate_variant:Nn \@@_anskey_env_make:n { V }
 %    \end{macrocode}
-%  The function \cs{@@_anskey_env_define_keys:} will add the keys
-%  \mykeycmd{break-col}, \mykeycmd{item-join}, \mykeycmd{item-join},
-%  \mykeycmd{item-star}, \mykeycmd{item-sym*} and \mykeycmd{item-pos*}
-%  and will leave the keys |print-env|, |store-env| and |write-out|
-%  undefined. We will apply this function using the \emph{hook} function
-%  \cs{@@_before_env:nn}.
+%   The function \cs{@@_anskey_env_define_keys:} will add the keys
+%   \mykeycmd{break-col}, \mykeycmd{item-join}, \mykeycmd{item-join},
+%   \mykeycmd{item-star}, \mykeycmd{item-sym*} and \mykeycmd{item-pos*}
+%   and will leave the keys |print-env|, |store-env| and |write-out|
+%   undefined. We will apply this function using the \emph{hook} function
+%   \cs{@@_before_env:nn}.
 % \iffalse
 %% Define keys for |anskey*| environment using scontents PATH.
 % \fi
@@ -9236,12 +9247,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \begin{important}*
-% The use of \cs{hook_gremove_code:nn} is necessary here, otherwise the
-% \mymarg{code} passed to \cs{@@_after_env:nn}|{anskey*}| will be accumulated
-% for each execution.
-% The last function \cs{@@_anskey_env_undefine_keys:} is necessary so as
-% not to hinder any \myenv{scontents} environment running within
-% \myenv*{enumext} or \myenv*{enumext*}.
+%  The use of \cs{hook_gremove_code:nn} is necessary here, otherwise the
+%  \mymarg{code} passed to \cs{@@_after_env:nn}|{anskey*}| will be accumulated
+%  for each execution.
+%  The last function \cs{@@_anskey_env_undefine_keys:} is necessary so as
+%  not to hinder any \myenv{scontents} environment running within
+%  \myenv*{enumext} or \myenv*{enumext*}.
 % \end{important}
 % \end{macro}
 %
@@ -9305,10 +9316,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The function \cs{@@_anskey_env_store:} will be responsible for storing
-%   the content of the environment, we will execute the code within a group
-%   and only if the variable \cs{l_@@_store_anskey_env_tl} is not empty
-%   using the function \cs{@@_rescan_anskey_env:n} from
-%   package \mypkg{scontents}.
+%   the content of the environment, we will execute and only if the variable
+%   \cs{l_@@_store_anskey_env_tl} is not empty using the functions \cs{@@_store_anskey_code:n}
+%   and \cs{@@_rescan_anskey_env:n}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_store:
   {
@@ -12814,7 +12824,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     The ~ value ~ '#3' ~ for ~ '#1' ~ key ~ is ~ invalid ~ use ~ ('#2').
   }
-%    \begin{macrocode}
+%    \end{macrocode}
 %
 % Message used by reserved \myenv*{anskey*} environment by \mypkg*{enumext} package.
 %    \begin{macrocode}
@@ -13014,7 +13024,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     The ~ maximum  ~ level  ~ of  ~ nesting  ~ is ~ 4.
   }
 %    \end{macrocode}
-% Messages used by \ics*{anskey} and \ics*{anspic} commands.
+% Messages used by \ics*{anskey}, \myenv*{anskey*} and \ics*{anspic} commands.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { anskey-unnumber-item }
   {
@@ -13022,7 +13032,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \msg_new:nnn { enumext } { anskey-already-stored }
   {
-    Content ~ has ~ already ~ been ~ stored ~ for ~ this ~ \c_backslash_str item ~ \msg_line_context:.
+    Content ~ already ~ stored ~ for ~ this ~ \c_backslash_str item ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { anskey-empty-arg }
   {
@@ -13036,6 +13046,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \msg_new:nnn { enumext } { anskey-nested }
   {
     The ~ command ~ \c_backslash_str anskey~ can't ~ be ~ nested ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { anskey-math-mode }
+  {
+    #1 ~ can't ~ work ~ in ~ math ~ mode ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { anskey-env-wrong }
   {

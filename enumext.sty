@@ -181,6 +181,7 @@
 \int_new:N  \g__enumext_item_number_int
 \bool_new:N \l__enumext_item_number_bool
 \int_new:N  \g__enumext_item_answer_diff_int
+\int_new:N  \l__enumext_item_answer_diff_int
 %% Variables used for hyperref detection.
 \bool_new:N \l__enumext_hyperref_bool
 \bool_new:N \l__enumext_footnotes_key_bool
@@ -2457,6 +2458,10 @@
       {
         \msg_error:nn { enumext } { anskey-unnumber-item }
       }
+    \mode_if_math:T
+      {
+        \msg_error:nne { enumext } { anskey-math-mode } { \c_backslash_str anskey }
+      }
   }
 %% Internal function of |\anskey| for store content.
 \cs_new_protected:Npn \__enumext_store_anskey_code:n #1
@@ -2521,7 +2526,7 @@
       }
     \__enumext_store_addto_seq:V \l__enumext_store_anskey_arg_tl
   }
-%% Internal label and ref function for |\anskey|.
+%% Internal label and ref function for |\anskey| and |anskey*|.
 \cs_new_protected:Nn \__enumext_store_internal_ref:
   {
     \cs_set_protected:Npn \__enumext_tmp:n ##1
@@ -2642,7 +2647,7 @@
     \cs_undefine:c { __scontents_anskey*_env_begin: }
     \cs_undefine:c { __scontents_anskey*_env_end: }
   }
-%% Hooks for |anskey*| environment out off enumext and enumext*.
+%% Hooks for |anskey*| environment out off |enumext| and |enumext*|.
 \__enumext_before_env:nn { enumext }
   {
     \bool_lazy_and:nnT
@@ -2667,7 +2672,7 @@
           }
       }
   }
-%% Hooks for |anskey*| inside the keyans, keyans* and keyanspic.
+%% Hooks for |anskey*| inside the keyans, keyans* and keyanspic, math-mode ans not number |\item|.
 \__enumext_before_env:nn { anskey* }
   {
     \int_compare:nNnT { \l__enumext_keyans_level_int } = { 1 }
@@ -2685,6 +2690,10 @@
     \bool_if:NF \l__enumext_item_number_bool
       {
         \msg_error:nn { enumext } { anskey-unnumber-item }
+      }
+    \mode_if_math:T
+      {
+        \msg_error:nnn { enumext } { anskey-math-mode } { anskey* }
       }
   }
 %% Function for define |anskey*| environment using scontents.
@@ -4873,7 +4882,7 @@
   }
 \msg_new:nnn { enumext } { anskey-already-stored }
   {
-    Content ~ has ~ already ~ been ~ stored ~ for ~ this ~ \c_backslash_str item ~ \msg_line_context:.
+    Content ~ already ~ stored ~ for ~ this ~ \c_backslash_str item ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { anskey-empty-arg }
   {
@@ -4887,6 +4896,10 @@
 \msg_new:nnn { enumext } { anskey-nested }
   {
     The ~ command ~ \c_backslash_str anskey~ can't ~ be ~ nested ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { anskey-math-mode }
+  {
+    #1 ~ can't ~ work ~ in ~ math ~ mode ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { anskey-env-wrong }
   {
