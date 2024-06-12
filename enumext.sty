@@ -2133,27 +2133,6 @@
     \int_gzero:N \g__enumext_check_starred_cmd_int
     \tl_clear:N \l__enumext_check_start_line_env_tl
   }
-%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
-\cs_new_protected:Nn \__enumext_execute_after_env:
-  {
-    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
-      {
-        \tl_if_empty:NF \g__enumext_store_name_tl
-          {
-            \__enumext_stop_save_ans_msg:
-            \__enumext_item_answer_diff:
-            \__enumext_log_global_vars:
-            \__enumext_log_answer_vars:
-            \bool_if:NTF \g__enumext_check_ans_key_bool
-              {
-                \__enumext_check_ans_show:
-              }
-              { \__enumext_check_ans_log: }
-            \__enumext_undefine_anskey_env:
-          }
-        \__enumext_reset_global_vars:
-      }
-  }
 %% Add keys associated with storage on first level of |enumext| and |enumext*|.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
@@ -2387,6 +2366,185 @@
     \skip_horizontal:n { \dim_use:N #2 }
   }
 \cs_generate_variant:Nn \__enumext_print_keyans_box:NN { cc }
+%% Internal label and ref function for |\anskey| and |anskey*|.
+\cs_new_protected:Nn \__enumext_store_internal_ref:
+  {
+    \cs_set_protected:Npn \__enumext_tmp:n ##1
+      {
+        \tl_set_eq:cc { l__enumext_label_copy_##1_tl } { l__enumext_label_##1_tl }
+        \tl_reverse:c { l__enumext_label_copy_##1_tl }
+        \tl_remove_once:cn { l__enumext_label_copy_##1_tl } { . }
+        \tl_reverse:c { l__enumext_label_copy_##1_tl }
+      }
+    \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {##1} }
+    \cs_set:Npn \__enumext_tmp:n ##1
+      { . \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \g__enumext_starred_bool }
+        { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
+      }
+      {
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          { \tl_use:N \l__enumext_label_copy_vii_tl }
+      }
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \l__enumext_standar_bool }
+        { \bool_if_p:N \g__enumext_starred_bool }
+        { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
+      }
+      {
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          {
+            \tl_use:N \l__enumext_label_copy_vii_tl
+            \int_step_function:nnN { 1 } { \l__enumext_level_int } \__enumext_tmp:n
+          }
+      }
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \l__enumext_standar_bool }
+        { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
+        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
+        { \bool_not_p:n { \l__enumext_starred_bool } }
+      }
+      {
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          {
+            \tl_use:N \l__enumext_label_copy_i_tl
+            \int_step_function:nnN { 2 } { \l__enumext_level_int } \__enumext_tmp:n
+          }
+      }
+    \cs_set:Npn \__enumext_tmp:n ##1
+      { \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
+    \bool_lazy_all:nT
+      {
+        { \bool_if_p:N \l__enumext_standar_bool }
+        { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
+        { \bool_not_p:n { \g__enumext_starred_bool } }
+        { \int_compare_p:nNn { \l__enumext_level_h_int } > { 0 } }
+      }
+      {
+        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
+          {
+            \int_step_function:nnN { 1 } { \l__enumext_level_int } \__enumext_tmp:n
+            . \tl_use:N \l__enumext_label_copy_vii_tl
+          }
+      }
+    \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
+      {
+        \l__enumext_store_name_tl \c_colon_str
+        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
+      }
+    \tl_put_right:Ne \l__enumext_write_aux_file_tl
+      {
+        \__enumext_newlabel:nn
+          { \exp_not:V \l__enumext_newlabel_arg_one_tl }
+          { \l__enumext_newlabel_arg_two_tl }
+      }
+    \l__enumext_write_aux_file_tl
+  }
+%% Internal function of |\anskey| for store content.
+\cs_new_protected:Npn \__enumext_store_anskey_code:n #1
+  {
+    \int_gincr:N \g__enumext_item_anskey_int
+    \__enumext_store_addto_prop:n {#1}
+    \bool_if:NT \l__enumext_store_ref_key_bool
+      {
+        \__enumext_store_internal_ref:
+      }
+    \__enumext_anskey_show_wrap_left:n { #1 }
+    \tl_clear:N \l__enumext_store_anskey_arg_tl
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l__enumext_store_columns_break_bool }
+      { \bool_not_p:n { \l__enumext_starred_bool } }
+      {
+        \tl_put_left:Nn \l__enumext_store_anskey_arg_tl { \columnbreak }
+      }
+    \tl_put_right:Nn \l__enumext_store_anskey_arg_tl { \item }
+    \bool_lazy_and:nnT
+      { \bool_not_p:n { \l__enumext_starred_bool } }
+      { \int_compare_p:nNn { \l__enumext_store_item_join_int } > { 1 } }
+      {
+        \tl_put_right:Ne \l__enumext_store_anskey_arg_tl
+           {
+             ( \exp_not:V \l__enumext_store_item_join_int )
+           }
+       }
+     \bool_if:NTF \l__enumext_store_item_star_bool
+      {
+        \tl_put_right:Nn \l__enumext_store_anskey_arg_tl { * }
+        \tl_if_empty:NF \l__enumext_store_item_symbol_tl
+          {
+            \tl_put_right:Ne \l__enumext_store_anskey_arg_tl
+              {
+                [ \exp_not:V \l__enumext_store_item_symbol_tl ]
+              }
+          }
+        \dim_compare:nT
+          {
+            \l__enumext_store_item_symbol_sep_dim != \c_zero_dim
+          }
+          {
+            \tl_put_right:Ne \l__enumext_store_anskey_arg_tl
+              {
+                [ \exp_not:V \l__enumext_store_item_symbol_sep_dim ]
+              }
+          }
+        \tl_put_right:Nn \l__enumext_store_anskey_arg_tl {#1}
+      }
+      {
+        \tl_put_right:Nn \l__enumext_store_anskey_arg_tl {#1}
+      }
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \l__enumext_store_ref_key_bool }
+      { \bool_if_p:N \l__enumext_hyperref_bool }
+      {
+        \tl_put_right:Ne \l__enumext_store_anskey_arg_tl
+          {
+            \hfill \exp_not:N \hyperlink { \exp_not:V \l__enumext_newlabel_arg_one_tl }
+                 { \exp_not:V \l__enumext_mark_ref_sym_tl }
+          }
+      }
+    \__enumext_store_addto_seq:V \l__enumext_store_anskey_arg_tl
+  }
+%% Internal |wrap-ans| implementation for |\anskey| and |anskey*|.
+\cs_new_protected:Npn \__enumext_anskey_show_wrap_arg:n #1
+  {
+    \par
+    \bool_if:NT \l__enumext_starred_bool
+      {
+       \cs_set:Nn \__enumext_level: { vii }
+      }
+    \__enumext_print_keyans_box:cc
+      { l__enumext_labelwidth_ \__enumext_level: _dim }
+      { l__enumext_labelsep_ \__enumext_level: _dim }
+    \__enumext_anskey_wrapper:n { #1 }
+  }
+%% Internal |show-ans| and |show-pos| implementation for |\anskey| and |anskey*|.
+\cs_new_protected:Npn \__enumext_anskey_show_wrap_left:n #1
+  {
+    \bool_if:NT \l__enumext_show_answer_bool
+      {
+        \__enumext_anskey_show_wrap_arg:n { #1 }
+      }
+    \bool_if:NT \l__enumext_show_position_bool
+      {
+        \tl_set:Ne \l__enumext_mark_answer_sym_tl
+          {
+            \group_begin:
+            \exp_not:N \normalfont
+            \exp_not:N \footnotesize [ \int_eval:n
+              {
+                \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop }
+              }
+              ]
+            \group_end:
+          }
+        \__enumext_anskey_show_wrap_arg:n { #1 }
+      }
+  }
+
 %% Add |key=val| for |\anskey|.
 \keys_define:nn { enumext / anskey }
   {
@@ -2475,184 +2633,6 @@
     \mode_if_math:T
       {
         \msg_error:nne { enumext } { anskey-math-mode } { \c_backslash_str anskey }
-      }
-  }
-%% Internal function of |\anskey| for store content.
-\cs_new_protected:Npn \__enumext_store_anskey_code:n #1
-  {
-    \int_gincr:N \g__enumext_item_anskey_int
-    \__enumext_store_addto_prop:n {#1}
-    \bool_if:NT \l__enumext_store_ref_key_bool
-      {
-        \__enumext_store_internal_ref:
-      }
-    \__enumext_anskey_show_wrap_left:n { #1 }
-    \tl_clear:N \l__enumext_store_anskey_arg_tl
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_store_columns_break_bool }
-      { \bool_not_p:n { \l__enumext_starred_bool } }
-      {
-        \tl_put_left:Nn \l__enumext_store_anskey_arg_tl { \columnbreak }
-      }
-    \tl_put_right:Nn \l__enumext_store_anskey_arg_tl { \item }
-    \bool_lazy_and:nnT
-      { \bool_not_p:n { \l__enumext_starred_bool } }
-      { \int_compare_p:nNn { \l__enumext_store_item_join_int } > { 1 } }
-      {
-        \tl_put_right:Ne \l__enumext_store_anskey_arg_tl
-           {
-             ( \exp_not:V \l__enumext_store_item_join_int )
-           }
-       }
-     \bool_if:NTF \l__enumext_store_item_star_bool
-      {
-        \tl_put_right:Nn \l__enumext_store_anskey_arg_tl { * }
-        \tl_if_empty:NF \l__enumext_store_item_symbol_tl
-          {
-            \tl_put_right:Ne \l__enumext_store_anskey_arg_tl
-              {
-                [ \exp_not:V \l__enumext_store_item_symbol_tl ]
-              }
-          }
-        \dim_compare:nT
-          {
-            \l__enumext_store_item_symbol_sep_dim != \c_zero_dim
-          }
-          {
-            \tl_put_right:Ne \l__enumext_store_anskey_arg_tl
-              {
-                [ \exp_not:V \l__enumext_store_item_symbol_sep_dim ]
-              }
-          }
-        \tl_put_right:Nn \l__enumext_store_anskey_arg_tl {#1}
-      }
-      {
-        \tl_put_right:Nn \l__enumext_store_anskey_arg_tl {#1}
-      }
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_store_ref_key_bool }
-      { \bool_if_p:N \l__enumext_hyperref_bool }
-      {
-        \tl_put_right:Ne \l__enumext_store_anskey_arg_tl
-          {
-            \hfill \exp_not:N \hyperlink { \exp_not:V \l__enumext_newlabel_arg_one_tl }
-                 { \exp_not:V \l__enumext_mark_ref_sym_tl }
-          }
-      }
-    \__enumext_store_addto_seq:V \l__enumext_store_anskey_arg_tl
-  }
-%% Internal label and ref function for |\anskey| and |anskey*|.
-\cs_new_protected:Nn \__enumext_store_internal_ref:
-  {
-    \cs_set_protected:Npn \__enumext_tmp:n ##1
-      {
-        \tl_set_eq:cc { l__enumext_label_copy_##1_tl } { l__enumext_label_##1_tl }
-        \tl_reverse:c { l__enumext_label_copy_##1_tl }
-        \tl_remove_once:cn { l__enumext_label_copy_##1_tl } { . }
-        \tl_reverse:c { l__enumext_label_copy_##1_tl }
-      }
-    \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {##1} }
-    \cs_set:Npn \__enumext_tmp:n ##1
-      { . \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
-    \bool_lazy_all:nT
-      {
-        { \bool_if_p:N \g__enumext_starred_bool }
-        { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
-      }
-      {
-        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
-          { \tl_use:N \l__enumext_label_copy_vii_tl }
-      }
-    \bool_lazy_all:nT
-      {
-        { \bool_if_p:N \l__enumext_standar_bool }
-        { \bool_if_p:N \g__enumext_starred_bool }
-        { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
-      }
-      {
-        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
-          {
-            \tl_use:N \l__enumext_label_copy_vii_tl
-            \int_step_function:nnN { 1 } { \l__enumext_level_int } \__enumext_tmp:n
-          }
-      }
-    \bool_lazy_all:nT
-      {
-        { \bool_if_p:N \l__enumext_standar_bool }
-        { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
-        { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
-        { \bool_not_p:n { \l__enumext_starred_bool } }
-      }
-      {
-        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
-          {
-            \tl_use:N \l__enumext_label_copy_i_tl
-            \int_step_function:nnN { 2 } { \l__enumext_level_int } \__enumext_tmp:n
-          }
-      }
-    \cs_set:Npn \__enumext_tmp:n ##1
-      { \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
-    \bool_lazy_all:nT
-      {
-        { \bool_if_p:N \l__enumext_standar_bool }
-        { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
-        { \bool_not_p:n { \g__enumext_starred_bool } }
-        { \int_compare_p:nNn { \l__enumext_level_h_int } > { 0 } }
-      }
-      {
-        \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
-          {
-            \int_step_function:nnN { 1 } { \l__enumext_level_int } \__enumext_tmp:n
-            . \tl_use:N \l__enumext_label_copy_vii_tl
-          }
-      }
-    \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
-      {
-        \l__enumext_store_name_tl \c_colon_str
-        \int_eval:n { \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop } }
-      }
-    \tl_put_right:Ne \l__enumext_write_aux_file_tl
-      {
-        \__enumext_newlabel:nn
-          { \exp_not:V \l__enumext_newlabel_arg_one_tl }
-          { \l__enumext_newlabel_arg_two_tl }
-      }
-    \l__enumext_write_aux_file_tl
-  }
-%% Internal |wrap-ans| implementation for |\anskey| and |anskey*|.
-\cs_new_protected:Npn \__enumext_anskey_show_wrap_arg:n #1
-  {
-    \par
-    \bool_if:NT \l__enumext_starred_bool
-      {
-       \cs_set:Nn \__enumext_level: { vii }
-      }
-    \__enumext_print_keyans_box:cc
-      { l__enumext_labelwidth_ \__enumext_level: _dim }
-      { l__enumext_labelsep_ \__enumext_level: _dim }
-    \__enumext_anskey_wrapper:n { #1 }
-  }
-%% Internal |show-ans| and |show-pos| implementation for |\anskey| and |anskey*|.
-\cs_new_protected:Npn \__enumext_anskey_show_wrap_left:n #1
-  {
-    \bool_if:NT \l__enumext_show_answer_bool
-      {
-        \__enumext_anskey_show_wrap_arg:n { #1 }
-      }
-    \bool_if:NT \l__enumext_show_position_bool
-      {
-        \tl_set:Ne \l__enumext_mark_answer_sym_tl
-          {
-            \group_begin:
-            \exp_not:N \normalfont
-            \exp_not:N \footnotesize [ \int_eval:n
-              {
-                \prop_count:c { g__enumext_ \l__enumext_store_name_tl _prop }
-              }
-              ]
-            \group_end:
-          }
-        \__enumext_anskey_show_wrap_arg:n { #1 }
       }
   }
 \cs_new_protected:Nn \__enumext_undefine_anskey_env:
@@ -2896,6 +2876,27 @@
     \bool_gset_false:N \g__enumext_store_item_star_bool
     \tl_gclear:N       \g__enumext_store_item_symbol_tl
     \dim_gzero:N       \g__enumext_store_item_symbol_sep_dim
+  }
+%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+\cs_new_protected:Nn \__enumext_execute_after_env:
+  {
+    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
+      {
+        \tl_if_empty:NF \g__enumext_store_name_tl
+          {
+            \__enumext_stop_save_ans_msg:
+            \__enumext_item_answer_diff:
+            \__enumext_log_global_vars:
+            \__enumext_log_answer_vars:
+            \bool_if:NTF \g__enumext_check_ans_key_bool
+              {
+                \__enumext_check_ans_show:
+              }
+              { \__enumext_check_ans_log: }
+            \__enumext_undefine_anskey_env:
+          }
+        \__enumext_reset_global_vars:
+      }
   }
 %% Function for storing in prop list for |keyans| and |keyanspic|.
 \cs_new_protected:Npn \__enumext_keyans_addto_prop:n #1
