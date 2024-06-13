@@ -10471,14 +10471,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_safe_exec:}\label{fun:enumext:safe-exe}
-%    The \cs{@@_safe_exec:} function first execute the function \cs{@@_is_not_nested:} which
-%    will set the variable \cs{g_@@_standar_bool} to \emph{\enquote{true}}
-%    if the environment is not nested in \myenv*{enumext*}, we increment the
-%    variable \cs{l_@@_level_int} for the nesting levels and set the
-%    \cs{l_@@_standar_bool} variable to \emph{\enquote{true}}. Finally we
-%    set the variable \cs{l_@@_standar_first_bool} to
-%    \emph{\enquote{true}} only if the environment is not nested and we are
-%    at the \emph{\enquote{first level}} of it using the function \cs{@@_is_on_first_level:}.
+%   The \cs{@@_safe_exec:} function first call the function \cs{@@_internal_mini_page:} to create
+%   the environment \myvarenv*{__@@_mini_env*}, then the function
+%   \cs{@@_is_not_nested:} which sets \cs{g_@@_standar_bool} to \emph{\enquote{true}} if we
+%   are not nested within \myenv*{enumext*}, we will increment
+%   \cs{l_@@_level_int} to restrict nesting of the environment, set
+%   \cs{l_@@_standar_bool} to \emph{\enquote{true}} and finally call the function
+%   \cs{@@_is_on_first_level:} which sets \cs{l_@@_standar_first_bool} to
+%   \emph{\enquote{true}} only if the environment is not nested and we are
+%    at the \emph{\enquote{first level}}.
 % \iffalse
 %% Safe exec for |enumext|.
 % \fi
@@ -10497,15 +10498,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_parse_keys:n}
-%    The \cs{@@_parse_store_keys:n} function will parse the \mymeta{keys}
-%    passed to the optional environment argument \myenv*{enumext} by levels
-%    only if present. First we clear the variable \cs{l_@@_series_str} and
-%    then we check if we are at the first level, if so we process the
-%    \mymeta{keys} and then execute the function \cs{@@_parse_series:n} used
-%    by the key \mykey{series}, otherwise we will pass the \mymeta{keys} to
-%    the inner levels of the environment and finally if the variable
-%    \cs{l_@@_store_active_bool} established by the key \mykey{save-ans} is
-%    true we execute \cs{@@_parse_store_keys:n} used by the key \mykey{save-key}.
+%  The \cs{@@_parse_store_keys:n} function first we will clear the
+%  variable \cs{l_@@_series_str} used by the key \mykey{series} and then
+%  we check if we are at the \emph{\enquote{first level}}, if so we
+%  process the \mymeta{keys} and then execute the function
+%  \cs{@@_parse_series:n} used by the key \mykey{series} and call the
+%  function \cs{@@_nested_base_line_fix:} used by the key
+%  \mykey{base-fix}, otherwise we will pass the \mymeta{keys} to the inner
+%  levels of the environment then we execute the function \cs{@@_store_active_keys:n}
+%  and reprocess the \mymeta{keys} to pass them to the storage \mymeta{sequence}
+%  if the key \mykey{save-key} is not active.
 % \iffalse
 %% Parse |key=val| for enumext: Set default series and store keys in seq-name for \printkeyans.
 % \fi
@@ -10584,19 +10586,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_before_list:}
-%    The function \cs{@@_before_list:} will add the vertical
-%    spacing on the environment if the \mykey{above} key is active next to
-%    the \mymarg{code} defined by the \mykey{before*} key if it is active.
+%    The function \cs{@@_before_list:} first calls the function
+%    \cs{@@_vspace_above:} used by the keys \mykey{above} and
+%    \mykey{above*}, then calls the function \cs{@@_before_args_exec:}
+%    used by the key \mykey{before*} and finally execute the function
+%    \cs{@@_check_ans_active:} for the check answer mechanism.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_list:
   {
     \@@_vspace_above:
     \@@_before_args_exec:
-%    \end{macrocode}
-%    The function \cs{@@_check_ans_active:}  will handle the check
-%    answer mechanism, which will be activated with the \mykey{check-ans}
-%    key.
-%    \begin{macrocode}
     \@@_check_ans_active:
 %    \end{macrocode}
 %    When the \mykey{mini-env} key is active it will set the value of the
@@ -10604,8 +10603,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    environment on the \emph{\enquote{right side}}, using this value together with the value
 %    of the \myvarenv{l__@@_minipage_hsep_X_dim} set by the \mykey{mini-sep} key,
 %    the value of \myvarenv{l__@@_minipage_left_X_dim} will be set, which will be
-%    the \emph{width} of \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{left side}}, always having
-%    a current \ics{linewidth} as \emph{maximum width} between them.
+%    the \emph{width} of \myvarenv*{__@@_mini_env*} environment on the
+%    \emph{\enquote{left side}}, always having a current \ics{linewidth}
+%    as \emph{maximum width} between them.
 % \iffalse
 %% Set |mini-env| width value.
 % \fi
@@ -10624,10 +10624,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    activated and the integer variable \cs{g_@@_minipage_stat_int}
 %    used by the \ics*{miniright} command will be incremented, then
 %    the function \cs{@@_mini_addvspace:} is called and the
-%    \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{left side}} will be initialized followed by the
-%    \emph{\enquote{vertical spacing}} applied to preserve
-%    the \emph{\enquote{baseline}} between the \emph{left} and \emph{right} side
-%    environments.
+%    \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{left
+%    side}} will be initialized followed by the \emph{\enquote{vertical spacing}}
+%    applied to preserve the \emph{\enquote{baseline}} between the \emph{left}
+%    and \emph{right} side environments.
 %    After these actions, the function \cs{@@_multicols_start:} is
 %    called to handle the \myenv{multicols} environment.
 %    \begin{important}*
@@ -10656,8 +10656,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_multicols_start:} will start the
 %    \myenv{multicols} environment according to the value passed by the
 %    \mykey{columns} key, then set the default value for
-%    \ics{columnsep} when \mykey{columns-sep}=\mydim{0pt} and set the value of \ics{multicolsep} equal to zero and leave
-%    \ics{columnseprule} equal to zero for inner levels.
+%    \ics{columnsep} when \mykey{columns-sep}=\mydim{0pt} and set the
+%    value of \ics{multicolsep} equal to zero and leave \ics{columnseprule}
+%    equal to zero for inner levels.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_multicols_start:
   {
@@ -10721,14 +10722,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_after_list:}
-%    The function \cs{@@_after_list:}  will will check the state of
+%    The function \cs{@@_after_list:} first check the state of
 %    the boolean variable \myvarenv{l__@@_minipage_active_X_bool}, if it is
 %    \enquote{true} a small test will be executed to check if we have
 %    omitted the use of \ics*{miniright} (the \myvarenv*{__@@_mini_env*}
-%    environment has not been closed), then close
-%    \myvarenv*{__@@_mini_env*} and add the \emph{adjusted vertical
-%    space} \cs{l_@@_minipage_after_skip}, otherwise we will close
-%    the \myenv{multicols} environment.
+%    environment has not been closed), then close \myvarenv*{__@@_mini_env*}
+%    and add the \emph{adjusted vertical space} \cs{l_@@_minipage_after_skip},
+%    otherwise we will close the \myenv{multicols} environment.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_list:
   {
@@ -10745,35 +10745,30 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       { \@@_multicols_stop: }
 %    \end{macrocode}
-%    If the \mykey{check-ans} key is active, we set the boolean variable
-%    \cs{g_@@_check_ans_show_bool} to true and copy the \emph{\enquote{store name}} to
-%    the variable \cs{g_@@_store_name_tl}.
-%    \begin{macrocode}
-     \@@_check_ans_key_hook:
-%    \end{macrocode}
-%    Now apply the \mymarg{code} handled by the \mykey{after} key
-%    together with the \emph{vertical space} handled by the \mykey{below} key if
-%    they are present, set \cs{l_@@_standar_bool} to false and save the
-%    \emph{current value} of the counter for \mykey{series}, \mykey{resume}
-%    and \mykey{resume*} keys.
+%   Now we will execute the functions \cs{@@_after_stop_list:} used by the key \mykey{after},
+%   \cs{@@_check_ans_key_hook:} used by the key \mykey{check-ans},
+%   \cs{@@_vspace_below:} used by the keys \mykey{below} and
+%   \mykey{below*}. Finally set \cs{l_@@_standar_bool} to false and call
+%   the function \cs{@@_resume_save_counter:} used by the \mykey{series},
+%   \mykey{resume} and \mykey{resume*} keys.
 %    \begin{macrocode}
     \@@_after_stop_list:
+    \@@_check_ans_key_hook:
     \@@_vspace_below:
     \bool_set_false:N \l_@@_standar_bool
     \@@_resume_save_counter:
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% As we don't want our check to be executed \mykey{check-ans} by levels but on the
-% complete list, we will take it out of the \myenv*{enumext}
-% environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
+%   As we don't want our check to be executed \mykey{check-ans} by levels but on the
+%   complete list, we will take it out of the \myenv*{enumext}
+%   environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
 % \iffalse
 %% Execute |check-ans| key out of |enumext|.
 % \fi
 %    \begin{macrocode}
 \@@_after_env:nn {enumext} { \@@_execute_after_env: }
 %    \end{macrocode}
+% \end{macro}
 %
 % \subsection{The environment \env{keyans}}\label{env:keyans}
 %
@@ -11847,9 +11842,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   The function \cs{@@_before_list_vii:} first calls the function
 %   \cs{@@_vspace_above_vii:} used by the keys \mykey{above} and
 %   \mykey{above*}, then calls the function \cs{@@_check_ans_active:} for
-%   the check answer mechanism and finally calls the function
-%   \cs{@@_start_mini_vii:} used by the keys \mykey{mini-env},
-%   \mykey{mini-right} and \mykey{mini-right*}.
+%   the check answer mechanism and finally calls the functions
+%   \cs{@@_before_args_exec:} and \cs{@@_start_mini_vii:} used by the
+%   keys \mykey{before*}, \mykey{mini-env}, \mykey{mini-right} and
+%   \mykey{mini-right*}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_list_vii:
   {
