@@ -7,19 +7,19 @@
 \usepackage{tikzducks}
 \usepackage[colorlinks]{hyperref}
 \usepackage{enumext}
-%%\usepackage{lua-visual-debug}
-\usepackage{microtype}
 \pagestyle{empty}
 \begin{document}
 \begin{enumext}[save-ans=simplews,columns=2,check-ans=true,show-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
   \item Factor $x^{2}-2x+1$
-    \begin{anskey*}
-    HHHH
-    \end{anskey*}
+
+\begin{anskey*}[item-star]
+\verb*+first answer+
+\end{anskey*}
+
   \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
   \item True False
     \begin{enumext}[nosep]
-      \item $\alpha > \delta$ \anskey{False}
+      \item $\alpha > \delta$ \anskey{False \par very false}
       \item \LaTeX2e\ is cool? \anskey{Very True!}
     \end{enumext}
   \item Related to Linux

@@ -8158,7 +8158,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \keys_define:nn { enumext / #1 }
       {
         wrap-ans   .cs_set_protected:Np = \@@_anskey_wrapper:n ##1,
-        wrap-ans   .initial:n = \fbox{##1},
+        wrap-ans   .initial:n =
+                     {
+                       \fbox{\parbox[t]{\dimeval{\itemwidthdim -2\fboxsep -2\fboxrule}}{##1}}
+                     },
         wrap-ans   .value_required:n = true,
         wrap-opt   .cs_set_protected:Np = \@@_keyans_wrapper_opt:n ##1,
         wrap-opt   .initial:n = [{##1}],
@@ -10434,6 +10437,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \use:c { @@_list_arg_two_ \@@_level: : }
         \@@_before_keys_exec:
       }
+    \@@_set_item_width_dim:
     \@@_after_args_exec:
   }
   {
@@ -10443,6 +10447,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
+%
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_set_item_width_dim:
+  {
+    \dim_set:Nn \itemwidthdim
+      {
+        \columnwidth - \labelwidth - \labelsep - \rightmargin
+      }
+    \dim_compare:nT
+      {
+        \dim_use:c { l_@@_listoffset_ \_@@_level: _dim } != \c_zero_dim
+      }
+      {
+        \dim_sub:Nn \itemwidthdim
+          {
+            \dim_use:c { l_@@_listoffset_ \_@@_level: _dim }
+          }
+      }
+  }
+%    \end{macrocode}
+%
 %
 % \begin{macro}{\@@_safe_exec:}\label{fun:enumext:safe-exe}
 %    The \cs{@@_safe_exec:} function first execute the function \cs{@@_is_not_nested:} which

@@ -2162,7 +2162,10 @@
     \keys_define:nn { enumext / #1 }
       {
         wrap-ans   .cs_set_protected:Np = \__enumext_anskey_wrapper:n ##1,
-        wrap-ans   .initial:n = \fbox{##1},
+        wrap-ans   .initial:n =
+                     {
+                       \fbox{\parbox[t]{\dimeval{\itemwidthdim -2\fboxsep -2\fboxrule}}{##1}}
+                     },
         wrap-ans   .value_required:n = true,
         wrap-opt   .cs_set_protected:Np = \__enumext_keyans_wrapper_opt:n ##1,
         wrap-opt   .initial:n = [{##1}],
@@ -3430,12 +3433,30 @@
         \use:c { __enumext_list_arg_two_ \__enumext_level: : }
         \__enumext_before_keys_exec:
       }
+    \__enumext_set_item_width_dim:
     \__enumext_after_args_exec:
   }
   {
     \__enumext_stop_list:
     \__enumext_stop_store_level:
     \__enumext_after_list:
+  }
+\cs_new_protected:Nn \__enumext_set_item_width_dim:
+  {
+    \dim_set:Nn \itemwidthdim
+      {
+        \columnwidth - \labelwidth - \labelsep - \rightmargin
+      }
+    \dim_compare:nT
+      {
+        \dim_use:c { l__enumext_listoffset_ \__enumext_level: _dim } != \c_zero_dim
+      }
+      {
+        \dim_sub:Nn \itemwidthdim
+          {
+            \dim_use:c { l__enumext_listoffset_ \__enumext_level: _dim }
+          }
+      }
   }
 %% Safe exec for |enumext|.
 \cs_new_protected:Nn \__enumext_safe_exec:
