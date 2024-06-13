@@ -582,7 +582,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, if@minipage, parbox, ignorespace %
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, %
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
-                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, if@hyper@item,%
+                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, if@hyper@item,if@noitemarg,%
                     triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean},%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
@@ -11707,7 +11707,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{enumext*}
 %    First we will generate the environment and we will give a
 %    temporary definition to \cs{@@_stop_item_tmp_vii:} equal to
-%    \ics{noindent} and next to |\item| equal to
+%    |\noindent| and next to |\item| equal to
 %    \cs{@@_start_item_tmp_vii:} which we will redefine later.
 % \iffalse
 %% Define |enumext*|
@@ -11724,10 +11724,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_list_arg_two_vii:
         \@@_before_keys_exec_vii:
       }
-      \@@_starred_columns_set_vii:
-      \item[] \scan_stop:
-      \cs_set_eq:NN \@@_stop_item_tmp_vii: \noindent
-      \cs_set_eq:NN \item \@@_start_item_tmp_vii:
+    \@@_starred_columns_set_vii:
+    \item[] \scan_stop:
+    \cs_set_eq:NN \@@_stop_item_tmp_vii: \noindent
+    \cs_set_eq:NN \item \@@_start_item_tmp_vii:
   }
   {
     \@@_stop_item_tmp_vii:
@@ -11740,10 +11740,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_safe_exec_vii:}\label{fun:starred:safe-exe}
-%    First check the maximum nesting level for the \myenv*{enumext*}
-%    environment then set the vars \cs{l_@@_starred_bool} and \cs{g_@@_starred_bool}.
+%   We will first call the function \cs{@@_internal_mini_page:} to create
+%   the environment \myvarenv*{__@@_mini_env*}, then the function
+%   \cs{@@_is_not_nested:} which sets \cs{g_@@_starred_bool} to true if we
+%   are not nested within \myenv*{enumext}, we will increment
+%   \cs{l_@@_level_h_int} to restrict nesting of the environment, set
+%   \cs{l_@@_starred_bool} to true and finally call the function
+%   \cs{@@_is_on_first_level:} which sets \cs{l_@@_starred_first_bool} to
+%   true if we are not nested, allowing the \emph{\enquote{storage system}}
+%   to be used.
 % \iffalse
-%% Test deep-level for |enumext*| and set bool vars.
+%% Safe exec for |enumext*| (set bool vars for storage system).
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec_vii:
@@ -11762,11 +11769,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_parse_keys_vii:n}
-%    Parse \myoarg{key \textnormal{\textcolor{gray}{=}} val}
-%    for \myenv*{enumext*}. If the variable
-%    \cs{l_@@_store_active_bool} is true it will call the functions
-%    \cs{@@_parse_serie:n} and \cs{@@_store_active_keys_vii:n} and
-%    reprocess the \mymeta{keys} to pass them to the storage \mymeta{sequence}.
+%  First we will clear the variable \cs{l_@@_series_str} used by the key
+%  \mykey{series}, process the environment \myoarg{key \textnormal{\textcolor{gray}{=}} val}
+%  and execute the function \cs{@@_parse_series:n} and used by the key
+%  \mykey{series}, then we execute the function \cs{@@_store_active_keys_vii:n}
+%  and reprocess the \mymeta{keys} to pass them to the storage \mymeta{sequence}
+%  if the key \mykey{save-key} is not active and finally we call the function
+%  \cs{@@_nested_base_line_fix:} used by the key \mykey{base-fix}.
 % \iffalse
 %% Parse |key=val| and store keys for |enumext*|.
 % \fi
@@ -11786,11 +11795,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_before_list_vii:}
-%    The function \cs{@@_before_list_vii:} will add the vertical
-%    spacing on the environment if the \mykey{above} key is active next to
-%    the \mymarg{code} defined by the \mykey{before*} key if
-%    it is active, the call the function \cs{@@_start_mini_vii:} handle by
-%    \mykey{mini-env}.
+%   The function \cs{@@_before_list_vii:} first calls the function
+%   \cs{@@_vspace_above_vii:} used by the keys \mykey{above} and
+%   \mykey{above*}, then calls the function \cs{@@_check_ans_active:} for
+%   the check answer mechanism and finally calls the function
+%   \cs{@@_start_mini_vii:} used by the keys \mykey{mini-env},
+%   \mykey{mini-right} and \mykey{mini-right*}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_list_vii:
   {
@@ -11803,16 +11813,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_after_list_vii:}
-%    The function \cs{@@_after_list:} first call the function \cs{@@_stop_mini_vii:},
-%    then apply the \mymarg{code} handled by the \mykey{after} key
-%    together with the \emph{vertical space} handled by the \mykey{below} key if
-%    they are present.
-%    Finally set false the vars \cs{g_@@_starred_bool} and \cs{l_@@_starred_bool},
-%    save the \emph{current value} of the counter in
-%    \cs{g_@@_resume_vii_int} for the \mykey{resume} key. If the
-%    \mykey{save-ans} key is active, it will create the integer variable
-%    for the \mykey{resume} key, we only have to assign it the
-%    value of the current counter.
+%   The function \cs{@@_after_list_vii:} first calls the function
+%   \cs{@@_stop_mini_vii:} used by the keys \mykey{mini-env},
+%   \mykey{mini-right} and \mykey{mini-right*}, then to the functions
+%   \cs{@@_after_stop_list_vii:} used by the key \mykey{after},
+%   \cs{@@_check_ans_key_hook:} used by the key \mykey{check-ans},
+%   \cs{@@_vspace_below_vii:} used by the keys \mykey{below} and
+%   \mykey{below*}. Finally set \cs{l_@@_starred_bool} to false and call
+%   the \cs{@@_resume_save_counter:} function used by the \mykey{series},
+%   \mykey{resume} and \mykey{resume*} keys.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_list_vii:
   {
@@ -11829,7 +11838,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_start_store_level_vii:, \@@_stop_store_level_vii:}
 %    The \cs{@@_start_store_level_vii:} and \cs{@@_stop_store_level_vii:}
 %    functions activate the level saving mechanism for storage in \mymeta{sequence} of
-%    the \ics*{anskey} command if \myenv*{enumext*} are nested in \myenv*{enumext}.
+%    the \ics*{anskey} command and \myenv*{anskey*} environment if
+%    \myenv*{enumext*} are nested in \myenv*{enumext}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level_vii:
   {

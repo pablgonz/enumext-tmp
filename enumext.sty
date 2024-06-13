@@ -4122,10 +4122,10 @@
         \__enumext_list_arg_two_vii:
         \__enumext_before_keys_exec_vii:
       }
-      \__enumext_starred_columns_set_vii:
-      \item[] \scan_stop:
-      \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \noindent
-      \cs_set_eq:NN \item \__enumext_start_item_tmp_vii:
+    \__enumext_starred_columns_set_vii:
+    \item[] \scan_stop:
+    \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \noindent
+    \cs_set_eq:NN \item \__enumext_start_item_tmp_vii:
   }
   {
     \__enumext_stop_item_tmp_vii:
@@ -4134,7 +4134,7 @@
     \__enumext_stop_store_level_vii:
     \__enumext_after_list_vii:
   }
-%% Test deep-level for |enumext*| and set bool vars.
+%% Safe exec for |enumext*| (set bool vars for storage system).
 \cs_new_protected:Nn \__enumext_safe_exec_vii:
   {
     \__enumext_internal_mini_page:
