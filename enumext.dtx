@@ -4508,7 +4508,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{\l_@@_item_starred_X_bool, l_@@_item_column_pos_X_int,
 %                       \g_@@_item_count_all_X_int, \l_@@_joined_item_X_int,
-%                       \l_@@_joined_item_aux_X_int, \l_@@_tmpa_X_int,
+%                       \l_@@_joined_item_aux_X_int, \l_@@_tmpa_X_int, \l_@@_tmpa_X_dim,
 %                       \l_@@_item_text_X_box, \l_@@_joined_width_X_dim,
 %                       \l_@@_item_width_X_dim, \g_@@_item_symbol_aux_X_tl,
 %                       \l_@@_align_label_X_str, \g_@@_minipage_active_X_bool,
@@ -4527,6 +4527,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_new:c  { l_@@_joined_item_#1_int      }
     \int_new:c  { l_@@_joined_item_aux_#1_int  }
     \int_new:c  { l_@@_tmpa_#1_int             }
+    \dim_new:c  { l_@@_tmpa_#1_dim             }
     \box_new:c  { l_@@_item_text_#1_box        }
     \dim_new:c  { l_@@_joined_width_#1_dim     }
     \dim_new:c  { l_@@_item_width_#1_dim       }
@@ -5884,26 +5885,47 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         list-indent   .value_required:n = true,
       }
   }
-\clist_map_inline:Nn \c_@@_all_envs_clist { \@@_tmp:nn #1 }
+\clist_map_inline:nn
+  {
+    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {keyans}{v}
+  }
+  { \@@_tmp:nn #1 }
 %    \end{macrocode}
 % \end{macro}
 %
 % For \myenv*{enumext*} and \myenv*{keyans*} environments the situation
 % is a bit different, the \mykey{list-indent} key behaves like the \mykey{list-offset} key.
 % \iffalse
-%% Set |list-indent| key for |enumext*| and |keyans*| environments.
+%% Set |list-offset| and |list-indent| keys for |enumext*| and |keyans*| environments.
 % \fi
 %    \begin{macrocode}
-\cs_set_protected:Npn \@@_tmp:n #1
+\cs_set_protected:Npn \@@_tmp:nn #1 #2
   {
-    \keys_define:nn { enumext / #1 } { list-indent .initial:n  = 0pt, }
+    \keys_define:nn { enumext / #1 }
+      {
+        itemindent    .dim_set:c = { l_@@_fake_item_indent_#2_dim },
+        itemindent    .value_required:n = true,
+        rightmargin   .dim_set:c = { l_@@_rightmargin_#2_dim },
+        rightmargin   .value_required:n = true,
+        listparindent .dim_set:c = { l_@@_listparindent_#2_dim },
+        listparindent .value_required:n = true,
+        list-offset   .dim_set:c = { l_@@_listoffset_#2_dim },
+        list-offset   .value_required:n = true,
+        list-indent   .meta:n    = { list-offset = ##1 },
+        list-indent   .value_required:n = true,
+      }
   }
-\clist_map_inline:nn { enumext*, keyans* } { \@@_tmp:n {#1} }
+\clist_map_inline:nn
+  {
+    {enumext*}{vii}, {keyans*}{viii}
+  }
+  { \@@_tmp:nn #1 }
 %    \end{macrocode}
 %
 % \subsubsection{Functions for setting the fake \texttt{itemindent}}\label{key:fake-indent}
 %
-% \begin{macro}[int]{\@@_fake_item:,\@@_keyans_fake_item:, \@@_fake_item_vii:, \@@_fake_item_viii:}
+% \begin{macro}[int]{\@@_fake_item:,\@@_keyans_fake_item:,
+%                    \@@_fake_item_vii:, \@@_fake_item_viii:,}
 %
 %    The \mykey{itemindent} key does not set the value of |\itemindent|, it only
 %    sets the value of the \emph{horizontal space} applied using |\skip_horizontal:N|. We will
@@ -10357,6 +10379,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \cs_new_protected:cpn { @@_list_arg_two_#1: }
       {
+        \bool_set_true:c { l_@@_leftmargin_tmp_#1_bool }
+        \dim_zero:c { l_@@_leftmargin_tmp_#1_dim }
         \@@_calc_hspace:ccccccc
           { l_@@_labelwidth_#1_dim } { l_@@_labelsep_#1_dim }
           { l_@@_listoffset_#1_dim } { l_@@_leftmargin_tmp_#1_dim }
@@ -11349,6 +11373,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         / \l_@@_columns_vii_int - \l_@@_labelwidth_vii_dim
         - \l_@@_labelsep_vii_dim
       }
+    \dim_compare:nNnT { \l_@@_rightmargin_vii_dim } > { \c_zero_dim }
+      {
+        \dim_sub:Nn \l_@@_item_width_vii_dim
+          {
+            ( \l_@@_rightmargin_vii_dim * \l_@@_tmpa_vii_int ) /  \l_@@_columns_vii_int
+          }
+        \dim_add:Nn \l_@@_columns_sep_vii_dim
+          {
+            \l_@@_rightmargin_vii_dim
+          }
+      }
     %%\dim_zero_new:N \itemwidthdim
   }
 \cs_new_protected:Nn \@@_starred_columns_set_viii:
@@ -11660,7 +11695,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \@@_safe_exec_vii:
     \@@_parse_keys_vii:n {#1}
-    \@@_starred_columns_set_vii:
     \@@_before_list_vii:
     \@@_start_store_level_vii:
     \@@_start_list:nn { }
@@ -11668,6 +11702,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_list_arg_two_vii:
         \@@_before_keys_exec_vii:
       }
+      \@@_starred_columns_set_vii:
       \item[] \scan_stop:
       \cs_set_eq:NN \@@_stop_item_tmp_vii: \noindent
       \cs_set_eq:NN \item \@@_start_item_tmp_vii:

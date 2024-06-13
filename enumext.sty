@@ -206,6 +206,7 @@
     \int_new:c  { l__enumext_joined_item_#1_int      }
     \int_new:c  { l__enumext_joined_item_aux_#1_int  }
     \int_new:c  { l__enumext_tmpa_#1_int             }
+    \dim_new:c  { l__enumext_tmpa_#1_dim             }
     \box_new:c  { l__enumext_item_text_#1_box        }
     \dim_new:c  { l__enumext_joined_width_#1_dim     }
     \dim_new:c  { l__enumext_item_width_#1_dim       }
@@ -937,13 +938,33 @@
         list-indent   .value_required:n = true,
       }
   }
-\clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
-%% Set |list-indent| key for |enumext*| and |keyans*| environments.
-\cs_set_protected:Npn \__enumext_tmp:n #1
+\clist_map_inline:nn
   {
-    \keys_define:nn { enumext / #1 } { list-indent .initial:n  = 0pt, }
+    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {keyans}{v}
   }
-\clist_map_inline:nn { enumext*, keyans* } { \__enumext_tmp:n {#1} }
+  { \__enumext_tmp:nn #1 }
+%% Set |list-offset| and |list-indent| keys for |enumext*| and |keyans*| environments.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        itemindent    .dim_set:c = { l__enumext_fake_item_indent_#2_dim },
+        itemindent    .value_required:n = true,
+        rightmargin   .dim_set:c = { l__enumext_rightmargin_#2_dim },
+        rightmargin   .value_required:n = true,
+        listparindent .dim_set:c = { l__enumext_listparindent_#2_dim },
+        listparindent .value_required:n = true,
+        list-offset   .dim_set:c = { l__enumext_listoffset_#2_dim },
+        list-offset   .value_required:n = true,
+        list-indent   .meta:n    = { list-offset = ##1 },
+        list-indent   .value_required:n = true,
+      }
+  }
+\clist_map_inline:nn
+  {
+    {enumext*}{vii}, {keyans*}{viii}
+  }
+  { \__enumext_tmp:nn #1 }
 %% Internal functions for |itemindent| key. |\mode_leave_vertical:| nor
 \cs_set_protected:Nn \__enumext_fake_item:
   {
@@ -3365,6 +3386,8 @@
   {
     \cs_new_protected:cpn { __enumext_list_arg_two_#1: }
       {
+        \bool_set_true:c { l__enumext_leftmargin_tmp_#1_bool }
+        \dim_zero:c { l__enumext_leftmargin_tmp_#1_dim }
         \__enumext_calc_hspace:ccccccc
           { l__enumext_labelwidth_#1_dim } { l__enumext_labelsep_#1_dim }
           { l__enumext_listoffset_#1_dim } { l__enumext_leftmargin_tmp_#1_dim }
@@ -3830,6 +3853,17 @@
         / \l__enumext_columns_vii_int - \l__enumext_labelwidth_vii_dim
         - \l__enumext_labelsep_vii_dim
       }
+    \dim_compare:nNnT { \l__enumext_rightmargin_vii_dim } > { \c_zero_dim }
+      {
+        \dim_sub:Nn \l__enumext_item_width_vii_dim
+          {
+            ( \l__enumext_rightmargin_vii_dim * \l__enumext_tmpa_vii_int ) /  \l__enumext_columns_vii_int
+          }
+        \dim_add:Nn \l__enumext_columns_sep_vii_dim
+          {
+            \l__enumext_rightmargin_vii_dim
+          }
+      }
     %%\dim_zero_new:N \itemwidthdim
   }
 \cs_new_protected:Nn \__enumext_starred_columns_set_viii:
@@ -4068,7 +4102,6 @@
   {
     \__enumext_safe_exec_vii:
     \__enumext_parse_keys_vii:n {#1}
-    \__enumext_starred_columns_set_vii:
     \__enumext_before_list_vii:
     \__enumext_start_store_level_vii:
     \__enumext_start_list:nn { }
@@ -4076,6 +4109,7 @@
         \__enumext_list_arg_two_vii:
         \__enumext_before_keys_exec_vii:
       }
+      \__enumext_starred_columns_set_vii:
       \item[] \scan_stop:
       \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \noindent
       \cs_set_eq:NN \item \__enumext_start_item_tmp_vii:
