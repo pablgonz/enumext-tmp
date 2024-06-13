@@ -589,7 +589,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywords      = [3]{document,article,setlength,pagestyle,definecolor},%
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
-    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidthdim, %
+    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidth, %
                     setenumext,printkeyans,miniright,parleft,labelbx, descitemwd,theenumXi,theenumXii,theenumXiii,theenumXiv,theenumXv, theenumXvii, theenumXviii},%
 % Reserved words 5 (plain TeX or internal)
     keywordstyle  = [5]{\color{red}},%
@@ -1416,7 +1416,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   nested within \myenv*{enumext} and can contain it nested within it.
 %
 % \item Each \emph{\enquote{item}} in the environment is placed within a \myenv{minipage}
-%   environment whose \emph{width} is stored in the dimension |\itemwidthdim|
+%   environment whose \emph{width} is stored in the dimension |\itemwidth|
 %   that includes \mykey{labelwith}, \mykey{labelsep} plus the \emph{width of the content}.
 %
 % \item You cannot have floating environments like \myenv{figure} or
@@ -4556,14 +4556,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{Public dimension}\label{dim:public}
 % The package \mypkg*{enumext} only provides a single public dimension
-% |\itemwidthdim| and is intended for user convenience only and is not
+% |\itemwidth| and is intended for user convenience only and is not
 % for internal use as such. This dimension is set in all environments
 % and is only used by the \mykey{wrap-ans} key at its default value.
 % \iffalse
-%% Public dimension |\itemwidthdim|
+%% Public dimension |\itemwidth|
 % \fi
 %    \begin{macrocode}
-\dim_zero_new:N \itemwidthdim
+\dim_zero_new:N \itemwidth
 %    \end{macrocode}
 %
 % \subsection{Some utility functions}
@@ -8160,7 +8160,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         wrap-ans   .cs_set_protected:Np = \@@_anskey_wrapper:n ##1,
         wrap-ans   .initial:n =
                      {
-                       \fbox{\parbox[t]{\dimeval{\itemwidthdim -2\fboxsep -2\fboxrule}}{##1}}
+                       \fbox{\parbox[t]{\dimeval{\itemwidth -2\fboxsep -2\fboxrule}}{##1}}
                      },
         wrap-ans   .value_required:n = true,
         wrap-opt   .cs_set_protected:Np = \@@_keyans_wrapper_opt:n ##1,
@@ -10452,7 +10452,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_set_item_width:
   {
-    \dim_set:Nn \itemwidthdim
+    \dim_set:Nn \itemwidth
       {
         \linewidth
       }
@@ -10461,7 +10461,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \dim_use:c { l_@@_listoffset_ \_@@_level: _dim } != \c_zero_dim
       }
       {
-        \dim_sub:Nn \itemwidthdim
+        \dim_sub:Nn \itemwidth
           {
             \dim_use:c { l_@@_listoffset_ \_@@_level: _dim }
           }
@@ -10630,6 +10630,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    and \emph{right} side environments.
 %    After these actions, the function \cs{@@_multicols_start:} is
 %    called to handle the \myenv{multicols} environment.
+%
 %    \begin{important}*
 %      Here we use the plain \hologo{TeX} macro
 %      |\nointerlineskip| to prevent baseline \emph{\enquote{glue}} being
@@ -10809,7 +10810,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_set_item_width:
   {
-    \dim_set:Nn \itemwidthdim
+    \dim_set:Nn \itemwidth
       {
         \linewidth
       }
@@ -10818,7 +10819,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \l_@@_listoffset_v_dim != \c_zero_dim
       }
       {
-        \dim_sub:Nn \itemwidthdim
+        \dim_sub:Nn \itemwidth
           {
             \l_@@_listoffset_v_dim
           }
@@ -11476,7 +11477,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_starred_joined_item_vii:n, \@@_starred_joined_item_viii:n,}
 %    The functions \cs{@@_starred_joined_item_vii:n} and \cs{@@_starred_joined_item_viii:n}  will set the \emph{width} of the
 %    box in which the content passed to \ics*{item}\myparg{columns} will be
-%    stored together with the value of |\itemwidthdim| for the \myenv*{enumext*} environment.
+%    stored together with the value of |\itemwidth| for the \myenv*{enumext*} environment.
 % \iffalse
 %% Set width for joined item's for |enumext*| and |keyans*|.
 % \fi
@@ -11523,11 +11524,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                + \l_@@_columns_sep_vii_dim
               )*\l_@@_joined_item_aux_vii_int
           }
-        \dim_set_eq:NN \itemwidthdim \l_@@_joined_width_vii_dim
+        \dim_set_eq:NN \itemwidth \l_@@_joined_width_vii_dim
       }
       {
         \dim_set_eq:NN \l_@@_joined_width_vii_dim \l_@@_item_width_vii_dim
-        \dim_set_eq:NN \itemwidthdim \l_@@_item_width_vii_dim
+        \dim_set_eq:NN \itemwidth \l_@@_item_width_vii_dim
       }
   }
 %    \end{macrocode}
@@ -11575,11 +11576,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                + \l_@@_columns_sep_viii_dim
               )*\l_@@_joined_item_aux_viii_int
           }
-        \dim_set_eq:NN \itemwidthdim \l_@@_joined_width_viii_dim
+        \dim_set_eq:NN \itemwidth \l_@@_joined_width_viii_dim
       }
       {
         \dim_set_eq:NN \l_@@_joined_width_viii_dim \l_@@_item_width_viii_dim
-        \dim_set_eq:NN \itemwidthdim \l_@@_item_width_viii_dim
+        \dim_set_eq:NN \itemwidth \l_@@_item_width_viii_dim
       }
   }
 %    \end{macrocode}
