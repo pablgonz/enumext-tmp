@@ -3433,7 +3433,7 @@
         \use:c { __enumext_list_arg_two_ \__enumext_level: : }
         \__enumext_before_keys_exec:
       }
-    \__enumext_set_item_width_dim:
+    \__enumext_set_item_width:
     \__enumext_after_args_exec:
   }
   {
@@ -3441,11 +3441,11 @@
     \__enumext_stop_store_level:
     \__enumext_after_list:
   }
-\cs_new_protected:Nn \__enumext_set_item_width_dim:
+\cs_new_protected:Nn \__enumext_set_item_width:
   {
     \dim_set:Nn \itemwidthdim
       {
-        \columnwidth - \labelwidth - \labelsep - \rightmargin
+        \linewidth
       }
     \dim_compare:nT
       {
@@ -3626,12 +3626,30 @@
         \__enumext_list_arg_two_v:
         \__enumext_before_keys_exec_v:
       }
+    \__enumext_keyans_set_item_width:
     \__enumext_after_args_exec_v:
   }
   {
     \__enumext_check_starred_cmd:n { item }
     \__enumext_stop_list:
     \__enumext_after_list_v:
+  }
+\cs_new_protected:Nn \__enumext_keyans_set_item_width:
+  {
+    \dim_set:Nn \itemwidthdim
+      {
+        \linewidth
+      }
+    \dim_compare:nT
+      {
+        \l__enumext_listoffset_v_dim != \c_zero_dim
+      }
+      {
+        \dim_sub:Nn \itemwidthdim
+          {
+            \l__enumext_listoffset_v_dim
+          }
+      }
   }
 %% Function for check nested level in |keyans|.
 \cs_new_protected:Nn \__enumext_keyans_safe_exec:

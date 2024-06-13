@@ -2294,7 +2294,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsubsection{Keys for \texttt{wrap} and \texttt{display}}\label{subsec:wrap-display}
 %
-% \keyexamp{wrap-ans}{code{} \space\usebox{\hashbox} more code}{\textbackslash{}fbox\{\#1\}}
+% \keyexamp{wrap-ans}{code{} \space\usebox{\hashbox} more code}{\textbackslash{}fbox+\textbackslash{}parbox\{\#1\}}
 % Wraps the \emph{argument} passed to the \ics*{anskey} and the \emph{body} in \myenv*{anskey*} environment
 % referenced by |{#1}| when using the \mykey{show-ans} or \mykey{show-pos} keys.
 % The \mymarg{code} must be passed between  braces and only affects the
@@ -10437,7 +10437,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \use:c { @@_list_arg_two_ \@@_level: : }
         \@@_before_keys_exec:
       }
-    \@@_set_item_width_dim:
+    \@@_set_item_width:
     \@@_after_args_exec:
   }
   {
@@ -10448,12 +10448,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\@@_set_item_width:}\label{dim:item-width-enumext}
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_set_item_width_dim:
+\cs_new_protected:Nn \@@_set_item_width:
   {
     \dim_set:Nn \itemwidthdim
       {
-        \columnwidth - \labelwidth - \labelsep - \rightmargin
+        \linewidth
       }
     \dim_compare:nT
       {
@@ -10467,7 +10468,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%
+% \end{macro}
 %
 % \begin{macro}{\@@_safe_exec:}\label{fun:enumext:safe-exe}
 %    The \cs{@@_safe_exec:} function first execute the function \cs{@@_is_not_nested:} which
@@ -10798,12 +10799,35 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_list_arg_two_v:
         \@@_before_keys_exec_v:
       }
+    \@@_keyans_set_item_width:
     \@@_after_args_exec_v:
   }
   {
     \@@_check_starred_cmd:n { item }
     \@@_stop_list:
     \@@_after_list_v:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_keyans_set_item_width:}\label{dim:item-width-keyans}
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_keyans_set_item_width:
+  {
+    \dim_set:Nn \itemwidthdim
+      {
+        \linewidth
+      }
+    \dim_compare:nT
+      {
+        \l_@@_listoffset_v_dim != \c_zero_dim
+      }
+      {
+        \dim_sub:Nn \itemwidthdim
+          {
+            \l_@@_listoffset_v_dim
+          }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
