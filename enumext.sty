@@ -224,8 +224,8 @@
     {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv},
     {keyans}{v}, {enumext*}{vii}, {keyans*}{viii}
   }
-%% Public dimension |\itemwidthdim|
-\dim_zero_new:N \itemwidthdim
+%% Public dimension |\itemwidth|
+\dim_zero_new:N \itemwidth
 %% A internal "hooks" functions used for copying and execute code.
 \cs_new_protected:Npn \__enumext_at_begin_document:n #1
   {
@@ -2164,7 +2164,7 @@
         wrap-ans   .cs_set_protected:Np = \__enumext_anskey_wrapper:n ##1,
         wrap-ans   .initial:n =
                      {
-                       \fbox{\parbox[t]{\dimeval{\itemwidthdim -2\fboxsep -2\fboxrule}}{##1}}
+                       \fbox{\parbox[t]{\dimeval{\itemwidth -2\fboxsep -2\fboxrule}}{##1}}
                      },
         wrap-ans   .value_required:n = true,
         wrap-opt   .cs_set_protected:Np = \__enumext_keyans_wrapper_opt:n ##1,
@@ -3441,9 +3441,10 @@
     \__enumext_stop_store_level:
     \__enumext_after_list:
   }
+%% Set |\itemwidth| for |enumext|.
 \cs_new_protected:Nn \__enumext_set_item_width:
   {
-    \dim_set:Nn \itemwidthdim
+    \dim_set:Nn \itemwidth
       {
         \linewidth
       }
@@ -3452,7 +3453,7 @@
         \dim_use:c { l__enumext_listoffset_ \__enumext_level: _dim } != \c_zero_dim
       }
       {
-        \dim_sub:Nn \itemwidthdim
+        \dim_sub:Nn \itemwidth
           {
             \dim_use:c { l__enumext_listoffset_ \__enumext_level: _dim }
           }
@@ -3636,7 +3637,7 @@
   }
 \cs_new_protected:Nn \__enumext_keyans_set_item_width:
   {
-    \dim_set:Nn \itemwidthdim
+    \dim_set:Nn \itemwidth
       {
         \linewidth
       }
@@ -3645,7 +3646,7 @@
         \l__enumext_listoffset_v_dim != \c_zero_dim
       }
       {
-        \dim_sub:Nn \itemwidthdim
+        \dim_sub:Nn \itemwidth
           {
             \l__enumext_listoffset_v_dim
           }
@@ -3672,12 +3673,12 @@
         \msg_error:nn { enumext } { keyans-wrong-level }
       }
   }
-%% Function for parse |key=val| in |keyans|. Replace \exp_args:Nx \keys_set:nn => \keys_set:nx => => \keys_set:nn
+%% Function for parse |key=val| in |keyans|.
 \cs_new_protected:Npn \__enumext_keyans_parse_keys:n #1
   {
     \keys_set:nn { enumext / keyans } {#1}
   }
-%% Actions before start |keyans| environment.
+%% Iternal functions for |keyans| environment.
 \cs_new_protected:Nn \__enumext_before_list_v:
   {
     \__enumext_vspace_above_v:
@@ -3696,7 +3697,6 @@
       }
     \__enumext_keyans_multicols_start:
   }
-%% Activate multicols in |keyans|.
 \cs_new_protected:Nn \__enumext_keyans_multicols_start:
   {
     \int_compare:nNnT { \l__enumext_columns_v_int } > { 1 }
@@ -3713,7 +3713,7 @@
           }
         \dim_set_eq:NN \columnsep \l__enumext_columns_sep_v_dim
         \skip_zero:N \multicolsep
-        \dim_zero:N \columnseprule
+        \dim_zero:N \columnseprule % no rule here
         \bool_if:NF \l__enumext_minipage_active_v_bool
           {
             \__enumext_keyans_multi_addvspace:
@@ -3733,7 +3733,6 @@
           }
       }
   }
-%% Actions after |keyans|.
 \cs_new_protected:Nn \__enumext_after_list_v:
   {
     \bool_if:NTF \l__enumext_minipage_active_v_bool
@@ -3747,7 +3746,9 @@
         \end{__enumext_mini_env*}
         \par\addvspace{ \l__enumext_minipage_after_skip }
       }
-      { \__enumext_keyans_multicols_stop: }
+      {
+        \__enumext_keyans_multicols_stop:
+      }
     \bool_set_false:N \l__enumext_keyans_env_bool
     \__enumext_after_stop_list_v:
     \__enumext_vspace_below_v:
@@ -3852,6 +3853,11 @@
         - \parsep
       }
     \__enumext_item_std:w \scan_stop:
+    % paranoia
+    \RenewDocumentCommand \item {}
+      {
+        \msg_error:nn { enumext } { keyanspic-item-cmd }
+      }
   }
 \cs_new_protected:Nn \__enumext_keyans_pic_do:n
   {
@@ -3980,11 +3986,11 @@
                + \l__enumext_columns_sep_vii_dim
               )*\l__enumext_joined_item_aux_vii_int
           }
-        \dim_set_eq:NN \itemwidthdim \l__enumext_joined_width_vii_dim
+        \dim_set_eq:NN \itemwidth \l__enumext_joined_width_vii_dim
       }
       {
         \dim_set_eq:NN \l__enumext_joined_width_vii_dim \l__enumext_item_width_vii_dim
-        \dim_set_eq:NN \itemwidthdim \l__enumext_item_width_vii_dim
+        \dim_set_eq:NN \itemwidth \l__enumext_item_width_vii_dim
       }
   }
 \cs_new_protected:Npn \__enumext_starred_joined_item_viii:n #1
@@ -4025,15 +4031,15 @@
         \dim_set:Nn \l__enumext_joined_width_viii_dim
           {
             \l__enumext_item_width_viii_dim * \l__enumext_joined_item_viii_int
-            + (  \l__enumext_labelwidth_viii_dim + \l__enumext_labelsep_viii_dim
-               + \l__enumext_columns_sep_viii_dim
+            + ( \l__enumext_labelwidth_viii_dim + \l__enumext_labelsep_viii_dim
+                + \l__enumext_columns_sep_viii_dim
               )*\l__enumext_joined_item_aux_viii_int
           }
-        \dim_set_eq:NN \itemwidthdim \l__enumext_joined_width_viii_dim
+        \dim_set_eq:NN \itemwidth \l__enumext_joined_width_viii_dim
       }
       {
         \dim_set_eq:NN \l__enumext_joined_width_viii_dim \l__enumext_item_width_viii_dim
-        \dim_set_eq:NN \itemwidthdim \l__enumext_item_width_viii_dim
+        \dim_set_eq:NN \itemwidth \l__enumext_item_width_viii_dim
       }
   }
 %% Start support for |mini-env| key in |enumext*| environment
@@ -5135,6 +5141,10 @@
   {
     Wrong ~ level ~ position ~ for ~ 'keyanspic' ~ \msg_line_context:.~ \\
     The ~ environment ~ 'keyans' ~ can ~ only ~ be ~ in ~ the ~ first ~ level.
+  }
+\msg_new:nnn { enumext } { keyanspic-item-cmd }
+  {
+    Can't ~ use  ~ \c_backslash_str item ~ in ~ keyanspic ~ \msg_line_context:.
   }
 \msg_new:nnn { enumext } { undefined-storage-anskey }
   {

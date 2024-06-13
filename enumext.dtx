@@ -10449,6 +10449,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_set_item_width:}\label{dim:item-width-enumext}
+%   The function \cs{@@_set_item_width:} will set the value of |\itemwidth|
+%   taking into account the value established by the \mykey{list-offset}
+%   key for each level of the environment.
+% \iffalse
+%% Set |\itemwidth| for |enumext|.
+% \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_set_item_width:
   {
@@ -10558,7 +10564,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
 %    \end{macrocode}
-%    If \myenv*{enumext} are nested in \myenv*{enumext*} add \myvarenv{__@@_store_level_open:}
+%    If \myenv*{enumext} are nested in \myenv*{enumext*} add \cs{@@_store_level_open:}
 %    to preserve the stored structure.
 %    \begin{macrocode}
     \bool_lazy_all:nT
@@ -10575,6 +10581,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
   }
+%    \end{macrocode}
+%   Close the stored structure.
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_stop_store_level:
   {
     \bool_if:cT { l_@@_store_upper_level_ \@@_level: _bool }
@@ -10807,6 +10816,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_keyans_set_item_width:}\label{dim:item-width-keyans}
+%   The function \cs{@@_keyans_set_item_width:} will set the value of |\itemwidth|
+%   taking into account the value established by the \mykey{list-offset}
+%   key.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_set_item_width:
   {
@@ -10830,9 +10842,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_keyans_safe_exec:}
 %   The \myenv*{keyans} environment will only be available if the
-%   \mykey{save-ans} key is active and can only be used at the first
-%   level within the \myenv*{enumext} environment. We do not want the
-%   environment to be nested, so we will set a maximum at this point.
+%   \mykey{save-ans} key is active and can only be used at the
+%   \emph{\enquote{first level}} within the \myenv*{enumext} environment.
+%   We do not want the environment to be nested, so we will set a maximum at this point.
 %   If the conditions are not met, an error message will be returned.
 % \iffalse
 %% Function for check nested level in |keyans|.
@@ -10865,7 +10877,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Parse \myoarg{key \textnormal{\textcolor{gray}{=}} val} for
 %    \myenv*{keyans} environment.
 % \iffalse
-%% Function for parse |key=val| in |keyans|. Replace \exp_args:Nx \keys_set:nn => \keys_set:nx => => \keys_set:nn
+%% Function for parse |key=val| in |keyans|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_parse_keys:n #1
@@ -10875,75 +10887,35 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_before_list_v:}
-%    The function \cs{@@_before_list_v:} will add the \emph{vertical
-%    spacing above} the environment if the \mykey{above} key is active next to
-%    the \mymeta{code} defined by the \mykey{before} key if it is
-%    active.
+% \begin{macro}{\@@_before_list_v:, \@@_keyans_multicols_start:,
+%               \@@_keyans_multicols_stop:, \@@_after_list_v:}
+%    Same implementation as the one used in the \myenv*{enumext} environment.
 % \iffalse
-%% Actions before start |keyans| environment.
+%% Iternal functions for |keyans| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_list_v:
   {
     \@@_vspace_above_v:
     \@@_before_args_exec_v:
-%    \end{macrocode}
-%    When the \mykey{mini-env} key is active it will set the value of the
-%    \cs{l_@@_minipage_right_v_dim} to be the \emph{width} of the \myvarenv*{__@@_mini_env*}
-%    environment on the \emph{left side}, using this value together with the value
-%    of the \cs{l_@@_minipage_hsep_v_dim} set by the \mykey{mini-sep} key,
-%    the value of \cs{l_@@_minipage_left_v_dim} will be set, which will be
-%    the \emph{width} of \myvarenv*{__@@t_mini_env*} environment on the \emph{right side}, always having
-%    \ics{linewidth} as the maximum width between them.
-%    \begin{macrocode}
     \dim_compare:nNnT { \l_@@_minipage_right_v_dim } > { \c_zero_dim }
       {
         \dim_set:Nn \l_@@_minipage_left_v_dim
           {
             \linewidth - \l_@@_minipage_right_v_dim - \l_@@_minipage_hsep_v_dim
           }
-%    \end{macrocode}
-%    The boolean variable \cs{l_@@_minipage_active_v_bool} will be
-%    activated and the integer variable \cs{g_@@_minipage_stat_int} used
-%    by the \ics*{miniright} command will be incremented, then the function
-%    \cs{@@_keyans_mini_addvspace:} is called and the
-%    \myvarenv*{__@@_mini_env*} environment on \emph{left side} will be
-%    initialized followed by the \emph{vertical spacing} \cs{l_@@_minipage_left_skip}.
-%    Here we use the plain \hologo{TeX} macro |\nointerlineskip| to prevent
-%    baseline \emph{\enquote{glue}} being added between the next pair of
-%    boxes in a \emph{vertical list}.
-%    \begin{macrocode}
         \bool_set_true:N \l_@@_minipage_active_v_bool
         \int_gincr:N \g_@@_minipage_stat_int
         \@@_keyans_mini_addvspace:
         \nointerlineskip\noindent
         \begin{@@_mini_env*}{ \l_@@_minipage_left_v_dim }
       }
-%    \end{macrocode}
-%    After these actions, the \cs{@@_keyans_multicols_start:} function is
-%    called to handle the \myenv{multicols} environment.
-%    \begin{macrocode}
     \@@_keyans_multicols_start:
   }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_multicols_start:,}
-%    The function \cs{@@_keyans_multicols_start:} will start the
-%    \myenv{multicols} environment according to the value passed by the
-%    \mykey{columns} key.
-% \iffalse
-%% Activate multicols in |keyans|.
-% \fi
-%    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_multicols_start:
   {
     \int_compare:nNnT { \l_@@_columns_v_int } > { 1 }
       {
-%    \end{macrocode}
-%    Set the default value for \ics{columnsep} when \mykey{columns-sep} key is \mydim{0pt}.
-%    \begin{macrocode}
         \dim_compare:nNnT { \l_@@_columns_sep_v_dim } = { \c_zero_dim }
           {
             \dim_set:Nn \l_@@_columns_sep_v_dim
@@ -10955,19 +10927,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               }
           }
         \dim_set_eq:NN \columnsep \l_@@_columns_sep_v_dim
-%    \end{macrocode}
-%    Then we will set the value of \ics{multicolsep} and
-%    \ics{columnseprule} equal to zero (we do not want a vertical rule in
-%    this environment).
-%    \begin{macrocode}
         \skip_zero:N \multicolsep
-        \dim_zero:N \columnseprule
-%    \end{macrocode}
-%    We will calculate the \emph{vertical spacing} settings for the
-%    \myenv{multicols} environment using the function
-%    \cs{@@_keyans_multi_addvspace:} and apply our \emph{\enquote{vertical adjust spacing}},
-%    then start the \myenv{multicols} environment.
-%    \begin{macrocode}
+        \dim_zero:N \columnseprule % no rule here
         \bool_if:NF \l_@@_minipage_active_v_bool
           {
             \@@_keyans_multi_addvspace:
@@ -10976,16 +10937,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \begin{multicols}{ \l_@@_columns_v_int }
       }
   }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_multicols_stop:}
-%    The function \cs{@@_keyans_multicols_stop:} will stop the
-%    \myenv{multicols} environment. If the boolean variable
-%    \cs{l_@@_minipage_active_v_bool} is false (not nested in
-%    \myvarenv*{__@@_mini_env*}) we will apply our vertical
-%    \enquote{adjust} spacing.
-%    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_multicols_stop:
   {
     \int_compare:nNnT { \l_@@_columns_v_int } > { 1 }
@@ -10997,21 +10948,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
   }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_after_list_v:,}
-%    The function \cs{@@_after_list_v:}  will will check the state of
-%    the boolean variable \cs{l_@@_minipage_active_v_bool}, if it is
-%    \enquote{true} a small test will be executed to check if we have
-%    omitted the use of \ics*{miniright} (the \myvarenv*{__@@_mini_env*}
-%    environment has not been closed), then close \myvarenv*{__@@_mini_env*} and
-%    add the vertical adjustment space \cs{l_@@_minipage_after_skip},
-%    otherwise we will close the \myenv{multicols} environment.
-% \iffalse
-%% Actions after |keyans|.
-% \fi
-%    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_list_v:
   {
     \bool_if:NTF \l_@@_minipage_active_v_bool
@@ -11025,12 +10961,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \end{@@_mini_env*}
         \par\addvspace{ \l_@@_minipage_after_skip }
       }
-      { \@@_keyans_multicols_stop: }
-%    \end{macrocode}
-%    Finally we will apply the \mymarg{code} handled by the \mykey{after} key
-%    together with the \emph{vertical space} handled by the \mykey{below} key if
-%    they are present.
-%    \begin{macrocode}
+      {
+        \@@_keyans_multicols_stop:
+      }
     \bool_set_false:N \l_@@_keyans_env_bool
     \@@_after_stop_list_v:
     \@@_vspace_below_v:
@@ -11331,6 +11264,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         - \parsep
       }
     \@@_item_std:w \scan_stop:
+    % paranoia
+    \RenewDocumentCommand \item {}
+      {
+        \msg_error:nn { enumext } { keyanspic-item-cmd }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11572,8 +11510,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \dim_set:Nn \l_@@_joined_width_viii_dim
           {
             \l_@@_item_width_viii_dim * \l_@@_joined_item_viii_int
-            + (  \l_@@_labelwidth_viii_dim + \l_@@_labelsep_viii_dim
-               + \l_@@_columns_sep_viii_dim
+            + ( \l_@@_labelwidth_viii_dim + \l_@@_labelsep_viii_dim
+                + \l_@@_columns_sep_viii_dim
               )*\l_@@_joined_item_aux_viii_int
           }
         \dim_set_eq:NN \itemwidth \l_@@_joined_width_viii_dim
@@ -12237,7 +12175,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \@@_safe_exec_viii:
     \@@_parse_keys_viii:n {#1}
-
     \@@_before_list_viii:
     \@@_start_list:nn { }
       {
@@ -13364,6 +13301,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     Wrong ~ level ~ position ~ for ~ 'keyanspic' ~ \msg_line_context:.~ \\
     The ~ environment ~ 'keyans' ~ can ~ only ~ be ~ in ~ the ~ first ~ level.
+  }
+\msg_new:nnn { enumext } { keyanspic-item-cmd }
+  {
+    Can't ~ use  ~ \c_backslash_str item ~ in ~ keyanspic ~ \msg_line_context:.
   }
 %    \end{macrocode}
 %
