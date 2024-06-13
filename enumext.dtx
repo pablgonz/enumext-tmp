@@ -582,7 +582,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, ignorespace %
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, %
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
-                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft,%
+                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_space,%
                     triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean},%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
@@ -9738,7 +9738,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{Setting \texttt{item-sym*} and \texttt{item-pos*} keys}\label{key:item-starred}
 %
-% In order to have a cleaner implementation of |\item*| it is best to
+% In order to have a cleaner implementation of |\item*| for the
+% \myenv*{enumext} and \myenv*{enumext*} environments it is best to
 % define a couple of keys that allow us to control and set by default the
 % \mymeta{symbol} and its \mymeta{offset}.
 %
@@ -9768,55 +9769,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Redefining \cs{footnote} command }\label{ltx:footnote}
-%
-% \begin{macro}[int]{\@@_footnotetext:nn, \@@_renew_footnote:,\@@_print_footnote:}
-%   To keep the correct numbering of \ics{footnote} and to make it work
-%   correctly with the \mykey{mini-env} key and in the \myenv*{enumext*} and \myenv*{keyans*}
-%   environments, it is necessary to redefine the command.
-%   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
-%   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
-% \iffalse
-%% Redefining \footnote.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_footnotetext:nn
-  {
-    \footnotetext[#1]{#2}
-  }
-\cs_new_protected:Nn \@@_renew_footnote:
-  {
-    \seq_gclear:N \g_@@_footnote_arg_seq
-    \seq_gclear:N \g_@@_footnote_int_seq
-    \RenewDocumentCommand \footnote { o +m }
-      {
-        \tl_if_novalue:nTF {##1}
-          {
-            \stepcounter{footnote}
-            \int_gset_eq:Nc \g_@@_footnote_int { c@footnote }
-          }
-          {
-            \int_gset:Nn \g_@@_footnote_int { ##1 }
-          }
-        \footnotemark [ \g_@@_footnote_int ]
-        \seq_gput_right:Nn \g_@@_footnote_arg_seq { ##2 }
-        \seq_gput_right:NV \g_@@_footnote_int_seq \g_@@_footnote_int
-     }
-  }
-\cs_new_protected:Nn \@@_print_footnote:
-  {
-    \seq_if_empty:NF \g_@@_footnote_int_seq
-      {
-        \seq_map_pairwise_function:NNN
-          \g_@@_footnote_int_seq
-          \g_@@_footnote_arg_seq
-          \@@_footnotetext:nn
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \subsection{Redefining \cs{item} command }\label{ltx:item}
+% \subsection{Redefining \cs{item} and \cs{makelabel} in \env{enumext}}\label{env:item-starred-enumext}
 %
 % Redefining the |\item| command is not as simple as I thought. This
 % command works in conjunction with the \ics{makelabel} command so I have
@@ -9824,31 +9777,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % couple of \emph{global} variables to pass the values from one command
 % to the other.
 %
-% \subsubsection{The \cs{item} command in \env{enumext}}\label{env:item-starred-enumext}
+% \smallskip
+%
+% The \ics*{item} and \ics*{item}\myoarg{custom} commands work in the
+% usual way on \myenv*{enumext} and we will add \ics*{item*}, \ics*{item*}\myoarg{symbol} and
+% \ics*{item*}\myoarg{symbol}\myoarg{offset}.
 %
 % \begin{macro}[int]{\@@_default_item:n}
-%   The \ics*{item} and \ics*{item}\myoarg{custom}
-%   commands work in the usual way on \myenv*{enumext}.
-%
-%   \smallskip
-%
 %   First we will see if the optional argument is present, if it is NOT
 %   present we will check the state of the variable \cs{l_@@_check_ans_key_bool}
 %   set by the key \mykey{check-ans}, set the boolean variable
 %   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true}
-%   and execute \cs{@@_item_std:w}.
-%
-%   \smallskip
-%
-%   Otherwise we will check the state of the boolean variable
-%   \myvarenv{l__@@_wrap_label_opt_X_bool} set by the key \mykey{wrap-label*} and
-%   execute \cs{@@_item_std:w} with the optional argument.
-%
-%   \smallskip
-%
-%   The boolean variable \myvarenv{l__@@_wrap_label_X_bool} is used by
-%   the function \cs{@@_make_label:} (\S\ref{ltx:makelabel}).
-%
+%   and execute \cs{@@_item_std:w}, otherwise we will check the state
+%   of the boolean variable \myvarenv{l__@@_wrap_label_opt_X_bool} set
+%   by the key \mykey{wrap-label*} and  execute \cs{@@_item_std:w} with
+%   the optional argument.
 % \iffalse
 %% Internal function for |\item| whit check-answer mechanism in |enumext|.
 % \fi
@@ -9900,18 +9843,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   Then we will see the state of the variable \cs{l_@@_check_ans_key_bool}
 %   set by the key \mykey{check-ans}, set the boolean variable
 %   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true} and execute \cs{@@_item_std:w}.
-%
-%   \smallskip
-%
-%   In this function the optional argument of \cs{@@_item_std:w} is
-%   omitted, we only want it to be numbered.
-%
-%   \smallskip
-%
-%   The boolean variable \myvarenv{l__@@_wrap_label_X_bool}
-%   and the vars \myvarenv{l__@@_item_symbol_sep_X_dim}, \myvarenv{g__@@_item_symbol_tl}
-%   are used by the function \cs{@@_make_label:} (\S\ref{ltx:makelabel}).
-%
 % \iffalse
 %% Internal function for |\item*[symb][sep]| whit check-answer mechanism in |enumext|.
 % \fi
@@ -9971,10 +9902,109 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{The \cs{item} command  in \texttt{keyans}}\label{cmd:item-starred}
+% \begin{macro}{\@@_item_starred:}
+%    The function \cs{@@_item_starred:} will be responsible for
+%    executing |\item*| for the \myenv*{enumext} environment.
+% \iffalse
+%% Function for |\item*[][]| in |\makelabel| for enumext.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_item_starred:
+  {
+    \tl_if_empty:cF { l_@@_item_symbol_ \@@_level: _tl }
+      {
+        \mode_leave_vertical:
+        \skip_horizontal:n { -\dim_use:c { l_@@_item_symbol_sep_ \@@_level: _dim } }
+        \makebox[ 0pt ][ r ]{ \g_@@_item_symbol_tl }
+        \skip_horizontal:n { \dim_use:c { l_@@_item_symbol_sep_ \@@_level: _dim } }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
 %
-% The \ics*{item*} and \ics*{item*}\myoarg{content} commands \emph{store}
-% the current \mymeta{label} next to the \myoarg{content} if it is present
+% \begin{macro}{\@@_make_label:}
+%    The function \cs{@@_make_label:} redefine \ics{makelabel} for the keys \mykey{align}, \mykey{font},
+%    \mykey{wrap-label}, \mykey{wrap-label*} and |\item*| for \myenv*{enumext} environment.
+%    \smallskip
+%
+%    This function is passed to \myvarenv{__@@_list_arg_two_X:} which is used
+%    in the definition of the \myenv*{enumext} environment (\S\ref{ltx:second-arg}).
+% \iffalse
+%% Redefinition of |\makelabel| for |\item| and |\item*[][]| in enumext.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_make_label:
+  {
+    \RenewDocumentCommand \makelabel { m }
+      {
+        \tl_use:c { l_@@_label_fill_left_ \@@_level: _tl }
+        \tl_use:c { l_@@_label_font_style_ \@@_level: _tl }
+        \bool_if:cTF { l_@@_wrap_label_ \@@_level: _bool }
+          {
+            \@@_item_starred:
+            \use:c { @@_wrapper_label_ \@@_level: :n } { ##1 }
+          }
+          { ##1 }
+        \tl_use:c { l_@@_label_fill_right_ \@@_level: _tl }
+        \tl_gclear:N \g_@@_item_symbol_tl
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Redefining \cs{footnote} command }\label{ltx:footnote}
+%
+% \begin{macro}[int]{\@@_footnotetext:nn, \@@_renew_footnote:,\@@_print_footnote:}
+%   To keep the correct numbering of \ics{footnote} and to make it work
+%   correctly with the \mykey{mini-env} key and in the \myenv*{enumext*} and \myenv*{keyans*}
+%   environments, it is necessary to redefine the command.
+%   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
+%   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
+% \iffalse
+%% Redefining \footnote.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_footnotetext:nn
+  {
+    \footnotetext[#1]{#2}
+  }
+\cs_new_protected:Nn \@@_renew_footnote:
+  {
+    \seq_gclear:N \g_@@_footnote_arg_seq
+    \seq_gclear:N \g_@@_footnote_int_seq
+    \RenewDocumentCommand \footnote { o +m }
+      {
+        \tl_if_novalue:nTF {##1}
+          {
+            \stepcounter{footnote}
+            \int_gset_eq:Nc \g_@@_footnote_int { c@footnote }
+          }
+          {
+            \int_gset:Nn \g_@@_footnote_int { ##1 }
+          }
+        \footnotemark [ \g_@@_footnote_int ]
+        \seq_gput_right:Nn \g_@@_footnote_arg_seq { ##2 }
+        \seq_gput_right:NV \g_@@_footnote_int_seq \g_@@_footnote_int
+     }
+  }
+\cs_new_protected:Nn \@@_print_footnote:
+  {
+    \seq_if_empty:NF \g_@@_footnote_int_seq
+      {
+        \seq_map_pairwise_function:NNN
+          \g_@@_footnote_int_seq
+          \g_@@_footnote_arg_seq
+          \@@_footnotetext:nn
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Redefining \cs{item} and \cs{makelabel} in \env{keyans}}\label{cmd:item-starred}
+%
+% The \ics*{item} and \ics*{item}\myoarg{custom} commands work in the
+% usual way in \myenv*{keyans}, but the \ics*{item*} and \ics*{item*}\myoarg{content} commands \emph{store}
+% the current \mymeta{label} next to the \mymeta{content} if it is present
 % in the \mymeta{sequence} and \mymeta{prop list} defined by \mykey{save-ans} key.
 %
 % \begin{macro}{\@@_keyans_default_item:n,}
@@ -10026,18 +10056,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\item*,\@@_keyans_redefine_item:}
+% \begin{macro}{\item*,\@@_keyans_redefine_item:, \@@_keyans_make_label:}
 %    The function \cs{@@_keyans_redefine_item:} is responsible for adding
 %    the \emph{starred} and \emph{optional} argument by the
 %    \cs{@@_list_arg_two_v:} function in the definition of the
 %    \myenv*{keyans} environment. Here we need to use
 %    |\peek_remove_spaces:n| to prevent an unwanted space when using
 %    |\item*| in conjunction with the \mykey{itemindent} key.
-%
-%    \smallskip
-%
-%    This function is passed to \myvarenv{__@@_list_arg_two_v:} which is used
-%    in the definition of the \myenv*{keyans} environment (\S\ref{ltx:second-arg}).
 % \iffalse
 %% Redefine |\item| for |keyans|.
 % \fi
@@ -10059,75 +10084,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \subsection{Redefining \cs{makelabel} command}\label{ltx:makelabel}
-%
-% Redefine \ics{makelabel} for the keys \mykey{align}, \mykey{font},
-% \mykey{wrap-label}, \mykey{wrap-label*} and |\item*| for
-% \myenv*{enumext} and \myenv*{keyans} environments.
-%
-% \subsubsection{Redefining \cs{makelabel} for \env{enumext}}
-%
-% \begin{macro}{\@@_item_starred:}
-%    The function \cs{@@_item_starred:} will be responsible for
-%    executing |\item*| for the \myenv*{enumext} environment.
-% \iffalse
-%% Function for |\item*[][]| in |\makelabel| for enumext.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_item_starred:
-  {
-    \tl_if_empty:cF { l_@@_item_symbol_ \@@_level: _tl }
-      {
-        \mode_leave_vertical:
-        \skip_horizontal:n { -\dim_use:c { l_@@_item_symbol_sep_ \@@_level: _dim } }
-        \makebox[ 0pt ][ r ]{ \g_@@_item_symbol_tl }
-        \skip_horizontal:n { \dim_use:c { l_@@_item_symbol_sep_ \@@_level: _dim } }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_make_label:}
-%    The function \cs{@@_make_label:} redefine \ics{makelabel} for
-%    the \myenv*{enumext} environment.
-%    \smallskip
-%
-%    This function is passed to \myvarenv{__@@_list_arg_two_X:} which is used
-%    in the definition of the \myenv*{enumext} environment (\S\ref{ltx:second-arg}).
-% \iffalse
-%% Redefinition of |\makelabel| for |\item| and |\item*[][]| in enumext.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_make_label:
-  {
-    \RenewDocumentCommand \makelabel { m }
-      {
-        \tl_use:c { l_@@_label_fill_left_ \@@_level: _tl }
-        \tl_use:c { l_@@_label_font_style_ \@@_level: _tl }
-        \bool_if:cTF { l_@@_wrap_label_ \@@_level: _bool }
-          {
-            \@@_item_starred:
-            \use:c { @@_wrapper_label_ \@@_level: :n } { ##1 }
-          }
-          { ##1 }
-        \tl_use:c { l_@@_label_fill_right_ \@@_level: _tl }
-        \tl_gclear:N \g_@@_item_symbol_tl
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \subsubsection{Redefining \cs{makelabel} for \env{keyans}}
-%
-% \begin{macro}{\@@_keyans_make_label:}
 %    The function \cs{@@_keyans_make_label:} redefine \ics{makelabel}
+%    for the keys \mykey{align}, \mykey{font}, \mykey{wrap-label}, \mykey{wrap-label*} and |\item*|
 %    for \myenv*{keyans} environment.
-%    \smallskip
-%
-%    This function is passed to \myvarenv{__@@_list_arg_two_v:} which is used
-%    in the definition of the \myenv*{keyans} environment (\S\ref{ltx:second-arg}).
+% \iffalse
+%% Redefine |\makelabel| for |keyans|.
+% \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_make_label:
   {
@@ -10145,6 +10107,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{important}*
+%    This functions are passed to \myvarenv{__@@_list_arg_two_v:} used
+%    in the definition of the \myenv*{keyans} environment (\S\ref{ltx:second-arg}).
+% \end{important}
+%
 %
 % \subsection{Second argument of the lists}\label{ltx:second-arg}
 %

@@ -3132,40 +3132,6 @@
     {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
   }
   { \__enumext_tmp:nn #1 }
-%% Redefining \footnote.
-\cs_new_protected:Nn \__enumext_footnotetext:nn
-  {
-    \footnotetext[#1]{#2}
-  }
-\cs_new_protected:Nn \__enumext_renew_footnote:
-  {
-    \seq_gclear:N \g__enumext_footnote_arg_seq
-    \seq_gclear:N \g__enumext_footnote_int_seq
-    \RenewDocumentCommand \footnote { o +m }
-      {
-        \tl_if_novalue:nTF {##1}
-          {
-            \stepcounter{footnote}
-            \int_gset_eq:Nc \g__enumext_footnote_int { c@footnote }
-          }
-          {
-            \int_gset:Nn \g__enumext_footnote_int { ##1 }
-          }
-        \footnotemark [ \g__enumext_footnote_int ]
-        \seq_gput_right:Nn \g__enumext_footnote_arg_seq { ##2 }
-        \seq_gput_right:NV \g__enumext_footnote_int_seq \g__enumext_footnote_int
-     }
-  }
-\cs_new_protected:Nn \__enumext_print_footnote:
-  {
-    \seq_if_empty:NF \g__enumext_footnote_int_seq
-      {
-        \seq_map_pairwise_function:NNN
-          \g__enumext_footnote_int_seq
-          \g__enumext_footnote_arg_seq
-          \__enumext_footnotetext:nn
-      }
-  }
 %% Internal function for |\item| whit check-answer mechanism in |enumext|.
 \cs_new_protected:Npn \__enumext_default_item:n #1
   {
@@ -3223,6 +3189,68 @@
          { \__enumext_default_item:n {##2} }
       }
   }
+%% Function for |\item*[][]| in |\makelabel| for enumext.
+\cs_new_protected:Nn \__enumext_item_starred:
+  {
+    \tl_if_empty:cF { l__enumext_item_symbol_ \__enumext_level: _tl }
+      {
+        \mode_leave_vertical:
+        \skip_horizontal:n { -\dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
+        \makebox[ 0pt ][ r ]{ \g__enumext_item_symbol_tl }
+        \skip_horizontal:n { \dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
+      }
+  }
+%% Redefinition of |\makelabel| for |\item| and |\item*[][]| in enumext.
+\cs_new_protected:Nn \__enumext_make_label:
+  {
+    \RenewDocumentCommand \makelabel { m }
+      {
+        \tl_use:c { l__enumext_label_fill_left_ \__enumext_level: _tl }
+        \tl_use:c { l__enumext_label_font_style_ \__enumext_level: _tl }
+        \bool_if:cTF { l__enumext_wrap_label_ \__enumext_level: _bool }
+          {
+            \__enumext_item_starred:
+            \use:c { __enumext_wrapper_label_ \__enumext_level: :n } { ##1 }
+          }
+          { ##1 }
+        \tl_use:c { l__enumext_label_fill_right_ \__enumext_level: _tl }
+        \tl_gclear:N \g__enumext_item_symbol_tl
+      }
+  }
+%% Redefining \footnote.
+\cs_new_protected:Nn \__enumext_footnotetext:nn
+  {
+    \footnotetext[#1]{#2}
+  }
+\cs_new_protected:Nn \__enumext_renew_footnote:
+  {
+    \seq_gclear:N \g__enumext_footnote_arg_seq
+    \seq_gclear:N \g__enumext_footnote_int_seq
+    \RenewDocumentCommand \footnote { o +m }
+      {
+        \tl_if_novalue:nTF {##1}
+          {
+            \stepcounter{footnote}
+            \int_gset_eq:Nc \g__enumext_footnote_int { c@footnote }
+          }
+          {
+            \int_gset:Nn \g__enumext_footnote_int { ##1 }
+          }
+        \footnotemark [ \g__enumext_footnote_int ]
+        \seq_gput_right:Nn \g__enumext_footnote_arg_seq { ##2 }
+        \seq_gput_right:NV \g__enumext_footnote_int_seq \g__enumext_footnote_int
+     }
+  }
+\cs_new_protected:Nn \__enumext_print_footnote:
+  {
+    \seq_if_empty:NF \g__enumext_footnote_int_seq
+      {
+        \seq_map_pairwise_function:NNN
+          \g__enumext_footnote_int_seq
+          \g__enumext_footnote_arg_seq
+          \__enumext_footnotetext:nn
+      }
+  }
 \cs_new_protected:Npn \__enumext_keyans_default_item:n #1
   {
     \tl_if_novalue:nTF { #1 }
@@ -3264,34 +3292,7 @@
           }
       }
   }
-%% Function for |\item*[][]| in |\makelabel| for enumext.
-\cs_new_protected:Nn \__enumext_item_starred:
-  {
-    \tl_if_empty:cF { l__enumext_item_symbol_ \__enumext_level: _tl }
-      {
-        \mode_leave_vertical:
-        \skip_horizontal:n { -\dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
-        \makebox[ 0pt ][ r ]{ \g__enumext_item_symbol_tl }
-        \skip_horizontal:n { \dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
-      }
-  }
-%% Redefinition of |\makelabel| for |\item| and |\item*[][]| in enumext.
-\cs_new_protected:Nn \__enumext_make_label:
-  {
-    \RenewDocumentCommand \makelabel { m }
-      {
-        \tl_use:c { l__enumext_label_fill_left_ \__enumext_level: _tl }
-        \tl_use:c { l__enumext_label_font_style_ \__enumext_level: _tl }
-        \bool_if:cTF { l__enumext_wrap_label_ \__enumext_level: _bool }
-          {
-            \__enumext_item_starred:
-            \use:c { __enumext_wrapper_label_ \__enumext_level: :n } { ##1 }
-          }
-          { ##1 }
-        \tl_use:c { l__enumext_label_fill_right_ \__enumext_level: _tl }
-        \tl_gclear:N \g__enumext_item_symbol_tl
-      }
-  }
+%% Redefine |\makelabel| for |keyans|.
 \cs_new_protected:Nn \__enumext_keyans_make_label:
   {
     \RenewDocumentCommand \makelabel { m }
@@ -4416,7 +4417,6 @@
   {
     \__enumext_safe_exec_viii:
     \__enumext_parse_keys_viii:n {#1}
-
     \__enumext_before_list_viii:
     \__enumext_start_list:nn { }
       {
