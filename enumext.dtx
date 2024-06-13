@@ -11350,10 +11350,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Functions for item box width}
 %
 % \begin{macro}{\@@_starred_columns_set_vii:, \@@_starred_columns_set_viii:,}
-%    We set the default value for the width of the box containing the
-%    content of the items and create |\itemwidthdim| in a public form.
+%    We set the default value for the \emph{width of the box} containing the
+%    content of the items for \myenv*{enumext*} environment.
 % \iffalse
-%% Define default columns width for |enumext*| and |keyans*|.
+%% Define default item width (columns width) for |enumext*| and |keyans*|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_starred_columns_set_vii:
@@ -11370,22 +11370,29 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \dim_set:Nn \l_@@_item_width_vii_dim
       {
         ( \linewidth - \l_@@_columns_sep_vii_dim * \l_@@_tmpa_vii_int )
-        / \l_@@_columns_vii_int - \l_@@_labelwidth_vii_dim
+        / \l_@@_columns_vii_int
+        - \l_@@_labelwidth_vii_dim
         - \l_@@_labelsep_vii_dim
       }
+%    \end{macrocode}
+%  When the key \mykey{rightmargin} is active we must adjust the values.
+%    \begin{macrocode}
     \dim_compare:nNnT { \l_@@_rightmargin_vii_dim } > { \c_zero_dim }
       {
         \dim_sub:Nn \l_@@_item_width_vii_dim
           {
-            ( \l_@@_rightmargin_vii_dim * \l_@@_tmpa_vii_int ) /  \l_@@_columns_vii_int
+            ( \l_@@_rightmargin_vii_dim * \l_@@_tmpa_vii_int )
+            / \l_@@_columns_vii_int
           }
         \dim_add:Nn \l_@@_columns_sep_vii_dim
           {
             \l_@@_rightmargin_vii_dim
           }
       }
-    %%\dim_zero_new:N \itemwidthdim
   }
+%    \end{macrocode}
+%  Same implementation for the \myenv*{keyans*} environment.
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_starred_columns_set_viii:
   {
     \dim_compare:nNnT { \l_@@_columns_sep_viii_dim } = { \c_zero_dim }
@@ -11400,10 +11407,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \dim_set:Nn \l_@@_item_width_viii_dim
       {
         ( \linewidth - \l_@@_columns_sep_viii_dim * \l_@@_tmpa_viii_int )
-        / \l_@@_columns_viii_int - \l_@@_labelwidth_viii_dim
+        / \l_@@_columns_viii_int
+        - \l_@@_labelwidth_viii_dim
         - \l_@@_labelsep_viii_dim
       }
-    %%\dim_zero_new:N \itemwidthdim
+    \dim_compare:nNnT { \l_@@_rightmargin_viii_dim } > { \c_zero_dim }
+      {
+        \dim_sub:Nn \l_@@_item_width_viii_dim
+          {
+            ( \l_@@_rightmargin_viii_dim * \l_@@_tmpa_vii_int )
+            / \l_@@_columns_viii_int
+          }
+        \dim_add:Nn \l_@@_columns_sep_viii_dim
+          {
+            \l_@@_rightmargin_viii_dim
+          }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11413,7 +11432,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_starred_joined_item_vii:n, \@@_starred_joined_item_viii:n,}
 %    The functions \cs{@@_starred_joined_item_vii:n} and \cs{@@_starred_joined_item_viii:n}  will set the \emph{width} of the
 %    box in which the content passed to \ics*{item}\myparg{columns} will be
-%    stored together with the value of |\itemwidthdim|.
+%    stored together with the value of |\itemwidthdim| for the \myenv*{enumext*} environment.
 % \iffalse
 %% Set width for joined item's for |enumext*| and |keyans*|.
 % \fi
@@ -11467,6 +11486,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \dim_set_eq:NN \itemwidthdim \l_@@_item_width_vii_dim
       }
   }
+%    \end{macrocode}
+%  Same implementation for the \myenv*{keyans*} environment.
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_joined_item_viii:n #1
   {
     \int_set:Nn \l_@@_joined_item_viii_int {#1}

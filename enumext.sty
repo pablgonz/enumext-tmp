@@ -3835,7 +3835,7 @@
       }
     \par
   }
-%% Define default columns width for |enumext*| and |keyans*|.
+%% Define default item width (columns width) for |enumext*| and |keyans*|.
 \cs_new_protected:Nn \__enumext_starred_columns_set_vii:
   {
     \dim_compare:nNnT { \l__enumext_columns_sep_vii_dim } = { \c_zero_dim }
@@ -3850,21 +3850,22 @@
     \dim_set:Nn \l__enumext_item_width_vii_dim
       {
         ( \linewidth - \l__enumext_columns_sep_vii_dim * \l__enumext_tmpa_vii_int )
-        / \l__enumext_columns_vii_int - \l__enumext_labelwidth_vii_dim
+        / \l__enumext_columns_vii_int
+        - \l__enumext_labelwidth_vii_dim
         - \l__enumext_labelsep_vii_dim
       }
     \dim_compare:nNnT { \l__enumext_rightmargin_vii_dim } > { \c_zero_dim }
       {
         \dim_sub:Nn \l__enumext_item_width_vii_dim
           {
-            ( \l__enumext_rightmargin_vii_dim * \l__enumext_tmpa_vii_int ) /  \l__enumext_columns_vii_int
+            ( \l__enumext_rightmargin_vii_dim * \l__enumext_tmpa_vii_int )
+            / \l__enumext_columns_vii_int
           }
         \dim_add:Nn \l__enumext_columns_sep_vii_dim
           {
             \l__enumext_rightmargin_vii_dim
           }
       }
-    %%\dim_zero_new:N \itemwidthdim
   }
 \cs_new_protected:Nn \__enumext_starred_columns_set_viii:
   {
@@ -3880,10 +3881,22 @@
     \dim_set:Nn \l__enumext_item_width_viii_dim
       {
         ( \linewidth - \l__enumext_columns_sep_viii_dim * \l__enumext_tmpa_viii_int )
-        / \l__enumext_columns_viii_int - \l__enumext_labelwidth_viii_dim
+        / \l__enumext_columns_viii_int
+        - \l__enumext_labelwidth_viii_dim
         - \l__enumext_labelsep_viii_dim
       }
-    %%\dim_zero_new:N \itemwidthdim
+    \dim_compare:nNnT { \l__enumext_rightmargin_viii_dim } > { \c_zero_dim }
+      {
+        \dim_sub:Nn \l__enumext_item_width_viii_dim
+          {
+            ( \l__enumext_rightmargin_viii_dim * \l__enumext_tmpa_vii_int )
+            / \l__enumext_columns_viii_int
+          }
+        \dim_add:Nn \l__enumext_columns_sep_viii_dim
+          {
+            \l__enumext_rightmargin_viii_dim
+          }
+      }
   }
 %% Set width for joined item's for |enumext*| and |keyans*|.
 \cs_new_protected:Npn \__enumext_starred_joined_item_vii:n #1
