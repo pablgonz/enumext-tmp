@@ -9736,39 +9736,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Setting \texttt{item-sym*} and \texttt{item-pos*} keys}\label{key:item-starred}
-%
-% In order to have a cleaner implementation of |\item*| for the
-% \myenv*{enumext} and \myenv*{enumext*} environments it is best to
-% define a couple of keys that allow us to control and set by default the
-% \mymeta{symbol} and its \mymeta{offset}.
-%
-% \begin{macro}[int]{item-sym*, item-pos*}
-%    Define and set \mykey{item-sym*} and \mykey{item-pos*} keys
-%    for \myenv*{enumext} and \myenv*{enumext*}.
-% \iffalse
-%% Add |item-sym*| and |item-sep*| keys.
-% \fi
-%    \begin{macrocode}
-\cs_set_protected:Npn \@@_tmp:nn #1 #2
-  {
-    \keys_define:nn { enumext / #1 }
-      {
-        item-sym* .tl_set:c  = { l_@@_item_symbol_#2_tl },
-        item-sym* .value_required:n = true,
-        item-sym* .initial:n  = {$\star$},
-        item-pos* .dim_set:c  = { l_@@_item_symbol_sep_#2_dim },
-        item-pos* .value_required:n = true,
-      }
-  }
-\clist_map_inline:nn
-  {
-    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
-  }
-  { \@@_tmp:nn #1 }
-%    \end{macrocode}
-% \end{macro}
-%
 % \subsection{Redefining \cs{item} and \cs{makelabel} in \env{enumext}}\label{env:item-starred-enumext}
 %
 % Redefining the |\item| command is not as simple as I thought. This
@@ -9874,16 +9841,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_redefine_item:}
+% \begin{macro}{\@@_redefine_item:, \@@_item_starred:, \@@_make_label}
 %    The function \cs{@@_redefine_item:} will redefine the |\item|
 %    command in the \myenv*{enumext} environment for the internal mechanism of
 %    check-answers for \mykey{check-ans} key and adding the starred
 %    |\item*| version.
-%
-%    \smallskip
-%
-%    This function is passed to \myvarenv{__@@_list_arg_two_X:} which is used
-%    in the definition of the \myenv*{enumext} environment (\S\ref{ltx:second-arg}).
 % \iffalse
 %% Redefinition of |\item| for internal check-answer mechanism and \item* in |enumext|.
 % \fi
@@ -9900,9 +9862,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_item_starred:}
 %    The function \cs{@@_item_starred:} will be responsible for
 %    executing |\item*| for the \myenv*{enumext} environment.
 % \iffalse
@@ -9920,15 +9879,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_make_label:}
 %    The function \cs{@@_make_label:} redefine \ics{makelabel} for the keys \mykey{align}, \mykey{font},
 %    \mykey{wrap-label}, \mykey{wrap-label*} and |\item*| for \myenv*{enumext} environment.
-%    \smallskip
-%
-%    This function is passed to \myvarenv{__@@_list_arg_two_X:} which is used
-%    in the definition of the \myenv*{enumext} environment (\S\ref{ltx:second-arg}).
 % \iffalse
 %% Redefinition of |\makelabel| for |\item| and |\item*[][]| in enumext.
 % \fi
@@ -9952,51 +9904,41 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Redefining \cs{footnote} command }\label{ltx:footnote}
+% \begin{important}*
+%  This function is passed to \myvarenv{__@@_list_arg_two_X:} used
+%  in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext}).
+% \end{important}
 %
-% \begin{macro}[int]{\@@_footnotetext:nn, \@@_renew_footnote:,\@@_print_footnote:}
-%   To keep the correct numbering of \ics{footnote} and to make it work
-%   correctly with the \mykey{mini-env} key and in the \myenv*{enumext*} and \myenv*{keyans*}
-%   environments, it is necessary to redefine the command.
-%   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
-%   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
+% \subsection{Setting \texttt{item-sym*} and \texttt{item-pos*} keys}\label{key:item-starred}
+%
+% In order to have a cleaner implementation of |\item*| for the
+% \myenv*{enumext} and \myenv*{enumext*} environments it is best to
+% define a couple of keys that allow us to control and set by default the
+% \mymeta{symbol} and its \mymeta{offset}.
+%
+% \begin{macro}[int]{item-sym*, item-pos*}
+%    Define and set \mykey{item-sym*} and \mykey{item-pos*} keys
+%    for \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
-%% Redefining \footnote.
+%% Add |item-sym*| and |item-sep*| keys.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_footnotetext:nn
+\cs_set_protected:Npn \@@_tmp:nn #1 #2
   {
-    \footnotetext[#1]{#2}
-  }
-\cs_new_protected:Nn \@@_renew_footnote:
-  {
-    \seq_gclear:N \g_@@_footnote_arg_seq
-    \seq_gclear:N \g_@@_footnote_int_seq
-    \RenewDocumentCommand \footnote { o +m }
+    \keys_define:nn { enumext / #1 }
       {
-        \tl_if_novalue:nTF {##1}
-          {
-            \stepcounter{footnote}
-            \int_gset_eq:Nc \g_@@_footnote_int { c@footnote }
-          }
-          {
-            \int_gset:Nn \g_@@_footnote_int { ##1 }
-          }
-        \footnotemark [ \g_@@_footnote_int ]
-        \seq_gput_right:Nn \g_@@_footnote_arg_seq { ##2 }
-        \seq_gput_right:NV \g_@@_footnote_int_seq \g_@@_footnote_int
-     }
-  }
-\cs_new_protected:Nn \@@_print_footnote:
-  {
-    \seq_if_empty:NF \g_@@_footnote_int_seq
-      {
-        \seq_map_pairwise_function:NNN
-          \g_@@_footnote_int_seq
-          \g_@@_footnote_arg_seq
-          \@@_footnotetext:nn
+        item-sym* .tl_set:c  = { l_@@_item_symbol_#2_tl },
+        item-sym* .value_required:n = true,
+        item-sym* .initial:n  = {$\star$},
+        item-pos* .dim_set:c  = { l_@@_item_symbol_sep_#2_dim },
+        item-pos* .value_required:n = true,
       }
   }
+\clist_map_inline:nn
+  {
+    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
+  }
+  { \@@_tmp:nn #1 }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -11289,6 +11231,55 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % will make it behave differently, we have no other option than to define
 % a cascade of functions.
 %
+% \subsection{Redefining \cs{footnote} command}\label{ltx:footnote}
+%
+% \begin{macro}[int]{\@@_footnotetext:nn, \@@_renew_footnote:,\@@_print_footnote:}
+%   To keep the correct numbering of \ics{footnote} and to make it work
+%   correctly in the \myenv*{enumext*} and \myenv*{keyans*}
+%   environments, it is necessary to redefine the command.
+%   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
+%   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
+% \iffalse
+%% Redefining \footnote.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_footnotetext:nn
+  {
+    \footnotetext[#1]{#2}
+  }
+\cs_new_protected:Nn \@@_renew_footnote:
+  {
+    \seq_gclear:N \g_@@_footnote_arg_seq
+    \seq_gclear:N \g_@@_footnote_int_seq
+    \RenewDocumentCommand \footnote { o +m }
+      {
+        \tl_if_novalue:nTF {##1}
+          {
+            \stepcounter{footnote}
+            \int_gset_eq:Nc \g_@@_footnote_int { c@footnote }
+          }
+          {
+            \int_gset:Nn \g_@@_footnote_int { ##1 }
+          }
+        \footnotemark [ \g_@@_footnote_int ]
+        \seq_gput_right:Nn \g_@@_footnote_arg_seq { ##2 }
+        \seq_gput_right:NV \g_@@_footnote_int_seq \g_@@_footnote_int
+     }
+  }
+\cs_new_protected:Nn \@@_print_footnote:
+  {
+    \seq_if_empty:NF \g_@@_footnote_int_seq
+      {
+        \seq_map_pairwise_function:NNN
+          \g_@@_footnote_int_seq
+          \g_@@_footnote_arg_seq
+          \@@_footnotetext:nn
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Functions for item box width}
 % To achieve the horizontal list environment we will capture the |\item|
 % command and the content of this in an plain \myenv{lrbox} box using \ics{makebox} for
 % the \mykey{label} and a \myenv{minipage} environment for the content passed to
@@ -11296,9 +11287,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % to be able to \emph{join columns} horizontally, in simple terms, we want
 % |\item| to behave in the same way as in the \myenv*{enumext} environment but
 % adding an optional first argument \myparg{number}.
-%
-%
-% \subsubsection{Functions for item box width}
 %
 % \begin{macro}{\@@_starred_columns_set_vii:, \@@_starred_columns_set_viii:,}
 %    We set the default value for the \emph{width of the box} containing the

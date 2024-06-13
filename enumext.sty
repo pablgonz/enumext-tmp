@@ -3115,23 +3115,6 @@
           \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
       }
   }
-%% Add |item-sym*| and |item-sep*| keys.
-\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
-  {
-    \keys_define:nn { enumext / #1 }
-      {
-        item-sym* .tl_set:c  = { l__enumext_item_symbol_#2_tl },
-        item-sym* .value_required:n = true,
-        item-sym* .initial:n  = {$\star$},
-        item-pos* .dim_set:c  = { l__enumext_item_symbol_sep_#2_dim },
-        item-pos* .value_required:n = true,
-      }
-  }
-\clist_map_inline:nn
-  {
-    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
-  }
-  { \__enumext_tmp:nn #1 }
 %% Internal function for |\item| whit check-answer mechanism in |enumext|.
 \cs_new_protected:Npn \__enumext_default_item:n #1
   {
@@ -3217,40 +3200,23 @@
         \tl_gclear:N \g__enumext_item_symbol_tl
       }
   }
-%% Redefining \footnote.
-\cs_new_protected:Nn \__enumext_footnotetext:nn
+%% Add |item-sym*| and |item-sep*| keys.
+\cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
-    \footnotetext[#1]{#2}
-  }
-\cs_new_protected:Nn \__enumext_renew_footnote:
-  {
-    \seq_gclear:N \g__enumext_footnote_arg_seq
-    \seq_gclear:N \g__enumext_footnote_int_seq
-    \RenewDocumentCommand \footnote { o +m }
+    \keys_define:nn { enumext / #1 }
       {
-        \tl_if_novalue:nTF {##1}
-          {
-            \stepcounter{footnote}
-            \int_gset_eq:Nc \g__enumext_footnote_int { c@footnote }
-          }
-          {
-            \int_gset:Nn \g__enumext_footnote_int { ##1 }
-          }
-        \footnotemark [ \g__enumext_footnote_int ]
-        \seq_gput_right:Nn \g__enumext_footnote_arg_seq { ##2 }
-        \seq_gput_right:NV \g__enumext_footnote_int_seq \g__enumext_footnote_int
-     }
-  }
-\cs_new_protected:Nn \__enumext_print_footnote:
-  {
-    \seq_if_empty:NF \g__enumext_footnote_int_seq
-      {
-        \seq_map_pairwise_function:NNN
-          \g__enumext_footnote_int_seq
-          \g__enumext_footnote_arg_seq
-          \__enumext_footnotetext:nn
+        item-sym* .tl_set:c  = { l__enumext_item_symbol_#2_tl },
+        item-sym* .value_required:n = true,
+        item-sym* .initial:n  = {$\star$},
+        item-pos* .dim_set:c  = { l__enumext_item_symbol_sep_#2_dim },
+        item-pos* .value_required:n = true,
       }
   }
+\clist_map_inline:nn
+  {
+    {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
+  }
+  { \__enumext_tmp:nn #1 }
 \cs_new_protected:Npn \__enumext_keyans_default_item:n #1
   {
     \tl_if_novalue:nTF { #1 }
@@ -3880,6 +3846,40 @@
         \__enumext_endminipage:
       }
     \par
+  }
+%% Redefining \footnote.
+\cs_new_protected:Nn \__enumext_footnotetext:nn
+  {
+    \footnotetext[#1]{#2}
+  }
+\cs_new_protected:Nn \__enumext_renew_footnote:
+  {
+    \seq_gclear:N \g__enumext_footnote_arg_seq
+    \seq_gclear:N \g__enumext_footnote_int_seq
+    \RenewDocumentCommand \footnote { o +m }
+      {
+        \tl_if_novalue:nTF {##1}
+          {
+            \stepcounter{footnote}
+            \int_gset_eq:Nc \g__enumext_footnote_int { c@footnote }
+          }
+          {
+            \int_gset:Nn \g__enumext_footnote_int { ##1 }
+          }
+        \footnotemark [ \g__enumext_footnote_int ]
+        \seq_gput_right:Nn \g__enumext_footnote_arg_seq { ##2 }
+        \seq_gput_right:NV \g__enumext_footnote_int_seq \g__enumext_footnote_int
+     }
+  }
+\cs_new_protected:Nn \__enumext_print_footnote:
+  {
+    \seq_if_empty:NF \g__enumext_footnote_int_seq
+      {
+        \seq_map_pairwise_function:NNN
+          \g__enumext_footnote_int_seq
+          \g__enumext_footnote_arg_seq
+          \__enumext_footnotetext:nn
+      }
   }
 %% Define default item width (columns width) for |enumext*| and |keyans*|.
 \cs_new_protected:Nn \__enumext_starred_columns_set_vii:
