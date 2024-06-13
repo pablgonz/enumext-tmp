@@ -4366,21 +4366,22 @@
   }
 %% Execute |check-ans| key out of |enumext*|.
 \__enumext_after_env:nn {enumext*} { \__enumext_execute_after_env: }
-%% Define |keyans*|
+%% Define |keyans*| environment.
 \NewDocumentEnvironment{keyans*}{ o }
   {
     \__enumext_safe_exec_viii:
     \__enumext_parse_keys_viii:n {#1}
-    \__enumext_starred_columns_set_viii:
+
     \__enumext_before_list_viii:
     \__enumext_start_list:nn { }
       {
         \__enumext_list_arg_two_viii:
         \__enumext_before_keys_exec_viii:
       }
-      \item[] \scan_stop:
-      \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \noindent
-      \cs_set_eq:NN \item \__enumext_start_item_tmp_viii:
+    \__enumext_starred_columns_set_viii:
+    \item[] \scan_stop:
+    \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \noindent
+    \cs_set_eq:NN \item \__enumext_start_item_tmp_viii:
   }
   {
     \__enumext_stop_item_tmp_viii:

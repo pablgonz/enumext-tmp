@@ -579,10 +579,10 @@ This work consists of the files enumext.dtx and enumext.sty.
                     columnseprule, footnote, footnotemark, footnotetext, raggedcolumns, hspace, parindent, %
                     subsection, list,endlist,leftmargin, itemindent,bfseries,endminipage, minipage, parskip, % item,
                     labelwidth,labelsep,labelindent,label,ref,topsep,parsep,includegraphics, itemize, description, %
-                    multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, if@minipage, parbox, ignorespace %
+                    multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, ignorespace %
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, %
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
-                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, if@hyper@item,if@noitemarg,%
+                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft,%
                     triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean},%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
@@ -591,9 +591,9 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywordstyle  = [4]{\color{pkgcolor}},%
     keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidthdim, %
                     setenumext,printkeyans,miniright,parleft,labelbx, descitemwd,theenumXi,theenumXii,theenumXiii,theenumXiv,theenumXv, theenumXvii, theenumXviii},%
-% Reserved words 5 (plain TeX)
+% Reserved words 5 (plain TeX or internal)
     keywordstyle  = [5]{\color{red}},%
-    keywords      = [5]{makeatletter,makeatother,let,verb,makebox,def,prevdepth,glue,%
+    keywords      = [5]{makeatletter,makeatother,let,verb,makebox,def,prevdepth,glue, if@minipage,if@hyper@item,if@noitemarg, %
                     splittopskip,showboxdepth,topskip,showoutput,nointerlineskip, ignorespaces},%
 % Reserved words 6 (optcolor) KEYS
     keywordstyle  = [6]{\color{optcolor}},%
@@ -12017,16 +12017,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  \subsubsection{Real definition of \cs{item} in \env{enumext*}}
 %
 % \begin{macro}{\@@_start_item_vii:w}
-%  The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
-%  \ics*{item} inside the \myenv*{enumext*} environment.
-%
-%    The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to
-%    \cs{@@_stop_item_vii:} which we will define later and add the
-%    \mypkg{hyperref} compatible \icounter{enumXvii} counter, after that we will
-%    start capturing the item content in a box. Here need setting the |\if@hyper@item| switch to
-%    \emph{\enquote{true}} for \mypkg{hyperref} compatible. The
-%    explanation for this is given by the master Heiko Oberdiek on
-%    \href{https://tex.stackexchange.com/a/404911}{\textbackslash refstepcounter\{enumi\} twice (or more) creates destination with the same identifier}.
+%   The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
+%   \ics*{item} inside the \myenv*{enumext*} environment.
+%   The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to
+%   \cs{@@_stop_item_vii:} which we will define later and add the
+%   \mypkg{hyperref} compatible \icounter{enumXvii} counter, after that we will
+%   start capturing the item content in a box. Here need setting the |\if@hyper@item| switch to
+%   \emph{\enquote{true}} for \mypkg{hyperref} compatible. The
+%   explanation for this is given by the master Heiko Oberdiek on
+%   \href{https://tex.stackexchange.com/a/404911}{\textbackslash refstepcounter\{enumi\} twice (or more) creates destination with the same identifier}.
 %
 % \iffalse
 %% Real \item definition for |enumext*| \legacy_if_set_true:n { @hyper@item } :D. (doc p170)
@@ -12166,43 +12165,43 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% As we don't want our check to be executed \mykey{check-ans} by levels but on the
-% complete list, we will take it out of the \myenv*{enumext*}
-% environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
+%   As we don't want our check to be executed \mykey{check-ans} by levels but on the
+%   complete list, we will take it out of the \myenv*{enumext*}
+%   environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
 % \iffalse
 %% Execute |check-ans| key out of |enumext*|.
 % \fi
 %    \begin{macrocode}
 \@@_after_env:nn {enumext*} { \@@_execute_after_env: }
 %    \end{macrocode}
+% \end{macro}
 %
 % \subsection{The environment \env{keyans*}}\label{env:keyans-starred}
 %
 % \begin{macro}{keyans*}
 %    First we will generate the environment and we will give a
 %    temporary definition to \cs{@@_stop_item_tmp_viii:} equal to
-%    \ics{noindent} and next to |\item| equal to
+%    |\noindent| and next to |\item| equal to
 %    \cs{@@_start_item_tmp_viii:} which we will redefine later.
 % \iffalse
-%% Define |keyans*|
+%% Define |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \NewDocumentEnvironment{keyans*}{ o }
   {
     \@@_safe_exec_viii:
     \@@_parse_keys_viii:n {#1}
-    \@@_starred_columns_set_viii:
+
     \@@_before_list_viii:
     \@@_start_list:nn { }
       {
         \@@_list_arg_two_viii:
         \@@_before_keys_exec_viii:
       }
-      \item[] \scan_stop:
-      \cs_set_eq:NN \@@_stop_item_tmp_viii: \noindent
-      \cs_set_eq:NN \item \@@_start_item_tmp_viii:
+    \@@_starred_columns_set_viii:
+    \item[] \scan_stop:
+    \cs_set_eq:NN \@@_stop_item_tmp_viii: \noindent
+    \cs_set_eq:NN \item \@@_start_item_tmp_viii:
   }
   {
     \@@_stop_item_tmp_viii:
@@ -12491,7 +12490,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection*{Real definition of \cs{item} in \env{keyans*}}
+% \subsubsection{Real definition of \cs{item} in \env{keyans*}}
 %
 % \begin{macro}{\@@_start_item_viii:w}
 %    The implementation at this point is very similar to that of the
