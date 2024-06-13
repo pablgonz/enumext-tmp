@@ -9,7 +9,20 @@
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\begin{enumext}[save-ans=simplews,columns=2,check-ans=true,show-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
+
+        \begin{enumext}[list-offset=1cm,columns=3]
+          \item \texttt{xsim-exam}% \anskey{doesn't exist for now :(}
+          \item \texttt{xsim} %\anskey{very good}
+          \item \texttt{exsheets}% \anskey{obsolete}
+        \end{enumext}
+
+        \begin{enumext*}[list-offset=1cm,columns=3]
+          \item \texttt{xsim-exam}% \anskey{doesn't exist for now :(}
+          \item \texttt{xsim} %\anskey{very good}
+          \item \texttt{exsheets}% \anskey{obsolete}
+        \end{enumext*}
+
+\begin{enumext*}[save-ans=simplews,columns=2,check-ans=true,show-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
   \item Factor $x^{2}-2x+1$
     \begin{anskey*}
     HHHH
@@ -31,10 +44,10 @@
           \item \texttt{exsheets} \anskey{obsolete}
         \end{enumext}
     \end{enumext}
-\end{enumext}
+\end{enumext*}
 
 The answer to \ref{simplews:1} is \getkeyans{simplews:1} and the answer
 to \ref{simplews:3} is \getkeyans{simplews:3}.
 
-\printkeyans[columns=2]{simplews}
+\printkeyans*[columns=2]{simplews}
 \end{document}

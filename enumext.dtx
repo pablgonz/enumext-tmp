@@ -589,8 +589,8 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywords      = [3]{document,article,setlength,pagestyle,definecolor},%
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
-    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*,%
-                    setenumext,printkeyans,miniright,parleft,itembx, descitemwd,theenumXi,theenumXii,theenumXiii,theenumXiv,theenumXv, theenumXvii, theenumXviii},%
+    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidthdim, %
+                    setenumext,printkeyans,miniright,parleft,labelbx, descitemwd,theenumXi,theenumXii,theenumXiii,theenumXiv,theenumXv, theenumXvii, theenumXviii},%
 % Reserved words 5 (plain TeX)
     keywordstyle  = [5]{\color{red}},%
     keywords      = [5]{makeatletter,makeatother,let,verb,makebox,def,prevdepth,glue,%
@@ -780,7 +780,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     \colorbox{lightgray}{\phantom{\rule[-\dp\satbox]{\dimeval{\linewidth-2\fboxsep}}{\dimeval{\dp\satbox+\ht\satbox}}}}}%
   }
 % for non-numbered list samples, need % at end (prevent supur spaces)
-\NewDocumentCommand \itembx { s +m }
+\NewDocumentCommand \labelbx { s +m }
   {%
     \IfBooleanTF{#1}
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedright{#2}}}}%
@@ -1416,7 +1416,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   nested within \myenv*{enumext} and can contain it nested within it.
 %
 % \item Each \emph{\enquote{item}} in the environment is placed within a \myenv{minipage}
-%   environment whose \emph{width} is stored in the dimension \ics*{itemwidth}
+%   environment whose \emph{width} is stored in the dimension |\itemwidthdim|
 %   that includes \mykey{labelwith}, \mykey{labelsep} plus the \emph{width of the content}.
 %
 % \item You cannot have floating environments like \myenv{figure} or
@@ -1726,7 +1726,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %<*example>
 % \fi
 \begin{examplecode}[frame=none]
-\NewDocumentCommand \itembx { s +m }
+\NewDocumentCommand \labelbx { s +m }
   {%
     \IfBooleanTF{#1}
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedright{#2}}}}%
@@ -1737,7 +1737,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</example>
 % \fi
 %
-% and then pass it through the key |wrap-label={\itembx{#1}}| or |wrap-label={\itembx*{#1}}|.
+% and then pass it through the key |wrap-label={\labelbx{#1}}| or |wrap-label={\labelbx*{#1}}|.
 %
 % \smallskip
 %
@@ -3780,7 +3780,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %<*example>
 % \fi
 \begin{examplecode}[frame=none]
-\NewDocumentCommand \itembx { s +m }
+\NewDocumentCommand \labelbx { s +m }
   {%
     \IfBooleanTF{#1}
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedright{#2}}}}%
@@ -3791,9 +3791,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %</example>
 % \fi
 %
-% Now we just need to set |wrap-label*={\itembx{#1}}|.
+% Now we just need to set |wrap-label*={\labelbx{#1}}|.
 %
-% \begin{enumext}[label={},labelsep=4pt,labelwidth=\descitemwd,list-offset=-\dimeval{\descitemwd+4pt}, wrap-label*={\itembx{#1}}, font=\bfseries,noitemsep,topsep=3pt]
+% \begin{enumext}[label={},labelsep=4pt,labelwidth=\descitemwd,list-offset=-\dimeval{\descitemwd+4pt}, wrap-label*={\labelbx{#1}}, font=\bfseries,noitemsep,topsep=3pt]
 %  \item[SomeThing] A short one-line description.
 %  \item This is an entry \textit{without} a label.
 %  \item[Something] A short one-line description.
@@ -4047,7 +4047,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-06-12}
+  {2024-06-13}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4553,6 +4553,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
+% \subsection{Public dimension}\label{dim:public}
+% The package \mypkg*{enumext} only provides a single public dimension
+% |\itemwidthdim| and is intended for user convenience only and is not
+% for internal use as such. This dimension is set in all environments
+% and is only used by the \mykey{wrap-ans} key at its default value.
+% \iffalse
+%% Public dimension |\itemwidthdim|
+% \fi
+%    \begin{macrocode}
+\dim_zero_new:N \itemwidthdim
+%    \end{macrocode}
+%
 % \subsection{Some utility functions}
 %
 % \begin{macro}{\@@_at_begin_document:n}
@@ -4627,7 +4639,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    and replacing that by \ics{arabic}\mymarg{counter} defined
 %    on the current level.
 % \iffalse
-%% Regex for replace * for |ref| key.
+%% Regex for replace '*' for |ref| key.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_regex_counter_style:
@@ -8696,9 +8708,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \int_compare_p:nNn { \l_@@_store_item_join_int } > { 1 } }
       {
         \tl_put_right:Ne \l_@@_store_anskey_arg_tl
-           {
-             ( \exp_not:V \l_@@_store_item_join_int )
-           }
+          {
+            ( \exp_not:V \l_@@_store_item_join_int )
+          }
        }
 %    \end{macrocode}
 %   And now we will review the keys \mykeycmd{item-star}, \mykeycmd{item-sym*} and
@@ -8823,8 +8835,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % behaviour to that of |\item| in the \myenv*{enumext} and
 % \myenv*{enumext*} environments executed as follows
 % \ics*{anskey}\myoarg{key \textnormal{\textcolor{gray}{=}} val}\mymarg{content}.
-
-
+%
 % \begin{macro}{\@@_anskey_unknown:n, \@@_anskey_unknown:nn}
 %    First we'll add the keys \mykeycmd{break-col}, \mykeycmd{item-join},
 %    \mykeycmd{item-star}, \mykeycmd{item-sym*} and \mykeycmd{item-pos*}.
@@ -9380,7 +9391,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \cs{@@_reset_global_vars:} returning the used variables to their
 %   original state.
 % \iffalse
-%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+%% Function internal checking answer mechanism, clean vars and undefine |anskey*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_execute_after_env:
@@ -11316,7 +11327,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_starred_columns_set_vii:, \@@_starred_columns_set_viii:,}
 %    We set the default value for the width of the box containing the
-%    content of the items and create \ics*{itemwidth} in a public form.
+%    content of the items and create |\itemwidthdim| in a public form.
 % \iffalse
 %% Define default columns width for |enumext*| and |keyans*|.
 % \fi
@@ -11338,7 +11349,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         / \l_@@_columns_vii_int - \l_@@_labelwidth_vii_dim
         - \l_@@_labelsep_vii_dim
       }
-    \dim_zero_new:N \itemwidth
+    %%\dim_zero_new:N \itemwidthdim
   }
 \cs_new_protected:Nn \@@_starred_columns_set_viii:
   {
@@ -11357,7 +11368,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         / \l_@@_columns_viii_int - \l_@@_labelwidth_viii_dim
         - \l_@@_labelsep_viii_dim
       }
-    \dim_zero_new:N \itemwidth
+    %%\dim_zero_new:N \itemwidthdim
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11367,7 +11378,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_starred_joined_item_vii:n, \@@_starred_joined_item_viii:n,}
 %    The functions \cs{@@_starred_joined_item_vii:n} and \cs{@@_starred_joined_item_viii:n}  will set the \emph{width} of the
 %    box in which the content passed to \ics*{item}\myparg{columns} will be
-%    stored together with the value of \ics*{itemwidth}.
+%    stored together with the value of |\itemwidthdim|.
 % \iffalse
 %% Set width for joined item's for |enumext*| and |keyans*|.
 % \fi
@@ -11414,11 +11425,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                + \l_@@_columns_sep_vii_dim
               )*\l_@@_joined_item_aux_vii_int
           }
-        \dim_set_eq:NN \itemwidth \l_@@_joined_width_vii_dim
+        \dim_set_eq:NN \itemwidthdim \l_@@_joined_width_vii_dim
       }
       {
         \dim_set_eq:NN \l_@@_joined_width_vii_dim \l_@@_item_width_vii_dim
-        \dim_set_eq:NN \itemwidth \l_@@_item_width_vii_dim
+        \dim_set_eq:NN \itemwidthdim \l_@@_item_width_vii_dim
       }
   }
 \cs_new_protected:Npn \@@_starred_joined_item_viii:n #1
@@ -11463,11 +11474,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                + \l_@@_columns_sep_viii_dim
               )*\l_@@_joined_item_aux_viii_int
           }
-        \dim_set_eq:NN \itemwidth \l_@@_joined_width_viii_dim
+        \dim_set_eq:NN \itemwidthdim \l_@@_joined_width_viii_dim
       }
       {
         \dim_set_eq:NN \l_@@_joined_width_viii_dim \l_@@_item_width_viii_dim
-        \dim_set_eq:NN \itemwidth \l_@@_item_width_viii_dim
+        \dim_set_eq:NN \itemwidthdim \l_@@_item_width_viii_dim
       }
   }
 %    \end{macrocode}

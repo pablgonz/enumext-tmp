@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-06-12}
+  {2024-06-13}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -223,6 +223,8 @@
     {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv},
     {keyans}{v}, {enumext*}{vii}, {keyans*}{viii}
   }
+%% Public dimension |\itemwidthdim|
+\dim_zero_new:N \itemwidthdim
 %% A internal "hooks" functions used for copying and execute code.
 \cs_new_protected:Npn \__enumext_at_begin_document:n #1
   {
@@ -248,7 +250,7 @@
       { \prg_return_true: }
       { \prg_return_false: }
   }
-%% Regex for replace * for |ref| key.
+%% Regex for replace '*' for |ref| key.
 \cs_new_protected:Nn \__enumext_regex_counter_style:
   {
     \tl_map_inline:Nn \c__enumext_counter_style_tl
@@ -2467,9 +2469,9 @@
       { \int_compare_p:nNn { \l__enumext_store_item_join_int } > { 1 } }
       {
         \tl_put_right:Ne \l__enumext_store_anskey_arg_tl
-           {
-             ( \exp_not:V \l__enumext_store_item_join_int )
-           }
+          {
+            ( \exp_not:V \l__enumext_store_item_join_int )
+          }
        }
      \bool_if:NTF \l__enumext_store_item_star_bool
       {
@@ -2544,7 +2546,6 @@
         \__enumext_anskey_show_wrap_arg:n { #1 }
       }
   }
-
 %% Add |key=val| for |\anskey|.
 \keys_define:nn { enumext / anskey }
   {
@@ -2877,7 +2878,7 @@
     \tl_gclear:N       \g__enumext_store_item_symbol_tl
     \dim_gzero:N       \g__enumext_store_item_symbol_sep_dim
   }
-%% Function to compare |\item| = answer for internal checking answer mechanism in |enumext|.
+%% Function internal checking answer mechanism, clean vars and undefine |anskey*| environment.
 \cs_new_protected:Nn \__enumext_execute_after_env:
   {
     \int_compare:nNnT { \l__enumext_level_int } = { 0 }
@@ -3829,7 +3830,7 @@
         / \l__enumext_columns_vii_int - \l__enumext_labelwidth_vii_dim
         - \l__enumext_labelsep_vii_dim
       }
-    \dim_zero_new:N \itemwidth
+    %%\dim_zero_new:N \itemwidthdim
   }
 \cs_new_protected:Nn \__enumext_starred_columns_set_viii:
   {
@@ -3848,7 +3849,7 @@
         / \l__enumext_columns_viii_int - \l__enumext_labelwidth_viii_dim
         - \l__enumext_labelsep_viii_dim
       }
-    \dim_zero_new:N \itemwidth
+    %%\dim_zero_new:N \itemwidthdim
   }
 %% Set width for joined item's for |enumext*| and |keyans*|.
 \cs_new_protected:Npn \__enumext_starred_joined_item_vii:n #1
@@ -3893,11 +3894,11 @@
                + \l__enumext_columns_sep_vii_dim
               )*\l__enumext_joined_item_aux_vii_int
           }
-        \dim_set_eq:NN \itemwidth \l__enumext_joined_width_vii_dim
+        \dim_set_eq:NN \itemwidthdim \l__enumext_joined_width_vii_dim
       }
       {
         \dim_set_eq:NN \l__enumext_joined_width_vii_dim \l__enumext_item_width_vii_dim
-        \dim_set_eq:NN \itemwidth \l__enumext_item_width_vii_dim
+        \dim_set_eq:NN \itemwidthdim \l__enumext_item_width_vii_dim
       }
   }
 \cs_new_protected:Npn \__enumext_starred_joined_item_viii:n #1
@@ -3942,11 +3943,11 @@
                + \l__enumext_columns_sep_viii_dim
               )*\l__enumext_joined_item_aux_viii_int
           }
-        \dim_set_eq:NN \itemwidth \l__enumext_joined_width_viii_dim
+        \dim_set_eq:NN \itemwidthdim \l__enumext_joined_width_viii_dim
       }
       {
         \dim_set_eq:NN \l__enumext_joined_width_viii_dim \l__enumext_item_width_viii_dim
-        \dim_set_eq:NN \itemwidth \l__enumext_item_width_viii_dim
+        \dim_set_eq:NN \itemwidthdim \l__enumext_item_width_viii_dim
       }
   }
 %% Start support for |mini-env| key in |enumext*| environment
