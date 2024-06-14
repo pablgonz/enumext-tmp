@@ -225,8 +225,7 @@
     {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv},
     {keyans}{v}, {enumext*}{vii}, {keyans*}{viii}
   }
-%% Public dimension |\itemwidth|
-\dim_zero_new:N \itemwidth
+\cs_generate_variant:Nn \keys_precompile:nnN { neN }
 %% A internal "hooks" functions used for copying and execute code.
 \cs_new_protected:Npn \__enumext_at_begin_document:n #1
   {
@@ -485,6 +484,8 @@
     \__enumext_hypertarget:nn {#1} { }
     \__enumext_phantomsection:
   }
+%% Public dimension |\itemwidth|
+\dim_zero_new:N \itemwidth
 %% Definition of counters.
 \cs_new_protected:Npn \__enumext_define_counters:Nn #1 #2
   {
@@ -4761,7 +4762,6 @@
     \group_end:
   }
 %% Add keys for |\printkeyans|.
-\cs_generate_variant:Nn \keys_precompile:nnN { neN }
 \keys_define:nn  { enumext / print }
   {
     print*  .code:n     = \keys_precompile:neN { enumext / enumext* }

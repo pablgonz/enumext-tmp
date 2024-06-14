@@ -1208,7 +1208,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % load.
 % \end{important}
 %
+% \subsubsection{Public dimension}
 %
+
 % \subsubsection{Support for \pkg{multicol}}
 %
 % The package provides direct support for using the \mypkg{multicol}\cite{multicol}
@@ -1505,10 +1507,10 @@ This work consists of the files enumext.dtx and enumext.sty.
   \item The fourth
   \item(3)* The fifth item is way too long for this and needs three columns
   \item The sixth
-  \item the seventh
+  \item The seventh
   \item(2)[X] The eighth item is way too long for this and needs two columns
-  \item[Z] The ninth
-  \item The tenth
+  \item The ninth
+  \item[Z] The tenth
 \end{enumext*}
 \end{examplecode}
 % \iffalse
@@ -1522,10 +1524,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  \item The fourth
 %  \item(3)* The fifth item is way too long for this and needs three columns
 %  \item The sixth
-%  \item the seventh
+%  \item The seventh
 %  \item(2)[X] The eighth item is way too long for this and needs two columns
-%  \item[Z] The ninth
-%  \item The tenth
+%  \item The ninth
+%  \item[Z] The tenth
 % \end{enumext*}
 %
 % \section{The command \cs{setenumext}}
@@ -4555,19 +4557,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \subsection{Public dimension}\label{dim:public}
-% The package \mypkg*{enumext} only provides a single public dimension
-% |\itemwidth| and is intended for user convenience only and is not
-% for internal use as such. This dimension is set in all environments
-% and is only used by the \mykey{wrap-ans} key at its default value.
-% \iffalse
-%% Public dimension |\itemwidth|
-% \fi
-%    \begin{macrocode}
-\dim_zero_new:N \itemwidth
-%    \end{macrocode}
-%
 % \subsection{Some utility functions}
+%
+% \begin{macro}[int]{\keys_precompile:neN}
+%    Non-standard kernel variant used by the |\printkeyans| command
+%    (\S\ref{cmd:printkeyans}).
+%    \begin{macrocode}
+\cs_generate_variant:Nn \keys_precompile:nnN { neN }
+%    \end{macrocode}
+% \end{macro}
 %
 % \begin{macro}{\@@_at_begin_document:n}
 %    A internal \emph{\enquote{hook}} function used for copying plain
@@ -5102,6 +5100,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
+%
+% \subsection{Definition of public dimension}\label{dim:public}
+%
+% The package \mypkg*{enumext} only provides a single public dimension
+% |\itemwidth| and is intended for user convenience only and is not
+% for internal use as such. This dimension is set in all environments
+% and is only used by the \mykey{wrap-ans} key at its default value.
+% \iffalse
+%% Public dimension |\itemwidth|
+% \fi
+%    \begin{macrocode}
+\dim_zero_new:N \itemwidth
+%    \end{macrocode}
 %
 % \subsection{Definition of counters}\label{int:counters}
 %
@@ -5817,7 +5828,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         base-fix .value_forbidden:n = true,
       }
   }
-\clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
+\clist_map_inline:nn { level-1, enumext* } { \@@_tmp:n {#1} }
 %    \end{macrocode}
 %   The function \cs{@@_nested_base_line_fix:} will be in charge of
 %   applying the baseline correction and adjusting the \mymeta{keys}.
@@ -12754,13 +12765,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % keys for the environment \myenv*{enumext*} nested within the \mymeta{sequence}
 % and will be set by |\setenumext|\myoarg{print \textnormal{\textcolor{gray}{,}}\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}},
 % the rest of the variables will be for the environment \myenv*{enumext} and will be set
-% by |\setenumext|\myoarg{print \textnormal{\textcolor{gray}{,}} level}
+% by |\setenumext|\myoarg{print \textnormal{\textcolor{gray}{,}} level}.
 %
 % \iffalse
 %% Add keys for |\printkeyans|.
 % \fi
 %    \begin{macrocode}
-\cs_generate_variant:Nn \keys_precompile:nnN { neN }
 \keys_define:nn  { enumext / print }
   {
     print*  .code:n     = \keys_precompile:neN { enumext / enumext* }
