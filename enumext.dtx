@@ -4101,9 +4101,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{variable}[int]{\l_@@_starred_bool, \g_@@_starred_bool, \l_@@_starred_first_bool,
 %                       \l_@@_standar_bool, \g_@@_standar_bool, \l_@@_standar_first_bool,
 %                       \l_@@_anskey_env_bool, \l_@@_keyans_env_bool,\g_@@_start_line_tl,
-%                       \g_@@_envir_name_tl, }
+%                       \g_@@_envir_name_tl, \l_@@_envir_name_tl}
 %   Internal variables used by functions \cs{@@_is_not_nested:},
-%   \cs{@@_is_on_first_level:} and \cs{@@_keyans_start_line:} (\S\ref{fun:utilities}).
+%   \cs{@@_is_on_first_level:} and \cs{@@_keyans_name_and_start:} (\S\ref{fun:utilities}).
 %
 %^^A    The boolean variables \myvarenv{g__@@_starred_bool} and
 %^^A    \myvarenv{g__@@_standar_bool} will be set to \emph{\enquote{true}} when the
@@ -4123,6 +4123,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \bool_new:N \l_@@_keyans_env_bool
 \tl_new:N   \g_@@_start_line_tl
 \tl_new:N   \g_@@_envir_name_tl
+\tl_new:N   \l_@@_envir_name_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -4756,21 +4757,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_keyans_start_line:}
-%   The function \cs{@@_keyans_start_line:} will save the start line
-%   number of the environments \myenv*{keyans}, \myenv*{keyans*} and
-%   \myenv*{keyanspic} in the variable \cs{l_@@ _check_start_line_env_tl}
-%   to use in the \cs{@@_check_starred_cmd:n} function.
+% \begin{macro}{\@@_keyans_name_and_start:}
+%   The function \cs{@@_keyans_name_and_start:} will save the start line
+%   number and name of the environments \myenv*{keyans}, \myenv*{keyans*} and
+%   \myenv*{keyanspic} in the variables \cs{l_@@_check_start_line_env_tl}
+%   and \cs{l_@@_envir_name_tl} to use in the \cs{@@_check_starred_cmd:n} function.
 % \iffalse
-%% Function to save the current environment start line for |keyans|, |keyans*| and |keyanspic|.
+%% Function to save the current name and start line for |keyans|, |keyans*| and |keyanspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_start_line:
+\cs_new_protected:Nn \@@_keyans_name_and_start:
   {
     \str_case:en { \@currenvir }
       {
         {keyans}
           {
+            \tl_set:Nn \l_@@_envir_name_tl { keyans }
             \tl_set:Ne \l_@@_check_start_line_env_tl
               {
                 in ~ 'keyans' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
@@ -4778,6 +4780,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
         {keyans*}
           {
+            \tl_set:Nn \l_@@_envir_name_tl { keyans* }
             \tl_set:Ne \l_@@_check_start_line_env_tl
               {
                 in ~ 'keyans*' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
@@ -4785,6 +4788,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
         {keyanspic}
           {
+            \tl_set:Nn \l_@@_envir_name_tl { keyanspic }
             \tl_set:Ne \l_@@_check_start_line_env_tl
               {
                 in ~ 'keyanspic' ~ start ~ on ~ line ~ \exp_not:V \inputlineno
@@ -9942,6 +9946,50 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsection{Handling unknown keys}\label{key:unknown-keys}
+%
+% At this point in the code I already know that I will not add more
+% \mymeta{keys} and since I have already been quite \emph{paranoid and
+% restrictive} with the definitions of environments and commands, the
+% only thing left to do is do it with the \mymeta{keys} (you have to be
+% consistent in life).
+%
+% \subsubsection{Handling unknown keys for \env{keyans} and \env{keyans*}}\label{key:unknown-keys-keyans}
+%
+% \begin{macro}[int]{unknown, \@@_keyans_unknown_keys:n, \@@_keyans_unknown_keys:nn}
+%    Define and set |unknown| key for  \myenv*{keyans} and \myenv*{keyans*} environments.
+% \iffalse
+%% Add keys |unknown| for |keyans| and |keyans*|.
+% \fi
+%    \begin{macrocode}
+\cs_set_protected:Npn \@@_tmp:n #1
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        unknown .code:n = { \@@_keyans_unknown_keys:n {##1} }
+      }
+  }
+\clist_map_inline:nn { keyans, keyans* } { \@@_tmp:n {#1} }
+%    \end{macrocode}
+%  Internal functions for handling |unknown| key.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_keyans_unknown_keys:n #1
+  {
+    \exp_args:NV \@@_keyans_unknown_keys:nn \l_keys_key_str {#1}
+  }
+\cs_new_protected:Npn \@@_keyans_unknown_keys:nn #1#2
+  {
+    \tl_if_blank:nTF {#2}
+      {
+        \msg_error:nnn { enumext } { keyans-unknown-key } {#1}
+      }
+      {
+        \msg_error:nnnn { enumext } { keyans-unknown-key-value } {#1} {#2}
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsection{Redefining \cs{item} and \cs{makelabel} in \env{keyans}}\label{cmd:item-starred}
 %
 % The \ics*{item} and \ics*{item}\myoarg{custom} commands work in the
@@ -10768,7 +10816,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \int_incr:N \l_@@_keyans_level_int
     \bool_set_true:N \l_@@_keyans_env_bool
-    \@@_keyans_start_line:
+    \@@_keyans_name_and_start:
     % Set false for interfering with enumext nested in keyans (yes, its possible and crayze)
     \bool_set_false:N \l_@@_store_active_bool
     \int_compare:nNnT { \l_@@_keyans_level_int } > { 1 }
@@ -11111,7 +11159,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nn { enumext } { keyanspic-nested }
       }
-    \@@_keyans_start_line:
+    \@@_keyans_name_and_start:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -12166,7 +12214,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nn { enumext } { nested }
       }
-    \@@_keyans_start_line:
+    \@@_keyans_name_and_start:
     % Set false for interfering with enumext nested in keyans* (yes, its possible and crayze)
     \bool_set_false:N \l_@@_store_active_bool
     \int_compare:nNnT { \l_@@_level_int } > { 1 }
@@ -13233,7 +13281,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
   }
 %    \end{macrocode}
-% Messages used by \myenv*{keyans} and \myenv*{keyanspic} environment.
+%
+% Messages used by \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} environment.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { keyans-nested }
   {
@@ -13261,6 +13310,26 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \msg_new:nnn { enumext } { keyanspic-item-cmd }
   {
     Can't ~ use  ~ \c_backslash_str item ~ in ~ keyanspic ~ \msg_line_context:.
+  }
+\msg_new:nnnn { enumext } { keyans-unknown-key }
+  {
+    The ~ key ~ '#1' ~ is ~ unknown ~ by ~ environment~
+    '\l_@@_envir_name_tl' ~ and ~ is ~ being ~ ignored.
+  }
+  {
+    The ~ environment ~ '\l_@@_envir_name_tl' ~ does ~ not
+    ~ have ~ a ~ key ~ called ~'#1'.\\
+    Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+\msg_new:nnnn { enumext } { keyans-unknown-key-value }
+  {
+    The ~ key ~ '#1=#2' ~ is ~ unknown ~ by ~ environment ~
+    '\l_@@_envir_name_tl' ~ and ~ is ~ being ~ ignored.
+  }
+  {
+    The ~ environment ~ '\l_@@_envir_name_tl' ~ does ~ not
+    ~ have ~ a ~ key ~ called ~'#1'.\\
+    Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
   }
 %    \end{macrocode}
 %
