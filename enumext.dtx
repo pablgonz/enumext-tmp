@@ -1210,7 +1210,17 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsubsection{Public dimension}
 %
-
+% The package \mypkg*{enumext} only provides a single public dimension
+% |\itemwidth| and is intended for user convenience only and is not
+% for internal use as such. The dimension |\itemwidth| is \emph{rigid length}
+% and contains the \emph{\enquote{width of the content}} of each |\item|
+% regardless of |labelwidth| and |labelsep|.
+%
+% \begin{important}*
+% If any package defines |\itemwidth| or they are user-defined |\itemwidth|
+% in the document, the package will overwrite it without warning.
+% \end{important}
+%
 % \subsubsection{Support for \pkg{multicol}}
 %
 % The package provides direct support for using the \mypkg{multicol}\cite{multicol}
