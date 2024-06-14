@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-06-13}
+  {2024-06-14}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -275,6 +275,7 @@
       {
         {enumext}
           {
+            \tl_set:Nn \l__enumext_envir_name_tl { enumext }
             \bool_lazy_and:nnT
               { \bool_not_p:n { \g__enumext_standar_bool } }
               { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
@@ -284,6 +285,7 @@
           }
         {enumext*}
           {
+            \tl_set:Nn \l__enumext_envir_name_tl { enumext* }
             \bool_lazy_and:nnT
               { \bool_not_p:n { \g__enumext_starred_bool } }
               { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
@@ -3244,6 +3246,48 @@
         \msg_error:nnnn { enumext } { keyans-unknown-key-value } {#1} {#2}
       }
   }
+%% Add keys |unknown| for |enumext*|.
+\keys_define:nn { enumext / enumext* }
+  {
+    unknown .code:n = { \__enumext_starred_unknown_keys:n {#1} }
+  }
+\cs_new_protected:Npn \__enumext_starred_unknown_keys:n #1
+  {
+    \exp_args:NV \__enumext_starred_unknown_keys:nn \l_keys_key_str {#1}
+  }
+\cs_new_protected:Npn \__enumext_starred_unknown_keys:nn #1#2
+  {
+    \tl_if_blank:nTF {#2}
+      {
+        \msg_error:nnn { enumext } { starred-unknown-key } {#1}
+      }
+      {
+        \msg_error:nnnn { enumext } { starred-unknown-key-value } {#1} {#2}
+      }
+  }
+%% Add keys |unknown| for |enumext|.
+\cs_set_protected:Npn \__enumext_tmp:n #1
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        unknown .code:n = { \__enumext_standar_unknown_keys:n {##1} }
+      }
+  }
+\clist_map_inline:nn { level-1,level-2,level-3,level-4 } { \__enumext_tmp:n {#1} }
+\cs_new_protected:Npn \__enumext_standar_unknown_keys:n #1
+  {
+    \exp_args:NV \__enumext_standar_unknown_keys:nn \l_keys_key_str {#1}
+  }
+\cs_new_protected:Npn \__enumext_standar_unknown_keys:nn #1#2
+  {
+    \tl_if_blank:nTF {#2}
+      {
+        \msg_error:nnn { enumext } { standar-unknown-key } {#1}
+      }
+      {
+        \msg_error:nnnn { enumext } { standar-unknown-key-value } {#1} {#2}
+      }
+  }
 \cs_new_protected:Npn \__enumext_keyans_default_item:n #1
   {
     \tl_if_novalue:nTF { #1 }
@@ -5191,6 +5235,46 @@
   {
     The ~ environment ~ '\l__enumext_envir_name_tl' ~ does ~ not
     ~ have ~ a ~ key ~ called ~'#1'.\\
+    Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+\msg_new:nnnn { enumext } { starred-unknown-key }
+  {
+    The ~ key ~ '#1' ~ is ~ unknown ~ by ~ environment~
+    '\l__enumext_envir_name_tl' ~ and ~ is ~ being ~ ignored.
+  }
+  {
+    The ~ environment ~ '\l__enumext_envir_name_tl' ~ does ~ not
+    ~ have ~ a ~ key ~ called ~'#1'.\\
+    Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+\msg_new:nnnn { enumext } { starred-unknown-key-value }
+  {
+    The ~ key ~ '#1=#2' ~ is ~ unknown ~ by ~ environment ~
+    '\l__enumext_envir_name_tl' ~ and ~ is ~ being ~ ignored.
+  }
+  {
+    The ~ environment ~ '\l__enumext_envir_name_tl' ~ does ~ not
+    ~ have ~ a ~ key ~ called ~'#1'.\\
+    Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+\msg_new:nnnn { enumext } { standar-unknown-key }
+  {
+    The ~ key ~ '#1' ~ is ~ unknown ~ by ~ environment ~ '\l__enumext_envir_name_tl' \c_space_tl
+    ~ on ~ level ~ \int_use:N \l__enumext_level_int \c_space_tl and ~ is ~ being ~ ignored.
+  }
+  {
+    The ~ environment ~ '\l__enumext_envir_name_tl' ~ does ~ not
+    ~ have ~ a ~ key ~ called ~'#1' ~ on ~ level ~ \int_use:N \l__enumext_level_int.\\
+    Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+\msg_new:nnnn { enumext } { standar-unknown-key-value }
+  {
+    The ~ key ~ '#1=#2' ~ is ~ unknown ~ by ~ environment ~ '\l__enumext_envir_name_tl' \c_space_tl
+    ~ on ~ level ~ \int_use:N \l__enumext_level_int \c_space_tl and ~ is ~ being ~ ignored.
+  }
+  {
+    The ~ environment ~ '\l__enumext_envir_name_tl' ~ does ~ not
+    ~ have ~ a ~ key ~ called ~'#1' ~ on ~ level ~ \int_use:N \l__enumext_level_int.\\
     Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
   }
 \msg_new:nnn { enumext } { undefined-storage-anskey }

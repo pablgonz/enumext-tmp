@@ -600,7 +600,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywords      = [6]{save-ans,wrap-ans,save-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
                     nosep,before,after,start, right, item-sym, item-sep, hyperfootnotes, item-star, %
                     scale,wrap-label,font,first,widest,mini-env,list-indent, no-store, save-key,
-                    store-env, print-env, write-out, force-eol,  write-env, overwrite },%
+                    store-env, print-env, write-out, force-eol, write-env, overwrite, unknown },%
 % Reserved words 7 (label values)
     keywordstyle  = [7]{\color{MediumOrchid}},%
     keywords      = [7]{m,s,M,VIII,viii,v,E,t,A,XXIII,true, false,test,sample},%
@@ -4047,7 +4047,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-06-13}
+  {2024-06-14}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4678,7 +4678,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_is_not_nested:, \@@_is_on_first_level:}
 %   The function \cs{@@_is_not_nested:} set the variables \cs{g_@@_standar_bool} and
 %   \cs{g_@@_starred_bool} to \emph{\enquote{true}} only if the environments
-%   \myenv*{enumext} and \myenv*{enumext*} are nested in each other.
+%   \myenv*{enumext} and \myenv*{enumext*} are nested in each other and
+%   save the environment name in \cs{l_@@_envir_name_tl}.
 % \iffalse
 %% Function to check/set current environment for |enumext| and |enumext*|.
 % \fi
@@ -4689,6 +4690,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         {enumext}
           {
+            \tl_set:Nn \l_@@_envir_name_tl { enumext }
             \bool_lazy_and:nnT
               { \bool_not_p:n { \g_@@_standar_bool } }
               { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
@@ -4698,6 +4700,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
         {enumext*}
           {
+            \tl_set:Nn \l_@@_envir_name_tl { enumext* }
             \bool_lazy_and:nnT
               { \bool_not_p:n { \g_@@_starred_bool } }
               { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
@@ -9990,6 +9993,74 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsubsection{Handling unknown keys for \env{enumext*}}\label{key:unknown-keys-starred}
+%
+% \begin{macro}[int]{unknown, \@@_starred_unknown_keys:n, \@@_starred_unknown_keys:nn}
+%    Define and set |unknown| key for  \myenv*{enumext*} environment.
+% \iffalse
+%% Add keys |unknown| for |enumext*|.
+% \fi
+%    \begin{macrocode}
+\keys_define:nn { enumext / enumext* }
+  {
+    unknown .code:n = { \@@_starred_unknown_keys:n {#1} }
+  }
+%    \end{macrocode}
+%  Internal functions for handling |unknown| key.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_starred_unknown_keys:n #1
+  {
+    \exp_args:NV \@@_starred_unknown_keys:nn \l_keys_key_str {#1}
+  }
+\cs_new_protected:Npn \@@_starred_unknown_keys:nn #1#2
+  {
+    \tl_if_blank:nTF {#2}
+      {
+        \msg_error:nnn { enumext } { starred-unknown-key } {#1}
+      }
+      {
+        \msg_error:nnnn { enumext } { starred-unknown-key-value } {#1} {#2}
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Handling unknown keys for \env{enumext}}\label{key:unknown-keys-standar}
+%
+% \begin{macro}[int]{unknown, \@@_standar_unknown_keys:n, \@@_standar_unknown_keys:nn}
+%    Defines and set the key |unknown| for \myenv*{enumext} environment.
+% \iffalse
+%% Add keys |unknown| for |enumext|.
+% \fi
+%    \begin{macrocode}
+\cs_set_protected:Npn \@@_tmp:n #1
+  {
+    \keys_define:nn { enumext / #1 }
+      {
+        unknown .code:n = { \@@_standar_unknown_keys:n {##1} }
+      }
+  }
+\clist_map_inline:nn { level-1,level-2,level-3,level-4 } { \@@_tmp:n {#1} }
+%    \end{macrocode}
+%  Internal functions for handling |unknown| key.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_standar_unknown_keys:n #1
+  {
+    \exp_args:NV \@@_standar_unknown_keys:nn \l_keys_key_str {#1}
+  }
+\cs_new_protected:Npn \@@_standar_unknown_keys:nn #1#2
+  {
+    \tl_if_blank:nTF {#2}
+      {
+        \msg_error:nnn { enumext } { standar-unknown-key } {#1}
+      }
+      {
+        \msg_error:nnnn { enumext } { standar-unknown-key-value } {#1} {#2}
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsection{Redefining \cs{item} and \cs{makelabel} in \env{keyans}}\label{cmd:item-starred}
 %
 % The \ics*{item} and \ics*{item}\myoarg{custom} commands work in the
@@ -13329,6 +13400,55 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     The ~ environment ~ '\l_@@_envir_name_tl' ~ does ~ not
     ~ have ~ a ~ key ~ called ~'#1'.\\
+    Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+%    \end{macrocode}
+%
+% Message used by unknown \mymeta{keys} in \myenv*{enumext*}.
+% environment.
+%    \begin{macrocode}
+\msg_new:nnnn { enumext } { starred-unknown-key }
+  {
+    The ~ key ~ '#1' ~ is ~ unknown ~ by ~ environment~
+    '\l_@@_envir_name_tl' ~ and ~ is ~ being ~ ignored.
+  }
+  {
+    The ~ environment ~ '\l_@@_envir_name_tl' ~ does ~ not
+    ~ have ~ a ~ key ~ called ~'#1'.\\
+    Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+\msg_new:nnnn { enumext } { starred-unknown-key-value }
+  {
+    The ~ key ~ '#1=#2' ~ is ~ unknown ~ by ~ environment ~
+    '\l_@@_envir_name_tl' ~ and ~ is ~ being ~ ignored.
+  }
+  {
+    The ~ environment ~ '\l_@@_envir_name_tl' ~ does ~ not
+    ~ have ~ a ~ key ~ called ~'#1'.\\
+    Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+%    \end{macrocode}
+% Message used by unknown \mymeta{keys} in \myenv*{enumext}
+% environment.
+%    \begin{macrocode}
+\msg_new:nnnn { enumext } { standar-unknown-key }
+  {
+    The ~ key ~ '#1' ~ is ~ unknown ~ by ~ environment ~ '\l_@@_envir_name_tl' \c_space_tl
+    ~ on ~ level ~ \int_use:N \l_@@_level_int \c_space_tl and ~ is ~ being ~ ignored.
+  }
+  {
+    The ~ environment ~ '\l_@@_envir_name_tl' ~ does ~ not
+    ~ have ~ a ~ key ~ called ~'#1' ~ on ~ level ~ \int_use:N \l_@@_level_int.\\
+    Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+\msg_new:nnnn { enumext } { standar-unknown-key-value }
+  {
+    The ~ key ~ '#1=#2' ~ is ~ unknown ~ by ~ environment ~ '\l_@@_envir_name_tl' \c_space_tl
+    ~ on ~ level ~ \int_use:N \l_@@_level_int \c_space_tl and ~ is ~ being ~ ignored.
+  }
+  {
+    The ~ environment ~ '\l_@@_envir_name_tl' ~ does ~ not
+    ~ have ~ a ~ key ~ called ~'#1' ~ on ~ level ~ \int_use:N \l_@@_level_int.\\
     Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
   }
 %    \end{macrocode}
