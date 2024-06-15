@@ -9844,11 +9844,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_item:nn #1 #2
   {
-    \tl_if_novalue:nF {#1}
+    \tl_if_novalue:nTF {#1}
       {
-        \tl_set:cn { l_@@_item_symbol_ \@@_level: _tl } {#1}
+        \tl_gset_eq:Nc \g_@@_item_symbol_tl { l_@@_item_symbol_ \@@_level: _tl }
       }
-    \tl_gset_eq:Nc \g_@@_item_symbol_tl { l_@@_item_symbol_ \@@_level: _tl }
+      {
+        \tl_gset:Nn \g_@@_item_symbol_tl {#1}
+      }
     \tl_if_novalue:nTF {#2}
       {
         \dim_set_eq:cc
@@ -9882,11 +9884,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \RenewDocumentCommand \item { s o o }
       {
-       \bool_if:nTF {##1}
-         {
-           \@@_starred_item:nn {##2} {##3}
-         }
-         { \@@_default_item:n {##2} }
+        \bool_if:nTF {##1}
+          {
+            \@@_starred_item:nn {##2} {##3}
+          }
+          { \@@_default_item:n {##2} }
       }
   }
 %    \end{macrocode}

@@ -3145,11 +3145,13 @@
 %% Internal function for |\item*[symb][sep]| whit check-answer mechanism in |enumext|.
 \cs_new_protected:Npn \__enumext_starred_item:nn #1 #2
   {
-    \tl_if_novalue:nF {#1}
+    \tl_if_novalue:nTF {#1}
       {
-        \tl_set:cn { l__enumext_item_symbol_ \__enumext_level: _tl } {#1}
+        \tl_gset_eq:Nc \g__enumext_item_symbol_tl { l__enumext_item_symbol_ \__enumext_level: _tl }
       }
-    \tl_gset_eq:Nc \g__enumext_item_symbol_tl { l__enumext_item_symbol_ \__enumext_level: _tl }
+      {
+        \tl_gset:Nn \g__enumext_item_symbol_tl {#1}
+      }
     \tl_if_novalue:nTF {#2}
       {
         \dim_set_eq:cc
@@ -3172,11 +3174,11 @@
   {
     \RenewDocumentCommand \item { s o o }
       {
-       \bool_if:nTF {##1}
-         {
-           \__enumext_starred_item:nn {##2} {##3}
-         }
-         { \__enumext_default_item:n {##2} }
+        \bool_if:nTF {##1}
+          {
+            \__enumext_starred_item:nn {##2} {##3}
+          }
+          { \__enumext_default_item:n {##2} }
       }
   }
 %% Function for |\item*[][]| in |\makelabel| for enumext.
