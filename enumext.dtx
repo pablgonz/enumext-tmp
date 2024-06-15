@@ -6075,12 +6075,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Functions for \texttt{before}, \texttt{after} and \texttt{first} keys in \env{enumext}}
 %
-% \begin{macro}{\@@_before_args_exec:,\@@_before_keys_exec:,\@@_after_stop_list:,\@@_after_args_exec:}
-%
+% \begin{macro}{\@@_before_args_exec:,\@@_before_keys_exec:,
+%               \@@_after_stop_list:,\@@_after_args_exec:,}
 %    The function \cs{@@_before_args_exec:} executes the \mymarg{code} set by the
 %    \mykey{before*} key \emph{\enquote{before}} the \myenv*{enumext}
 %    environment is started. The \mymarg{code} is executed \emph{\enquote{without}}
-%    knowing any definition of the \emph{second argument} of the list.
+%    knowing any definition of the \mymarg{arg two} of the list:
+%    \mymarg[cbc=pkgcolor,ac=araracolor]{code}|\list|\mymarg{arg one}\mymarg{arg two}.
 % \iffalse
 %% Function for |before|, |before*|, |after| and |first| keys in |enumext|.
 % \fi
@@ -6090,22 +6091,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_use:c { l_@@_before_starred_key_ \@@_level: _tl }
   }
 %    \end{macrocode}
-%
 %    The function \cs{@@_before_keys_exec:} executes the \mymarg{code} set by the
 %    \mykey{before} key \emph{\enquote{before}} the \myenv*{enumext}
 %    environment is started in \emph{second argument} of the list. The
 %    \mymarg{code} is executed \emph{\enquote{knowing}}
-%    all definition and values provides by \mymeta{keys}.
+%    all definition and values provides by \mymeta{keys}:
+%    |\list|\mymarg{arg one}|{|\mymeta{arg two}\mymarg[cbc=pkgcolor,ac=araracolor]{code}|}|
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_keys_exec:
   {
     \tl_use:c { l_@@_before_no_starred_key_ \@@_level: _tl }
   }
 %    \end{macrocode}
-%
 %    The function \cs{@@_after_stop_list:} executes the \mymarg{code} set by the
 %    \mykey{after} key \emph{\enquote{after}} the \myenv*{enumext}
-%    environment has finished.
+%    environment has finished: |\endlist|\mymarg[cbc=pkgcolor,ac=araracolor]{code}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_stop_list:
   {
@@ -6115,7 +6115,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_after_args_exec:} executes the \mymarg{code} set by the
 %    \mykey{first} key after the end of the second argument of the list
 %    defining the \myenv*{enumext} environment, just before the first
-%    occurrence of |\item|.
+%    occurrence of |\item|: |\list|\mymarg{arg one}\mymarg{arg two}\mymarg[cbc=pkgcolor,ac=araracolor]{code}|\item|.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_args_exec:
   {
@@ -6126,12 +6126,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Functions for \texttt{before}, \texttt{after} and \texttt{first} keys in \env{keyans}}
 %
-% \begin{macro}{\@@_before_args_exec_v:,\@@_before_keys_exec_v:,\@@_after_stop_list_v:,
-%               \@@_after_args_exec_v:}
-%    The function \cs{@@_before_args_exec_v:} executes the \mymarg{code} set
-%    by the \mykey{before*} key \emph{\enquote{before}} the
-%    \myenv*{keyans} environment is started. The \mymarg{code} is executed
-%    \emph{\enquote{without}} knowing any definition of the \mymarg{arg two} of the list.
+% \begin{macro}{\@@_before_args_exec_v:,\@@_before_keys_exec_v:,
+%               \@@_after_stop_list_v:, \@@_after_args_exec_v:}
+% Same implementation as the one used in the \myenv*{enumext} environment.
 % \iffalse
 %% Function for |before|, |before*|, |after| and |first| keys in |keyans|.
 % \fi
@@ -6140,33 +6137,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_use:N \l_@@_before_starred_key_v_tl
   }
-%    \end{macrocode}
-%    The function \cs{@@_before_keys_exec_v:} executes the \mymarg{code} set by the
-%    \mykey{before} key \emph{\enquote{before}} the \myenv*{keyans}
-%    environment is started in \mymarg{arg two} of the list. The
-%    \mymarg{code} is executed \emph{\enquote{knowing}}
-%    all definition and values provides by \mymeta{keys}.
-%    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_keys_exec_v:
   {
     \tl_use:N \l_@@_before_no_starred_key_v_tl
   }
-%    \end{macrocode}
-%
-%    The function \cs{@@_after_stop_list_v:} executes the \mymarg{code} set by the
-%    \mykey{after} key \emph{\enquote{after}} the \myenv*{keyans}
-%    environment has finished.
-%    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_stop_list_v:
   {
     \tl_use:N \l_@@_after_stop_list_v_tl
   }
-%    \end{macrocode}
-%    The function \cs{@@_after_args_exec_v:} executes the \mymarg{code} set by the
-%    \mykey{first} key after the end of \mymarg{arg two} of the list
-%    defining the \myenv*{keyans} environment, just before the first
-%    occurrence of |\item|.
-%    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_args_exec_v:
   {
     \tl_use:N \l_@@_after_list_args_v_tl
@@ -6176,12 +6154,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Functions for \texttt{before}, \texttt{after} and \texttt{first} keys in \env{enumext*} and \env{keyans*}}
 %
-% \begin{macro}{\@@_before_args_exec_vii:,\@@_before_keys_exec_vii,\@@_after_stop_list_vii:,
-%               \@@_after_args_exec_vii:}
-%    The function \cs{@@_before_args_exec_v:} executes the \mymarg{code} set
-%    by the \mykey{before*} key \emph{\enquote{before}} the
-%    \myenv*{keyans} environment is started. The \mymarg{code} is executed
-%    \emph{\enquote{without}} knowing any definition of the \mymarg{arg two} of the list.
+% \begin{macro}{\@@_before_args_exec_vii:,\@@_before_keys_exec_vii,
+%               \@@_after_stop_list_vii:, \@@_after_args_exec_vii:,}
+% Same implementation as the one used in the \myenv*{enumext} environment.
 % \iffalse
 %% Function for |before|, |before*|, |after| and |first| keys in |enumext*| and |keyans*|.
 % \fi
@@ -6194,13 +6169,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_use:N \l_@@_before_starred_key_viii_tl
   }
-%    \end{macrocode}
-%    The functions \cs{@@_before_keys_exec_vii:} and \cs{@@_before_keys_exec_viii:} executes the \mymarg{code} set by the
-%    \mykey{before} key \emph{\enquote{before}} in \myenv*{enumext*} and \myenv*{keyans*}
-%    environments is started in \mymarg{arg two} of the list. The
-%    \mymarg{code} is executed \emph{\enquote{knowing}}
-%    all definition and values provides by \mymeta{keys}.
-%    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_keys_exec_vii:
   {
     \tl_use:N \l_@@_before_no_starred_key_vii_tl
@@ -6209,12 +6177,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_use:N \l_@@_before_no_starred_key_viii_tl
   }
-%    \end{macrocode}
-%
-%    The function \cs{@@_after_stop_list:} executes the \mymarg{code} set by the
-%    \mykey{after} key \emph{\enquote{after}} the \myenv*{keyans}
-%    environment has finished.
-%    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_stop_list_vii:
   {
     \tl_use:N \l_@@_after_stop_list_vii_tl
@@ -6223,12 +6185,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_use:N \l_@@_after_stop_list_viii_tl
   }
-%    \end{macrocode}
-%    The function \cs{@@_after_args_exec_v:} executes the \mymarg{code} set by the
-%    \mykey{first} key after the end of \mymarg{arg two} of the list
-%    defining the \myenv*{keyans} environment, just before the first
-%    occurrence of |\item|.
-%    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_args_exec_vii:
   {
     \tl_use:N \l_@@_after_list_args_vii_tl
@@ -6998,9 +6954,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nnn { enumext } { wrong-miniright-place }
       }
-    \int_compare:nNnT { \l_@@_level_int } = { 0 }
+    % outside
+    \bool_lazy_and:nnT
+      { \int_compare_p:nNn { \l_@@_level_int } = { 0 } }
+      { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
       {
         \msg_error:nnn { enumext } { wrong-miniright-place }
+      }
+    % starred env
+    \bool_if:NT \l_@@_starred_bool
+      {
+        \msg_error:nnn { enumext } { wrong-miniright-starred }
       }
     \int_compare:nNnTF { \l_@@_keyans_level_int } = { 1 }
       {
@@ -7329,9 +7293,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \str_case:nnF {#1}
       {
-        { resume   } {}
-        { resume*  } {}
-        { base-fix } {}
+        { resume } {} { resume* } {} { base-fix } {}
       }
       { , { \exp_not:n {#1} } }
   }
@@ -7345,11 +7307,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \str_case:nnF {#1}
       {
-        { series } {}
-        { resume } {}
-        { start  } {}
-        { save-ans } {}
-        { save-key } {}
+        { series } {} { resume } {} { start } {} { save-ans } {} { save-key } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
@@ -8826,13 +8784,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_anskey_show_wrap_arg:n #1
   {
     \par
-    \bool_if:NT \l_@@_starred_bool
+    \bool_if:NTF \l_@@_starred_bool
       {
-       \cs_set:Nn \@@_level: { vii }
+        \@@_print_keyans_box:NN \l_@@_labelwidth_vii_dim  \l_@@_labelsep_vii_dim
       }
-    \@@_print_keyans_box:cc
-      { l_@@_labelwidth_ \@@_level: _dim }
-      { l_@@_labelsep_ \@@_level: _dim }
+      {
+        \@@_print_keyans_box:cc
+          { l_@@_labelwidth_ \@@_level: _dim }
+          { l_@@_labelsep_ \@@_level: _dim }
+      }
     \@@_anskey_wrapper:n { #1 }
   }
 %    \end{macrocode}
@@ -8963,13 +8923,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               \keys_set:nn { enumext / anskey } {#1}
             }
           \tl_if_blank:nTF {#2}
-           {
-             \msg_error:nn { enumext } { anskey-empty-arg }
-           }
-           {
-             \@@_anskey_safe_inner:
-             \@@_store_anskey_code:n {#2}
-           }
+            {
+              \msg_error:nn { enumext } { anskey-empty-arg }
+            }
+            {
+              \@@_anskey_safe_inner:
+              \@@_store_anskey_code:n {#2}
+            }
         }
     \group_end:
   }
@@ -9240,7 +9200,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                                  \bool_set_false:N \l__scontents_storing_bool
                                  \bool_set_true:N  \l__scontents_writing_bool
                                  \tl_set:Nn \l__scontents_fname_out_tl {##1}
-                                },
+                               },
         write-out .value_required:n = true,
         print-env .meta:nn   = { scontents } { print-env = ##1 },
         print-env .default:n = true,
@@ -9383,7 +9343,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               {
                 ,item-pos* = \exp_not:V \g_@@_store_item_symbol_sep_dim,
               }
-           }
+          }
        }
   }
 %    \end{macrocode}
@@ -9719,6 +9679,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_keyans_show_ans:
   {
+    \bool_if:NT \l_@@_starred_bool
+      {
+        \dim_set_eq:NN \l_@@_labelwidth_i_dim \l_@@_labelwidth_vii_dim
+        \dim_set_eq:NN \l_@@_labelsep_i_dim \l_@@_labelsep_vii_dim
+      }
     \tl_put_left:Nn \l_@@_label_v_tl
       {
         \@@_print_keyans_box:NN
@@ -9727,6 +9692,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_keyans_show_pos:
   {
+    \bool_if:NT \l_@@_starred_bool
+      {
+        \dim_set_eq:NN \l_@@_labelwidth_i_dim \l_@@_labelwidth_vii_dim
+        \dim_set_eq:NN \l_@@_labelsep_i_dim \l_@@_labelsep_vii_dim
+      }
     \int_compare:nNnTF { \l_@@_keyans_pic_level_int } = { 1 }
       {
         \tl_set:Ne \l_@@_mark_answer_sym_tl
@@ -10543,6 +10513,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_compare:nNnT { \l_@@_level_int } > { 4 }
       { \msg_fatal:nn { enumext } { list-too-deep } }
     \bool_set_true:N \l_@@_standar_bool
+    \bool_set_false:N \l_@@_starred_bool
     \@@_is_on_first_level:
   }
 %    \end{macrocode}
@@ -11836,7 +11807,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nn { enumext } { nested }
       }
+    \int_compare:nNnT { \l_@@_keyans_level_h_int } = { 1 }
+      {
+        \msg_error:nnn { enumext } { nested-horizontal } { keyans*}
+      }
     \bool_set_true:N \l_@@_starred_bool
+    \bool_set_false:N \l_@@_standar_bool
     \@@_is_on_first_level:
   }
 %    \end{macrocode}
@@ -12302,6 +12278,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \msg_error:nn { enumext } { nested }
       }
     \@@_keyans_name_and_start:
+    \bool_if:NT \l_@@_starred_bool
+      {
+        \msg_error:nnn { enumext } { nested-horizontal } { enumext* }
+      }
+    \bool_set_true:N \l_@@_starred_bool
     % Set false for interfering with enumext nested in keyans* (yes, its possible and crayze)
     \bool_set_false:N \l_@@_store_active_bool
     \int_compare:nNnT { \l_@@_level_int } > { 1 }
@@ -13493,13 +13474,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     Wrong ~ use ~ for ~ '\c_backslash_str miniright' ~ \msg_line_context:.~ \\
     '\c_backslash_str miniright' ~ need ~ a ~ key ~ 'mini-env'.
   }
+\msg_new:nnn { enumext } { wrong-miniright-starred }
+  {
+    Can't ~ use  ~ \c_backslash_str miniright ~ in ~ starred ~ environments ~ \msg_line_context:.
+  }
 %    \end{macrocode}
 %
 % Messages used by \myenv*{enumext*} and \myenv*{keyans*} environments.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { nested }
   {
-    The ~ starred ~ environment ~ can't ~ be ~ nested ~ \msg_line_context:.
+    The ~ environment ~ \l__enumext_envir_name_tl \c_space_tl can't ~ be ~ nested ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { nested-horizontal }
+  {
+    The ~ environment ~ \l__enumext_envir_name_tl \c_space_tl can't ~ be ~ nested ~ in ~ '#1' ~  \msg_line_context:.
   }
 \msg_new:nnn { enumext } { item-joined }
   {

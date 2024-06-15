@@ -6,21 +6,21 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%% 
+%%
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%% 
+%%
 %%  https://www.latex-project.org/lppl.txt
-%% 
+%%
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%% 
+%%
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%% 
+%%
 %% This work consists of the files enumext.dtx and enumext.sty.
-%% 
+%%
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
@@ -1514,9 +1514,17 @@
       {
         \msg_error:nnn { enumext } { wrong-miniright-place }
       }
-    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
+    % outside
+    \bool_lazy_and:nnT
+      { \int_compare_p:nNn { \l__enumext_level_int } = { 0 } }
+      { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
       {
         \msg_error:nnn { enumext } { wrong-miniright-place }
+      }
+    % starred env
+    \bool_if:NT \l__enumext_starred_bool
+      {
+        \msg_error:nnn { enumext } { wrong-miniright-starred }
       }
     \int_compare:nNnTF { \l__enumext_keyans_level_int } = { 1 }
       {
@@ -1704,9 +1712,7 @@
   {
     \str_case:nnF {#1}
       {
-        { resume   } {}
-        { resume*  } {}
-        { base-fix } {}
+        { resume } {} { resume* } {} { base-fix } {}
       }
       { , { \exp_not:n {#1} } }
   }
@@ -1714,11 +1720,7 @@
   {
     \str_case:nnF {#1}
       {
-        { series } {}
-        { resume } {}
-        { start  } {}
-        { save-ans } {}
-        { save-key } {}
+        { series } {} { resume } {} { start } {} { save-ans } {} { save-key } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
@@ -2423,7 +2425,7 @@
       }
     \bool_lazy_all:nT
       {
-        { \bool_if_p:N \l__enumext_standar_bool }
+        %{ \bool_if_p:N \l__enumext_standar_bool }
         { \bool_if_p:N \g__enumext_starred_bool }
         { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
       }
@@ -2436,10 +2438,10 @@
       }
     \bool_lazy_all:nT
       {
-        { \bool_if_p:N \l__enumext_standar_bool }
+        %{ \bool_if_p:N \l__enumext_standar_bool }
         { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
         { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
-        { \bool_not_p:n { \l__enumext_starred_bool } }
+        %{ \bool_not_p:n { \l__enumext_starred_bool } }
       }
       {
         \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
@@ -2452,7 +2454,7 @@
       { \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
     \bool_lazy_all:nT
       {
-        { \bool_if_p:N \l__enumext_standar_bool }
+        %{ \bool_if_p:N \l__enumext_standar_bool }
         { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
         { \bool_not_p:n { \g__enumext_starred_bool } }
         { \int_compare_p:nNn { \l__enumext_level_h_int } > { 0 } }
@@ -2545,13 +2547,15 @@
 \cs_new_protected:Npn \__enumext_anskey_show_wrap_arg:n #1
   {
     \par
-    \bool_if:NT \l__enumext_starred_bool
+    \bool_if:NTF \l__enumext_starred_bool
       {
-       \cs_set:Nn \__enumext_level: { vii }
+        \__enumext_print_keyans_box:NN \l__enumext_labelwidth_vii_dim  \l__enumext_labelsep_vii_dim
       }
-    \__enumext_print_keyans_box:cc
-      { l__enumext_labelwidth_ \__enumext_level: _dim }
-      { l__enumext_labelsep_ \__enumext_level: _dim }
+      {
+        \__enumext_print_keyans_box:cc
+          { l__enumext_labelwidth_ \__enumext_level: _dim }
+          { l__enumext_labelsep_ \__enumext_level: _dim }
+      }
     \__enumext_anskey_wrapper:n { #1 }
   }
 %% Internal |show-ans| and |show-pos| implementation for |\anskey| and |anskey*|.
@@ -2620,13 +2624,13 @@
               \keys_set:nn { enumext / anskey } {#1}
             }
           \tl_if_blank:nTF {#2}
-           {
-             \msg_error:nn { enumext } { anskey-empty-arg }
-           }
-           {
-             \__enumext_anskey_safe_inner:
-             \__enumext_store_anskey_code:n {#2}
-           }
+            {
+              \msg_error:nn { enumext } { anskey-empty-arg }
+            }
+            {
+              \__enumext_anskey_safe_inner:
+              \__enumext_store_anskey_code:n {#2}
+            }
         }
     \group_end:
   }
@@ -2784,7 +2788,7 @@
                                  \bool_set_false:N \l__scontents_storing_bool
                                  \bool_set_true:N  \l__scontents_writing_bool
                                  \tl_set:Nn \l__scontents_fname_out_tl {##1}
-                                },
+                               },
         write-out .value_required:n = true,
         print-env .meta:nn   = { scontents } { print-env = ##1 },
         print-env .default:n = true,
@@ -2877,7 +2881,7 @@
               {
                 ,item-pos* = \exp_not:V \g__enumext_store_item_symbol_sep_dim,
               }
-           }
+          }
        }
   }
 \cs_new_protected:Nn \__enumext_anskey_env_store:
@@ -3081,6 +3085,11 @@
   }
 \cs_new_protected:Nn \__enumext_keyans_show_ans:
   {
+    \bool_if:NT \l__enumext_starred_bool
+      {
+        \dim_set_eq:NN \l__enumext_labelwidth_i_dim \l__enumext_labelwidth_vii_dim
+        \dim_set_eq:NN \l__enumext_labelsep_i_dim \l__enumext_labelsep_vii_dim
+      }
     \tl_put_left:Nn \l__enumext_label_v_tl
       {
         \__enumext_print_keyans_box:NN
@@ -3089,6 +3098,11 @@
   }
 \cs_new_protected:Nn \__enumext_keyans_show_pos:
   {
+    \bool_if:NT \l__enumext_starred_bool
+      {
+        \dim_set_eq:NN \l__enumext_labelwidth_i_dim \l__enumext_labelwidth_vii_dim
+        \dim_set_eq:NN \l__enumext_labelsep_i_dim \l__enumext_labelsep_vii_dim
+      }
     \int_compare:nNnTF { \l__enumext_keyans_pic_level_int } = { 1 }
       {
         \tl_set:Ne \l__enumext_mark_answer_sym_tl
@@ -3510,6 +3524,7 @@
     \int_compare:nNnT { \l__enumext_level_int } > { 4 }
       { \msg_fatal:nn { enumext } { list-too-deep } }
     \bool_set_true:N \l__enumext_standar_bool
+    \bool_set_false:N \l__enumext_starred_bool
     \__enumext_is_on_first_level:
   }
 %% Parse |key=val| for enumext: Set default series and store keys in seq-name for \printkeyans.
@@ -4265,7 +4280,12 @@
       {
         \msg_error:nn { enumext } { nested }
       }
+    \int_compare:nNnT { \l__enumext_keyans_level_h_int } = { 1 }
+      {
+        \msg_error:nnn { enumext } { nested-horizontal } { keyans*}
+      }
     \bool_set_true:N \l__enumext_starred_bool
+    \bool_set_false:N \l__enumext_standar_bool
     \__enumext_is_on_first_level:
   }
 %% Parse |key=val| and store keys for |enumext*|.
@@ -4519,6 +4539,11 @@
         \msg_error:nn { enumext } { nested }
       }
     \__enumext_keyans_name_and_start:
+    \bool_if:NT \l__enumext_starred_bool
+      {
+        \msg_error:nnn { enumext } { nested-horizontal } { enumext* }
+      }
+    \bool_set_true:N \l__enumext_starred_bool
     % Set false for interfering with enumext nested in keyans* (yes, its possible and crayze)
     \bool_set_false:N \l__enumext_store_active_bool
     \int_compare:nNnT { \l__enumext_level_int } > { 1 }
@@ -5299,9 +5324,17 @@
     Wrong ~ use ~ for ~ '\c_backslash_str miniright' ~ \msg_line_context:.~ \\
     '\c_backslash_str miniright' ~ need ~ a ~ key ~ 'mini-env'.
   }
+\msg_new:nnn { enumext } { wrong-miniright-starred }
+  {
+    Can't ~ use  ~ \c_backslash_str miniright ~ in ~ starred ~ environments ~ \msg_line_context:.
+  }
 \msg_new:nnn { enumext } { nested }
   {
-    The ~ starred ~ environment ~ can't ~ be ~ nested ~ \msg_line_context:.
+    The ~ environment ~ \l__enumext_envir_name_tl \c_space_tl can't ~ be ~ nested ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { nested-horizontal }
+  {
+    The ~ environment ~ \l__enumext_envir_name_tl \c_space_tl can't ~ be ~ nested ~ in ~ '#1' ~  \msg_line_context:.
   }
 \msg_new:nnn { enumext } { item-joined }
   {
@@ -5312,6 +5345,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%% 
+%%
 %%
 %% End of file `enumext.sty'.
