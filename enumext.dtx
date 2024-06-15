@@ -4058,7 +4058,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-06-14}
+  {2024-06-15}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -8585,7 +8585,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   alone in it or if it is running in a nested \myenv*{enumext} environment
 %   within the starting environment.
 %    \begin{macrocode}
-%% Caso 1: comienza en |enumext*| y está solo en ese nivel.
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \g_@@_starred_bool }
@@ -8595,7 +8594,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
           { \tl_use:N \l_@@_label_copy_vii_tl }
       }
-%% Caso 2: comienza en |enumext*| y está dentro de algún nivel de |enumext| anidado.
     \bool_lazy_all:nT
       {
         { \bool_not_p:n { \g_@@_standar_bool } }
@@ -8614,7 +8612,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \myenv*{anskey*} is running alone in it or if it is running in a nested
 %   \myenv*{enumext*} environment within the starting environment.
 %    \begin{macrocode}
-%% Caso 3: comienza en |enumext| y está en algún nivel.
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \g_@@_standar_bool }
@@ -8628,7 +8625,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \int_step_function:nnN { 2 } { \l_@@_level_int } \@@_tmp:n
           }
       }
-%% Caso 4: comienza en |enumext| y está en algún nivel dentro de |enumext*|.
     \cs_set:Npn \@@_tmp:n ##1
       { \tl_use:c { l_@@_label_copy_ \int_to_roman:n {##1} _tl } . }
     \bool_lazy_all:nT
