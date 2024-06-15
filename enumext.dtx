@@ -1458,9 +1458,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 %    The \ics*{item*}, \ics*{item*}\myoarg{symbol} and
 %    \ics*{item*}\myoarg{symbol}\myoarg{offset} works like
 %    the numbered |\item|, but placing a \mymeta{symbol} to the \emph{\enquote{left}} of the
-%    \mymeta{label} separated from it by the value set by the
-%    \mykey{labelsep} key and can be \mymeta{offset} using the second optional
-%    argument. The default values for \mymeta{symbol} and
+%    \mymeta{label} separated from it by the \mymeta{offset} set by the
+%    the second optional argument. The default values for \mymeta{symbol} and
 %    \mymeta{offset} are |$\star$| ‘$\star$’ and the value set by
 %    \mykey{labelsep} key.
 %
@@ -4192,13 +4191,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}{\g_@@_resume_int, \g_@@_resume_vii_int, \l_@@_resume_name_tl,
-%                  \l_@@_resume_active_bool, \g_@@_starred_series_tl, \g_@@_standar_series_tl,
-%                  \g_@@_item_symbol_tl,}
+%                  \l_@@_resume_active_bool, \g_@@_starred_series_tl,
+%                  \g_@@_standar_series_tl,}
 %
 %    Internal variables used by \mykey{resume}, \mykey{resume*} and
 %    \mykey{series} keys (\S\ref{key:series}).
 % \iffalse
-%% Variables used by |series|, |resume|, |resume*| and |item-sym*| key implementation.
+%% Variables used by |series|, |resume| and |resume*| keys implementation.
 % \fi
 %    \begin{macrocode}
 \int_new:N  \g_@@_resume_int
@@ -4399,7 +4398,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 % \begin{variable}[int]{\l_@@_print_keyans_starred_tl, \l_@@_mark_position_str,
-%                       \g_@@_item_symbol_tl, \l_@@_print_keyans_X_tl,
+%                       \g_@@_item_symbol_aux_tl, \l_@@_print_keyans_X_tl,
 %                       \l_@@_store_save_key_X_tl, \l_@@_store_save_key_X_bool,
 %                       \l_@@_store_upper_level_X_bool,}
 %    Internal variables used by command \ics*{printkeyans}
@@ -4412,7 +4411,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \tl_new:N  \l_@@_print_keyans_starred_tl
 \str_new:N \l_@@_mark_position_str
-\tl_new:N  \g_@@_item_symbol_tl
+\tl_new:N  \g_@@_item_symbol_aux_tl
 \cs_set_protected:Npn \@@_tmp:n #1
   {
     \tl_new:c   { l_@@_print_keyans_#1_tl        }
@@ -9780,13 +9779,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}[int]{\@@_default_item:n}
 %   First we will see if the optional argument is present, if it is NOT
-%   present we will check the state of the variable \cs{l_@@_check_ans_key_bool}
-%   set by the key \mykey{check-ans}, set the boolean variable
-%   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true}
-%   and execute \cs{@@_item_std:w}, otherwise we will check the state
+%   present we will check the state of the variable \cs{l_@@_check_answers_bool}
+%   set by the key \mykey{no-store}, set the boolean variable
+%   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true} for the key \mykey{wrap-label}
+%   and execute \cs{@@_item_std:w} and the key \mykey{itemindent}, otherwise we will check the state
 %   of the boolean variable \myvarenv{l__@@_wrap_label_opt_X_bool} set
-%   by the key \mykey{wrap-label*} and  execute \cs{@@_item_std:w} with
-%   the optional argument.
+%   by the key \mykey{wrap-label*} and execute \cs{@@_item_std:w} with
+%   the optional argument and the key \mykey{itemindent}.
 % \iffalse
 %% Internal function for |\item| whit check-answer mechanism in |enumext|.
 % \fi
@@ -9813,14 +9812,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_starred_item:nn}
-%
-%    The \ics*{item*}, \ics*{item*}\myoarg{symbol} and
-%    \ics*{item*}\myoarg{symbol}\myoarg{offset} works like
-%    the numbered |\item|, but placing a \myoarg{symbol} to the \emph{\enquote{left}} of the
-%    \mymeta{label} separated from it by the value set by the
-%    \mykey{labelsep} key and can be \emph{offset} using the second optional
-%    argument \myoarg{offset}.
+% \begin{macro}[int]{\@@_starred_item:nn, \@@_item_star_exec:,}
+%    The \ics*{item*}, \ics*{item*}\myoarg{symbol} and \ics*{item*}\myoarg{symbol}\myoarg{offset}
+%    works like the \emph{numbered} |\item|, but placing a \mymeta{symbol}
+%    to the \emph{\enquote{left}} of the \mymeta{label} separated from
+%    it by the value the second optional argument \mymeta{offset}.
 %
 % \begin{arguments}
 %   \item \myvarenv{l__@@_item_symbol_X_tl}
@@ -9828,16 +9824,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{arguments}
 %
 %   First we will make a copy of \myvarenv{l__@@_item_symbol_X_tl} which is
-%   set by the key \mykey{item-sym*} or passed as optional argument in
-%   the global variable \cs{g_@@_item_symbol_tl}, followed by setting the
+%   set by the key \mykey{item-sym*} or passed as \emph{\enquote{first}} optional argument in
+%   the global variable \cs{g_@@_item_symbol_aux_tl}, followed by setting the
 %   variable \myvarenv{l__@@_item_symbol_sep_X_dim} set by the key
-%   \mykey{item-pos*} or by the second optional argument.
-%
-%   \smallskip
-%
-%   Then we will see the state of the variable \cs{l_@@_check_ans_key_bool}
-%   set by the key \mykey{check-ans}, set the boolean variable
-%   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true} and execute \cs{@@_item_std:w}.
+%   \mykey{item-pos*} or by the \emph{\enquote{second}} optional argument,
+%   then we will see the state of the variable \cs{l_@@_check_answers_bool}
+%   set by the key \mykey{no-store}, set the boolean variable
+%   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true} for the key \mykey{wrap-label}
+%   and execute \cs{@@_item_std:w} and the key \mykey{itemindent}.
 % \iffalse
 %% Internal function for |\item*[symb][sep]| whit check-answer mechanism in |enumext|.
 % \fi
@@ -9846,10 +9840,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \tl_if_novalue:nTF {#1}
       {
-        \tl_gset_eq:Nc \g_@@_item_symbol_tl { l_@@_item_symbol_ \@@_level: _tl }
+        \tl_gset_eq:Nc
+          \g_@@_item_symbol_aux_tl { l_@@_item_symbol_ \@@_level: _tl }
       }
       {
-        \tl_gset:Nn \g_@@_item_symbol_tl {#1}
+        \tl_gset:Nn \g_@@_item_symbol_aux_tl {#1}
       }
     \tl_if_novalue:nTF {#2}
       {
@@ -9869,15 +9864,30 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_item_std:w \tl_use:c { l_@@_fake_item_indent_ \@@_level: _tl }
   }
 %    \end{macrocode}
+%    The function \cs{@@_item_star_exec:} will be responsible for
+%    executing |\item*| for the \myenv*{enumext} environment.
+% \iffalse
+%% Function for |\item*[sym][sep]| in |\makelabel| for enumext.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_item_star_exec:
+  {
+    \tl_if_empty:cF { l_@@_item_symbol_ \@@_level: _tl }
+      {
+        \mode_leave_vertical:
+        \skip_horizontal:n { -\dim_use:c { l_@@_item_symbol_sep_ \@@_level: _dim } }
+        \makebox[ 0pt ][ r ]{ \g_@@_item_symbol_aux_tl }
+        \skip_horizontal:n { \dim_use:c { l_@@_item_symbol_sep_ \@@_level: _dim } }
+      }
+  }
+%    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_redefine_item:, \@@_item_starred:, \@@_make_label}
+% \begin{macro}{\@@_redefine_item:, \@@_make_label}
 %    The function \cs{@@_redefine_item:} will redefine the |\item|
-%    command in the \myenv*{enumext} environment for the internal mechanism of
-%    check-answers for \mykey{check-ans} key and adding the starred
-%    |\item*| version.
+%    command in the \myenv*{enumext} environment adding |\item*|.
 % \iffalse
-%% Redefinition of |\item| for internal check-answer mechanism and \item* in |enumext|.
+%% Redefinition of |\item| for |\item*[sym][sep]| in |enumext|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_redefine_item:
@@ -9892,27 +9902,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%    The function \cs{@@_item_starred:} will be responsible for
-%    executing |\item*| for the \myenv*{enumext} environment.
-% \iffalse
-%% Function for |\item*[][]| in |\makelabel| for enumext.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_item_starred:
-  {
-    \tl_if_empty:cF { l_@@_item_symbol_ \@@_level: _tl }
-      {
-        \mode_leave_vertical:
-        \skip_horizontal:n { -\dim_use:c { l_@@_item_symbol_sep_ \@@_level: _dim } }
-        \makebox[ 0pt ][ r ]{ \g_@@_item_symbol_tl }
-        \skip_horizontal:n { \dim_use:c { l_@@_item_symbol_sep_ \@@_level: _dim } }
-      }
-  }
-%    \end{macrocode}
 %    The function \cs{@@_make_label:} redefine \ics{makelabel} for the keys \mykey{align}, \mykey{font},
 %    \mykey{wrap-label}, \mykey{wrap-label*} and |\item*| for \myenv*{enumext} environment.
 % \iffalse
-%% Redefinition of |\makelabel| for |\item| and |\item*[][]| in enumext.
+%% Redefinition of |\makelabel| for |\item| and |\item*[sym][sep]| in |enumext|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_make_label:
@@ -9923,19 +9916,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_use:c { l_@@_label_font_style_ \@@_level: _tl }
         \bool_if:cTF { l_@@_wrap_label_ \@@_level: _bool }
           {
-            \@@_item_starred:
+            \@@_item_star_exec:
             \use:c { @@_wrapper_label_ \@@_level: :n } { ##1 }
           }
           { ##1 }
         \tl_use:c { l_@@_label_fill_right_ \@@_level: _tl }
-        \tl_gclear:N \g_@@_item_symbol_tl
+        \tl_gclear:N \g_@@_item_symbol_aux_tl
       }
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{important}*
-%  This function is passed to \myvarenv{__@@_list_arg_two_X:} used
+%  This functions are passed to \myvarenv{__@@_list_arg_two_X:} used
 %  in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext}).
 % \end{important}
 %

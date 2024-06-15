@@ -83,7 +83,7 @@
     \tl_set:ce { l__enumext_the_counter_#1_tl } { \exp_not:c { theenumX#1 } }
   }
 \clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
-%% Variables used by |series|, |resume|, |resume*| and |item-sym*| key implementation.
+%% Variables used by |series|, |resume| and |resume*| keys implementation.
 \int_new:N  \g__enumext_resume_int
 \int_new:N  \g__enumext_resume_vii_int
 \tl_new:N   \l__enumext_resume_name_tl
@@ -158,7 +158,7 @@
 %% Variables used by|\printkeyans|, |mark-pos|, |item-sym*|, |save-key| and  store level in |enumext| and |enumext*|.
 \tl_new:N  \l__enumext_print_keyans_starred_tl
 \str_new:N \l__enumext_mark_position_str
-\tl_new:N  \g__enumext_item_symbol_tl
+\tl_new:N  \g__enumext_item_symbol_aux_tl
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \tl_new:c   { l__enumext_print_keyans_#1_tl        }
@@ -3147,10 +3147,11 @@
   {
     \tl_if_novalue:nTF {#1}
       {
-        \tl_gset_eq:Nc \g__enumext_item_symbol_tl { l__enumext_item_symbol_ \__enumext_level: _tl }
+        \tl_gset_eq:Nc
+          \g__enumext_item_symbol_aux_tl { l__enumext_item_symbol_ \__enumext_level: _tl }
       }
       {
-        \tl_gset:Nn \g__enumext_item_symbol_tl {#1}
+        \tl_gset:Nn \g__enumext_item_symbol_aux_tl {#1}
       }
     \tl_if_novalue:nTF {#2}
       {
@@ -3169,7 +3170,18 @@
     \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
     \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
   }
-%% Redefinition of |\item| for internal check-answer mechanism and \item* in |enumext|.
+%% Function for |\item*[sym][sep]| in |\makelabel| for enumext.
+\cs_new_protected:Nn \__enumext_item_star_exec:
+  {
+    \tl_if_empty:cF { l__enumext_item_symbol_ \__enumext_level: _tl }
+      {
+        \mode_leave_vertical:
+        \skip_horizontal:n { -\dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
+        \makebox[ 0pt ][ r ]{ \g__enumext_item_symbol_aux_tl }
+        \skip_horizontal:n { \dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
+      }
+  }
+%% Redefinition of |\item| for |\item*[sym][sep]| in |enumext|.
 \cs_new_protected:Nn \__enumext_redefine_item:
   {
     \RenewDocumentCommand \item { s o o }
@@ -3181,18 +3193,7 @@
           { \__enumext_default_item:n {##2} }
       }
   }
-%% Function for |\item*[][]| in |\makelabel| for enumext.
-\cs_new_protected:Nn \__enumext_item_starred:
-  {
-    \tl_if_empty:cF { l__enumext_item_symbol_ \__enumext_level: _tl }
-      {
-        \mode_leave_vertical:
-        \skip_horizontal:n { -\dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
-        \makebox[ 0pt ][ r ]{ \g__enumext_item_symbol_tl }
-        \skip_horizontal:n { \dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
-      }
-  }
-%% Redefinition of |\makelabel| for |\item| and |\item*[][]| in enumext.
+%% Redefinition of |\makelabel| for |\item| and |\item*[sym][sep]| in |enumext|.
 \cs_new_protected:Nn \__enumext_make_label:
   {
     \RenewDocumentCommand \makelabel { m }
@@ -3201,12 +3202,12 @@
         \tl_use:c { l__enumext_label_font_style_ \__enumext_level: _tl }
         \bool_if:cTF { l__enumext_wrap_label_ \__enumext_level: _bool }
           {
-            \__enumext_item_starred:
+            \__enumext_item_star_exec:
             \use:c { __enumext_wrapper_label_ \__enumext_level: :n } { ##1 }
           }
           { ##1 }
         \tl_use:c { l__enumext_label_fill_right_ \__enumext_level: _tl }
-        \tl_gclear:N \g__enumext_item_symbol_tl
+        \tl_gclear:N \g__enumext_item_symbol_aux_tl
       }
   }
 %% Add |item-sym*| and |item-sep*| keys.
