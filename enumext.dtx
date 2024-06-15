@@ -8580,12 +8580,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \cs_set:Npn \@@_tmp:n ##1
       { . \tl_use:c { l_@@_label_copy_ \int_to_roman:n {##1} _tl } }
 %    \end{macrocode}
-%
 %   Here we need to analyse the cases where the environment is started with
 %   \myenv*{enumext*} and if \ics*{anskey} or \myenv*{anskey*} is running
 %   alone in it or if it is running in a nested \myenv*{enumext} environment
 %   within the starting environment.
 %    \begin{macrocode}
+%% Caso 1: comienza en |enumext*| y está solo en ese nivel.
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \g_@@_starred_bool }
@@ -8595,10 +8595,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
           { \tl_use:N \l_@@_label_copy_vii_tl }
       }
+%% Caso 2: comienza en |enumext*| y está dentro de algún nivel de |enumext| anidado.
     \bool_lazy_all:nT
       {
+        { \bool_not_p:n { \g_@@_standar_bool } }
         { \bool_if_p:N \l_@@_standar_bool }
-        { \bool_if_p:N \g_@@_starred_bool }
         { \int_compare_p:nNn { \l_@@_level_int } > { 0 } }
       }
       {
@@ -8613,12 +8614,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \myenv*{anskey*} is running alone in it or if it is running in a nested
 %   \myenv*{enumext*} environment within the starting environment.
 %    \begin{macrocode}
+%% Caso 3: comienza en |enumext| y está en algún nivel.
     \bool_lazy_all:nT
       {
-        { \bool_if_p:N \l_@@_standar_bool }
+        { \bool_if_p:N \g_@@_standar_bool }
         { \int_compare_p:nNn { \l_@@_level_int } > { 0 } }
         { \int_compare_p:nNn { \l_@@_level_h_int } = { 0 } }
-        { \bool_not_p:n { \l_@@_starred_bool } }
       }
       {
         \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
@@ -8627,20 +8628,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \int_step_function:nnN { 2 } { \l_@@_level_int } \@@_tmp:n
           }
       }
+%% Caso 4: comienza en |enumext| y está en algún nivel dentro de |enumext*|.
     \cs_set:Npn \@@_tmp:n ##1
-      { \tl_use:c { l_@@_label_copy_ \int_to_roman:n {##1} _tl } }
+      { \tl_use:c { l_@@_label_copy_ \int_to_roman:n {##1} _tl } . }
     \bool_lazy_all:nT
       {
-        { \bool_if_p:N \l_@@_standar_bool }
+        { \bool_if_p:N \g_@@_standar_bool }
+        { \bool_if_p:N \l_@@_starred_bool }
         { \int_compare_p:nNn { \l_@@_level_int } > { 0 } }
-        { \bool_not_p:n { \g_@@_starred_bool } }
-        { \int_compare_p:nNn { \l_@@_level_h_int } > { 0 } }
       }
       {
         \tl_put_right:Ne \l_@@_newlabel_arg_two_tl
           {
             \int_step_function:nnN { 1 } { \l_@@_level_int } \@@_tmp:n
-            . \tl_use:N \l_@@_label_copy_vii_tl
+            \tl_use:N \l_@@_label_copy_vii_tl
           }
       }
 %    \end{macrocode}

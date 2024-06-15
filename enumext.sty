@@ -6,21 +6,21 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%%
+%% 
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%%
+%% 
 %%  https://www.latex-project.org/lppl.txt
-%%
+%% 
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%%
+%% 
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%%
+%% 
 %% This work consists of the files enumext.dtx and enumext.sty.
-%%
+%% 
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
@@ -2414,6 +2414,7 @@
     \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {##1} }
     \cs_set:Npn \__enumext_tmp:n ##1
       { . \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
+%% Caso 1: comienza en |enumext*| y está solo en ese nivel.
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \g__enumext_starred_bool }
@@ -2423,10 +2424,11 @@
         \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
           { \tl_use:N \l__enumext_label_copy_vii_tl }
       }
+%% Caso 2: comienza en |enumext*| y está dentro de algún nivel de |enumext| anidado.
     \bool_lazy_all:nT
       {
-        %{ \bool_if_p:N \l__enumext_standar_bool }
-        { \bool_if_p:N \g__enumext_starred_bool }
+        { \bool_not_p:n { \g__enumext_standar_bool } }
+        { \bool_if_p:N \l__enumext_standar_bool }
         { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
       }
       {
@@ -2436,12 +2438,12 @@
             \int_step_function:nnN { 1 } { \l__enumext_level_int } \__enumext_tmp:n
           }
       }
+%% Caso 3: comienza en |enumext| y está en algún nivel.
     \bool_lazy_all:nT
       {
-        %{ \bool_if_p:N \l__enumext_standar_bool }
+        { \bool_if_p:N \g__enumext_standar_bool }
         { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
         { \int_compare_p:nNn { \l__enumext_level_h_int } = { 0 } }
-        %{ \bool_not_p:n { \l__enumext_starred_bool } }
       }
       {
         \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
@@ -2450,20 +2452,20 @@
             \int_step_function:nnN { 2 } { \l__enumext_level_int } \__enumext_tmp:n
           }
       }
+%% Caso 4: comienza en |enumext| y está en algún nivel dentro de |enumext*|.
     \cs_set:Npn \__enumext_tmp:n ##1
-      { \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } }
+      { \tl_use:c { l__enumext_label_copy_ \int_to_roman:n {##1} _tl } . }
     \bool_lazy_all:nT
       {
-        %{ \bool_if_p:N \l__enumext_standar_bool }
+        { \bool_if_p:N \g__enumext_standar_bool }
+        { \bool_if_p:N \l__enumext_starred_bool }
         { \int_compare_p:nNn { \l__enumext_level_int } > { 0 } }
-        { \bool_not_p:n { \g__enumext_starred_bool } }
-        { \int_compare_p:nNn { \l__enumext_level_h_int } > { 0 } }
       }
       {
         \tl_put_right:Ne \l__enumext_newlabel_arg_two_tl
           {
             \int_step_function:nnN { 1 } { \l__enumext_level_int } \__enumext_tmp:n
-            . \tl_use:N \l__enumext_label_copy_vii_tl
+            \tl_use:N \l__enumext_label_copy_vii_tl
           }
       }
     \tl_put_right:Ne \l__enumext_newlabel_arg_one_tl
@@ -5345,6 +5347,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%%
+%% 
 %%
 %% End of file `enumext.sty'.

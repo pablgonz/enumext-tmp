@@ -10,63 +10,46 @@
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-
-
-\begin{enumext}[columns=2,save-ans=sabastiano,labelsep=1cm, show-ans=true]
+\setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\fbox{\makebox[\height]{##1}}}}
+\begin{enumext}[columns=2,save-ans=sabastiano]
  \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
-   \begin{keyans*}
+   \begin{keyans}
      \item \SI{36}{km/h}.
      \item* \SI{360}{km/h}.
      \item \SI{27,8}{km/h}.
-     \item \SI{3,60e8}{km/h}. \miniright
+     \item \SI{3,60e8}{km/h}.
+   \end{keyans}
 
-   \end{keyans*}
+ \item In fisica nucleare si usa l'angstrom (simbolo:
+ $\SI{1}{\angstrom} = \SI{1e-10}{m}$) e il fermi o femtometro
+ ($\SI{1}{fm} = \SI{1e-15}{m}$). Qual è la relazione tra queste due
+ unità di misura?
+   \begin{keyans}
+     \item* $\SI{1}{\angstrom}=\SI{1e5}{fm}$.
+     \item $\SI{1}{\angstrom}=\SI{1e-5}{fm}$.
+     \item $\SI{1}{\angstrom}=\SI{1e-15}{fm}$.
+     \item $\SI{1}{\angstrom}=\SI{1e3}{fm}$.
+   \end{keyans}
+
+ \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
+   \begin{keyans}
+     \item \SI{36}{km/h}.
+     \item* \SI{360}{km/h}.
+     \item \SI{27,8}{km/h}.
+     \item \SI{3,60e8}{km/h}.
+   \end{keyans}
+
+ \item In fisica nucleare si usa l'angstrom (simbolo:
+ $\SI{1}{\angstrom} = \SI{1e-10}{m}$) e il fermi o femtometro
+ ($\SI{1}{fm} = \SI{1e-15}{m}$). Qual è la relazione tra queste due
+ unità di misura?
+   \begin{keyans}
+     \item* $\SI{1}{\angstrom}=\SI{1e5}{fm}$.
+     \item $\SI{1}{\angstrom}=\SI{1e-5}{fm}$.
+     \item $\SI{1}{\angstrom}=\SI{1e-15}{fm}$.
+     \item $\SI{1}{\angstrom}=\SI{1e3}{fm}$.
+   \end{keyans}
 \end{enumext}
 
-\stop
-
-
-
-\setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\fbox{\makebox[\height]{##1}}}}
-\begin{enumext*}[columns=2,save-ans=sabastiano,labelsep=1cm, show-ans=true]
- \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
-   \begin{keyans*}
-     \item \SI{36}{km/h}.
-     \item* \SI{360}{km/h}.
-     \item \SI{27,8}{km/h}.
-     \item \SI{3,60e8}{km/h}.
-   \end{keyans*}
-
- \item In fisica nucleare si usa l'angstrom (simbolo:
- $\SI{1}{\angstrom} = \SI{1e-10}{m}$) e il fermi o femtometro
- ($\SI{1}{fm} = \SI{1e-15}{m}$). Qual è la relazione tra queste due
- unità di misura?
-   \begin{keyans}
-     \item* $\SI{1}{\angstrom}=\SI{1e5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-15}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e3}{fm}$.
-   \end{keyans}
-
- \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
-   \begin{keyans}
-     \item \SI{36}{km/h}.
-     \item* \SI{360}{km/h}.
-     \item \SI{27,8}{km/h}.
-     \item \SI{3,60e8}{km/h}.
-   \end{keyans}
-
- \item In fisica nucleare si usa l'angstrom (simbolo:
- $\SI{1}{\angstrom} = \SI{1e-10}{m}$) e il fermi o femtometro
- ($\SI{1}{fm} = \SI{1e-15}{m}$). Qual è la relazione tra queste due
- unità di misura?
-   \begin{keyans}
-     \item* $\SI{1}{\angstrom}=\SI{1e5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-15}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e3}{fm}$.
-   \end{keyans}
-\end{enumext*}
-
-\printkeyans*[columns=4]{sabastiano}
+\printkeyans[columns=4]{sabastiano}
 \end{document}
