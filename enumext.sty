@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-06-15}
+  {2024-06-16}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -126,7 +126,7 @@
     \bool_new:c { l__enumext_minipage_active_#1_bool }
   }
 \clist_map_inline:nn { i, ii, iii, iv, v, vii, viii } { \__enumext_tmp:n {#1} }
-%% Internal variables used by |wrap-label|, |start|, |align|, |above| and |below| keys.
+%% Internal variables used by |wrap-label|, |start*|, |start|, |align|, |above| and |below| keys.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \bool_new:c { l__enumext_wrap_label_#1_bool     }
@@ -800,7 +800,7 @@
            { \int_set:Nn #2  { \int_from_roman:n {#3} } }
        }
   }
-\cs_generate_variant:Nn \__enumext_start_from:NNn { ccn }
+\cs_generate_variant:Nn \__enumext_start_from:NNn { ccn, cce }
 %% Internal function for |widest| key.
 %% #1 The counter associated with the environment level
 %% #2 \l_enumext_label_X_tl
@@ -822,7 +822,7 @@
        { l__enumext_labelwidth_#1_dim } { l__enumext_label_#1_tl }
   }
 \cs_generate_variant:Nn \__enumext_widest_from:nNNn { nccn }
-%% Add |start| and |widest| key.
+%% Add |start|, |start*| and |widest| key.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
@@ -831,15 +831,21 @@
                               \__enumext_start_from:ccn
                                 { l__enumext_label_#2_tl }
                                 { l__enumext_start_#2_int } {##1}
-                             },
+                            },
         start  .initial:n = 1,
+        start  .value_required:n = true,
+        start* .code:n    = {
+                              \__enumext_start_from:cce
+                                { l__enumext_label_#2_tl }
+                                { l__enumext_start_#2_int } { \int_eval:n {##1} }
+                            },
+        start* .value_required:n = true,
         widest .code:n    = {
                               \__enumext_widest_from:nccn {#2}
                                 { l__enumext_label_#2_tl }
                                 { l__enumext_labelwidth_#2_dim } {##1}
                             },
         widest .value_required:n = true,
-        start  .value_required:n = true,
       }
   }
 \clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }

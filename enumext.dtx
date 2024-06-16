@@ -24,7 +24,7 @@
 %<*install>
 \def\enumtmp{LaTeX2e}
 \ifx\fmtname\enumtmp \begingroup \fi
-\input docstrip.tex
+\input docstrip.tex %
 \keepsilent
 \askforoverwritefalse
 \preamble
@@ -385,7 +385,23 @@ This work consists of the files enumext.dtx and enumext.sty.
         \mymarg[type=tt,cbc=gray,ac=lightgray,cf=optcolor]{\small{#3}}
       }
     \hfill\textcolor{gray}{\small\textsf{default}:~\emph{#4}}\par%
-    \MYSortIndex{Keys}{Keys ~ for ~ command ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
+    \MYSortIndex{Keys}{Keys ~ for ~ command ~ \texttt{\textbackslash{}anskey} ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
+  }
+% \keyexampenv{s m m m}
+\NewDocumentCommand \keyexampenv{s m m m }
+  {
+    \adjustbox{outer=-\marginparsep}{\textcolor{optcolor}{\small\ttfamily{#2}}}
+    \IfBooleanTF{#1}
+      {
+        \hphantom{\textcolor{white}{\,\bfseries\texttt{=}}\,{}}
+        \mymeta[type=tt,cbc=gray,ac=lightgray,cf=lightgray]{\small{#3}}
+      }
+      {
+        \textcolor{gray}{\,\bfseries\texttt{=}}\,{}
+        \mymarg[type=tt,cbc=gray,ac=lightgray,cf=optcolor]{\small{#3}}
+      }
+    \hfill\textcolor{gray}{\small\textsf{default}:~\emph{#4}}\par%
+    \MYSortIndex{Keys}{Keys ~ for ~ environment ~ \texttt{anskey\textcolor{MediumOrchid}{*}} ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
   }
 % \mykey{m}
 \NewDocumentCommand \mykey{ m }
@@ -396,14 +412,18 @@ This work consists of the files enumext.dtx and enumext.sty.
     %\textcolor{optcolor}{\texttt{#1}}
     \MYSortIndex{Keys}{Keys ~ for ~ environments ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
   }
-% \mykeycmd{m}
-\NewDocumentCommand \mykeycmd{ m }
+% \mykeycmd{s m}
+\NewDocumentCommand \mykeycmd{ s m }
   {
-    \tl_set:Nn \l_tmpa_tl { #1 }
+    \tl_set:Nn \l_tmpa_tl { #2 }
     \regex_replace_once:nnN { (\*) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tmpa_tl
     \textcolor{optcolor}{\ttfamily \tl_use:N \l_tmpa_tl }
     %\textcolor{optcolor}{\texttt{#1}}
-    \MYSortIndex{Keys}{Keys ~ for ~ command ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
+    \IfBooleanTF{#1}
+      {
+        \MYSortIndex{Keys}{Keys ~ for ~ environment ~ \texttt{anskey*} ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
+      }
+      { \MYSortIndex{Keys}{Keys ~ for ~ command ~ \texttt{\textbackslash{}anskey} ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}} }
   }
 % \mypkg{sm}
 \NewDocumentCommand \mypkg { s m }
@@ -571,7 +591,8 @@ This work consists of the files enumext.dtx and enumext.sty.
     commentstyle  = \ttfamily\small\color{lightgray},%
 % Important words 1
     keywordstyle  = [1]{\color{gray}},%
-    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,strut,smash, newlength, settowidth, dimeval, dimexpr, IfBooleanTF,footnotehyper,%
+    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,strut,smash, newlength, %
+                        settowidth, dimeval, dimexpr, IfBooleanTF,footnotehyper, %
                     },%
 % Other words 2
     keywordstyle  = [2]{\color{blue!75}},%
@@ -579,14 +600,14 @@ This work consists of the files enumext.dtx and enumext.sty.
                     columnseprule, footnote, footnotemark, footnotetext, raggedcolumns, hspace, parindent, %
                     subsection, list,endlist,leftmargin, itemindent,bfseries,endminipage, minipage, parskip, % item,
                     labelwidth,labelsep,labelindent,label,ref,topsep,parsep,includegraphics, itemize, description, %
-                    multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, ignorespace %
+                    multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, value, %
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, %
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
                     textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_space,%
                     triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean},%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
-    keywords      = [3]{document,article,setlength,pagestyle,definecolor},%
+    keywords      = [3]{document,article,setlength,pagestyle,definecolor, chapter,},%
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
     keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidth, %
@@ -1214,7 +1235,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % |\itemwidth| and is intended for user convenience only and is not
 % for internal use as such. The dimension |\itemwidth| is \emph{rigid length}
 % and contains the \emph{\enquote{width of the content}} of each |\item|
-% regardless of |labelwidth| and |labelsep|.
+% regardless of \mykey{labelwidth} and \mykey{labelsep}.
 %
 % \begin{important}*
 % If any package defines |\itemwidth| or they are user-defined |\itemwidth|
@@ -1966,7 +1987,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{after}} performing all calculations related to the
 % \emph{list parameters} in the environment and the parameters sets by
 % \myoarg{key \textnormal{\textcolor{gray}{=}} val} that is, in the second argument of the list after setting all the parameters
-% |\list|\mymarg{arg one}|{|\mymeta{arg two}\mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|}|.
+% |\begin{list}|\mymarg{arg one}|{|\mymeta{arg two}\mymarg[cbc=pkgcolor,ac=araracolor]{code}|}|.
 %
 % \smallskip
 %
@@ -1977,7 +1998,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % parameters} and \myoarg{key \textnormal{\textcolor{gray}{=}}
 % val} sets in the environment that is,
 % before the arguments defining the environment are executed:
-% \mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|\list|\mymarg{arg
+% \mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|\begin{list}|\mymarg{arg
 % one}\mymarg{arg two}.
 %
 % \smallskip
@@ -1987,7 +2008,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % environment. The \mymarg{code} must be passed between
 % braces, is executed right \emph{\enquote{after}} all \emph{list
 % parameters} are done, after the second argument of list, just before the first occurrence of \ics*{item}:
-% |\list|\mymarg{arg one}\mymarg{arg two}\mymarg[type=tt,cbc=pkgcolor,ac=araracolor]{code}|\item|.
+% |\begin{list}|\mymarg{arg one}\mymarg{arg two}\mymarg[cbc=pkgcolor,ac=araracolor]{code}|\item|.
 %
 % \smallskip
 %
@@ -1998,6 +2019,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % set this key per level.
 % \end{important}
 %
+% \smallskip
+%
 % \keyexamp{after}{code}{not used}
 % Execute \mymarg{code} \emph{\enquote{after}} finishing the
 % environment. The \mymarg{code} must be passed between braces.
@@ -2006,17 +2029,28 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{start}{integer \textnormal{\textcolor{lightgray}{\textbar}} string}{\mydim{1}}
 % Sets the \emph{start value} of the numbering on the current level.
-% Internally \mymeta{string} is passed as value to the counter defined by
+% Internally \mymeta{string} is converted and passed as value to the counter defined by
 % \mykey{label} key on the current level, i.e. it is equivalent to enter
 % |start=5|, |start=E| or |start=v|.
 %
 % \smallskip
 %
+% \keyexamp{start\textcolor{MediumOrchid}{*}}{integer expression}{not used}
+% Sets the \emph{start value} of the numbering on the current level.
+% The \mymarg{integer expression} must be passed between braces, internally is evaluated and pass
+% to the counter defined by \mykey{label} key on the current level, i.e. it is equivalent to enter
+% |start={\dimeval{100*\value{chapter}}| or |start={100*\value{chapter}}|.
+%
+% \smallskip
+%
 % \begin{important}*
 % The following \mymeta{keys} are \emph{\enquote{only}} available for the
-% \emph{\enquote{first level}} of \myenv*{enumext} and \myenv*{enumext*}
-% and are ignored if set when nested inside each other.
+% \myenv*{enumext*} environment and the \emph{\enquote{first level}} of
+% the \myenv*{enumext} environment and are ignored if set when nested
+% within each other.
 % \end{important}
+%
+% \smallskip
 %
 % \keyexamp{series}{series name}{not used}
 % Stores the \emph{keys} of the optional argument of the \emph{\enquote{first level}}
@@ -2034,7 +2068,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % or \mykey{resume}|=|\mymarg{series name} is not present and if the
 % \mykey{save-ans} key is active it will continue the numbering from the
 % last environment in which it was executed. The \emph{start value} can be
-% overwritten using the \mykey{start} key.
+% overwritten using \mykey{start} or \mykey{start*} keys.
 %
 % \keyexamp*{resume\textcolor{MediumOrchid}{*}}{value forbidden}{not used}
 % Sets the \emph{start value} and \emph{options} for the
@@ -2043,14 +2077,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \mykey{resume}|=|\mymarg{series name} keys are NOT present, if the
 % \mykey{save-ans} key is active it will continue the numbering from the
 % last environment in which it was executed. The \emph{start value}
-% can be overwritten using the \mykey{start} key.
+% can be overwritten using \mykey{start} or \mykey{start*} keys.
 %
 % \smallskip
 %
 % \begin{important}*
 % For security reasons the \mykey{series} key will never save in
 % \mymarg{series name} the keys \mykey{series}, \mykey{resume},
-% \mykey{resume*}, \mykey{save-ans}, \mykey{save-key} and \mykey{start}.
+% \mykey{resume*}, \mykey{save-ans}, \mykey{save-key}, \mykey{start*} and \mykey{start}.
 % When using the key \mykey{resume}|=|\mymarg{series name} it will
 % have hierarchy in the \mymeta{keys} that are saved in \mymarg{series
 % name}, in order to establish the value of a \mymeta{key} already saved
@@ -4058,7 +4092,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-06-15}
+  {2024-06-16}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4299,18 +4333,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \l_@@_start_X_int, \l_@@_fake_item_indent_X_tl, \l_@@_label_fill_left_X_tl,
 %                       \l_@@_label_fill_right_X_tl, \l_@@_vspace_a_star_X_bool,
 %                       \l_@@_vspace_b_star_X_bool,}
-%
-%    The integer variable \myvarenv{l__@@_start_X_int} are used by the
-%    \mykey{start} key (\S\ref{key:start-widest}), the token list
-%    \myvarenv{l__@@_fake_item_indent_X_tl } is used by \mykey{itemindent} key (\S\ref{key:fake-indent}),
-%    the variables \myvarenv{l__@@_label_fill_left_X_tl}
-%    and \myvarenv{l__@@_label_fill_left_X_tl} are used by the
+%    The bool vars \myvarenv{l__@@_wrap_label_X_bool} and
+%    \myvarenv{l__@@_wrap_label_opt_X_bool} are used by \mykey{wrap-label}
+%    and \mykey{wrap-label*} keys (\S\ref{key:label}), the integer
+%    \myvarenv{l__@@_start_X_int} are used by the \mykey{start} and \mykey{start*} keys (\S\ref{key:start-widest}),
+%    the token list \myvarenv{l__@@_fake_item_indent_X_tl } is used by \mykey{itemindent} key (\S\ref{key:fake-indent}),
+%    the variables \myvarenv{l__@@_label_fill_left_X_tl} and \myvarenv{l__@@_label_fill_left_X_tl} are used by the
 %    \mykey{align} key (\S\ref{key:label}). The boolean vars \myvarenv{l__@@_vspace_a_star_X_bool},
 %    \myvarenv{l__@@_vspace_b_star_X_bool} are used by \mykey{above},
 %    \mykey{above*}, \mykey{below} and \mykey{below*} keys (\S\ref{key:before}).
 %
 % \iffalse
-%% Internal variables used by |wrap-label|, |start|, |align|, |above| and |below| keys.
+%% Internal variables used by |wrap-label|, |start*|, |start|, |align|, |above| and |below| keys.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:n #1
@@ -5631,11 +5665,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Setting \texttt{start} and \texttt{widest} keys}\label{key:start-widest}
+% \subsection{Setting \texttt{start}, \texttt{start*} and \texttt{widest} keys}\label{key:start-widest}
 %
-% \begin{macro}{\@@_start_from:NNn, \@@_start_from:ccn}
-%    The function \cs{@@_start_from:NNn} used by the \mykey{start}
-%    key take three arguments:
+% \begin{macro}{\@@_start_from:NNn, \@@_start_from:ccn, \@@_start_from:cce,}
+%    The function \cs{@@_start_from:NNn} used by \mykey{start} and \mykey{start*}
+%    keys take three arguments:
+%
 % \begin{arguments}
 %    \item \myvarenv{l__@@_label_X_tl}
 %    \item \myvarenv{l__@@_start_X_int}
@@ -5668,13 +5703,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
            { \int_set:Nn #2  { \int_from_roman:n {#3} } }
        }
   }
-\cs_generate_variant:Nn \@@_start_from:NNn { ccn }
+\cs_generate_variant:Nn \@@_start_from:NNn { ccn, cce }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@@_widest_from:nNNn, \@@_widest_from:nccn}
 %    The function \cs{@@_widest_from:nNNn} used by the \mykey{widest}
 %    key take four arguments:
+%
 % \begin{arguments}
 %    \item The counter associated with the environment level
 %    \item \myvarenv{l__@@_label_X_tl}
@@ -5717,13 +5753,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{start, widest, \l_@@_start_X_int}
-%    Now define and set \mykey{start} and \mykey{widest} keys for
-%    \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and
+% \begin{macro}[int]{start, start*, widest,}
+%    Now define and set \mykey{start}, \mykey{start*} and \mykey{widest}
+%    keys for \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and
 %    \myenv*{keyans*} environments.
 %
 % \iffalse
-%% Add |start| and |widest| key.
+%% Add |start|, |start*| and |widest| key.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:nn #1 #2
@@ -5734,15 +5770,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                               \@@_start_from:ccn
                                 { l_@@_label_#2_tl }
                                 { l_@@_start_#2_int } {##1}
-                             },
+                            },
         start  .initial:n = 1,
+        start  .value_required:n = true,
+        start* .code:n    = {
+                              \@@_start_from:cce
+                                { l_@@_label_#2_tl }
+                                { l_@@_start_#2_int } { \int_eval:n {##1} }
+                            },
+        start* .value_required:n = true,
         widest .code:n    = {
                               \@@_widest_from:nccn {#2}
                                 { l_@@_label_#2_tl }
                                 { l_@@_labelwidth_#2_dim } {##1}
                             },
         widest .value_required:n = true,
-        start  .value_required:n = true,
       }
   }
 \clist_map_inline:Nn \c_@@_all_envs_clist { \@@_tmp:nn #1 }
