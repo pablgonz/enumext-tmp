@@ -1726,7 +1726,8 @@
   {
     \str_case:nnF {#1}
       {
-        { series } {} { resume } {} { start } {} { save-ans } {} { save-key } {}
+        { series } {} { resume } {} { start } {}
+        { start* } {}  { save-ans } {} { save-key } {}
       }
       { , { \exp_not:n {#1} } = { \exp_not:n {#2} } }
   }
