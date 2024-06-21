@@ -1001,7 +1001,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %        \item value
 %      \end{keyans}
 %   \item Second type of questions
-%      \begin{enumext}[no-store,label=\Roman*.,nosep]
+%      \begin{enumext}[no-store,label=\Roman*.,noitemsep]
 %        \item $2\alpha+2\delta=90^{\circ}$
 %        \item $\alpha=\delta$
 %        \item $\angle EDF=45^{\circ}$
@@ -1014,7 +1014,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %        \item I, II, and III
 %      \end{keyans}
 % \item* Third type of questions
-%        \begin{enumext}[no-store,list-offset=0.5cm,label=(\arabic*),nosep]
+%        \begin{enumext}[no-store,list-offset=0.5cm,label=(\arabic*),noitemsep]
 %            \item $2\alpha+2\delta=90^{\circ}$
 %            \item $\angle EDF=45^{\circ}$
 %        \end{enumext}
@@ -1544,8 +1544,9 @@ This work consists of the files enumext.dtx and enumext.sty.
   \item The sixth
   \item The seventh
   \item(2)[X] The eighth item is way too long for this and needs two columns
+    (\the\itemwidth)
   \item The ninth
-  \item[Z] The tenth
+  \item[Z] The tenth (\the\itemwidth)
 \end{enumext*}
 \end{examplecode}
 % \iffalse
@@ -1560,9 +1561,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  \item(3)* The fifth item is way too long for this and needs three columns
 %  \item The sixth
 %  \item The seventh
-%  \item(2)[X] The eighth item is way too long for this and needs two columns
+%  \item(2)[X] The eighth item is way too long for this and needs two columns (\the\itemwidth)
 %  \item The ninth
-%  \item[Z] The tenth
+%  \item[Z] The tenth (\the\itemwidth)
 % \end{enumext*}
 %
 % \section{The command \cs{setenumext}}
