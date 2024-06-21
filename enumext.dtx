@@ -1449,12 +1449,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Some considerations to take into account for this environment:
 %
 % \begin{itemize}
-% \item The environment cannot be nested within itself, but it can be
-%   nested within \myenv*{enumext} and can contain it nested within it.
+% \item The environment cannot be nested within itself or in the
+%   environment \myenv*{keyans*}, but it can be nested within
+%   \myenv*{enumext} and vice versa.
 %
 % \item Each \emph{\enquote{item}} in the environment is placed within a \myenv{minipage}
 %   environment whose \emph{width} is stored in the dimension |\itemwidth|
-%   that includes \mykey{labelwith}, \mykey{labelsep} plus the \emph{width of the content}.
+%   that NOT includes \mykey{labelwith}, \mykey{labelsep}, only the \emph{width of the content}.
 %
 % \item You cannot have floating environments like \myenv{figure} or
 %  \myenv{table} but \ics{footnote} with \mypkg{hyperref} support is
@@ -1817,9 +1818,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % line}} or |\par| command. Internally sets the value of \ics{partopsep} for the current level.
 % The default values for first and second level in environment
 % \myenv*{enumext} are \mydim{2.0pt plus 1.0pt minus 1.0pt},
-% for third and fourth level are \mydim{1.0pt minus 1.0pt}. For
-% \myenv*{keyans}, \myenv*{keyans*} and \myenv*{enumext*}
-% environments the default value is \mydim{2.0pt plus 1.0pt minus 1.0pt}.
+% for third and fourth level are \mydim{1.0pt minus 1.0pt}.
+% For the \myenv*{keyans} environment the default value is \mydim{2.0pt
+% plus 1.0pt minus 1.0pt}, and for the \myenv*{keyans*} and
+% \myenv*{enumext*} environments it is available but \emph{without}
+% effect.
 %
 % \smallskip
 %
@@ -5023,8 +5026,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \myvarenv*{__@@_mini_env*} environment (\emph{custom version} of
 %   \myenv{minipage}) setting the |\if@minipage| switch to
 %   \emph{\enquote{false}} to allow spaces at the \emph{\enquote{above}} of
-%   the environment, plus we will add |\vspace{|\mydim{0pt}|}| to maintain alignment
-%   on \emph{\enquote{top}}. This environment will be used internally by the
+%   the environment, plus we will add |\skip_vertical:N \c_zero_skip| to maintain alignment
+%   on \emph{\enquote{top}} in the first part and  |\skip_vertical:N \c_zero_skip|
+%   in the second part to allow spaces \emph{\enquote{below}}. This environment will be used internally by the
 %   \mykey{mini-env} key, it is not documented in the user interface and is for
 %   internal use only. This function is passed to the function \cs{@@_safe_exec:}
 %   in the \myenv*{enumext} environment definition (\S\ref{env:enumext}) and
@@ -5042,9 +5046,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \@@_minipage:w [ t ] { ##1 }
               \legacy_if_gset_false:n { @minipage }
-              \vspace { 0pt }
+              \skip_vertical:N \c_zero_skip
           }
-          { \@@_endminipage: }
+          {
+              \skip_vertical:N \c_zero_skip
+            \@@_endminipage:
+          }
       }
   }
 %    \end{macrocode}
@@ -6994,22 +7001,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{The command \cs{miniright}}\label{cmd:miniright}
 %
-% The command \ics*{miniright} will close the
-% \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{left
-% side}}, open the \myvarenv*{__@@_mini_env*} environment on the
-% \emph{\enquote{right side}} adding the \emph{adjusted vertical space}.
-% By default we will add |\centering| when starting the
-% \emph{\enquote{right side}} environment.
-% The \emph{starred argument} ‘|*|’ inhibits the use of |\centering|
+% The command \ics*{miniright} will close the \myvarenv*{__@@_mini_env*}
+% environment on the \emph{\enquote{left side}}, open the \myvarenv*{__@@_mini_env*}
+% environment on the \emph{\enquote{right side}} adding the \emph{adjusted vertical space}.
+% By default we will add |\centering| when starting the \emph{\enquote{right side}}
+% environment. The \emph{starred argument} ‘|*|’ inhibits the use of |\centering|
 % command i.e. the usual \hologo{LaTeX} justification is maintained in
 % the \myvarenv*{__@@_mini_env*} on the \emph{\enquote{right side}}.
 %
 % \begin{macro}{\miniright}
-%    First we will perform some checks to prevent the command from being
-%    executed outside the \myenv*{enumext} environment or from being executed
-%    inside the \myenv*{keyanspic} environment, then we call the internal functions
-%    for the \myenv*{enumext} and \myenv*{keyans} environments.
-%
+%   First we will perform some checks to prevent the command from being
+%   executed outside the \myenv*{enumext} environment or somewhere
+%   inappropriate then we will call the internal functions to execute it in
+%   the \myenv*{enumext} and \myenv*{keyans} environments.
 % \iffalse
 %% Definition of |\miniright| command.
 % \fi
@@ -7074,6 +7078,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \int_gzero:N \g_@@_minipage_stat_int
       }
       { \msg_error:nnn { enumext } { wrong-miniright-use } }
+    % paranoia
+    \RenewDocumentCommand \miniright { s }
+      {
+        \msg_error:nn { enumext } { many-miniright-used }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7104,6 +7113,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \int_gzero:N \g_@@_minipage_stat_int
       }
       { \msg_error:nnn { enumext } { wrong-miniright-use } }
+    \RenewDocumentCommand \miniright { s }
+      {
+        \msg_error:nn { enumext } { many-miniright-used }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -13541,6 +13554,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \msg_new:nnn { enumext } { wrong-miniright-starred }
   {
     Can't ~ use  ~ \c_backslash_str miniright ~ in ~ starred ~ environments ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { many-miniright-used }
+  {
+    Can't ~ use  ~ \c_backslash_str miniright ~ more ~ than ~ once ~  \msg_line_context:.
   }
 %    \end{macrocode}
 %

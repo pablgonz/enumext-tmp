@@ -1,17 +1,17 @@
 % arara: lualatex
 % arara: lualatex
 % arara: clean: { extensions: [ aux, log, out] }
-\documentclass[10pt]{article}
+\documentclass[12pt]{article}
 \usepackage{enumext}
 \usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
 \setlength{\parskip}{0pt}
 \setlength{\parindent}{0pt}
 \setlength{\columnseprule}{0.5pt}
 \usepackage{lua-visual-debug}
-\usepackage{hyperref}
-\usepackage{footnotehyper}
-\makesavenoteenv{enumext}
-\makesavenoteenv{enumext*}
+%\usepackage{hyperref}
+%\usepackage{footnotehyper}
+%\makesavenoteenv{enumext}
+%\makesavenoteenv{enumext*}
 \begin{document}
 \section{Test 0: \texttt{mini-env, columns=2, topsep=default} HORIZONTAL}
 
@@ -19,7 +19,7 @@ Before
 \begin{enumext}[columns=2,nosep]
 
 \item Using [columns=1,nosep] here UNO
-  \begin{enumext}[columns=1,nosep]%,,parsep=0pt,partopsep=0cm
+  \begin{enumext}[columns=1,topsep=3cm]%,,parsep=0pt,partopsep=0cm
      \item  P \item Q \item M %\item R \item S
   \end{enumext}
 
@@ -31,10 +31,26 @@ Before
 \columnbreak
 
 \item Using [columns=2,mini-env] here DOS
-  \begin{enumext}[columns=2,mini-env={0.4\linewidth},nosep,after={\footnotetext[7]{Some text}}]%,
+  \begin{enumext}[topsep=3cm,columns=2,mini-env={0.4\linewidth},after={\footnotetext[7]{Some text}}]%,
     \item  P \footnote{HOLAXXXX}\item Q \item M\label{X}\footnote{CAHOXXX} \item R \item S\footnotemark[7]%\footnote{text}
     \miniright
     (a) P here
+    ddd
+    ddd
+    ddd
+    ddd
+    ddd
+
+    ddd
+    dd
+
+    dd
+    dd
+    dd
+    dd
+    dd
+    dd
+    d
   \end{enumext}
 
 \item Using [columns=2] here below
@@ -45,7 +61,7 @@ Before
 \end{enumext}
 After  and \ref{X}
 
-\end{document}
+%%%\end{document}
 
 %\end{document}
 \section{Test 1: \texttt{mini-env, columns=2, topsep=default} HORIZONTAL}

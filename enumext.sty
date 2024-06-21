@@ -423,9 +423,12 @@
           {
             \__enumext_minipage:w [ t ] { ##1 }
               \legacy_if_gset_false:n { @minipage }
-              \vspace { 0pt }
+              \skip_vertical:N \c_zero_skip
           }
-          { \__enumext_endminipage: }
+          {
+              \skip_vertical:N \c_zero_skip
+            \__enumext_endminipage:
+          }
       }
   }
 %% Detection off |hyperref| package with |hyperfootnotes=true|.
@@ -1557,6 +1560,11 @@
           \int_gzero:N \g__enumext_minipage_stat_int
       }
       { \msg_error:nnn { enumext } { wrong-miniright-use } }
+    % paranoia
+    \RenewDocumentCommand \miniright { s }
+      {
+        \msg_error:nn { enumext } { many-miniright-used }
+      }
   }
 %% Internal function for |\miniright| command in keyans.
 \cs_new_protected:Npn \__enumext_keyans_mini_right_cmd:n #1
@@ -1575,6 +1583,10 @@
           \int_gzero:N \g__enumext_minipage_stat_int
       }
       { \msg_error:nnn { enumext } { wrong-miniright-use } }
+    \RenewDocumentCommand \miniright { s }
+      {
+        \msg_error:nn { enumext } { many-miniright-used }
+      }
   }
 %% Add |above| and |below| keys.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
@@ -5332,6 +5344,10 @@
 \msg_new:nnn { enumext } { wrong-miniright-starred }
   {
     Can't ~ use  ~ \c_backslash_str miniright ~ in ~ starred ~ environments ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { many-miniright-used }
+  {
+    Can't ~ use  ~ \c_backslash_str miniright ~ more ~ than ~ once ~  \msg_line_context:.
   }
 \msg_new:nnn { enumext } { nested }
   {

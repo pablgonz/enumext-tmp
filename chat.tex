@@ -1,3 +1,72 @@
+\documentclass[12pt]{article}
+\usepackage{xcolor,enumitem,enumext,lua-visual-debug}
+\setlength{\parskip}{0pt}
+\begin{document}
+\ExplSyntaxOn
+\coffin_new:N \l_myminipage_one_coffin
+\NewDocumentEnvironment { myminipage } { m }
+  {
+    %\fboxsep0pt
+    %\vcoffin_set:Nnw \l_myminipage_one_coffin { #1 } %% only for debug
+      \noindent
+      \minipage[t]{#1}
+        \int_set:cn { @mplistdepth } { 1 }
+        \legacy_if_gset_false:n { @minipage }
+        \skip_vertical:N \c_zero_skip
+  }
+  {%
+        \skip_vertical:N \c_zero_skip
+      \endminipage%
+    %\vcoffin_set_end:
+    %\fbox{\coffin_display_handles:Nn \l_myminipage_one_coffin { red }} %% only for debug
+    %\coffin_typeset:Nnnnn \l_myminipage_one_coffin {l}{H}{0pt}{0pt} %% only for debug
+  }
+\ExplSyntaxOff
+
+% The environment starts
+\begin{enumext}[partopsep=0pt,topsep=0pt, parsep=0pt, itemsep=0pt]
+
+\item Now a separation nested enumeration% with \verb+topsep=10pt, itemsep=0pt+.
+
+  \begin{enumext}[topsep=10pt,itemsep=0pt]
+    \item A The text separation above this line is correct \verb+topsep=10pt+.
+    \item B The text separation below this line is correct \verb+topsep=10pt+.
+  \end{enumext}
+
+\item Now a separation above this line is correct%% \verb+topsep=10pt+.
+
+  \begin{myminipage}{0.7\textwidth}
+    \vspace*{ -0.9\ht\strutbox }
+    \begin{enumext}[topsep=10pt,itemsep=0pt]
+      \item C The text separation above is correct?
+      \item D The text separation below incorrect.
+     \end{enumext}
+  \end{myminipage}\hfill
+  \begin{myminipage}{0.2\textwidth}
+    %\vspace{10pt}% here know the value off space
+    \centering
+    \fbox{Image here}
+  \end{myminipage}
+  %\par\addvspace{0.5\dp\strutbox} % manual add topsep fix the problem but only if partopsep=0pt
+
+\item Now a separation separation above incorrect% NOT equal to \verb+topsep=10pt+.
+
+    \begin{enumext}[topsep=10pt,itemsep=0pt, mini-sep=10pt,mini-env=0.2\linewidth]
+      \item C The text separation above is correct?
+      \item D The text separation below incorrect.
+      \miniright
+    Image here%\fbox{Image here}
+     \end{enumext}
+
+\end{enumext}
+
+\end{document}
+
+
+
+
+
+
 \documentclass{report}
 \usepackage{xparse}
 \usepackage{hyperref}
