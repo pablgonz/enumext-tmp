@@ -614,8 +614,9 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywords      = [3]{document,article,setlength,pagestyle,definecolor, chapter,},%
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
-    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidth, %
-                    setenumext,printkeyans,miniright,parleft,labelbx, descitemwd,theenumXi,theenumXii,theenumXiii,theenumXiv,theenumXv, theenumXvii, theenumXviii},%
+    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidth,enumextmeta, %
+                    setenumext,printkeyans,miniright,parleft,labelbx, descitemwd,theenumXi,theenumXii,theenumXiii,%
+                    foreachanskey, theenumXiv,theenumXv, theenumXvii, theenumXviii},%
 % Reserved words 5 (plain TeX or internal)
     keywordstyle  = [5]{\color{red}},%
     keywords      = [5]{makeatletter,makeatother,let,verb,makebox,def,prevdepth,glue, if@minipage,if@hyper@item,if@noitemarg, %
@@ -1612,6 +1613,34 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \end{important}
 %
 % \smallskip
+%
+% \section{The command \cs[no-index]{setenumextmeta}}
+%
+% \vspace*{-\baselineskip}
+%
+% \begin{function}{\setenumextmeta}
+%   \begin{syntax}
+%     \ics*{setenumextmeta} \mymarg{key name}\mymarg{key-one \textnormal{\textcolor{gray}{=}} val\textnormal{\textcolor{gray}{,}} key-two \textnormal{\textcolor{gray}{=}} val\textnormal{\textcolor{gray}{,}} \dots}
+%     \ics*{setenumextmeta}|*|\mymarg{key name}\mymarg{key-one \textnormal{\textcolor{gray}{=}} val\textnormal{\textcolor{gray}{,}} key-two \textnormal{\textcolor{gray}{=}} val\textnormal{\textcolor{gray}{,}} \dots}
+%     \ics*{setenumextmeta} \myoarg{enumext\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}}\mymarg{key name}\mymarg{key-one \textnormal{\textcolor{gray}{=}} val\textnormal{\textcolor{gray}{,}} key-two \textnormal{\textcolor{gray}{=}} val\textnormal{\textcolor{gray}{,}} \dots}
+%     \ics*{setenumextmeta} \myoarg{enumext\textnormal{\textcolor{gray}{,}} level}\mymarg{key name}\mymarg{key-one \textnormal{\textcolor{gray}{=}} val\textnormal{\textcolor{gray}{,}} key-two \textnormal{\textcolor{gray}{=}} val\textnormal{\textcolor{gray}{,}} \dots}
+%   \end{syntax}
+% \end{function}
+%
+% \smallskip
+%
+% The command \ics*{setenumextmeta} adds a new \emph{\enquote{meta-key}} for the
+% environments \myenv*{enumext} and \myenv*{enumext*}, the \mymarg{key name} must
+% be different from those defined by the package. If the optional
+% argument is not passed, the new \emph{\enquote{meta-key}} will be created for the
+% first level of the environment \myenv*{enumext}.
+%
+% \smallskip
+%
+% The starred version |*| will create the new \emph{\enquote{meta-key}}
+% for the environment \myenv*{enumext*} and for all levels of the
+% environment \myenv*{enumext}.
+
 %
 % \section{The \texttt{keyval} system}
 %
@@ -13561,7 +13590,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     Can't ~ use  ~ \c_backslash_str miniright ~ more ~ than ~ once ~  \msg_line_context:.
   }
 %    \end{macrocode}
-%
+% Messages used by \ics*{enumextmeta} command.
+%    \begin{macrocode}
+\msg_new:nnn { enumext } { unknown-set }
+  {
+    Argument ~ [#1] ~ is ~ unknown ~ by ~  \c_backslash_str enumextmeta ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { already-defined }
+  {
+    The ~ key ~ '#1' ~ is ~ already ~ defined ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { prohibited-unknown }
+  {
+    The ~ name ~ 'unknown' ~ can't ~ be ~ chosen~ for ~ a ~ meta ~ key ~ \msg_line_context:.
+  }
+%    \end{macrocode}
 % Messages used by \myenv*{enumext*} and \myenv*{keyans*} environments.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { nested }

@@ -5349,6 +5349,18 @@
   {
     Can't ~ use  ~ \c_backslash_str miniright ~ more ~ than ~ once ~  \msg_line_context:.
   }
+\msg_new:nnn { enumext } { unknown-set }
+  {
+    Argument ~ [#1] ~ is ~ unknown ~ by ~  \c_backslash_str enumextmeta ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { already-defined }
+  {
+    The ~ key ~ '#1' ~ is ~ already ~ defined ~ \msg_line_context:.
+  }
+\msg_new:nnn { enumext } { prohibited-unknown }
+  {
+    The ~ name ~ 'unknown' ~ can't ~ be ~ chosen~ for ~ a ~ meta ~ key ~ \msg_line_context:.
+  }
 \msg_new:nnn { enumext } { nested }
   {
     The ~ environment ~ \l__enumext_envir_name_tl \c_space_tl can't ~ be ~ nested ~ \msg_line_context:.
