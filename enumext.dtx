@@ -13217,6 +13217,95 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % The implementation code was given by Jonathan P. Spratte \texttt{(@Skillmon)}
 % answer in \href{https://tex.stackexchange.com/a/721079}{Add \texttt{.meta} key to existing keys (l3keys)}.
 %
+% We define a set of \mymeta{keys} for command.
+%
+%    \begin{macrocode}
+\seq_new:N  \l_@@_foreach_print_seq
+\tl_new:N   \l_@@_foreach_name_prop_tl
+\tl_new:N   \g_@@_foreach_default_keys_tl
+\cs_generate_variant:Nn \seq_use:Nn { NV }
+\keys_define:nn { enumext / foreach }
+  {
+    before  .tl_set:N  = \l_@@_foreach_before_tl,
+    before  .value_required:n = true,
+    after   .tl_set:N  = \l_@@_foreach_after_tl,
+    after   .value_required:n = true,
+    start   .int_set:N = \l_@@_foreach_start_int,
+    start   .value_required:n = true,
+    stop    .int_set:N =  \l_@@_foreach_stop_int,
+    stop    .value_required:n = true,
+    step    .int_set:N = \l_@@_foreach_step_int,
+    step    .value_required:n = true,
+    wrapper .cs_set_protected:Np = \@@_foreach_wrapper:n #1,
+    wrapper .value_required:n = true,
+    sep     .tl_set:N  = \l_@@_foreach_sep_tl,
+    sep     .value_required:n = true,
+    unknown .code:n    = { \@@_parse_foreach_keys:n {#1} }
+  }
+%% Preset keys
+\keys_precompile:nnN { enumext / foreach }
+  {
+    before={},after={},start=1,step=1,stop=0,wrapper=#1,sep=
+  }
+  \g_@@_foreach_default_keys_tl
+%% Unknow keys
+\cs_new_protected:Npn \@@_parse_foreach_keys:nn #1#2
+  {
+    \tl_if_blank:nTF {#2}
+      { \msg_error:nnn { enumext } { for-key-unknown } {#1} }
+      { \msg_error:nnnn { enumext } { for-key-value-unknown } {#1} {#2} }
+  }
+\cs_new_protected:Npn \@@_parse_foreach_keys:n #1
+  {
+    \exp_args:NV \@@_parse_foreach_keys:nn \l_keys_key_str {#1}
+  }
+\msg_new:nnnn { enumext } { for-key-unknown }
+  { The~key~'#1'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored.}
+  {
+    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
+    Check~that~you~have~spelled~the~key~name~correctly.
+  }
+\msg_new:nnnn { enumext } { for-key-value-unknown }
+  { The~key~'#1=#2'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored. }
+  {
+    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
+    Check~that~you~have~spelled~the~key~name~correctly.
+  }
+\NewDocumentCommand \foreachkayans { +O{} m }
+  {
+    \@@_foreach_kayans:nn {#1} {#2}
+  }
+\cs_new_protected:Npn \@@_foreach_kayans:nn #1 #2
+  {
+    \tl_use:N \g_@@_foreach_default_keys_tl
+    \keys_set:nn { enumext / foreach } {#1}
+    \tl_set:Nn \l_@@_foreach_name_prop_tl {#2}
+    \seq_clear:N \l_@@_foreach_print_seq
+    \int_compare:nNnT { \l_@@_foreach_stop_int } = { 0 }
+      {
+        \int_set:Nn \l_@@_foreach_stop_int
+          { \prop_count:c { g_@@_#2_prop } }
+      }
+    \int_step_function:nnnN
+      { \l_@@_foreach_start_int }
+      { \l_@@_foreach_step_int }
+      { \l_@@_foreach_stop_int }
+      \@@_foreach_add_body:n
+      \seq_use:NV \l_@@_foreach_print_seq \l_@@_foreach_sep_tl
+  }
+\cs_new_protected:Npn \@@_foreach_add_body:n #1
+  {
+    \seq_put_right:Ne \l_@@_foreach_print_seq
+      {
+        \exp_not:V \l_@@_foreach_before_tl
+        \@@_foreach_wrapper:n
+          {
+            \prop_item:cn { g_@@_ \l_@@_foreach_name_prop_tl _prop }{#1}
+          }
+        \exp_not:V \l_@@_foreach_after_tl
+      }
+  }
+%    \end{macrocode}
 % \subsection{Messages}
 %
 % \iffalse

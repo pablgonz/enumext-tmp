@@ -5043,6 +5043,91 @@
       }
   }
 \cs_generate_variant:Nn \__enumext_def_meta_key:nnn { V }
+\seq_new:N  \l__enumext_foreach_print_seq
+\tl_new:N   \l__enumext_foreach_name_prop_tl
+\tl_new:N   \g__enumext_foreach_pre_set_keys_tl
+\cs_generate_variant:Nn \seq_use:Nn { NV }
+\keys_define:nn { enumext / foreach }
+  {
+    before  .tl_set:N  = \l__enumext_foreach_before_tl,
+    before  .value_required:n = true,
+    after   .tl_set:N  = \l__enumext_foreach_after_tl,
+    after   .value_required:n = true,
+    start   .int_set:N = \l__enumext_foreach_start_int,
+    start   .value_required:n = true,
+    stop    .int_set:N =  \l__enumext_foreach_stop_int,
+    stop    .value_required:n = true,
+    step    .int_set:N = \l__enumext_foreach_step_int,
+    step    .value_required:n = true,
+    wrapper .cs_set_protected:Np = \__enumext_foreach_wrapper:n #1,
+    wrapper .value_required:n = true,
+    sep     .tl_set:N  = \l__enumext_foreach_sep_tl,
+    sep     .value_required:n = true,
+    unknown .code:n    = { \__enumext_parse_foreach_keys:n {#1} }
+  }
+%% Preset keys
+\keys_precompile:nnN { enumext / foreach }
+  {
+    before={},after={},start=1,step=1,stop=0,wrapper=#1,sep=
+  }
+  \g__enumext_foreach_pre_set_keys_tl
+%% Unknow keys
+\cs_new_protected:Npn \__enumext_parse_foreach_keys:nn #1#2
+  {
+    \tl_if_blank:nTF {#2}
+      { \msg_error:nnn { enumext } { for-key-unknown } {#1} }
+      { \msg_error:nnnn { enumext } { for-key-value-unknown } {#1} {#2} }
+  }
+\cs_new_protected:Npn \__enumext_parse_foreach_keys:n #1
+  {
+    \exp_args:NV \__enumext_parse_foreach_keys:nn \l_keys_key_str {#1}
+  }
+\msg_new:nnnn { enumext } { for-key-unknown }
+  { The~key~'#1'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored.}
+  {
+    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
+    Check~that~you~have~spelled~the~key~name~correctly.
+  }
+\msg_new:nnnn { enumext } { for-key-value-unknown }
+  { The~key~'#1=#2'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored. }
+  {
+    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
+    Check~that~you~have~spelled~the~key~name~correctly.
+  }
+\NewDocumentCommand \foreachkayans { +O{} m }
+  {
+    \__enumext_foreach_kayans:nn {#1} {#2}
+  }
+\cs_new_protected:Npn \__enumext_foreach_kayans:nn #1 #2
+  {
+    \tl_use:N \g__enumext_foreach_pre_set_keys_tl
+    \keys_set:nn { enumext / foreach } {#1}
+    \tl_set:Nn \l__enumext_foreach_name_prop_tl {#2}
+    \seq_clear:N \l__enumext_foreach_print_seq
+    \int_compare:nNnT { \l__enumext_foreach_stop_int } = { 0 }
+      {
+        \int_set:Nn \l__enumext_foreach_stop_int
+          { \prop_count:c { g__enumext_#2_prop } }
+      }
+    \int_step_function:nnnN
+      { \l__enumext_foreach_start_int }
+      { \l__enumext_foreach_step_int }
+      { \l__enumext_foreach_stop_int }
+      \__enumext_foreach_add_body:n
+      \seq_use:NV \l__enumext_foreach_print_seq \l__enumext_foreach_sep_tl
+  }
+\cs_new_protected:Npn \__enumext_foreach_add_body:n #1
+  {
+    \seq_put_right:Ne \l__enumext_foreach_print_seq
+      {
+        \exp_not:V \l__enumext_foreach_before_tl
+        \__enumext_foreach_wrapper:n
+          {
+            \prop_item:cn { g__enumext_ \l__enumext_foreach_name_prop_tl _prop }{#1}
+          }
+        \exp_not:V \l__enumext_foreach_after_tl
+      }
+  }
 %% Messages.
 \msg_new:nnn { enumext } { package-load }
   {
