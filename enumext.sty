@@ -25,7 +25,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-06-16}
+  {2024-06-24}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -156,6 +156,10 @@
 \int_new:N \l__enumext_setkey_tmpa_int
 \seq_new:N \l__enumext_setkey_tmpa_seq
 \seq_new:N \l__enumext_setkey_tmpb_seq
+\tl_new:N  \l__enumext_meta_path_tl
+\seq_new:N \l__enumext_foreach_print_seq
+\tl_new:N  \l__enumext_foreach_name_prop_tl
+\tl_new:N  \g__enumext_foreach_default_keys_tl
 %% Variables used by|\printkeyans|, |mark-pos|, |item-sym*|, |save-key| and  store level in |enumext| and |enumext*|.
 \tl_new:N  \l__enumext_print_keyans_starred_tl
 \str_new:N \l__enumext_mark_position_str
@@ -227,6 +231,7 @@
     {keyans}{v}, {enumext*}{vii}, {keyans*}{viii}
   }
 \cs_generate_variant:Nn \keys_precompile:nnN { neN }
+\cs_generate_variant:Nn \seq_use:Nn { NV }
 %% A internal "hooks" functions used for copying and execute code.
 \cs_new_protected:Npn \__enumext_at_begin_document:n #1
   {
@@ -4987,7 +4992,7 @@
   }
 \cs_new_protected:Npn \__enumext_set_error:nn #1 #2
   { \msg_error:nnn { enumext } { invalid-key } {#1} {#2} }
-\tl_new:N \l__enumext_meta_path_tl
+%% Define |\setenumextmeta|.
 \prop_const_from_keyval:Nn \c__enumext_meta_paths_prop
   {
     {enumext,1} = level-1,
@@ -5037,10 +5042,7 @@
       }
   }
 \cs_generate_variant:Nn \__enumext_def_meta_key:nnn { V }
-\seq_new:N  \l__enumext_foreach_print_seq
-\tl_new:N   \l__enumext_foreach_name_prop_tl
-\tl_new:N   \g__enumext_foreach_default_keys_tl
-\cs_generate_variant:Nn \seq_use:Nn { NV }
+%% Define |\foreachkeyans|.
 \keys_define:nn { enumext / foreach }
   {
     before  .tl_set:N  = \l__enumext_foreach_before_tl,
@@ -5075,18 +5077,6 @@
 \cs_new_protected:Npn \__enumext_parse_foreach_keys:n #1
   {
     \exp_args:NV \__enumext_parse_foreach_keys:nn \l_keys_key_str {#1}
-  }
-\msg_new:nnnn { enumext } { for-key-unknown }
-  { The~key~'#1'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored.}
-  {
-    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
-    Check~that~you~have~spelled~the~key~name~correctly.
-  }
-\msg_new:nnnn { enumext } { for-key-value-unknown }
-  { The~key~'#1=#2'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored. }
-  {
-    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
-    Check~that~you~have~spelled~the~key~name~correctly.
   }
 \NewDocumentCommand \foreachkayans { +O{} m }
   {
@@ -5451,6 +5441,18 @@
     The ~ environment ~ '\l__enumext_envir_name_tl' ~ does ~ not
     ~ have ~ a ~ key ~ called ~'#1' ~ on ~ level ~ \int_use:N \l__enumext_level_int.\\
     Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+\msg_new:nnnn { enumext } { for-key-unknown }
+  { The~key~'#1'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored.}
+  {
+    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
+    Check~that~you~have~spelled~the~key~name~correctly.
+  }
+\msg_new:nnnn { enumext } { for-key-value-unknown }
+  { The~key~'#1=#2'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored. }
+  {
+    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
+    Check~that~you~have~spelled~the~key~name~correctly.
   }
 \msg_new:nnn { enumext } { undefined-storage-anskey }
   {

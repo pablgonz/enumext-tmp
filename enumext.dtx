@@ -616,7 +616,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywordstyle  = [4]{\color{pkgcolor}},%
     keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidth,enumextmeta, %
                     setenumext,printkeyans,miniright,parleft,labelbx, descitemwd,theenumXi,theenumXii,theenumXiii,%
-                    foreachanskey, theenumXiv,theenumXv, theenumXvii, theenumXviii},%
+                    foreachkeyans, theenumXiv,theenumXv, theenumXvii, theenumXviii},%
 % Reserved words 5 (plain TeX or internal)
     keywordstyle  = [5]{\color{red}},%
     keywords      = [5]{makeatletter,makeatother,let,verb,makebox,def,prevdepth,glue, if@minipage,if@hyper@item,if@noitemarg, %
@@ -4149,7 +4149,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-06-16}
+  {2024-06-24}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4488,6 +4488,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
+% \begin{variable}[int]{\l_@@_meta_path_tl, \l_@@_foreach_print_seq,
+%                       \l_@@_foreach_name_prop_tl, \g_@@_foreach_default_keys_tl,}
+%    Internal variables used by the |\printkeyans| command (\S\ref{cmd:printkeyans})
+%    and |\foreachkeyans| command (\S\ref{cmd:foreachkeyans}).
+%    \begin{macrocode}
+\tl_new:N  \l_@@_meta_path_tl
+\seq_new:N \l_@@_foreach_print_seq
+\tl_new:N  \l_@@_foreach_name_prop_tl
+\tl_new:N  \g_@@_foreach_default_keys_tl
+%    \end{macrocode}
+% \end{variable}
+%
+%
 % \begin{variable}[int]{\l_@@_print_keyans_starred_tl, \l_@@_mark_position_str,
 %                       \g_@@_item_symbol_aux_tl, \l_@@_print_keyans_X_tl,
 %                       \l_@@_store_save_key_X_tl, \l_@@_store_save_key_X_bool,
@@ -4659,11 +4672,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{Some utility functions}
 %
-% \begin{macro}[int]{\keys_precompile:neN}
-%    Non-standard kernel variant used by the |\printkeyans| command
-%    (\S\ref{cmd:printkeyans}).
+% \begin{macro}[int]{\keys_precompile:neN, \seq_use:NV,}
+%    Non-standard kernel variants used by the |\printkeyans| command
+%    (\S\ref{cmd:printkeyans}) and |\foreachkeyans| command (\S\ref{cmd:foreachkeyans}).
 %    \begin{macrocode}
 \cs_generate_variant:Nn \keys_precompile:nnN { neN }
+\cs_generate_variant:Nn \seq_use:Nn { NV }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -13148,10 +13162,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % The implementation code was given by Jonathan P. Spratte \texttt{(@Skillmon)}
 % answer in \href{https://tex.stackexchange.com/a/721079}{Add \texttt{.meta} key to existing keys (l3keys)}.
 %
-% \begin{macro}{\setenumextmeta, \@@_add_meta_key:nnn, \@@_def_meta_key:nnn, \@@_def_meta_key:Vnn }
+% \begin{macro}{\setenumextmeta, \@@_add_meta_key:nnn, \@@_def_meta_key:nnn,
+%               \@@_def_meta_key:Vnn }
 %    Internal functions used by the \ics*{setenumextmeta} command.
+% \iffalse
+%% Define |\setenumextmeta|.
+% \fi
 %    \begin{macrocode}
-\tl_new:N \l_@@_meta_path_tl
 \prop_const_from_keyval:Nn \c_@@_meta_paths_prop
   {
     {enumext,1} = level-1,
@@ -13212,12 +13229,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % answer in \href{https://tex.stackexchange.com/a/721079}{Add \texttt{.meta} key to existing keys (l3keys)}.
 %
 % We define a set of \mymeta{keys} for command.
-%
+% \iffalse
+%% Define |\foreachkeyans|.
+% \fi
 %    \begin{macrocode}
-\seq_new:N  \l_@@_foreach_print_seq
-\tl_new:N   \l_@@_foreach_name_prop_tl
-\tl_new:N   \g_@@_foreach_default_keys_tl
-\cs_generate_variant:Nn \seq_use:Nn { NV }
 \keys_define:nn { enumext / foreach }
   {
     before  .tl_set:N  = \l_@@_foreach_before_tl,
@@ -13252,18 +13267,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_parse_foreach_keys:n #1
   {
     \exp_args:NV \@@_parse_foreach_keys:nn \l_keys_key_str {#1}
-  }
-\msg_new:nnnn { enumext } { for-key-unknown }
-  { The~key~'#1'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored.}
-  {
-    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
-    Check~that~you~have~spelled~the~key~name~correctly.
-  }
-\msg_new:nnnn { enumext } { for-key-value-unknown }
-  { The~key~'#1=#2'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored. }
-  {
-    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
-    Check~that~you~have~spelled~the~key~name~correctly.
   }
 \NewDocumentCommand \foreachkayans { +O{} m }
   {
@@ -13706,6 +13709,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     The ~ environment ~ '\l_@@_envir_name_tl' ~ does ~ not
     ~ have ~ a ~ key ~ called ~'#1' ~ on ~ level ~ \int_use:N \l_@@_level_int.\\
     Check ~ that ~ you ~ have ~ spelled ~ the ~ key ~ name ~ correctly.
+  }
+%    \end{macrocode}
+% Message used by unknown \mymeta{keys} in \ics*{foreachkeyans}.
+%    \begin{macrocode}
+\msg_new:nnnn { enumext } { for-key-unknown }
+  { The~key~'#1'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored.}
+  {
+    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
+    Check~that~you~have~spelled~the~key~name~correctly.
+  }
+\msg_new:nnnn { enumext } { for-key-value-unknown }
+  { The~key~'#1=#2'~is~unknown~by~'\c_backslash_str foreachkeyans'~and~is~being~ignored. }
+  {
+    The~command~'\c_backslash_str foreachkeyans'~does~not~have~a~key~called~'#1'.\\
+    Check~that~you~have~spelled~the~key~name~correctly.
   }
 %    \end{macrocode}
 %

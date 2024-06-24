@@ -13,12 +13,10 @@
 }
 \usepackage[colorlinks]{hyperref}
 \usepackage{enumext}
-\usepackage{lua-visual-debug}
 \pagestyle{empty}
 \begin{document}
 \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
-\setenumext[enumext,1]{list-offset=1cm,,columns=1,nosep,save-ref=true}
-\begin{enumext}[save-ans=simplemc]
+\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
 \item First type of questions
   \begin{keyans}[columns=1,noitemsep]
     \item value
@@ -78,6 +76,4 @@
 Test keys
 
 \printkeyans{simplemc}
-
-\foreachkayans[start=2,stop=4,wrapper={\fbox{#1}},sep={\par}]{simplemc}
 \end{document}
