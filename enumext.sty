@@ -4945,36 +4945,30 @@
     enumext-1, enumext-2, enumext-3, enumext-4, keyans, enumext*,
     keyans*, print-1, print-2, print-3, print-4, print-*, print*,
   }
-%% Define |\setenumext|,  \tl_if_novalue:nTF here (program level)
+%% Define |\setenumext|.
 \NewDocumentCommand \setenumext { O{enumext,1} +m }
   {
-    \tl_if_novalue:nTF {#1}
+    \seq_clear:N \l__enumext_setkey_tmpa_seq
+    \seq_set_from_clist:Nn \l__enumext_setkey_tmpb_seq {#1}
+    \int_set:Nn \l__enumext_setkey_tmpa_int
       {
-        \seq_map_inline:Nn \c__enumext_all_families_seq
+        \seq_count:N \l__enumext_setkey_tmpb_seq
+      }
+    \int_compare:nNnTF { \l__enumext_setkey_tmpa_int } > { 1 }
+      {
+        \seq_pop_left:NN \l__enumext_setkey_tmpb_seq \l__enumext_setkey_tmpa_tl
+        \seq_map_function:NN \l__enumext_setkey_tmpb_seq \__enumext_set_parse:n
+        \seq_set_map_e:NNn \l__enumext_setkey_tmpa_seq \l__enumext_setkey_tmpa_seq
+          {
+            \tl_use:N \l__enumext_setkey_tmpa_tl - ##1
+          }
       }
       {
-        \seq_clear:N \l__enumext_setkey_tmpa_seq
-        \seq_set_from_clist:Nn \l__enumext_setkey_tmpb_seq {#1}
-        \int_set:Nn \l__enumext_setkey_tmpa_int
-          {
-            \seq_count:N \l__enumext_setkey_tmpb_seq
-          }
-        \int_compare:nNnTF { \l__enumext_setkey_tmpa_int } > { 1 }
-          {
-            \seq_pop_left:NN \l__enumext_setkey_tmpb_seq \l__enumext_setkey_tmpa_tl
-            \seq_map_function:NN \l__enumext_setkey_tmpb_seq \__enumext_set_parse:n
-            \seq_set_map_e:NNn \l__enumext_setkey_tmpa_seq \l__enumext_setkey_tmpa_seq
-              {
-                \tl_use:N \l__enumext_setkey_tmpa_tl - ##1
-              }
-          }
-          {
-            \seq_put_right:Ne \l__enumext_setkey_tmpa_seq { \tl_trim_spaces:n {#1} }
-          }
-        \seq_if_empty:NTF \l__enumext_setkey_tmpa_seq
-          { \seq_map_inline:Nn \c__enumext_all_families_seq }
-          { \seq_map_inline:Nn \l__enumext_setkey_tmpa_seq }
+        \seq_put_right:Ne \l__enumext_setkey_tmpa_seq { \tl_trim_spaces:n {#1} }
       }
+    \seq_if_empty:NTF \l__enumext_setkey_tmpa_seq
+      { \seq_map_inline:Nn \c__enumext_all_families_seq }
+      { \seq_map_inline:Nn \l__enumext_setkey_tmpa_seq }
       {
         \keys_set:nn { enumext / meta-families } { ##1 = {#2} }
       }
@@ -5045,7 +5039,7 @@
 \cs_generate_variant:Nn \__enumext_def_meta_key:nnn { V }
 \seq_new:N  \l__enumext_foreach_print_seq
 \tl_new:N   \l__enumext_foreach_name_prop_tl
-\tl_new:N   \g__enumext_foreach_pre_set_keys_tl
+\tl_new:N   \g__enumext_foreach_default_keys_tl
 \cs_generate_variant:Nn \seq_use:Nn { NV }
 \keys_define:nn { enumext / foreach }
   {
@@ -5070,7 +5064,7 @@
   {
     before={},after={},start=1,step=1,stop=0,wrapper=#1,sep=
   }
-  \g__enumext_foreach_pre_set_keys_tl
+  \g__enumext_foreach_default_keys_tl
 %% Unknow keys
 \cs_new_protected:Npn \__enumext_parse_foreach_keys:nn #1#2
   {
@@ -5100,7 +5094,7 @@
   }
 \cs_new_protected:Npn \__enumext_foreach_kayans:nn #1 #2
   {
-    \tl_use:N \g__enumext_foreach_pre_set_keys_tl
+    \tl_use:N \g__enumext_foreach_default_keys_tl
     \keys_set:nn { enumext / foreach } {#1}
     \tl_set:Nn \l__enumext_foreach_name_prop_tl {#2}
     \seq_clear:N \l__enumext_foreach_print_seq
