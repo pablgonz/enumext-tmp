@@ -371,8 +371,8 @@ This work consists of the files enumext.dtx and enumext.sty.
     \hfill\textcolor{gray}{\small\textsf{default}:~\emph{#4}}\par%
     \MYSortIndex{Keys}{Keys ~ for ~ environments ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
   }
-% \keyexampcmd{s m m m}
-\NewDocumentCommand \keyexampcmd{s m m m }
+% \keyexampcmd{s m m m o}
+\NewDocumentCommand \keyexampcmd{s m m m o}
   {
     \adjustbox{outer=-\marginparsep}{\textcolor{optcolor}{\small\ttfamily{#2}}}
     \IfBooleanTF{#1}
@@ -385,8 +385,14 @@ This work consists of the files enumext.dtx and enumext.sty.
         \mymarg[type=tt,cbc=gray,ac=lightgray,cf=optcolor]{\small{#3}}
       }
     \hfill\textcolor{gray}{\small\textsf{default}:~\emph{#4}}\par%
-    \MYSortIndex{Keys}{Keys ~ for ~ \texttt{\textbackslash{}anskey} ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
-    \MYSortIndex{Keys}{Keys ~ for ~ \texttt{anskey\textcolor{MediumOrchid}{*}} ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
+    \IfValueTF{#5}
+      {
+        \MYSortIndex{Keys}{Keys ~ for ~ \texttt{\textbackslash{}#5} ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
+      }
+      {
+        \MYSortIndex{Keys}{Keys ~ for ~ \texttt{\textbackslash{}anskey} ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
+        \MYSortIndex{Keys}{Keys ~ for ~ \texttt{anskey\textcolor{MediumOrchid}{*}} ~ provide ~ by ~ \pkglogo :>\texttt{#2}}
+      }
   }
 % \keyexampenv{s m m m}
 \NewDocumentCommand \keyexampenv{s m m m }
@@ -425,8 +431,14 @@ This work consists of the files enumext.dtx and enumext.sty.
         \MYSortIndex{Keys}{Keys ~ for ~ \texttt{anskey\textcolor{MediumOrchid}{*}} ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
       }
       {
-        \MYSortIndex{Keys}{Keys ~ for ~ \texttt{\textbackslash{}anskey} ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
-        \MYSortIndex{Keys}{Keys ~ for ~ \texttt{anskey\textcolor{MediumOrchid}{*}} ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
+        \IfValueTF{#1}
+          {
+            \MYSortIndex{Keys}{Keys ~ for ~ \texttt{\textbackslash{}#1} ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
+          }
+          {
+            \MYSortIndex{Keys}{Keys ~ for ~ \texttt{\textbackslash{}anskey} ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
+            \MYSortIndex{Keys}{Keys ~ for ~ \texttt{anskey\textcolor{MediumOrchid}{*}} ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
+          }
       }
   }
 % \mypkg{sm}
@@ -2993,6 +3005,57 @@ This work consists of the files enumext.dtx and enumext.sty.
 % |\getkeyans{test:4}| will return the \emph{\enquote{stored content}}
 % at position |4| of the environment in which the key |save-ans=test|
 % was set.
+%
+%
+% \subsubsection{The command \cs{foreachkeyans}}
+% \label{sec:foreachkeyans}
+%
+% \vspace*{-10pt}
+%
+% \begin{function}{\foreachkeyans}
+%   \begin{syntax}
+%     \cmdexamp{foreachkeyans}[key \textnormal{\textcolor{gray}{=}} val]{store name}
+%   \end{syntax}
+% \end{function}
+%
+% The command \ics*{foreachkeyans} goes through and executes the command |\getkeyans|
+% on the contents in \emph{prop list} \mymarg{store name}. If you pass without options run
+% |\getkeyans| on all contents in \emph{prop list} \mymarg{store name}.
+%
+% \subsubsection*{Options for command}
+% \label{sec:optcmdforeach}
+%
+% \keyexamp{sep}{code}{empty}
+% Establishes the separation between each content stored in \emph{prop list} \mymarg{store name}.
+% For example, you can use |sep={\\[10pt]}| for vertical separation of stored
+% contents.
+%
+% \keyexamp{step}{integer}{1}
+% Sets the increment (\mymeta{step}) applied to the value set by key |start|
+% for each element stored in \emph{prop list} \mymarg{store name}. The value must be a
+% \mymeta{positive integer}.
+%
+% \keyexamp{start}{integer}{1}
+% Sets the \mymeta{index} number of the \emph{prop list} \mymarg{store name} from which execution
+% will start. The value must be a \mymeta{positive integer}.
+%
+% \keyexamp{stop}{integer}{total}
+% Sets the \mymeta{index} number of the \emph{prop list} \mymarg{store name} from which execution
+% it will finish executing. The value must be a \mymeta{positive integer}.
+%
+% \keyexamp{before}{code}{empty}
+% Sets the \mymarg[type=tt]{code} that will be executed \mymeta{before} each content stored
+% in \emph{prop list} \mymarg{store name}. The \mymarg[type=tt]{code} must be passed between braces.
+%
+% \keyexamp{after}{code}{empty}
+% Sets the \mymarg[type=tt]{code} that will be executed \mymeta{after} each content stored
+% in \emph{prop list} \mymarg{store name}. The \mymarg[type=tt]{code} must be passed between braces.
+%
+%
+% \keyexamp{wrapper}{code{} \space\usebox{\hashbox} more code}{empty}
+% Wraps the content stored in \emph{prop list} \mymarg{store name} referenced by |{#1}|.
+% The \mymarg[type=tt]{code} must be passed between braces. For example
+% |\foreachkeyans[wrapper={\makebox[1em][l]{#1}}]|\mymarg{store name}.
 %
 % \subsubsection{The command \cs[no-index]{printkeyans}}
 % \label{sec:printkeyans}
@@ -13233,11 +13296,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection{The command \cs{foreachkeyans}}\label{cmd:foreachkeyans}
 %
 % The command |\foreachkeyans| will execute a \emph{loop} over the \mymeta{prop list} and return its contents.
-% The implementation code was given by Enrico Gregorio \texttt{(@egreg)}
-% answer in \href{https://tex.stackexchange.com/a/721130}{Expand a \texttt{.cs} defined by key inside the function}.
+% The implementation code is adapted from the answer provided by Enrico Gregorio \texttt{(@egreg)} in
+% \href{https://tex.stackexchange.com/a/721130}{Expand a \texttt{.cs} defined by key inside the function}.
 %
-% \begin{macro}{\foreachkayans, \@@_parse_foreach_keys:nn,
-%               \@@_parse_foreach_keys:n, \@@_foreach_kayans:nn,
+% \begin{macro}{\foreachkeyans, \@@_parse_foreach_keys:nn,
+%               \@@_parse_foreach_keys:n, \@@_foreach_keyans:nn,
 %               \@@_foreach_add_body:n}
 %    We define a set of \mymeta{keys} for command and we will save the
 %    default values ​​of these in \cs{g_@@_foreach_default_keys_tl} to avoid
@@ -13285,16 +13348,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   We create the command.
 %    \begin{macrocode}
-\NewDocumentCommand \foreachkayans { +O{} m }
+\NewDocumentCommand \foreachkeyans { +O{} m }
   {
-    \@@_foreach_kayans:nn {#1} {#2}
+    \@@_foreach_keyans:nn {#1} {#2}
   }
 %    \end{macrocode}
-%   Finally the internal functions \cs{@@_foreach_kayans:nn} and
+%   Finally the internal functions \cs{@@_foreach_keyans:nn} and
 %   \cs{@@_foreach_add_body:n} will loop through the prop list and print
 %   the contents.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_foreach_kayans:nn #1 #2
+\cs_new_protected:Npn \@@_foreach_keyans:nn #1 #2
   {
     \tl_use:N \g_@@_foreach_default_keys_tl
     \keys_set:nn { enumext / foreach } {#1}

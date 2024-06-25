@@ -5076,11 +5076,11 @@
   {
     \exp_args:NV \__enumext_parse_foreach_keys:nn \l_keys_key_str {#1}
   }
-\NewDocumentCommand \foreachkayans { +O{} m }
+\NewDocumentCommand \foreachkeyans { +O{} m }
   {
-    \__enumext_foreach_kayans:nn {#1} {#2}
+    \__enumext_foreach_keyans:nn {#1} {#2}
   }
-\cs_new_protected:Npn \__enumext_foreach_kayans:nn #1 #2
+\cs_new_protected:Npn \__enumext_foreach_keyans:nn #1 #2
   {
     \tl_use:N \g__enumext_foreach_default_keys_tl
     \keys_set:nn { enumext / foreach } {#1}
