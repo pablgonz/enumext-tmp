@@ -2230,7 +2230,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{mini-right\textcolor{MediumOrchid}{*}}{content}{not used}
 % Same as above, but \emph{without} starting with |\centering|.
 %
-% \smallskip
+% \smallskip\newpage
 %
 % \begin{important}*
 % The keys \mykey{mini-right} and \mykey{mini-right*} has a \emph{slightly different}
@@ -3025,36 +3025,35 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsubsection*{Options for command}
 % \label{sec:optcmdforeach}
 %
-% \keyexamp{sep}{code}{empty}
-% Establishes the separation between each content stored in \emph{prop list} \mymarg{store name}.
-% For example, you can use |sep={\\[10pt]}| for vertical separation of stored
+% \keyexampcmd{sep}{code}{empty}[foreachkeyans]
+% Establishes the separation between \emph{each} content stored in \emph{prop list} \mymarg{store name}.
+% For example, you can use \mykeycmd[foreachkeyans]{sep}|={\\[10pt]}| for vertical separation of stored
 % contents.
 %
-% \keyexamp{step}{integer}{1}
-% Sets the increment (\mymeta{step}) applied to the value set by key |start|
+% \keyexampcmd{step}{integer}{\mydim{1}}[foreachkeyans]
+% Sets the increment (\mymeta{step}) applied to the value set by key \mykeycmd[foreachkeyans]{start}
 % for each element stored in \emph{prop list} \mymarg{store name}. The value must be a
 % \mymeta{positive integer}.
 %
-% \keyexamp{start}{integer}{1}
-% Sets the \mymeta{index} number of the \emph{prop list} \mymarg{store name} from which execution
+% \keyexampcmd{start}{integer}{\mydim{1}}[foreachkeyans]
+% Sets the \mymeta{position} of the \emph{prop list} \mymarg{store name} from which execution
 % will start. The value must be a \mymeta{positive integer}.
 %
-% \keyexamp{stop}{integer}{total}
-% Sets the \mymeta{index} number of the \emph{prop list} \mymarg{store name} from which execution
+% \keyexampcmd{stop}{integer}{\mydim{0}}[foreachkeyans]
+% Sets the \mymeta{position} of the \emph{prop list} \mymarg{store name} from which execution
 % it will finish executing. The value must be a \mymeta{positive integer}.
 %
-% \keyexamp{before}{code}{empty}
+% \keyexampcmd{before}{code}{empty}[foreachkeyans]
 % Sets the \mymarg[type=tt]{code} that will be executed \mymeta{before} each content stored
 % in \emph{prop list} \mymarg{store name}. The \mymarg[type=tt]{code} must be passed between braces.
 %
-% \keyexamp{after}{code}{empty}
+% \keyexampcmd{after}{code}{empty}[foreachkeyans]
 % Sets the \mymarg[type=tt]{code} that will be executed \mymeta{after} each content stored
-% in \emph{prop list} \mymarg{store name}. The \mymarg[type=tt]{code} must be passed between braces.
+% in \emph{prop list} \mymarg{store name}. The \mymarg{code} must be passed between braces.
 %
-%
-% \keyexamp{wrapper}{code{} \space\usebox{\hashbox} more code}{empty}
+% \keyexampcmd{wrapper}{code{} \space\usebox{\hashbox} more code}{empty}[foreachkeyans]
 % Wraps the content stored in \emph{prop list} \mymarg{store name} referenced by |{#1}|.
-% The \mymarg[type=tt]{code} must be passed between braces. For example
+% The \mymarg{code} must be passed between braces. For example
 % |\foreachkeyans[wrapper={\makebox[1em][l]{#1}}]|\mymarg{store name}.
 %
 % \subsubsection{The command \cs[no-index]{printkeyans}}
