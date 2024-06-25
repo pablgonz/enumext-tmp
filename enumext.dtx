@@ -2232,11 +2232,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip\newpage
 %
-% \begin{important}*
-% The keys \mykey{mini-right} and \mykey{mini-right*} has a \emph{slightly different}
-% implementation, the argument \mymarg{content} is saved in a box
-% and then printed outside the environment using \emph{hooks}.
-% \end{important}
+%^^A \begin{important}*
+%^^A The keys \mykey{mini-right} and \mykey{mini-right*} has a \emph{slightly different}
+%^^A implementation, the argument \mymarg{content} is saved in a box
+%^^A and then printed outside the environment using \emph{hooks}.
+%^^A \end{important}
 %
 % \section{The storage system}\label{sec:storage system}
 %
@@ -4135,7 +4135,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \printindex
 % }
 %
-% \newgeometry{top=0.5in,bottom=0.3in,left=1.95in,right=0.7in,footskip=0.2in,headheight=1cm,headsep=0.27cm}
+% \newgeometry{top=0.5in,bottom=0.3in,left=1.95in,right=0.5in,footskip=0.2in,headheight=1cm,headsep=0.27cm}
 %
 % \section{Implementation}
 % \label{sec:Implementation}
@@ -4211,7 +4211,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-06-24}
+  {2024-06-26}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4243,6 +4243,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % Variables that do not appear in this section are created by means of
 % \cs[no-index]{keys_define:nn} or some function described below.
+%
+% \newpage
 %
 % \begin{variable}[int]{\l_@@_level_int, \l_@@_level_h_int, \l_@@_anskey_level_int,
 %                       \l_@@_keyans_level_int, \l_@@_keyans_level_h_int,
@@ -12907,11 +12909,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_getkeyans:nn #1 #2
   {
-    \prop_if_exist:cF { g_@@_#1_prop }
-      { \msg_error:nnn { enumext } { undefined-storage-anskey } {#1} }
-    \group_begin:
-      \prop_item:cn { g_@@_#1_prop }{#2}
-    \group_end:
+    \prop_if_exist:cTF { g_@@_#1_prop }
+      {
+        \prop_item:cn { g_@@_#1_prop }{#2}
+      }
+      {
+        \msg_error:nnn { enumext } { undefined-storage-anskey } {#1}
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -13125,15 +13129,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     enumext-1 .code:n =
                 {
-                  \keys_set:ne { enumext / level-1  }
+                  \keys_set:ne { enumext / level-1 }
                     {
                       \@@_filter_first_level:n {#1}
                     }
                 } ,
-    enumext-2 .code:n = { \keys_set:nn { enumext / level-2  } {#1} } ,
-    enumext-3 .code:n = { \keys_set:nn { enumext / level-3  } {#1} } ,
-    enumext-4 .code:n = { \keys_set:nn { enumext / level-4  } {#1} } ,
-    keyans    .code:n = { \keys_set:nn { enumext / keyans   } {#1} } ,
+    enumext-2 .code:n = { \keys_set:nn { enumext / level-2 } {#1} } ,
+    enumext-3 .code:n = { \keys_set:nn { enumext / level-3 } {#1} } ,
+    enumext-4 .code:n = { \keys_set:nn { enumext / level-4 } {#1} } ,
+    keyans    .code:n = { \keys_set:nn { enumext / keyans  } {#1} } ,
     enumext*  .code:n =
                 {
                   \keys_set:ne { enumext / enumext* }
@@ -13141,13 +13145,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                       \@@_filter_first_level:n {#1}
                     }
                 } ,
-    keyans*   .code:n = { \keys_set:nn { enumext / keyans*  } {#1} } ,
-    print*    .code:n = { \keys_set:nn { enumext / print    } { print*  = {#1} } } ,
-    print-1   .code:n = { \keys_set:nn { enumext / print    } { print-1 = {#1} } } ,
-    print-2   .code:n = { \keys_set:nn { enumext / print    } { print-2 = {#1} } } ,
-    print-3   .code:n = { \keys_set:nn { enumext / print    } { print-3 = {#1} } } ,
-    print-4   .code:n = { \keys_set:nn { enumext / print    } { print-4 = {#1} } } ,
-    print-*   .code:n = { \keys_set:nn { enumext / print    } { print-* = {#1} } } ,
+    keyans*   .code:n = { \keys_set:nn { enumext / keyans* } {#1} } ,
+    print*    .code:n = { \keys_set:nn { enumext / print   } { print*  = {#1} } } ,
+    print-1   .code:n = { \keys_set:nn { enumext / print   } { print-1 = {#1} } } ,
+    print-2   .code:n = { \keys_set:nn { enumext / print   } { print-2 = {#1} } } ,
+    print-3   .code:n = { \keys_set:nn { enumext / print   } { print-3 = {#1} } } ,
+    print-4   .code:n = { \keys_set:nn { enumext / print   } { print-4 = {#1} } } ,
+    print-*   .code:n = { \keys_set:nn { enumext / print   } { print-* = {#1} } } ,
     unknown   .code:n = { \msg_error:nn { enumext } { unknown-key-family } } ,
   }
 %    \end{macrocode}
@@ -13296,7 +13300,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The command \cs{foreachkeyans}}\label{cmd:foreachkeyans}
 %
-% The command |\foreachkeyans| will execute a \emph{loop} over the \mymeta{prop list} and return its contents.
+% The command \ics*{foreachkeyans} will execute a \emph{loop} over the \mymeta{prop list} and return its contents.
 % The implementation code is adapted from the answer provided by Enrico Gregorio \texttt{(@egreg)} in
 % \href{https://tex.stackexchange.com/a/721130}{Expand a \texttt{.cs} defined by key inside the function}.
 %
@@ -13318,7 +13322,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     after   .value_required:n = true,
     start   .int_set:N = \l_@@_foreach_start_int,
     start   .value_required:n = true,
-    stop    .int_set:N =  \l_@@_foreach_stop_int,
+    stop    .int_set:N = \l_@@_foreach_stop_int,
     stop    .value_required:n = true,
     step    .int_set:N = \l_@@_foreach_step_int,
     step    .value_required:n = true,
@@ -13339,8 +13343,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_parse_foreach_keys:nn #1#2
   {
     \tl_if_blank:nTF {#2}
-      { \msg_error:nnn { enumext } { for-key-unknown } {#1} }
-      { \msg_error:nnnn { enumext } { for-key-value-unknown } {#1} {#2} }
+      {
+        \msg_error:nnn { enumext } { for-key-unknown } {#1}
+      }
+      {
+        \msg_error:nnnn { enumext } { for-key-value-unknown } {#1} {#2}
+      }
   }
 \cs_new_protected:Npn \@@_parse_foreach_keys:n #1
   {
@@ -13363,12 +13371,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_use:N \g_@@_foreach_default_keys_tl
     \keys_set:nn { enumext / foreach } {#1}
     \tl_set:Nn \l_@@_foreach_name_prop_tl {#2}
-    \seq_clear:N \l_@@_foreach_print_seq
+    \prop_if_exist:cF { g_@@_#2_prop }
+      {
+        \msg_error:nnn { enumext } { undefined-storage-anskey } {#2}
+      }
     \int_compare:nNnT { \l_@@_foreach_stop_int } = { 0 }
       {
         \int_set:Nn \l_@@_foreach_stop_int
           { \prop_count:c { g_@@_#2_prop } }
       }
+    \seq_clear:N \l_@@_foreach_print_seq
     \int_step_function:nnnN
       { \l_@@_foreach_start_int }
       { \l_@@_foreach_step_int }
