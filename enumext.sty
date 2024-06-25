@@ -5006,7 +5006,7 @@
     \str_if_eq:eeTF { \tl_trim_spaces:n {#3} } { unknown }
       { \msg_error:nn { enumext } { prohibited-unknown } }
       {
-        \IfBooleanTF {#1}
+        \bool_if:nTF {#1}
           {
             \int_step_inline:nn { 4 }
               { \__enumext_add_meta_key:nnn { enumext, ##1 } {#3} {#4} }
@@ -5061,13 +5061,11 @@
     sep     .value_required:n = true,
     unknown .code:n    = { \__enumext_parse_foreach_keys:n {#1} }
   }
-%% Preset keys
 \keys_precompile:nnN { enumext / foreach }
   {
     before={},after={},start=1,step=1,stop=0,wrapper=#1,sep=
   }
   \g__enumext_foreach_default_keys_tl
-%% Unknow keys
 \cs_new_protected:Npn \__enumext_parse_foreach_keys:nn #1#2
   {
     \tl_if_blank:nTF {#2}

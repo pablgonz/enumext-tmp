@@ -13160,9 +13160,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % The implementation code was given by Jonathan P. Spratte \texttt{(@Skillmon)}
 % answer in \href{https://tex.stackexchange.com/a/721079}{Add \texttt{.meta} key to existing keys (l3keys)}.
 %
-% \begin{macro}{\setenumextmeta, \@@_add_meta_key:nnn, \@@_def_meta_key:nnn,
+% \begin{macro}{\setenumextmeta, \c_@@_meta_paths_prop,
+%               \@@_add_meta_key:nnn, \@@_def_meta_key:nnn,
 %               \@@_def_meta_key:Vnn }
-%    Internal functions used by the \ics*{setenumextmeta} command.
+%   First we will create a prop list \cs{c_@@_meta_paths_prop} to
+%   handle the optional argument.
 % \iffalse
 %% Define |\setenumextmeta|.
 % \fi
@@ -13175,12 +13177,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     {enumext,4} = level-4,
     {enumext*}  = enumext*
   }
+%    \end{macrocode}
+%   Now we create the user command taking care that \texttt{unknown}
+%   cannot be passed as an argument.
+%    \begin{macrocode}
 \NewDocumentCommand \setenumextmeta { s O{enumext,1} m +m }
   {
     \str_if_eq:eeTF { \tl_trim_spaces:n {#3} } { unknown }
       { \msg_error:nn { enumext } { prohibited-unknown } }
       {
-        \IfBooleanTF {#1}
+        \bool_if:nTF {#1}
           {
             \int_step_inline:nn { 4 }
               { \@@_add_meta_key:nnn { enumext, ##1 } {#3} {#4} }
@@ -13189,6 +13195,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           { \@@_add_meta_key:nnn {#2} {#3} {#4} }
       }
   }
+%    \end{macrocode}
+%   The internal functions \cs{@@_add_meta_key:nnn} and
+%   \cs{@@_def_meta_key:nnn} will check the optional argument and create
+%   the \emph{\enquote{meta-key}}.
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_add_meta_key:nnn #1
   {
     \tl_set:Nn \l_@@_meta_path_tl {#1}
@@ -13221,12 +13232,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The command \cs{foreachkeyans}}\label{cmd:foreachkeyans}
 %
-% The command \ics*{foreachkeyans} will be responsible for adding new
-% \emph{\enquote{meta-keys}} for the \myenv*{enumext} and \myenv*{enumext*} environments.
-% The implementation code was given by Jonathan P. Spratte \texttt{(@Skillmon)}
-% answer in \href{https://tex.stackexchange.com/a/721079}{Add \texttt{.meta} key to existing keys (l3keys)}.
+% The command |\foreachkeyans| will execute a \emph{loop} over the \mymeta{prop list} and return its contents.
+% The implementation code was given by Enrico Gregorio \texttt{(@egreg)}
+% answer in \href{https://tex.stackexchange.com/a/721130}{Expand a \texttt{.cs} defined by key inside the function}.
 %
-% We define a set of \mymeta{keys} for command.
+% \begin{macro}{\foreachkayans, \@@_parse_foreach_keys:nn,
+%               \@@_parse_foreach_keys:n, \@@_foreach_kayans:nn,
+%               \@@_foreach_add_body:n}
+%    We define a set of \mymeta{keys} for command and we will save the
+%    default values ​​of these in \cs{g_@@_foreach_default_keys_tl} to avoid
+%    the use of group.
 % \iffalse
 %% Define |\foreachkeyans|.
 % \fi
@@ -13249,13 +13264,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     sep     .value_required:n = true,
     unknown .code:n    = { \@@_parse_foreach_keys:n {#1} }
   }
-%% Preset keys
 \keys_precompile:nnN { enumext / foreach }
   {
     before={},after={},start=1,step=1,stop=0,wrapper=#1,sep=
   }
   \g_@@_foreach_default_keys_tl
-%% Unknow keys
+%    \end{macrocode}
+%   Functions for handling unknown \mymeta{keys}.
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_foreach_keys:nn #1#2
   {
     \tl_if_blank:nTF {#2}
@@ -13266,10 +13282,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \exp_args:NV \@@_parse_foreach_keys:nn \l_keys_key_str {#1}
   }
+%    \end{macrocode}
+%   We create the command.
+%    \begin{macrocode}
 \NewDocumentCommand \foreachkayans { +O{} m }
   {
     \@@_foreach_kayans:nn {#1} {#2}
   }
+%    \end{macrocode}
+%   Finally the internal functions \cs{@@_foreach_kayans:nn} and
+%   \cs{@@_foreach_add_body:n} will loop through the prop list and print
+%   the contents.
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_foreach_kayans:nn #1 #2
   {
     \tl_use:N \g_@@_foreach_default_keys_tl
@@ -13301,6 +13325,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
+% \end{macro}
+%
 % \subsection{Messages}
 %
 % \iffalse
