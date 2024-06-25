@@ -831,24 +831,24 @@
        { l__enumext_labelwidth_#1_dim } { l__enumext_label_#1_tl }
   }
 \cs_generate_variant:Nn \__enumext_widest_from:nNNn { nccn }
-%% Add |start|, |start*| and |widest| key.
+%% Add |start*|, |start| and |widest| key.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
       {
-        start  .code:n    = {
+        start* .code:n    = {
                               \__enumext_start_from:ccn
                                 { l__enumext_label_#2_tl }
                                 { l__enumext_start_#2_int } {##1}
                             },
-        start  .initial:n = 1,
-        start  .value_required:n = true,
-        start* .code:n    = {
+        start* .value_required:n = true,
+        start  .code:n    = {
                               \__enumext_start_from:cce
                                 { l__enumext_label_#2_tl }
                                 { l__enumext_start_#2_int } { \int_eval:n {##1} }
                             },
-        start* .value_required:n = true,
+        start  .initial:n = 1,
+        start  .value_required:n = true,
         widest .code:n    = {
                               \__enumext_widest_from:nccn {#2}
                                 { l__enumext_label_#2_tl }

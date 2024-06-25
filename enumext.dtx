@@ -413,14 +413,14 @@ This work consists of the files enumext.dtx and enumext.sty.
     %\textcolor{optcolor}{\texttt{#1}}
     \MYSortIndex{Keys}{Keys ~ for ~ environments ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
   }
-% \mykeycmd{s m}
-\NewDocumentCommand \mykeycmd{ s m }
+% \mykeycmd{o s m}
+\NewDocumentCommand \mykeycmd{ o s m }
   {
-    \tl_set:Nn \l_tmpa_tl { #2 }
+    \tl_set:Nn \l_tmpa_tl { #3 }
     \regex_replace_once:nnN { (\*) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tmpa_tl
     \textcolor{optcolor}{\ttfamily \tl_use:N \l_tmpa_tl }
     %\textcolor{optcolor}{\texttt{#1}}
-    \IfBooleanTF{#1}
+    \IfBooleanTF{#2}
       {
         \MYSortIndex{Keys}{Keys ~ for ~ \texttt{anskey\textcolor{MediumOrchid}{*}} ~ provide ~ by ~ \pkglogo :>\texttt{\tl_use:N \l_tmpa_tl}}
       }
@@ -2056,7 +2056,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % set this key per level.
 % \end{important}
 %
-% \smallskip
+%^^A \smallskip
 %
 % \keyexamp{after}{code}{not used}
 % Execute \mymarg{code} \emph{\enquote{after}} finishing the
@@ -2064,21 +2064,19 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsection{Keys for \texttt{start}, \texttt{series} and \texttt{resume}}
 %
-% \keyexamp{start}{integer \textnormal{\textcolor{lightgray}{\textbar}} string}{\mydim{1}}
-% Sets the \emph{start value} of the numbering on the current level.
-% Internally \mymeta{string} is converted and passed as value to the counter defined by
-% \mykey{label} key on the current level, i.e. it is equivalent to enter
-% |start=5|, |start=E| or |start=v|.
-%
-% \smallskip
-%
-% \keyexamp{start\textcolor{MediumOrchid}{*}}{integer expression}{not used}
+% \keyexamp{start}{integer \textnormal{\textcolor{lightgray}{\textbar}} integer expression}{\mydim{1}}
 % Sets the \emph{start value} of the numbering on the current level.
 % The \mymarg{integer expression} must be passed between braces, internally is evaluated and pass
 % to the counter defined by \mykey{label} key on the current level, i.e. it is equivalent to enter
 % |start={\dimeval{100*\value{chapter}}| or |start={100*\value{chapter}}|.
 %
-% \smallskip
+% \keyexamp{start\textcolor{MediumOrchid}{*}}{integer \textnormal{\textcolor{lightgray}{\textbar}} string}{not used}
+% Sets the \emph{start value} of the numbering on the current level.
+% Internally \mymeta{string} is converted and passed as value to the counter defined by
+% \mykey{label} key on the current level, i.e. it is equivalent to enter
+% |start=5|, |start=E| or |start=v|.
+%
+% \smallskip\newpage
 %
 % \begin{important}*
 % The following \mymeta{keys} are \emph{\enquote{only}} available for the
@@ -5829,31 +5827,31 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}[int]{start, start*, widest,}
-%    Now define and set \mykey{start}, \mykey{start*} and \mykey{widest}
+%    Now define and set \mykey{start*}, \mykey{start} and \mykey{widest}
 %    keys for \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and
 %    \myenv*{keyans*} environments.
 %
 % \iffalse
-%% Add |start|, |start*| and |widest| key.
+%% Add |start*|, |start| and |widest| key.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
       {
-        start  .code:n    = {
+        start* .code:n    = {
                               \@@_start_from:ccn
                                 { l_@@_label_#2_tl }
                                 { l_@@_start_#2_int } {##1}
                             },
-        start  .initial:n = 1,
-        start  .value_required:n = true,
-        start* .code:n    = {
+        start* .value_required:n = true,
+        start  .code:n    = {
                               \@@_start_from:cce
                                 { l_@@_label_#2_tl }
                                 { l_@@_start_#2_int } { \int_eval:n {##1} }
                             },
-        start* .value_required:n = true,
+        start  .initial:n = 1,
+        start  .value_required:n = true,
         widest .code:n    = {
                               \@@_widest_from:nccn {#2}
                                 { l_@@_label_#2_tl }
