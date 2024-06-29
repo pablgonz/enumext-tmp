@@ -1,9 +1,74 @@
-\documentclass[12pt]{article}
-\usepackage{lua-visual-debug}%enumext,
-\setlength{\parskip}{0pt}
+\documentclass[a4paper]{article}
+\ExplSyntaxOn
+\NewDocumentCommand \Foo { m }
+  {
+    \exp_args:Ne \_dlf_low_aux:n
+      { \tl_to_str:e { \text_expand:n {#1} } }
+  }
+\cs_new_protected:Npn \_dlf_low_aux:n #1
+  {
+    \str_if_in:nnT {#1} { : }
+      {
+        \use:e
+          {
+            \cs_set:Npn \exp_not:N \_dlf_tmp:w ##1 \c_colon_str ##2 \scan_stop:
+              { {##1} {##2} }
+          }
+        \exp_after:wN \_dlf_low_parse_label:nn \_dlf_tmp:w #1 \scan_stop:
+      }
+  }
+\cs_new_protected:Npn \_dlf_low_parse_label:nn #1 #2
+  {
+    \typeout{Foo:~#1~<----}
+    \typeout{Foo:~#2~<----}
+  }
+
+\ExplSyntaxOff
+\begin{document}
+\Foo{aa:bb}
+%\Foo{aa/bb}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{xsim}
+\usepackage{enumext}
+ \tracingmacros=1
 \begin{document}
 
-HOLA
+\begin{enumext*}
+  \item normal Space after that\footnote{HOLA}
+  \item HUGE gap after
+    \begin{align*}
+     3
+    \end{align*}
+  \item works fine with blank in line \blank{a}
+  \item filler
+  \item messes with blank in separate line
+
+  \blank{line}
+  \item filler
+\end{enumext*}
 
 \end{document}
 
