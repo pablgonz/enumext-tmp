@@ -1,3 +1,131 @@
+\documentclass[10pt]{article}
+\usepackage{lua-visual-debug}
+\usepackage{enumext}
+\begin{document}
+
+\begin{enumext}[topsep=0pt, partopsep=0pt, parsep=0pt, itemsep=0pt]
+\item F%irst item
+
+\begin{enumext}[topsep=0pt, partopsep=0pt,parsep=0pt,itemsep=0pt]
+\item N%ested item
+\end{enumext}
+
+\item S%econd item
+\begin{enumext}[mini-env=0.3\textwidth,topsep=0pt, partopsep=0pt,parsep=0pt,itemsep=0pt]
+\item ML%inipage
+\miniright
+(a) MR% \par More
+\end{enumext}
+\item L%ast item
+\end{enumext}
+\end{document}
+
+
+%%% whit multicols
+\documentclass[12pt]{article}
+\usepackage{lua-visual-debug}
+\usepackage{enumitem,multicol}
+\begin{document}
+\ExplSyntaxOn
+\NewDocumentEnvironment { myminipage } {s m }
+  {
+    \IfBooleanF {#1} % Esta parte quizas pueda ir fuera de minipage
+      {
+        \mode_if_vertical:TF
+          {
+            \typeout{TRUE}
+            \nopagebreak
+            \nointerlineskip
+          }
+          {
+            \typeout{FALSE}
+            \par\nopagebreak\nointerlineskip
+          }
+        \addvspace{ 0.5\ht\strutbox } % y esta quizas es ajustable a columns...no lo sé
+      }
+    \minipage[t]{#2}
+      \legacy_if_gset_false:n { @minipage }
+      \skip_vertical:N \c_zero_skip % ref point
+  }
+  {
+      \skip_vertical:N \c_zero_skip % space below
+    \endminipage
+    % Esto debe ir en el minipage de la derecha (parte de abajo) \minirigth
+    \IfBooleanT {#1}
+      {
+        \par\addvspace{ 0.5\dp\strutbox }
+      }
+  }
+\ExplSyntaxOff
+\showoutput
+\showboxdepth=\maxdimen
+\showboxbreadth=\maxdimen
+
+\begin{enumerate}[topsep=0pt, partopsep=0pt, parsep=0pt, itemsep=0pt]
+\item F%irst item
+
+\begin{enumerate}[left=0pt,topsep=10pt, partopsep=0pt,parsep=0pt,itemsep=0pt]
+\item N%ested item
+\end{enumerate}
+
+\item S%econd item
+
+\begin{myminipage}{0.7\textwidth}
+\multicolsep=0pt % ya está
+%\vspace{ -\ht\strutbox }
+\par\nopagebreak
+\vspace{ -0.7\dp\strutbox } % no está
+\par\addvspace{ 10pt }
+%\vspace{-1.5\ht\strutbox }
+\raggedcolumns
+\begin{multicols}{2}
+%\par\addvspace{ 10pt } % esto debo agregarlo
+\begin{enumerate}[left=0pt,topsep=10pt, partopsep=0pt,parsep=0pt,itemsep=0pt]
+\item ML%inipage
+\item ML%inipage
+\item ML%inipage
+\item ML%inipage
+\end{enumerate}
+\end{multicols}
+\end{myminipage}\hfill
+\begin{myminipage}*{0.2\textwidth}
+    \par\addvspace{ 10pt } %
+    \centering
+    (a) MR %\par More \par More
+\end{myminipage}
+\par\addvspace{ 10pt }
+\item L%ast item
+\end{enumerate}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \documentclass[a4paper]{article}
 \ExplSyntaxOn
 \NewDocumentCommand \Foo { m }
@@ -270,10 +398,10 @@ ref= \renewcommand{\theenumXi}{A-\emph{\Roman{enumXi}}}
 
 \end{verbatim}
 
-  \begin{enumerate}[listparindent=1.5em, labelsep=2em, itemindent=1.5em]
+  \begin{enumext}[listparindent=1.5em, labelsep=2em, itemindent=1.5em]
     \item \kant[1-2]
     \item \kant[3-4]
-  \end{enumerate}
+  \end{enumext}
 \end{document}
 
 $ cat -n $(kpsewhich l3doc.cls) | grep '\\listparindent'

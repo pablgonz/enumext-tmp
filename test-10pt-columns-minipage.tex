@@ -13,55 +13,362 @@
 %\makesavenoteenv{enumext}
 %\makesavenoteenv{enumext*}
 \begin{document}
-\section{Test 0: \texttt{mini-env, columns=2, topsep=default} HORIZONTAL}
+
+\begin{enumext}[columns=2,nosep]%%,partopsep=0pt]%,nosep]
+\item Using [columns=1] here UNO
+
+\begin{enumext}[columns=1,nosep]%,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X  %\item R \item S
+  \end{enumext}
+
+\item otro
+
+\begin{enumext}[columns=1,topsep=20pt,partopsep=20pt,nosep]%,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X  %\item R \item S
+  \end{enumext}
+\columnbreak
+
+\item Using [columns=2,topsep=20pt] here below
+  \begin{enumext}[columns=1,mini-env={0.4\linewidth},nosep]%%%,partopsep=0pt]%,
+    \item  P \item Q \item M %%\item R \item S
+    \miniright
+    (a) P here \par bsss \par hhhh
+  \end{enumext}
+
+\item otro
+
+\begin{enumext}[columns=1,topsep=20pt,,partopsep=20pt,nosep]%,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X  %\item R \item S
+  \end{enumext}
+\end{enumext}
+After
+\stop
+
+\section{TEST-VERTICAL}
+
+
+BEFORE
+
+\begin{enumext}[columns=2]
+\item Using [columns=1] here UNO
+
+  \begin{enumext}[columns=1,topsep=20pt,partopsep=20pt]%,,parsep=0pt,partopsep=0pt,itemsep=0pt
+     \item  P \item Q \item M %\item R \item S
+  \end{enumext}
+
+\item Using [columns=2] here below
+
+\begin{enumext}[columns=2,topsep=20pt,,partopsep=20pt]%,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\columnbreak
+
+\item Using [columns=2,mini-env] here HHHH
+
+  \begin{enumext}[columns=1,mini-env={0.4\linewidth},topsep=20pt,partopsep=20pt]%,
+    \item  P \item Q \item M %%\item R \item S
+    \miniright
+    (a) P here
+  \end{enumext}
+
+\item Using [columns=2,topsep=20pt] here below
+
+\begin{enumext}[columns=2,topsep=20pt,partopsep=20pt]%,topsep=20pt,parsep=10pt mini-env={0.4\linewidth},
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\end{enumext}
+After
+
+\section{TEST-HORIZONTAL}
+
+\begin{enumext}[columns=2]
+\item Using [columns=1] here UNO
+  \begin{enumext}[columns=1,topsep=20pt,partopsep=20pt]%,,parsep=0pt,partopsep=0pt,itemsep=0pt
+     \item  P \item Q \item M %\item R \item S
+  \end{enumext}
+
+\item Using [columns=2] here below
+\begin{enumext}[columns=2,topsep=20pt,,partopsep=20pt]%,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\columnbreak
+
+\item Using [columns=2,mini-env] here HHHH
+  \begin{enumext}[columns=1,mini-env={0.4\linewidth},topsep=20pt,partopsep=20pt]%,
+    \item  P \item Q \item M %%\item R \item S
+    \miniright
+    (a) P here
+  \end{enumext}
+
+\item Using [columns=2,topsep=20pt] here below
+\begin{enumext}[columns=2,topsep=20pt,partopsep=20pt]%,topsep=20pt,parsep=10pt mini-env={0.4\linewidth},
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\end{enumext}
+
+\section{TEST-HORIZONTAL-NOSEP}
+
+\begin{enumext}[columns=2]
+\item Using [columns=1] here UNO
+  \begin{enumext}[columns=1,nosep]%,,parsep=0pt,partopsep=0pt,itemsep=0pt
+     \item  P \item Q \item M %\item R \item S
+  \end{enumext}
+
+\item Using [columns=2] here below
+\begin{enumext}[columns=2,nosep]%,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\columnbreak
+
+\item Using [columns=2,mini-env] here HHHH
+  \begin{enumext}[columns=1,mini-env={0.4\linewidth},nosep]%,
+    \item  P \item Q \item M %%\item R \item S
+    \miniright
+    (a) P here
+  \end{enumext}
+
+\item Using [columns=2,topsep=20pt] here below
+\begin{enumext}[columns=2,nosep]%,topsep=20pt,parsep=10pt mini-env={0.4\linewidth},
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\end{enumext}
+
+Before XXX
+
+\begin{enumext}[columns=2,nosep]%[topsep=0pt,parsep=0pt,partopsep=0pt,itemsep=0pt,columns=1]%,,itemsep=0pt
+\item Using [columns=1] here UNO
+
+  \begin{enumext}[columns=1]
+     \item P \item Q \item Q  \item R \item S
+  \end{enumext}
+
+\item Using [columns=1] here UNO
+
+  \begin{enumext}[columns=1]%,topsep=10pt,parsep=30pt
+    \item  P \item Q \item Q  \item R \item S
+  \end{enumext}
+
+%\columnbreak
+
+\item Using [columns=1,mini-env] here HHHH
+
+  \begin{enumext}[columns=1]%,topsep=10pt,parsep=30pt
+    \item  P \item Q \item Q  \item R \item S
+  \end{enumext}
+
+\item Using [columns=1] here UNO
+  \begin{enumext}[columns=1]%,topsep=10pt,parsep=30pt
+    \item  P \item Q \item Q  \item R \item S
+  \end{enumext}
+\end{enumext}
+AAAA
+
+
+\newpage
+
+Before enumext AAA
+\par
+\begin{enumext}[columns=2,topsep=0pt,parsep=0pt,partopsep=0pt,itemsep=0pt]%[topsep=0pt,parsep=0pt,partopsep=0pt,itemsep=0pt,columns=1]%,,itemsep=0pt
+
+\item Using [columns=1] here UNO
+
+  \begin{enumext}[columns=1,topsep=20pt,partopsep=30pt]
+     \item P \item Q \item Q  \item R \item S
+  \end{enumext}
+
+\item Using [columns=1] here UNO
+
+\columnbreak
+
+\item Using [columns=1,mini-env] here HHHH
+
+  \begin{enumext}[columns=1,topsep=20pt,partopsep=30pt, mini-env=0.4\linewidth]%,topsep=10pt,parsep=30pt
+    \item  P \item Q \item Q  \item R \item S
+    \miniright
+    \rule{30pt}{20pt}\par
+    P Tikz image here
+  \end{enumext}
+
+\item Using [columns=1] here UNO
+
+\end{enumext}
+AAAA
+
+\begin{enumext}[nosep]
+\item Using [columns=1,mini-env] here HHHH
+
+  \begin{enumext}[columns=1]%,topsep=10pt,parsep=30pt
+     \item  P \item Q \item Q  \item R \item S
+  \end{enumext}
+
+
+\item Using [columns=2,mini-env] here HHHH
+
+  \begin{enumext}[columns=1,mini-env=0.4\linewidth]%,topsep=10pt,parsep=30pt
+     \item  P \item Q \item Q  \item R \item S
+    \miniright
+    \rule{30pt}{20pt}\par
+    P Tikz image here
+  \end{enumext}
+
+\item Using [columns=2,mini-env] here
+
+  \begin{enumext}[columns=1,mini-env=0.4\linewidth]%,topsep=10pt,parsep=30pt
+    \item  P \item Q \item RS \item T \item U
+    \miniright
+    \rule{30pt}{20pt}\par
+    A Tikz image here
+  \end{enumext}
+
+\end{enumext}
+
+
+\section{Test 0: \texttt{mini-env, columns=2, nosep} HORIZONTAL}
+
+Before
+\begin{enumext}[columns=2,parsep=0pt]% ,parsep=20pt
+
+\item Using [columns=1,nosep] here UNO
+  \begin{enumext}[columns=1,nosep,topsep=10pt]%,,parsep=0pt,partopsep=0cm
+     \item  P \item Q \item M %\item R \item S
+  \end{enumext}
+
+\item Using [columns=1] here below
+\begin{enumext}[columns=1,nosep]%,topsep=20pt,parsep=10pt
+     \item P \item Q \item X %% \item R \item S\footnote{PRIMERA}
+  \end{enumext}
+
+\columnbreak
+
+\item Using [columns=1,mini-env] here DOS
+  \begin{enumext}[nosep,topsep=10pt,columns=1,mini-env={0.4\linewidth}]%,
+    \item P \item Q \item M
+    \miniright
+    %%%\addvspace{ 0.145\ht\strutbox }
+    (a) P here
+  \end{enumext}
+
+\item Using [columns=2] here below
+\begin{enumext}[nosep,columns=1]%,topsep=20pt,parsep=10pt mini-env={0.4\linewidth},
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\end{enumext}
+After
+
+\section{Test 0: \texttt{mini-env, columns=2, topsep=default} vertical}
 
 Before
 \begin{enumext}[columns=2,nosep]
 
 \item Using [columns=1,nosep] here UNO
-  \begin{enumext}[columns=1,topsep=3cm]%,,parsep=0pt,partopsep=0cm
+
+  \begin{enumext}[columns=1,partopsep=1cm,topsep=1cm]%,,parsep=0pt,partopsep=0cm
+     \item  P \item Q \item M %\item R \item S
+  \end{enumext}
+
+\item Using [columns=1] here below
+\begin{enumext}[columns=1]%,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X  \item R%% \item S\footnote{PRIMERA}
+  \end{enumext}
+
+\columnbreak
+
+\item Using [columns=2,mini-env] here DOS
+
+  \begin{enumext}[topsep=1cm,partopsep=1cm,itemsep=0mm,columns=1,mini-env={0.4\linewidth}]%,
+    \item  P \item Q \item M
+    \miniright
+    %%%\addvspace{ 0.145\ht\strutbox }
+    (a) P here
+  \end{enumext}
+
+\item Using [columns=1] here below
+\begin{enumext}[columns=1]%,topsep=20pt,parsep=10pt mini-env={0.4\linewidth},
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\end{enumext}
+After  and
+
+
+\section{Test ZZ: \texttt{mini-env, columns=2, nosep} HORIZONTAL}
+
+Before
+\begin{enumext}[columns=2,parsep=0pt]% ,parsep=20pt
+
+\item Using [columns=1,nosep] here UNO
+  \begin{enumext}[columns=1,nosep,topsep=10pt]%,,parsep=0pt,partopsep=0cm
      \item  P \item Q \item M %\item R \item S
   \end{enumext}
 
 \item Using [columns=2] here below
-\begin{enumext}[columns=2]%,topsep=20pt,parsep=10pt
+\begin{enumext}[columns=1,nosep]%,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X %% \item R \item S\footnote{PRIMERA}
+  \end{enumext}
+
+\columnbreak
+
+\item Using [columns=2,mini-env] here DOS
+  \begin{enumext}[nosep,topsep=10pt,columns=2,mini-env={0.4\linewidth}]%,
+    \item  P \item Q \item M \item R \item S
+    \miniright
+    %%%\addvspace{ 0.145\ht\strutbox }
+    (a) P here
+  \end{enumext}
+
+\item Using [columns=2] here below
+\begin{enumext}[nosep,columns=2]%,topsep=20pt,parsep=10pt mini-env={0.4\linewidth},
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\end{enumext}
+After
+
+\newpage
+
+\section{Test 0: \texttt{mini-env, columns=2, topsep=default} vertical}
+
+Before
+\begin{enumext}[columns=2,nosep]
+
+\item Using [columns=1,nosep] here UNO
+
+  \begin{enumext}[columns=1,partopsep=1cm,topsep=1cm,itemsep=0mm]%,,parsep=0pt,partopsep=0cm
+     \item  P \item Q \item M %\item R \item S
+  \end{enumext}
+
+\item Using [columns=2] here below
+\begin{enumext}[columns=2,itemsep=0mm]%,topsep=20pt,parsep=10pt
      \item  P \item Q \item X  \item R \item S\footnote{PRIMERA}
   \end{enumext}
 
 \columnbreak
 
 \item Using [columns=2,mini-env] here DOS
-  \begin{enumext}[topsep=3cm,columns=2,mini-env={0.4\linewidth},after={\footnotetext[7]{Some text}}]%,
-    \item  P \footnote{HOLAXXXX}\item Q \item M\label{X}\footnote{CAHOXXX} \item R \item S\footnotemark[7]%\footnote{text}
+
+  \begin{enumext}[topsep=1cm,partopsep=1cm,itemsep=0mm,columns=2,mini-env={0.4\linewidth}]%,
+    \item  P \item Q \item M \item R \item S
     \miniright
+    %%%\addvspace{ 0.145\ht\strutbox }
     (a) P here
-    ddd
-    ddd
-    ddd
-    ddd
-    ddd
-
-    ddd
-    dd
-
-    dd
-    dd
-    dd
-    dd
-    dd
-    dd
-    d
   \end{enumext}
 
 \item Using [columns=2] here below
-\begin{enumext}[columns=2]%,topsep=20pt,parsep=10pt mini-env={0.4\linewidth},
+\begin{enumext}[columns=2,itemsep=0mm]%,topsep=20pt,parsep=10pt mini-env={0.4\linewidth},
      \item  P \item Q \item X  \item R \item S
   \end{enumext}
 
 \end{enumext}
-After  and \ref{X}
+After  and
 
-%%%\end{document}
+\end{document}
 
 %\end{document}
 \section{Test 1: \texttt{mini-env, columns=2, topsep=default} HORIZONTAL}
@@ -82,7 +389,7 @@ Before
 \columnbreak
 
 \item Using [columns=2,mini-env] here DOS
-  \begin{enumext}[columns=2,mini-env={0.4\linewidth}]%,
+  \begin{enumext}[columns=2,mini-env={0.4\linewidth},]%,
     \item  P \item Q \item M \item R \item S
     \miniright
     (a) P here
