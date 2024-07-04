@@ -6743,6 +6743,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \skip_set_eq:NN \l_@@_minipage_after_skip \l_@@_minipage_right_skip
+    \skip_add:Nn \l_@@_minipage_after_skip { 0.185\box_ht:N \strutbox }
+    \@@_previus_level_skip:
 %    \end{macrocode}
 %   Now we will see if the environment \myenv{multicols} is active, if so
 %   we set |\topskip=|\mydim{0pt} and then we make |\multicolsep| have the same
@@ -6753,6 +6755,37 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \skip_zero:N \topskip
         \skip_set_eq:NN \multicolsep \l_@@_minipage_right_skip
+      }
+  }
+\cs_new_protected:Nn \@@_previus_level_skip:
+  {
+    \int_case:nn { \l_@@_level_int }
+      {
+        { 2 }{
+               \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+             }
+        { 3 }{
+               \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_ii_skip }
+             }
+        { 4 }{
+               \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_iii_skip }
+             }
+      }
+  }
+\cs_new_protected:Nn \@@_remove_upper_level_sep:
+  {
+    \int_case:nn { \l_@@_level_int }
+      {
+        { 2 }{
+               %%\skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+               \skip_vertical:n { -\l_@@_topsep_i_skip }
+             }
+        { 3 }{
+               \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_ii_skip }
+             }
+        { 4 }{
+               \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_iii_skip }
+             }
       }
   }
 %    \end{macrocode}
@@ -7096,12 +7129,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \dim_use:c { l_@@_minipage_right_ \@@_level: _dim } } > { \c_zero_dim }
       {
         \@@_multicols_stop:
+        \int_compare:nNnT
+          { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } = { 1 }
+          {
+            \skip_vertical:N \l_@@_minipage_after_skip
+          }
         \end{@@_mini_env*}
         \hfill
         \begin{@@_mini_env*}
           { \dim_use:c { l_@@_minipage_right_ \@@_level: _dim } }
           % Add vertical space above
-          \par\addvspace { \l_@@_minipage_right_skip }
+          \par\nointerlineskip
+          \addvspace { \l_@@_minipage_right_skip }
           \bool_if:nF {#1}
             {
               \centering
@@ -10873,16 +10912,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \miniright
           }
         \int_gzero:N \g_@@_minipage_stat_int
+        \unskip % remove topsep + [partopsep]
         \end{@@_mini_env*}
-        %%% NUEVOOO
-        %%%\par\addvspace{ 0.5\dp\strutbox }
-        \int_compare:nNnT
-          { \int_use:c { l_@@_columns_ \@@_level: _int } } = { 1 }
-          {
-            %%\par\addvspace { \skip_use:c { l_@@_topsep_ \@@_level: _skip } }
-            \par\addvspace{ \l_@@_minipage_after_skip }
-            %%\par\par\addvspace{ 0.4\box_dp:N \strutbox }
-          }
       }
       {
         \@@_multicols_stop:

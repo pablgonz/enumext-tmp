@@ -1267,11 +1267,44 @@
           }
       }
     \skip_set_eq:NN \l__enumext_minipage_after_skip \l__enumext_minipage_right_skip
+    \skip_add:Nn \l__enumext_minipage_after_skip { 0.185\box_ht:N \strutbox }
+    \__enumext_previus_level_skip:
     \int_compare:nNnT
       { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } > { 1 }
       {
         \skip_zero:N \topskip
         \skip_set_eq:NN \multicolsep \l__enumext_minipage_right_skip
+      }
+  }
+\cs_new_protected:Nn \__enumext_previus_level_skip:
+  {
+    \int_case:nn { \l__enumext_level_int }
+      {
+        { 2 }{
+               \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
+             }
+        { 3 }{
+               \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_ii_skip }
+             }
+        { 4 }{
+               \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_iii_skip }
+             }
+      }
+  }
+\cs_new_protected:Nn \__enumext_remove_upper_level_sep:
+  {
+    \int_case:nn { \l__enumext_level_int }
+      {
+        { 2 }{
+               %%\skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
+               \skip_vertical:n { -\l__enumext_topsep_i_skip }
+             }
+        { 3 }{
+               \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_ii_skip }
+             }
+        { 4 }{
+               \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_iii_skip }
+             }
       }
   }
 \cs_new_protected:Nn \__enumext_minipage_add_space:
@@ -1496,13 +1529,19 @@
       { \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } } > { \c_zero_dim }
       {
         \__enumext_multicols_stop:
-        \par\addvspace{ \l__enumext_minipage_after_skip }
+        \int_compare:nNnT
+          { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } = { 1 }
+          {
+            %%%%%%\skip_vertical:N \l__enumext_minipage_after_skip
+            %%% solo necesario si es 0 el valor de parsep+ topsep nivel en curso
+          }
         \end{__enumext_mini_env*}
         \hfill
         \begin{__enumext_mini_env*}
           { \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } }
           % Add vertical space above
-          \par\addvspace { \l__enumext_minipage_right_skip }
+          \par\nointerlineskip
+          \addvspace { \l__enumext_minipage_right_skip }
           \bool_if:nF {#1}
             {
               \centering
@@ -3626,16 +3665,8 @@
             \miniright
           }
         \int_gzero:N \g__enumext_minipage_stat_int
+        \unskip % remove topsep + [partopsep]
         \end{__enumext_mini_env*}
-        %%% NUEVOOO
-        %%%\par\addvspace{ 0.5\dp\strutbox }
-        %\int_compare:nNnT
-        %  { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } = { 1 }
-        %  {
-            %%\par\addvspace { \skip_use:c { l__enumext_topsep_ \__enumext_level: _skip } }
-            %%\par\addvspace{ \l__enumext_minipage_after_skip }
-            %%\par\par\addvspace{ 0.4\box_dp:N \strutbox }
-        %  }
       }
       {
         \__enumext_multicols_stop:
