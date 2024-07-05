@@ -6743,8 +6743,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \skip_set_eq:NN \l_@@_minipage_after_skip \l_@@_minipage_right_skip
-    \skip_add:Nn \l_@@_minipage_after_skip { 0.185\box_ht:N \strutbox }
-    \@@_previus_level_skip:
+    \skip_if_eq:nnF { \l_@@_minipage_after_skip } { \c_zero_skip }
+      {
+        \@@_previus_level_skip:
+      }
 %    \end{macrocode}
 %   Now we will see if the environment \myenv{multicols} is active, if so
 %   we set |\topskip=|\mydim{0pt} and then we make |\multicolsep| have the same
@@ -6762,29 +6764,31 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_case:nn { \l_@@_level_int }
       {
         { 2 }{
-               \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+               \skip_if_eq:nnTF { \l_@@_itemsep_i_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                 }
+                 {
+                   \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+                 }
              }
         { 3 }{
-               \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_ii_skip }
+               \skip_if_eq:nnTF { \l_@@_itemsep_ii_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                 }
+                 {
+                   \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_ii_skip }
+                 }
              }
         { 4 }{
-               \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_iii_skip }
-             }
-      }
-  }
-\cs_new_protected:Nn \@@_remove_upper_level_sep:
-  {
-    \int_case:nn { \l_@@_level_int }
-      {
-        { 2 }{
-               %%\skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
-               \skip_vertical:n { -\l_@@_topsep_i_skip }
-             }
-        { 3 }{
-               \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_ii_skip }
-             }
-        { 4 }{
-               \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_iii_skip }
+               \skip_if_eq:nnTF { \l_@@_itemsep_iii_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                 }
+                 {
+                   \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_iii_skip }
+                 }
              }
       }
   }
@@ -6814,46 +6818,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_zero_parsep:}
-%    The function \cs{@@_zero_parsep:} \emph{\enquote{adjusted}} the value
-%    of \cs{l_@@_minipage_after_skip} detecting the value of
-%    \ics{parsep} from the previous level. This is necessary since
-%    \ics{parsep} from the previous level affects the \emph{vertical spaces}
-%    and this is noticeable when using the \mykey{nosep} or \mykey{noitemsep} keys.
-% \iffalse
-%% Detect |\parsep| from previous level and adjust |\l_@@_minipage_after_skip| for |mini-env| in |enumext|.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_zero_parsep:
-  {
-    \int_case:nn { \l_@@_level_int }
-      {
-        { 2 }{
-               \skip_if_eq:nnF { \l_@@_parsep_i_skip } { \c_zero_skip }
-                 {
-                   \skip_add:Nn \l_@@_minipage_after_skip { 2.15\box_dp:N \strutbox }
-                 }
-             }
-        { 3 }{
-               \skip_if_eq:nnF { \l_@@_parsep_ii_skip } { \c_zero_skip }
-                 {
-                   \skip_add:Nn \l_@@_minipage_after_skip { 2.15\box_dp:N \strutbox }
-                 }
-             }
-        { 4 }{
-               \skip_if_eq:nnF { \l_@@_parsep_iii_skip } { \c_zero_skip }
-                 {
-                   \skip_add:Nn \l_@@_minipage_after_skip { 2.15\box_dp:N \strutbox }
-                 }
-             }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
 % \subsubsection{Adjustment of vertical spaces for \env{minipage} in \env{keyans}}
 %
-% \begin{macro}{\@@_keyans_mini_set_vskip:}
+% \begin{macro}{\@@_keyans_minipage_set_skip:}
 %    The function \cs{@@_keyans_mini_set_vskip:} will take care of determining the
 %    \enquote{adjusted} spaces that we will apply \emph{\enquote{above}} and
 %    \emph{\enquote{below}} the \myvarenv*{__@@_mini_env*} environment in
@@ -6863,73 +6830,46 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Adjustment of vertical spacing for |minipage| in |keyans|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_mini_set_vskip:
+\cs_new_protected:Nn \@@_keyans_minipage_set_skip:
   {
-    \skip_zero_new:N \l_@@_minipage_after_skip
-    \skip_zero_new:N \l_@@_minipage_left_skip
-    \skip_zero_new:N \l_@@_minipage_right_skip
-    \int_compare:nNnTF { \l_@@_columns_v_int } > { 1 }
+    \skip_zero:N \l_@@_minipage_after_skip
+    \skip_zero:N \l_@@_minipage_left_skip
+    \skip_zero:N \l_@@_minipage_right_skip
+    \skip_set:Nn \l_@@_minipage_right_skip
       {
-        \skip_if_eq:nnTF { \l_@@_topsep_v_skip } { \c_zero_skip }
+        \l_@@_topsep_v_skip
+      }
+    \mode_if_vertical:T
+      {
+        \skip_add:Nn \l_@@_minipage_right_skip
           {
-            \skip_set:Nn \l_@@_minipage_left_skip { -0.25\box_dp:N \strutbox }
-            \skip_set:Nn \l_@@_minipage_right_skip { 0.705\box_dp:N \strutbox }
-            \skip_set:Nn \l_@@_minipage_after_skip { \box_dp:N \strutbox }
-            \skip_if_eq:nnF { \l_@@_parsep_i_skip } { \c_zero_skip }
-              {
-                \skip_add:Nn \l_@@_minipage_after_skip { 2.15\box_dp:N \strutbox }
-              }
-          }
-          {
-            \skip_set:Nn \l_@@_minipage_left_skip
-              {
-                \skip_use:N \l_@@_topsep_v_skip
-              }
-            \skip_set:Nn \l_@@_minipage_right_skip
-              {
-                0.705\box_dp:N \strutbox
-              }
-            \skip_set:Nn \l_@@_minipage_after_skip
-              {
-                1.85\box_dp:N \strutbox + \l_@@_topsep_v_skip
-              }
+            \l_@@_partopsep_v_skip
           }
       }
+    \skip_set_eq:NN \l_@@_minipage_after_skip \l_@@_minipage_right_skip
+    %% prev level
+    \skip_if_eq:nnF { \l_@@_minipage_after_skip } { \c_zero_skip }
       {
-        \skip_if_eq:nnTF { \l_@@_topsep_v_skip } { \c_zero_skip }
+        \skip_if_eq:nnTF { \l_@@_itemsep_i_skip } { \c_zero_skip }
           {
-            \skip_set:Nn \l_@@_minipage_left_skip
-              {
-                0.5\box_dp:N \strutbox
-                + \l_@@_partopsep_v_skip
-              }
-            \skip_set:Nn \l_@@_minipage_right_skip
-              {
-                \l_@@_partopsep_v_skip
-              }
-            \skip_set:Nn \l_@@_minipage_after_skip { 1.6\box_dp:N \strutbox }
+            \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
           }
           {
-            \skip_set:Nn \l_@@_minipage_left_skip
-              {
-                0.5875\box_dp:N \strutbox - \l_@@_partopsep_v_skip
-              }
-            \skip_set:Nn \l_@@_minipage_right_skip
-              {
-                \l_@@_topsep_v_skip + \l_@@_partopsep_v_skip
-              }
-            \skip_set:Nn \l_@@_minipage_after_skip
-              {
-                0.325\box_dp:N \strutbox + \l_@@_topsep_v_skip
-              }
+            \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
           }
+      }
+    %% columns
+    \int_compare:nNnTF { \l_@@_columns_v_int } > { 1 }
+      {
+        \skip_zero:N \topskip
+        \skip_set_eq:NN \multicolsep \l_@@_minipage_right_skip
       }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_keyans_mini_addvspace:}
-%    The function \cs{@@_keyans_mini_addvspace:} will apply the spaces set using
+% \begin{macro}{\@@_keyans_minipage_add_space:}
+%    The function \cs{@@_keyans_minipage_add_space:} will apply the spaces set using
 %    |\addvspace| \emph{\enquote{above}} the \myvarenv*{__@@_mini_env*}
 %    environment in \myenv*{keyans}, taking into account whether  \hologo{TeX} is in
 %    \mymeta{horizontal mode} or \mymeta{vertical mode}. For the latter we
@@ -6941,22 +6881,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Apply \addvspace in horizontal and vertical mode for |keyans| environment.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_mini_addvspace:
+\cs_new_protected:Nn \@@_keyans_minipage_add_space:
   {
-    \@@_keyans_mini_set_vskip:
-    \mode_if_vertical:T
+    \@@_keyans_minipage_set_skip:
+    \mode_if_vertical:TF
       {
-        \skip_add:Nn \l_@@_minipage_left_skip
-          {
-            \l_@@_partopsep_v_skip
-          }
-        \skip_add:Nn \l_@@_minipage_after_skip
-          {
-            \l_@@_partopsep_v_skip
-          }
+        \nopagebreak\nointerlineskip
       }
-    \par\nopagebreak
-    \addvspace { \l_@@_minipage_left_skip }
+      {
+        \par\nopagebreak\nointerlineskip
+        \skip_zero:N \l_@@_partopsep_v_skip
+      }
+    \addvspace{ 0.245\box_ht:N \strutbox }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7172,10 +7108,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \dim_compare:nNnTF { \l_@@_minipage_right_v_dim } > { \c_zero_dim }
       {
         \@@_keyans_multicols_stop:
+        \int_compare:nNnT { \l_@@_columns_v_int } = { 1 }
+          {
+            \skip_vertical:N \l_@@_minipage_after_skip
+          }
         \end{@@_mini_env*}
         \hfill
         \begin{@@_mini_env*}{ \l_@@_minipage_right_v_dim }
-          \par\addvspace { \l_@@_minipage_right_skip }
+          % Add vertical space above
+          \par\nointerlineskip
+          \addvspace { \l_@@_minipage_right_skip }
           \bool_if:nF {#1}
             {
               \centering
@@ -7183,6 +7125,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \int_gzero:N \g_@@_minipage_stat_int
       }
       { \msg_error:nnn { enumext } { wrong-miniright-use } }
+    % paranoia
     \RenewDocumentCommand \miniright { s }
       {
         \msg_error:nn { enumext } { many-miniright-used }
@@ -11070,8 +11013,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
         \bool_set_true:N \l_@@_minipage_active_v_bool
         \int_gincr:N \g_@@_minipage_stat_int
-        \@@_keyans_mini_addvspace:
-        \nointerlineskip\noindent
+        \@@_keyans_minipage_add_space:
         \begin{@@_mini_env*}{ \l_@@_minipage_left_v_dim }
       }
     \@@_keyans_multicols_start:
@@ -11091,10 +11033,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               }
           }
         \dim_set_eq:NN \columnsep \l_@@_columns_sep_v_dim
-        \skip_zero:N \multicolsep
         \dim_zero:N \columnseprule % no rule here
         \bool_if:NF \l_@@_minipage_active_v_bool
           {
+            \skip_zero:N \multicolsep
             \@@_keyans_multi_addvspace:
           }
         \raggedcolumns
@@ -11122,6 +11064,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \miniright
           }
         \int_gzero:N \g_@@_minipage_stat_int
+        \unskip % remove topsep + [partopsep]
         \end{@@_mini_env*}
         \par\addvspace{ \l_@@_minipage_after_skip }
       }

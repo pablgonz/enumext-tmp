@@ -6,21 +6,21 @@
 %%
 %% enumext.dtx  (with options: `package')
 %% Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
-%%
+%% 
 %% This work may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License, either version 1.3c of this license or (at
 %% your option) any later version. The latest version of this license is in
-%%
+%% 
 %%  https://www.latex-project.org/lppl.txt
-%%
+%% 
 %% and version 1.3c or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%%
+%% 
 %% This work is "maintained" (as per the LPPL maintenance status)
 %% by Pablo González L.
-%%
+%% 
 %% This work consists of the files enumext.dtx and enumext.sty.
-%%
+%% 
 
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
@@ -1267,8 +1267,10 @@
           }
       }
     \skip_set_eq:NN \l__enumext_minipage_after_skip \l__enumext_minipage_right_skip
-    \skip_add:Nn \l__enumext_minipage_after_skip { 0.185\box_ht:N \strutbox }
-    \__enumext_previus_level_skip:
+    \skip_if_eq:nnF { \l__enumext_minipage_after_skip } { \c_zero_skip }
+      {
+        \__enumext_previus_level_skip:
+      }
     \int_compare:nNnT
       { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } > { 1 }
       {
@@ -1281,29 +1283,31 @@
     \int_case:nn { \l__enumext_level_int }
       {
         { 2 }{
-               \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
+               \skip_if_eq:nnTF { \l__enumext_itemsep_i_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                 }
+                 {
+                   \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
+                 }
              }
         { 3 }{
-               \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_ii_skip }
+               \skip_if_eq:nnTF { \l__enumext_itemsep_ii_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                 }
+                 {
+                   \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_ii_skip }
+                 }
              }
         { 4 }{
-               \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_iii_skip }
-             }
-      }
-  }
-\cs_new_protected:Nn \__enumext_remove_upper_level_sep:
-  {
-    \int_case:nn { \l__enumext_level_int }
-      {
-        { 2 }{
-               %%\skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
-               \skip_vertical:n { -\l__enumext_topsep_i_skip }
-             }
-        { 3 }{
-               \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_ii_skip }
-             }
-        { 4 }{
-               \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_iii_skip }
+               \skip_if_eq:nnTF { \l__enumext_itemsep_iii_skip } { \c_zero_skip }
+                 {
+                   \skip_add:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                 }
+                 {
+                   \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_iii_skip }
+                 }
              }
       }
   }
@@ -1320,111 +1324,55 @@
       }
     \addvspace{ 0.245\box_ht:N \strutbox }
   }
-%% Detect |\parsep| from previous level and adjust |\l_@@_minipage_after_skip| for |mini-env| in |enumext|.
-\cs_new_protected:Nn \__enumext_zero_parsep:
-  {
-    \int_case:nn { \l__enumext_level_int }
-      {
-        { 2 }{
-               \skip_if_eq:nnF { \l__enumext_parsep_i_skip } { \c_zero_skip }
-                 {
-                   \skip_add:Nn \l__enumext_minipage_after_skip { 2.15\box_dp:N \strutbox }
-                 }
-             }
-        { 3 }{
-               \skip_if_eq:nnF { \l__enumext_parsep_ii_skip } { \c_zero_skip }
-                 {
-                   \skip_add:Nn \l__enumext_minipage_after_skip { 2.15\box_dp:N \strutbox }
-                 }
-             }
-        { 4 }{
-               \skip_if_eq:nnF { \l__enumext_parsep_iii_skip } { \c_zero_skip }
-                 {
-                   \skip_add:Nn \l__enumext_minipage_after_skip { 2.15\box_dp:N \strutbox }
-                 }
-             }
-      }
-  }
 %% Adjustment of vertical spacing for |minipage| in |keyans|.
-\cs_new_protected:Nn \__enumext_keyans_mini_set_vskip:
+\cs_new_protected:Nn \__enumext_keyans_minipage_set_skip:
   {
-    \skip_zero_new:N \l__enumext_minipage_after_skip
-    \skip_zero_new:N \l__enumext_minipage_left_skip
-    \skip_zero_new:N \l__enumext_minipage_right_skip
+    \skip_zero:N \l__enumext_minipage_after_skip
+    \skip_zero:N \l__enumext_minipage_left_skip
+    \skip_zero:N \l__enumext_minipage_right_skip
+    \skip_set:Nn \l__enumext_minipage_right_skip
+      {
+        \l__enumext_topsep_v_skip
+      }
+    \mode_if_vertical:T
+      {
+        \skip_add:Nn \l__enumext_minipage_right_skip
+          {
+            \l__enumext_partopsep_v_skip
+          }
+      }
+    \skip_set_eq:NN \l__enumext_minipage_after_skip \l__enumext_minipage_right_skip
+    %% prev level
+    \skip_if_eq:nnF { \l__enumext_minipage_after_skip } { \c_zero_skip }
+      {
+        \skip_if_eq:nnTF { \l__enumext_itemsep_i_skip } { \c_zero_skip }
+          {
+            \skip_add:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+          }
+          {
+            \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
+          }
+      }
+    %% columns
     \int_compare:nNnTF { \l__enumext_columns_v_int } > { 1 }
       {
-        \skip_if_eq:nnTF { \l__enumext_topsep_v_skip } { \c_zero_skip }
-          {
-            \skip_set:Nn \l__enumext_minipage_left_skip { -0.25\box_dp:N \strutbox }
-            \skip_set:Nn \l__enumext_minipage_right_skip { 0.705\box_dp:N \strutbox }
-            \skip_set:Nn \l__enumext_minipage_after_skip { \box_dp:N \strutbox }
-            \skip_if_eq:nnF { \l__enumext_parsep_i_skip } { \c_zero_skip }
-              {
-                \skip_add:Nn \l__enumext_minipage_after_skip { 2.15\box_dp:N \strutbox }
-              }
-          }
-          {
-            \skip_set:Nn \l__enumext_minipage_left_skip
-              {
-                \skip_use:N \l__enumext_topsep_v_skip
-              }
-            \skip_set:Nn \l__enumext_minipage_right_skip
-              {
-                0.705\box_dp:N \strutbox
-              }
-            \skip_set:Nn \l__enumext_minipage_after_skip
-              {
-                1.85\box_dp:N \strutbox + \l__enumext_topsep_v_skip
-              }
-          }
-      }
-      {
-        \skip_if_eq:nnTF { \l__enumext_topsep_v_skip } { \c_zero_skip }
-          {
-            \skip_set:Nn \l__enumext_minipage_left_skip
-              {
-                0.5\box_dp:N \strutbox
-                + \l__enumext_partopsep_v_skip
-              }
-            \skip_set:Nn \l__enumext_minipage_right_skip
-              {
-                \l__enumext_partopsep_v_skip
-              }
-            \skip_set:Nn \l__enumext_minipage_after_skip { 1.6\box_dp:N \strutbox }
-          }
-          {
-            \skip_set:Nn \l__enumext_minipage_left_skip
-              {
-                0.5875\box_dp:N \strutbox - \l__enumext_partopsep_v_skip
-              }
-            \skip_set:Nn \l__enumext_minipage_right_skip
-              {
-                \l__enumext_topsep_v_skip + \l__enumext_partopsep_v_skip
-              }
-            \skip_set:Nn \l__enumext_minipage_after_skip
-              {
-                0.325\box_dp:N \strutbox + \l__enumext_topsep_v_skip
-              }
-          }
+        \skip_zero:N \topskip
+        \skip_set_eq:NN \multicolsep \l__enumext_minipage_right_skip
       }
   }
 %% Apply \addvspace in horizontal and vertical mode for |keyans| environment.
-\cs_new_protected:Nn \__enumext_keyans_mini_addvspace:
+\cs_new_protected:Nn \__enumext_keyans_minipage_add_space:
   {
-    \__enumext_keyans_mini_set_vskip:
-    \mode_if_vertical:T
+    \__enumext_keyans_minipage_set_skip:
+    \mode_if_vertical:TF
       {
-        \skip_add:Nn \l__enumext_minipage_left_skip
-          {
-            \l__enumext_partopsep_v_skip
-          }
-        \skip_add:Nn \l__enumext_minipage_after_skip
-          {
-            \l__enumext_partopsep_v_skip
-          }
+        \nopagebreak\nointerlineskip
       }
-    \par\nopagebreak
-    \addvspace { \l__enumext_minipage_left_skip }
+      {
+        \par\nopagebreak\nointerlineskip
+        \skip_zero:N \l__enumext_partopsep_v_skip
+      }
+    \addvspace{ 0.245\box_ht:N \strutbox }
   }
 %% Adjustment of vertical spacing for |minipage| in |enumext*| and |keyans*|.
 \cs_new_protected:Nn \__enumext_mini_set_vskip_vii:
@@ -1532,8 +1480,7 @@
         \int_compare:nNnT
           { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } = { 1 }
           {
-            %%%%%%\skip_vertical:N \l__enumext_minipage_after_skip
-            %%% solo necesario si es 0 el valor de parsep+ topsep nivel en curso
+            \skip_vertical:N \l__enumext_minipage_after_skip
           }
         \end{__enumext_mini_env*}
         \hfill
@@ -1561,10 +1508,16 @@
     \dim_compare:nNnTF { \l__enumext_minipage_right_v_dim } > { \c_zero_dim }
       {
         \__enumext_keyans_multicols_stop:
+        \int_compare:nNnT { \l__enumext_columns_v_int } = { 1 }
+          {
+            \skip_vertical:N \l__enumext_minipage_after_skip
+          }
         \end{__enumext_mini_env*}
         \hfill
         \begin{__enumext_mini_env*}{ \l__enumext_minipage_right_v_dim }
-          \par\addvspace { \l__enumext_minipage_right_skip }
+          % Add vertical space above
+          \par\nointerlineskip
+          \addvspace { \l__enumext_minipage_right_skip }
           \bool_if:nF {#1}
             {
               \centering
@@ -1572,6 +1525,7 @@
           \int_gzero:N \g__enumext_minipage_stat_int
       }
       { \msg_error:nnn { enumext } { wrong-miniright-use } }
+    % paranoia
     \RenewDocumentCommand \miniright { s }
       {
         \msg_error:nn { enumext } { many-miniright-used }
@@ -3755,8 +3709,7 @@
           }
         \bool_set_true:N \l__enumext_minipage_active_v_bool
         \int_gincr:N \g__enumext_minipage_stat_int
-        \__enumext_keyans_mini_addvspace:
-        \nointerlineskip\noindent
+        \__enumext_keyans_minipage_add_space:
         \begin{__enumext_mini_env*}{ \l__enumext_minipage_left_v_dim }
       }
     \__enumext_keyans_multicols_start:
@@ -3776,10 +3729,10 @@
               }
           }
         \dim_set_eq:NN \columnsep \l__enumext_columns_sep_v_dim
-        \skip_zero:N \multicolsep
         \dim_zero:N \columnseprule % no rule here
         \bool_if:NF \l__enumext_minipage_active_v_bool
           {
+            \skip_zero:N \multicolsep
             \__enumext_keyans_multi_addvspace:
           }
         \raggedcolumns
@@ -3807,6 +3760,7 @@
             \miniright
           }
         \int_gzero:N \g__enumext_minipage_stat_int
+        \unskip % remove topsep + [partopsep]
         \end{__enumext_mini_env*}
         \par\addvspace{ \l__enumext_minipage_after_skip }
       }
@@ -5502,6 +5456,6 @@
     Not ~ space ~ to ~ join ~ items ~ (#1) ~ > ~ #2 ~\msg_line_context:.
   }
 \file_input_stop:
-%%
+%% 
 %%
 %% End of file `enumext.sty'.
