@@ -6,38 +6,82 @@
 \usepackage{enumext}
 \setlength{\parskip}{0pt}
 \setlength{\parindent}{0pt}
-\setlength{\columnseprule}{0.5pt}
+%%\setlength{\columnseprule}{0.5pt}
 \usepackage{lua-visual-debug}
 %\showoutput
 %\showboxdepth=10
 \begin{document}
-
-Above
-%\begin{multicols}{2}nosep
-\begin{enumext}[columns=2]%itemsep=50pt,parsep=20pt,partopsep=0pt]%[partopsep=20pt,parsep=20pt, topsep=0pt, itemsep=20pt,columns=2]%[columns=2,parsep=5pt,partopsep=0pt]%[columns=2,itemsep=30pt,parsep=20pt,partopsep=50pt]%[partopsep=20pt,parsep=20pt, topsep=0pt, itemsep=20pt,columns=2]%[columns=2,parsep=5pt,partopsep=0pt]
+\begin{enumext}[columns=2,nosep,parsep=0pt,itemsep=0pt]
 \item F
-
-  \begin{enumext}%%[partopsep=0pt,parsep=0pt, topsep=0pt,]%%[parsep=0pt,partopsep=20pt, topsep=10pt,itemsep=5pt]%,itemsep=10pt
+  \begin{enumext}[nosep,topsep=0pt]
      \item P \item Q \item M
   \end{enumext}
-\item Other item
+\item G
 
 \columnbreak
 
 \item J
-
-  \begin{enumext}[columns=2]%%,parsep=0pt,partopsep=20pt, topsep=10pt,itemsep=5pt]%,itemsep=10pt
-     \item  H \item I \item K
-     \columnbreak
-     \item X \item Z
+  \begin{enumext}[columns=1,mini-env={0.4\linewidth},nosep,topsep=0pt]
+    \item P \item Q \item M %%\columnbreak \item R \item S
+    \miniright
+    (a) P here \par bsss %%%\par hhhh %%\vspace*{3cm}
   \end{enumext}
-\item CC
-\end{enumext}
-%\end{multicols}
-Below
-%%\end{document}
 
-%%\newpage
+\item G
+\end{enumext}
+Below
+\stop%%
+
+Before enumext AAA %%%%%%
+\begin{enumext}[columns=2,below={8pt}]%,]%[topsep=0pt,parsep=0pt,partopsep=0pt,itemsep=0pt,columns=1]%,,itemsep=0pt
+
+\item Using [columns=2] here UNO
+  \begin{enumext}[columns=2]
+     \item  P \item Q \item Q  \item R \item S
+  \end{enumext}
+
+\item Using [columns=1] here
+\begin{enumext}[columns=1]
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\item Using [columns=5] here SSS
+\begin{enumext}[columns=5,columns-sep=3pt]%,nosep,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\item Using [columns=2,mini-env] here
+
+  \begin{enumext}[columns=2,mini-env=0.4\linewidth]%,topsep=10pt,parsep=30pt
+    \item  P \item Q \item RS \item T \item U
+    \miniright
+    \rule{30pt}{20pt}\par
+    P Tikz image here
+  \end{enumext}
+
+\columnbreak
+
+\item Using [columns=2,mini-env] here HHHH
+
+  \begin{enumext}[columns=1,mini-env=0.4\linewidth]%,topsep=10pt,parsep=30pt
+     \item  P \item Q \item Q  \item R \item S
+    \miniright
+    %\rule{30pt}{20pt}\par
+    P Tikz image here
+  \end{enumext}
+
+\item Using [columns=2,mini-env] here
+
+  \begin{enumext}[columns=1,mini-env=0.4\linewidth]%,topsep=10pt,parsep=30pt
+    \item  P \item Q \item RS \item T \item U
+    \miniright
+    \rule{30pt}{20pt}\par
+    A Tikz image here
+  \end{enumext}
+\end{enumext}
+After enumext XXXXXXXXXXXXXXXXXXXX
+
+%%\stop
 
 
 \section{Test 0: \texttt{columns=2, nosep} HORIZONTAL}
@@ -46,6 +90,7 @@ Before
 \begin{enumext}[columns=2,nosep]% ,nosep
 
 \item Using [columns=1] here UNO
+
   \begin{enumext}[columns=1,nosep]%,,parsep=0pt,partopsep=0cm,
      \item  P \item Q \item M %\item R \item S
   \end{enumext}
@@ -58,6 +103,7 @@ Before
 \columnbreak
 
 \item Using [columns=2] here DOS
+
   \begin{enumext}[columns=2,nosep]%,itemsep=0.25cm,itemsep=0.25cm
     \item  P \item Q \item M \item R \item S
   \end{enumext}
@@ -69,10 +115,12 @@ Before
 
 \end{enumext}
 After
+%%%\stop
+
+
+Above
 
 \newpage
-
-
 
 \section{Test 1: \texttt{columns=2, topsep=default} HORIZONTAL}
 

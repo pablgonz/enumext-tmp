@@ -6518,6 +6518,32 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Adjustment of vertical spacing for |multicols| in |enumext|.
 % \fi
 %    \begin{macrocode}
+\cs_new_protected:Npn \@@_undo_space:
+  {
+    \int_case:nnT { \lastnodetype }
+      {
+        { 11 }
+             {
+               \typeout{SKIIIIIIIIIIIIIIIIP}
+               \typeout{\the\lastskip}
+               \unskip
+             }
+        { 12 }
+             {
+               \typeout{KERRRRRRRRRRRRRRRRRN}
+               \typeout{\the\lastkern}
+               \unkern
+             }
+        { 13 }
+             {
+               \typeout{PENALTYYYYYYYYYYYYYY}
+             %%\unpenalty
+             }
+      }
+  }
+
+
+
 \cs_new_protected:Nn \@@_multi_set_vskip:
   {
     \skip_set:cn { l_@@_multicols_above_ \@@_level: _skip }
@@ -6592,6 +6618,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \skip_use:c { l_@@_partopsep_ \@@_level: _skip }
           }
       }
+    %%\@@_undo_space:
     \par\nopagebreak
     \addvspace{ \skip_use:c { l_@@_multicols_above_ \@@_level: _skip } }
   }
@@ -6635,6 +6662,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \skip_use:N \l_@@_partopsep_v_skip
           }
       }
+    \@@_undo_space:
     \par\nopagebreak
     \addvspace{ \l_@@_multicols_above_v_skip }
   }
@@ -6743,20 +6771,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \skip_set_eq:NN \l_@@_minipage_after_skip \l_@@_minipage_right_skip
-    \skip_if_eq:nnF { \l_@@_minipage_after_skip } { \c_zero_skip }
-      {
-        \@@_previus_level_skip:
-      }
+    %%\skip_set_eq:NN \l_@@_minipage_after_skip \l_@@_minipage_right_skip
+    \skip_set_eq:cN { l_@@_multicols_above_ \@@_level: _skip } \l_@@_minipage_right_skip
+    \skip_set_eq:cN { l_@@_multicols_below_ \@@_level: _skip } \l_@@_minipage_right_skip
+    %%\skip_if_eq:nnF { \l_@@_minipage_after_skip } { \c_zero_skip }
+    %%  {
+    \@@_previus_level_skip:
+    %%  }
 %    \end{macrocode}
 %   Now we will see if the environment \myenv{multicols} is active, if so
 %   we set |\topskip=|\mydim{0pt} and then we make |\multicolsep| have the same
 %   value as \cs{l_@@_minipage_right_skip}
 %    \begin{macrocode}
-    \int_compare:nNnT
+    \int_compare:nNnTF
       { \int_use:c { l_@@_columns_ \@@_level: _int } } > { 1 }
       {
         \skip_zero:N \topskip
-        \skip_set_eq:NN \multicolsep \l_@@_minipage_right_skip
+        \skip_set_eq:Nc \multicolsep { l_@@_multicols_above_ \@@_level: _skip }
+        \skip_set:Nn \l_@@_minipage_left_skip { 0.445\box_ht:N \strutbox }
+      }
+      {
+        \skip_set:Nn \l_@@_minipage_left_skip { 0.510\box_ht:N \strutbox }
       }
   }
 \cs_new_protected:Nn \@@_previus_level_skip:
@@ -6764,12 +6799,33 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_case:nn { \l_@@_level_int }
       {
         { 2 }{
-               \skip_if_eq:nnTF { \l_@@_itemsep_i_skip } { \c_zero_skip }
+               \skip_if_eq:nnTF { \l_@@_itemsep_i_skip } { \l_@@_minipage_after_skip }
                  {
-                   \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                   \typeout{SON-IGUALES}
+                   \skip_set:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                   \skip_set:Nn \l_@@_multicols_below_ii_skip { 0.350\box_ht:N \strutbox }
                  }
                  {
-                   \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+                   \dim_compare:nNnT { \l_@@_itemsep_i_skip } < { \l_@@_minipage_after_skip }
+                     {
+                       \typeout{ITEM-SEP-MENOR}
+                       \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+                       \skip_sub:Nn \l_@@_multicols_below_ii_skip { \l_@@_itemsep_i_skip }
+                       \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                       \skip_add:Nn \l_@@_multicols_below_ii_skip { 0.350\box_ht:N \strutbox }
+                     }
+                   \dim_compare:nNnT { \l_@@_itemsep_i_skip } > { \l_@@_minipage_after_skip }
+                     {
+                       \typeout{ITEM-SEP-MAYOOOOR}
+                       \skip_set:Nn \l_tmpa_skip
+                         {
+                           \l_@@_itemsep_i_skip - \l_@@_minipage_after_skip
+                         }
+                       \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+                       \skip_sub:Nn \l_@@_multicols_below_ii_skip { \l_@@_itemsep_i_skip }
+                       \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                       \skip_add:Nn \l_@@_multicols_below_ii_skip { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                     }
                  }
              }
         { 3 }{
@@ -6805,6 +6861,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Nn \@@_minipage_add_space:
   {
     \@@_minipage_set_skip:
+    \@@_undo_space:
     \mode_if_vertical:TF
       {
         \nopagebreak\nointerlineskip
@@ -6813,7 +6870,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \par\nopagebreak\nointerlineskip
         \skip_zero:c { l_@@_partopsep_ \__enumext_level: _skip }
       }
-    \addvspace{ 0.245\box_ht:N \strutbox }
+    \addvspace{ \l_@@_minipage_left_skip }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7068,7 +7125,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \int_compare:nNnT
           { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } = { 1 }
           {
-            \skip_vertical:N \l_@@_minipage_after_skip
+            %%%\skip_vertical:N \l_@@_minipage_after_skip
+            %%\@@_undo_space: % remove previus
+            \par\addvspace{ \l_@@_minipage_after_skip }
           }
         \end{@@_mini_env*}
         \hfill
@@ -9636,7 +9695,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \l_@@_store_name_tl \c_colon_str
         \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } }
       }
-     \@@_keyans_store_ref_aux_ii:
+    \@@_keyans_store_ref_aux_ii:
   }
 %    \end{macrocode}
 %    Now auxiliary function \cs{@@_keyans_store_ref_aux_ii:} save the
@@ -10746,12 +10805,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    After these actions, the function \cs{@@_multicols_start:} is
 %    called to handle the \myenv{multicols} environment.
 %
-%^^A    \begin{important}*
-%^^A      Here we use the plain \hologo{TeX} macro
-%^^A      |\nointerlineskip| to prevent baseline \emph{\enquote{glue}} being
-%^^A      added between the next pair of boxes in a \emph{vertical list}.
-%^^A    \end{important}
-%
 % \iffalse
 %% Use internal minipage with |\nointerlineskip| and |\addvspace| here
 % \fi
@@ -10827,8 +10880,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \int_use:c { l_@@_columns_ \@@_level: _int } } > { 1 }
       {
         \end{multicols}
-        \bool_if:cF { l_@@_minipage_active_ \@@_level: _bool }
+        \bool_if:cTF { l_@@_minipage_active_ \@@_level: _bool }
           {
+            \@@_undo_space:
+            \@@_undo_space:
+            \par\addvspace{ \skip_use:c { l_@@_multicols_below_ \@@_level: _skip } }
+          }
+          {
+            \@@_undo_space:
             \par\addvspace{ \skip_use:c { l_@@_multicols_below_ \@@_level: _skip } }
           }
       }
@@ -10855,7 +10914,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \miniright
           }
         \int_gzero:N \g_@@_minipage_stat_int
-        \unskip % remove topsep + [partopsep]
+        \@@_undo_space: % remove topsep + [partopsep]
         \end{@@_mini_env*}
       }
       {

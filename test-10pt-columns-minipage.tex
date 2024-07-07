@@ -1,7 +1,7 @@
 % arara: lualatex
 % arara: lualatex
 % arara: clean: { extensions: [ aux, log, out] }
-\documentclass[10pt]{article}
+\documentclass[11pt]{article}
 \usepackage{enumext}
 \usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
 \setlength{\parskip}{0pt}
@@ -14,10 +14,9 @@
 %\makesavenoteenv{enumext*}
 \begin{document}
 
-\begin{enumext}[columns=2,parsep=20pt,partopsep=100pt,itemsep=0pt,topsep=50pt]%%,]%,nosep]
+\begin{enumext}[columns=2,nosep,parsep=0pt,partopsep=0pt,itemsep=0pt,topsep=0pt]%%,]%,nosep]
 \item Using [columns=1] here UNO
-
-\begin{enumext}[columns=1,nosep,,topsep=0pt,itemsep=0pt]%,topsep=20pt,parsep=10pt
+\begin{enumext}[columns=1,nosep,topsep=0pt,itemsep=0pt]%,topsep=20pt,parsep=10pt
      \item  P \item Q \item X  %\item R \item S
   \end{enumext}
 
@@ -29,8 +28,7 @@
 
 \columnbreak
 
-\item Using [columns=2,topsep=20pt] here below
-
+\item Using [columns=1,topsep=0pt] here below
   \begin{enumext}[columns=1,mini-env={0.4\linewidth},nosep,topsep=0pt,parsep=0pt]%%%,partopsep=0pt]%,
     \item  P \item Q \item M %%\item R \item S
     \miniright
@@ -45,7 +43,7 @@
 \end{enumext}
 After
 
-%%\stop
+\stop
 
 \section{TEST-VERTICAL}
 
