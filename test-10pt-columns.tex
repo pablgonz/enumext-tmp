@@ -1,7 +1,7 @@
 % arara: lualatex
 % arara: lualatex
 % arara: clean: { extensions: [ aux, log, out] }
-\documentclass[12pt]{article}
+\documentclass[10pt]{article}
 \usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
 \usepackage{enumext}
 \setlength{\parskip}{0pt}
@@ -21,8 +21,8 @@
 \columnbreak
 
 \item J
-  \begin{enumext}[columns=1,mini-env={0.4\linewidth},nosep,topsep=0pt]
-    \item P \item Q \item M %%\columnbreak \item R \item S
+  \begin{enumext}[columns=2,mini-env={0.4\linewidth},nosep,topsep=0pt]
+    \item P \item Q \item M \columnbreak \item R \item S
     \miniright
     (a) P here \par bsss %%%\par hhhh %%\vspace*{3cm}
   \end{enumext}
