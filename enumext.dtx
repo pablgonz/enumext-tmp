@@ -6787,17 +6787,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_pre_itemsep_skip:
 %    \end{macrocode}
 %   If the environment \myenv{multicols} is active, we set |\topskip=|\mydim{0pt}
-%   and then we make |\multicolsep| have the same value as \cs{l_@@_minipage_right_skip}.
+%   and then we make |\multicolsep| have the same value as ​​\cs[no-index]{l_@@_multicols_above_X_skip}.
 %    \begin{macrocode}
-    \int_compare:nNnTF
+    \int_compare:nNnT
       { \int_use:c { l_@@_columns_ \@@_level: _int } } > { 1 }
       {
         \skip_zero:N \topskip
         \skip_set_eq:Nc \multicolsep { l_@@_multicols_above_ \@@_level: _skip }
-        \skip_set:Nn \l_@@_minipage_left_skip { 0.445\box_ht:N \strutbox }
-      }
-      {
-        \skip_set:Nn \l_@@_minipage_left_skip { 0.510\box_ht:N \strutbox }
       }
   }
 %    \end{macrocode}
@@ -6845,9 +6841,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_case:nn { \l_@@_level_int }
       {
         { 2 }{
-               \skip_if_eq:nnTF { \l_@@_itemsep_i_skip } { \l_@@_minipage_after_skip }
+               \skip_if_eq:nnTF
+                 { \l_@@_itemsep_i_skip } { \l_@@_minipage_after_skip }
                  {
-                   \typeout{SON-IGUALES}
                    \skip_set:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
                    \skip_set:Nn \l_@@_multicols_below_ii_skip { 0.350\box_ht:N \strutbox }
                  }
@@ -6855,47 +6851,112 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                    \dim_compare:nNnT
                      { \l_@@_itemsep_i_skip } < { \l_@@_minipage_after_skip }
                      {
-                       \typeout{ITEM-SEP-MENOR}
-                       \skip_sub:Nn \l_@@_minipage_after_skip
-                         { \l_@@_itemsep_i_skip }
-                       \skip_sub:Nn \l_@@_multicols_below_ii_skip
-                         { \l_@@_itemsep_i_skip }
-                       \skip_add:Nn \l_@@_minipage_after_skip
-                         { 0.150\box_ht:N \strutbox }
-                       \skip_add:Nn \l_@@_multicols_below_ii_skip
-                         { 0.350\box_ht:N \strutbox }
+                       \skip_sub:Nn
+                         \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+                       \skip_sub:Nn
+                         \l_@@_multicols_below_ii_skip { \l_@@_itemsep_i_skip }
+                       \skip_add:Nn
+                         \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                       \skip_add:Nn
+                         \l_@@_multicols_below_ii_skip { 0.350\box_ht:N \strutbox }
                      }
                    \dim_compare:nNnT
                      { \l_@@_itemsep_i_skip } > { \l_@@_minipage_after_skip }
                      {
-                       \typeout{ITEM-SEP-MAYOOOOR}
                        \skip_set:Nn \l_tmpa_skip
                          {
                            \l_@@_itemsep_i_skip - \l_@@_minipage_after_skip
                          }
-                       \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
-                       \skip_sub:Nn \l_@@_multicols_below_ii_skip { \l_@@_itemsep_i_skip }
-                       \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
-                       \skip_add:Nn \l_@@_multicols_below_ii_skip { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                       \skip_sub:Nn
+                         \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+                       \skip_sub:Nn
+                         \l_@@_multicols_below_ii_skip { \l_@@_itemsep_i_skip }
+                       \skip_add:Nn
+                         \l_@@_minipage_after_skip
+                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                       \skip_add:Nn
+                         \l_@@_multicols_below_ii_skip
+                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
                      }
                  }
              }
         { 3 }{
-               \skip_if_eq:nnTF { \l_@@_itemsep_ii_skip } { \c_zero_skip }
+               \skip_if_eq:nnTF
+                 { \l_@@_itemsep_ii_skip } { \c_zero_skip }
                  {
-                   \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                   \skip_set:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                   \skip_set:Nn \l_@@_multicols_below_iii_skip { 0.350\box_ht:N \strutbox }
                  }
                  {
-                   \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_ii_skip }
+                   \dim_compare:nNnT
+                     { \l_@@_itemsep_ii_skip } < { \l_@@_minipage_after_skip }
+                     {
+                       \skip_sub:Nn
+                         \l_@@_minipage_after_skip { \l_@@_itemsep_ii_skip }
+                       \skip_sub:Nn
+                         \l_@@_multicols_below_iii_skip { \l_@@_itemsep_ii_skip }
+                       \skip_add:Nn
+                         \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                       \skip_add:Nn
+                         \l_@@_multicols_below_iii_skip { 0.350\box_ht:N \strutbox }
+                     }
+                   \dim_compare:nNnT
+                     { \l_@@_itemsep_ii_skip } > { \l_@@_minipage_after_skip }
+                     {
+                       \skip_set:Nn \l_tmpa_skip
+                         {
+                           \l_@@_itemsep_ii_skip - \l_@@_minipage_after_skip
+                         }
+                       \skip_sub:Nn
+                         \l_@@_minipage_after_skip { \l_@@_itemsep_ii_skip }
+                       \skip_sub:Nn
+                         \l_@@_multicols_below_iii_skip { \l_@@_itemsep_ii_skip }
+                       \skip_add:Nn
+                         \l_@@_minipage_after_skip
+                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                       \skip_add:Nn
+                         \l_@@_multicols_below_iii_skip
+                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                     }
                  }
              }
         { 4 }{
                \skip_if_eq:nnTF { \l_@@_itemsep_iii_skip } { \c_zero_skip }
                  {
-                   \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                   \skip_set:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                   \skip_set:Nn \l_@@_multicols_below_iv_skip { 0.350\box_ht:N \strutbox }
                  }
                  {
-                   \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_iii_skip }
+                   \dim_compare:nNnT
+                     { \l_@@_itemsep_iii_skip } < { \l_@@_minipage_after_skip }
+                     {
+                       \skip_sub:Nn
+                         \l_@@_minipage_after_skip { \l_@@_itemsep_iii_skip }
+                       \skip_sub:Nn
+                         \l_@@_multicols_below_iv_skip { \l_@@_itemsep_iii_skip }
+                       \skip_add:Nn
+                         \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                       \skip_add:Nn
+                         \l_@@_multicols_below_iv_skip { 0.350\box_ht:N \strutbox }
+                     }
+                   \dim_compare:nNnT
+                     { \l_@@_itemsep_iii_skip } > { \l_@@_minipage_after_skip }
+                     {
+                       \skip_set:Nn \l_tmpa_skip
+                         {
+                           \l_@@_itemsep_iii_skip - \l_@@_minipage_after_skip
+                         }
+                       \skip_sub:Nn
+                         \l_@@_minipage_after_skip { \l_@@_itemsep_iii_skip }
+                       \skip_sub:Nn
+                         \l_@@_multicols_below_iv_skip { \l_@@_itemsep_iii_skip }
+                       \skip_add:Nn
+                         \l_@@_minipage_after_skip
+                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                       \skip_add:Nn
+                         \l_@@_multicols_below_iv_skip
+                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                     }
                  }
              }
       }
@@ -6944,7 +7005,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     %% columns
-    \int_compare:nNnTF { \l_@@_columns_v_int } > { 1 }
+    \int_compare:nNnT { \l_@@_columns_v_int } > { 1 }
       {
         \skip_zero:N \topskip
         \skip_set_eq:NN \multicolsep \l_@@_minipage_right_skip

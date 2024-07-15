@@ -1293,15 +1293,11 @@
     \skip_set_eq:cN
       { l__enumext_multicols_below_ \__enumext_level: _skip } \l__enumext_minipage_right_skip
     \__enumext_pre_itemsep_skip:
-    \int_compare:nNnTF
+    \int_compare:nNnT
       { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } > { 1 }
       {
         \skip_zero:N \topskip
         \skip_set_eq:Nc \multicolsep { l__enumext_multicols_above_ \__enumext_level: _skip }
-        \skip_set:Nn \l__enumext_minipage_left_skip { 0.445\box_ht:N \strutbox }
-      }
-      {
-        \skip_set:Nn \l__enumext_minipage_left_skip { 0.510\box_ht:N \strutbox }
       }
   }
 \cs_new_protected:Nn \__enumext_minipage_add_space:
@@ -1330,9 +1326,9 @@
     \int_case:nn { \l__enumext_level_int }
       {
         { 2 }{
-               \skip_if_eq:nnTF { \l__enumext_itemsep_i_skip } { \l__enumext_minipage_after_skip }
+               \skip_if_eq:nnTF
+                 { \l__enumext_itemsep_i_skip } { \l__enumext_minipage_after_skip }
                  {
-                   \typeout{SON-IGUALES}
                    \skip_set:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
                    \skip_set:Nn \l__enumext_multicols_below_ii_skip { 0.350\box_ht:N \strutbox }
                  }
@@ -1340,47 +1336,112 @@
                    \dim_compare:nNnT
                      { \l__enumext_itemsep_i_skip } < { \l__enumext_minipage_after_skip }
                      {
-                       \typeout{ITEM-SEP-MENOR}
-                       \skip_sub:Nn \l__enumext_minipage_after_skip
-                         { \l__enumext_itemsep_i_skip }
-                       \skip_sub:Nn \l__enumext_multicols_below_ii_skip
-                         { \l__enumext_itemsep_i_skip }
-                       \skip_add:Nn \l__enumext_minipage_after_skip
-                         { 0.150\box_ht:N \strutbox }
-                       \skip_add:Nn \l__enumext_multicols_below_ii_skip
-                         { 0.350\box_ht:N \strutbox }
+                       \skip_sub:Nn
+                         \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
+                       \skip_sub:Nn
+                         \l__enumext_multicols_below_ii_skip { \l__enumext_itemsep_i_skip }
+                       \skip_add:Nn
+                         \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                       \skip_add:Nn
+                         \l__enumext_multicols_below_ii_skip { 0.350\box_ht:N \strutbox }
                      }
                    \dim_compare:nNnT
                      { \l__enumext_itemsep_i_skip } > { \l__enumext_minipage_after_skip }
                      {
-                       \typeout{ITEM-SEP-MAYOOOOR}
                        \skip_set:Nn \l_tmpa_skip
                          {
                            \l__enumext_itemsep_i_skip - \l__enumext_minipage_after_skip
                          }
-                       \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
-                       \skip_sub:Nn \l__enumext_multicols_below_ii_skip { \l__enumext_itemsep_i_skip }
-                       \skip_add:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
-                       \skip_add:Nn \l__enumext_multicols_below_ii_skip { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                       \skip_sub:Nn
+                         \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
+                       \skip_sub:Nn
+                         \l__enumext_multicols_below_ii_skip { \l__enumext_itemsep_i_skip }
+                       \skip_add:Nn
+                         \l__enumext_minipage_after_skip
+                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                       \skip_add:Nn
+                         \l__enumext_multicols_below_ii_skip
+                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
                      }
                  }
              }
         { 3 }{
-               \skip_if_eq:nnTF { \l__enumext_itemsep_ii_skip } { \c_zero_skip }
+               \skip_if_eq:nnTF
+                 { \l__enumext_itemsep_ii_skip } { \c_zero_skip }
                  {
-                   \skip_add:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                   \skip_set:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                   \skip_set:Nn \l__enumext_multicols_below_iii_skip { 0.350\box_ht:N \strutbox }
                  }
                  {
-                   \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_ii_skip }
+                   \dim_compare:nNnT
+                     { \l__enumext_itemsep_ii_skip } < { \l__enumext_minipage_after_skip }
+                     {
+                       \skip_sub:Nn
+                         \l__enumext_minipage_after_skip { \l__enumext_itemsep_ii_skip }
+                       \skip_sub:Nn
+                         \l__enumext_multicols_below_iii_skip { \l__enumext_itemsep_ii_skip }
+                       \skip_add:Nn
+                         \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                       \skip_add:Nn
+                         \l__enumext_multicols_below_iii_skip { 0.350\box_ht:N \strutbox }
+                     }
+                   \dim_compare:nNnT
+                     { \l__enumext_itemsep_ii_skip } > { \l__enumext_minipage_after_skip }
+                     {
+                       \skip_set:Nn \l_tmpa_skip
+                         {
+                           \l__enumext_itemsep_ii_skip - \l__enumext_minipage_after_skip
+                         }
+                       \skip_sub:Nn
+                         \l__enumext_minipage_after_skip { \l__enumext_itemsep_ii_skip }
+                       \skip_sub:Nn
+                         \l__enumext_multicols_below_iii_skip { \l__enumext_itemsep_ii_skip }
+                       \skip_add:Nn
+                         \l__enumext_minipage_after_skip
+                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                       \skip_add:Nn
+                         \l__enumext_multicols_below_iii_skip
+                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                     }
                  }
              }
         { 4 }{
                \skip_if_eq:nnTF { \l__enumext_itemsep_iii_skip } { \c_zero_skip }
                  {
-                   \skip_add:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                   \skip_set:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                   \skip_set:Nn \l__enumext_multicols_below_iv_skip { 0.350\box_ht:N \strutbox }
                  }
                  {
-                   \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_iii_skip }
+                   \dim_compare:nNnT
+                     { \l__enumext_itemsep_iii_skip } < { \l__enumext_minipage_after_skip }
+                     {
+                       \skip_sub:Nn
+                         \l__enumext_minipage_after_skip { \l__enumext_itemsep_iii_skip }
+                       \skip_sub:Nn
+                         \l__enumext_multicols_below_iv_skip { \l__enumext_itemsep_iii_skip }
+                       \skip_add:Nn
+                         \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
+                       \skip_add:Nn
+                         \l__enumext_multicols_below_iv_skip { 0.350\box_ht:N \strutbox }
+                     }
+                   \dim_compare:nNnT
+                     { \l__enumext_itemsep_iii_skip } > { \l__enumext_minipage_after_skip }
+                     {
+                       \skip_set:Nn \l_tmpa_skip
+                         {
+                           \l__enumext_itemsep_iii_skip - \l__enumext_minipage_after_skip
+                         }
+                       \skip_sub:Nn
+                         \l__enumext_minipage_after_skip { \l__enumext_itemsep_iii_skip }
+                       \skip_sub:Nn
+                         \l__enumext_multicols_below_iv_skip { \l__enumext_itemsep_iii_skip }
+                       \skip_add:Nn
+                         \l__enumext_minipage_after_skip
+                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                       \skip_add:Nn
+                         \l__enumext_multicols_below_iv_skip
+                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                     }
                  }
              }
       }
@@ -1415,7 +1476,7 @@
           }
       }
     %% columns
-    \int_compare:nNnTF { \l__enumext_columns_v_int } > { 1 }
+    \int_compare:nNnT { \l__enumext_columns_v_int } > { 1 }
       {
         \skip_zero:N \topskip
         \skip_set_eq:NN \multicolsep \l__enumext_minipage_right_skip
