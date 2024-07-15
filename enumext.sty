@@ -1632,7 +1632,6 @@
         \int_compare:nNnT
           { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } = { 1 }
           {
-            %%%\skip_vertical:N \l__enumext_minipage_after_skip
             %%\__enumext_unskip_unkern: % remove previus
             \par\addvspace{ \l__enumext_minipage_after_skip }
           }
@@ -1640,7 +1639,6 @@
         \hfill
         \begin{__enumext_mini_env*}
           { \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } }
-          % Add vertical space above
           \par\nointerlineskip
           \addvspace { \l__enumext_minipage_right_skip }
           \bool_if:nF {#1}
@@ -1664,12 +1662,11 @@
         \__enumext_keyans_multicols_stop:
         \int_compare:nNnT { \l__enumext_columns_v_int } = { 1 }
           {
-            \skip_vertical:N \l__enumext_minipage_after_skip
+            \par\addvspace{ \l__enumext_minipage_after_skip }
           }
         \end{__enumext_mini_env*}
         \hfill
         \begin{__enumext_mini_env*}{ \l__enumext_minipage_right_v_dim }
-          % Add vertical space above
           \par\nointerlineskip
           \addvspace { \l__enumext_minipage_right_skip }
           \bool_if:nF {#1}

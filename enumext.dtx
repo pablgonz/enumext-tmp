@@ -6816,7 +6816,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       {
         \par\nopagebreak\nointerlineskip
-        \skip_zero:c { l_@@_partopsep_ \__enumext_level: _skip }
+        \skip_zero:c { l_@@_partopsep_ \@@_level: _skip }
       }
     \int_compare:nNnTF
       { \int_use:c { l_@@_columns_ \@@_level: _int } } > { 1 }
@@ -7227,9 +7227,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \@@_multicols_stop:
         \int_compare:nNnT
-          { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } = { 1 }
+          { \int_use:c { l_@@_columns_ \@@_level: _int } } = { 1 }
           {
-            %%%\skip_vertical:N \l_@@_minipage_after_skip
             %%\@@_unskip_unkern: % remove previus
             \par\addvspace{ \l_@@_minipage_after_skip }
           }
@@ -7237,7 +7236,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \hfill
         \begin{@@_mini_env*}
           { \dim_use:c { l_@@_minipage_right_ \@@_level: _dim } }
-          % Add vertical space above
           \par\nointerlineskip
           \addvspace { \l_@@_minipage_right_skip }
           \bool_if:nF {#1}
@@ -7273,12 +7271,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_keyans_multicols_stop:
         \int_compare:nNnT { \l_@@_columns_v_int } = { 1 }
           {
-            \skip_vertical:N \l_@@_minipage_after_skip
+            \par\addvspace{ \l_@@_minipage_after_skip }
           }
         \end{@@_mini_env*}
         \hfill
         \begin{@@_mini_env*}{ \l_@@_minipage_right_v_dim }
-          % Add vertical space above
           \par\nointerlineskip
           \addvspace { \l_@@_minipage_right_skip }
           \bool_if:nF {#1}
