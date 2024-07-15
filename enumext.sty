@@ -1631,7 +1631,6 @@
         \int_compare:nNnT
           { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } = { 1 }
           {
-            %%\__enumext_unskip_unkern: % remove previus
             \par\addvspace{ \l__enumext_minipage_after_skip }
           }
         \end{__enumext_mini_env*}
@@ -3753,16 +3752,9 @@
       { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } > { 1 }
       {
         \end{multicols}
-        \bool_if:cTF { l__enumext_minipage_active_ \__enumext_level: _bool }
-          {
-            \__enumext_unskip_unkern:
-            \__enumext_unskip_unkern:
-            \par\addvspace{ \skip_use:c { l__enumext_multicols_below_ \__enumext_level: _skip } }
-          }
-          {
-            \__enumext_unskip_unkern:
-            \par\addvspace{ \skip_use:c { l__enumext_multicols_below_ \__enumext_level: _skip } }
-          }
+        \__enumext_unskip_unkern:
+        \__enumext_unskip_unkern:
+        \par\addvspace{ \skip_use:c { l__enumext_multicols_below_ \__enumext_level: _skip } }
       }
   }
 \cs_new_protected:Nn \__enumext_after_list:
@@ -3853,6 +3845,10 @@
     \keys_set:nn { enumext / keyans } {#1}
   }
 %% Iternal functions for |keyans| environment.
+\cs_new_protected:Nn \__enumext@_minipage:
+  {
+
+  }
 \cs_new_protected:Nn \__enumext_before_list_v:
   {
     \__enumext_vspace_above_v:
@@ -3900,10 +3896,9 @@
     \int_compare:nNnT { \l__enumext_columns_v_int } > { 1 }
       {
         \end{multicols}
-        \bool_if:NF \l__enumext_minipage_active_v_bool
-          {
-            \par\addvspace{ \l__enumext_multicols_below_v_skip }
-          }
+        \__enumext_unskip_unkern:
+        \__enumext_unskip_unkern:
+        \par\addvspace{ \l__enumext_multicols_below_v_skip }
       }
   }
 \cs_new_protected:Nn \__enumext_after_list_v:
@@ -3916,7 +3911,7 @@
             \miniright
           }
         \int_gzero:N \g__enumext_minipage_stat_int
-        \unskip % remove topsep + [partopsep]
+        \__enumext_unskip_unkern: % remove topsep + [partopsep]
         \end{__enumext_mini_env*}
         \par\addvspace{ \l__enumext_minipage_after_skip }
       }

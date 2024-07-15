@@ -1,7 +1,7 @@
 % arara: lualatex
 % arara: lualatex
 % arara: clean: { extensions: [ aux, log, out] }
-\documentclass[10pt]{article}
+\documentclass[12pt]{article}
 \usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
 \usepackage{enumext}
 \setlength{\parskip}{0pt}
@@ -32,13 +32,13 @@
 \item G
 \end{enumext}
 Below
-\stop%%
+%%\stop%%
 
 Before enumext AAA %%%%%%
-\begin{enumext}[columns=2,below={8pt}]%,]%[topsep=0pt,parsep=0pt,partopsep=0pt,itemsep=0pt,columns=1]%,,itemsep=0pt
+\begin{enumext}[columns=1,nosep,itemsep=0pt]%,]%[topsep=0pt,parsep=0pt,partopsep=0pt,itemsep=0pt,columns=1]%,,itemsep=0pt
 
 \item Using [columns=2] here UNO
-  \begin{enumext}[columns=2]
+  \begin{enumext}[columns=1]
      \item  P \item Q \item Q  \item R \item S
   \end{enumext}
 
@@ -48,9 +48,9 @@ Before enumext AAA %%%%%%
   \end{enumext}
 
 \item Using [columns=5] here SSS
-\begin{enumext}[columns=5,columns-sep=3pt]%,nosep,topsep=20pt,parsep=10pt
-     \item  P \item Q \item X  \item R \item S
-  \end{enumext}
+\begin{enumext*}[columns=5,columns-sep=3pt,nosep]%,nosep,topsep=20pt,parsep=10pt
+     \item P \item Q \item X  \item R \item S
+  \end{enumext*}
 
 \item Using [columns=2,mini-env] here
 
@@ -61,14 +61,13 @@ Before enumext AAA %%%%%%
     P Tikz image here
   \end{enumext}
 
-\columnbreak
+%%\columnbreak
 
 \item Using [columns=2,mini-env] here HHHH
-
-  \begin{enumext}[columns=1,mini-env=0.4\linewidth]%,topsep=10pt,parsep=30pt
+  \begin{enumext}[columns=1,mini-env=0.4\linewidth,itemsep=0.71mm]%,topsep=10pt,parsep=30pt
      \item  P \item Q \item Q  \item R \item S
     \miniright
-    %\rule{30pt}{20pt}\par
+    \rule{30pt}{20pt}\par
     P Tikz image here
   \end{enumext}
 
@@ -83,8 +82,7 @@ Before enumext AAA %%%%%%
 \end{enumext}
 After enumext XXXXXXXXXXXXXXXXXXXX
 
-%%\stop
-
+\stop
 
 \section{Test 0: \texttt{columns=2, nosep} HORIZONTAL}
 
@@ -118,9 +116,6 @@ Before
 \end{enumext}
 After
 %%%\stop
-
-
-Above
 
 \newpage
 

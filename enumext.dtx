@@ -7228,7 +7228,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \int_compare:nNnT
           { \int_use:c { l_@@_columns_ \@@_level: _int } } = { 1 }
           {
-            %%\@@_unskip_unkern: % remove previus
             \par\addvspace{ \l_@@_minipage_after_skip }
           }
         \end{@@_mini_env*}
@@ -10969,9 +10968,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_multicols_stop:}
 %    The function \cs{@@_multicols_stop:} will stop the
-%    \myenv{multicols} environment. If the boolean variable
-%    \myvarenv{l__@@_minipage_active_X_bool} is false (not nested in
-%    \myvarenv*{__@@_mini_env*}) we will apply our
+%    \myenv{multicols} environment and apply our
 %    \emph{\enquote{vertical adjust}} spacing.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_multicols_stop:
@@ -10980,16 +10977,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \int_use:c { l_@@_columns_ \@@_level: _int } } > { 1 }
       {
         \end{multicols}
-        \bool_if:cTF { l_@@_minipage_active_ \@@_level: _bool }
-          {
-            \@@_unskip_unkern:
-            \@@_unskip_unkern:
-            \par\addvspace{ \skip_use:c { l_@@_multicols_below_ \@@_level: _skip } }
-          }
-          {
-            \@@_unskip_unkern:
-            \par\addvspace{ \skip_use:c { l_@@_multicols_below_ \@@_level: _skip } }
-          }
+        \@@_unskip_unkern:
+        \@@_unskip_unkern:
+        \par\addvspace{ \skip_use:c { l_@@_multicols_below_ \@@_level: _skip } }
       }
   }
 %    \end{macrocode}
@@ -11160,6 +11150,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Iternal functions for |keyans| environment.
 % \fi
 %    \begin{macrocode}
+\cs_new_protected:Nn \@@@_minipage:
+  {
+
+  }
 \cs_new_protected:Nn \@@_before_list_v:
   {
     \@@_vspace_above_v:
@@ -11207,10 +11201,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \int_compare:nNnT { \l_@@_columns_v_int } > { 1 }
       {
         \end{multicols}
-        \bool_if:NF \l_@@_minipage_active_v_bool
-          {
-            \par\addvspace{ \l_@@_multicols_below_v_skip }
-          }
+        \@@_unskip_unkern:
+        \@@_unskip_unkern:
+        \par\addvspace{ \l_@@_multicols_below_v_skip }
       }
   }
 \cs_new_protected:Nn \@@_after_list_v:
@@ -11223,7 +11216,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \miniright
           }
         \int_gzero:N \g_@@_minipage_stat_int
-        \unskip % remove topsep + [partopsep]
+        \@@_unskip_unkern: % remove topsep + [partopsep]
         \end{@@_mini_env*}
         \par\addvspace{ \l_@@_minipage_after_skip }
       }
