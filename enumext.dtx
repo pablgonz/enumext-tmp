@@ -632,7 +632,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Reserved words 5 (plain TeX or internal)
     keywordstyle  = [5]{\color{red}},%
     keywords      = [5]{makeatletter,makeatother,let,verb,makebox,def,prevdepth,glue, if@minipage,if@hyper@item,if@noitemarg, %
-                    splittopskip,showboxdepth,topskip,showoutput,nointerlineskip, ignorespaces},%
+                    splittopskip,showboxdepth,topskip,showoutput,nointerlineskip, ignorespaces, unskip, unkern, lastnodetype},%
 % Reserved words 6 (optcolor) KEYS
     keywordstyle  = [6]{\color{optcolor}},%
     keywords      = [6]{save-ans,wrap-ans,save-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
@@ -4211,7 +4211,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-07-10}
+  {2024-07-15}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4847,6 +4847,36 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     * ~ #2
     \prg_replicate:nn { 14 - \str_count:n {#2} } { ~ }
       = ~ \use:c { #1_use:c } { l_@@_#2_#3_#1 } \\
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_unskip_unkern:}
+%   The function \cs{@@_unskip_unkern:} will remove the last \mymeta{skip}
+%   or \mymeta{kern} at execution time using the values ​​\mydim{11} and
+%   \mydim{12} of |\lastnodetype| to apply |\unskip| or |\unkern| according
+%   to the case.
+% \iffalse
+%% Remove last skip or kern.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_unskip_unkern:
+  {
+    \int_case:nnT { \lastnodetype }
+      {
+        { 11 }
+             {
+               \typeout{SKIIIIIIIIIIIIIIIIP}
+               \typeout{\the\lastskip}
+               \unskip
+             }
+        { 12 }
+             {
+               \typeout{KERRRRRRRRRRRRRRRRRN}
+               \typeout{\the\lastkern}
+               \unkern
+             }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6518,24 +6548,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Adjustment of vertical spacing for |multicols| in |enumext|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_unskip_unkern:
-  {
-    \int_case:nnT { \lastnodetype }
-      {
-        { 11 }
-             {
-               \typeout{SKIIIIIIIIIIIIIIIIP}
-               \typeout{\the\lastskip}
-               \unskip
-             }
-        { 12 }
-             {
-               \typeout{KERRRRRRRRRRRRRRRRRN}
-               \typeout{\the\lastkern}
-               \unkern
-             }
-      }
-  }
 \cs_new_protected:Nn \@@_multi_set_vskip:
   {
     \skip_set:cn { l_@@_multicols_above_ \@@_level: _skip }
@@ -6763,14 +6775,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \skip_set_eq:NN \l_@@_minipage_after_skip \l_@@_minipage_right_skip
-    \skip_set_eq:cN { l_@@_multicols_above_ \@@_level: _skip } \l_@@_minipage_right_skip
-    \skip_set_eq:cN { l_@@_multicols_below_ \@@_level: _skip } \l_@@_minipage_right_skip
-    % Adjust itemsep
-    \@@_previus_level_skip:
 %    \end{macrocode}
-%   Now we will see if the environment \myenv{multicols} is active, if so
-%   we set |\topskip=|\mydim{0pt} and then we make |\multicolsep| have the same
-%   value as \cs{l_@@_minipage_right_skip}
+%   We will adjust the values ​​\cs[no-index]{l_@@_multicols_above_X_skip}
+%   and \cs[no-index]{l_@@_multicols_below_X_skip} and call the function
+%   \cs{@@_pre_itemsep_skip:}.
+%    \begin{macrocode}
+    \skip_set_eq:cN
+      { l_@@_multicols_above_ \@@_level: _skip } \l_@@_minipage_right_skip
+    \skip_set_eq:cN
+      { l_@@_multicols_below_ \@@_level: _skip } \l_@@_minipage_right_skip
+    \@@_pre_itemsep_skip:
+%    \end{macrocode}
+%   If the environment \myenv{multicols} is active, we set |\topskip=|\mydim{0pt}
+%   and then we make |\multicolsep| have the same value as \cs{l_@@_minipage_right_skip}.
 %    \begin{macrocode}
     \int_compare:nNnTF
       { \int_use:c { l_@@_columns_ \@@_level: _int } } > { 1 }
@@ -6783,7 +6800,47 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \skip_set:Nn \l_@@_minipage_left_skip { 0.510\box_ht:N \strutbox }
       }
   }
-\cs_new_protected:Nn \@@_previus_level_skip:
+%    \end{macrocode}
+%   The function \cs{@@_minipage_add_space:} will apply the spaces on the \emph{\enquote{left side}} using
+%   |\addvspace| \emph{\enquote{above}} the \myvarenv*{__@@_mini_env*}
+%   environment, taking into account whether \hologo{TeX} is in
+%   \mymeta{horizontal mode} or \mymeta{vertical mode}. Here we use the plain \hologo{TeX} macro
+%   |\nointerlineskip| to prevent baseline \emph{\enquote{glue}} being
+%   added between the next pair of boxes in a \emph{vertical list}. For the latter we
+%   will make some adjustments since the |\partopsep| parameter comes into
+%   play and this affects the \emph{vertical spacing}.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_minipage_add_space:
+  {
+    \@@_minipage_set_skip:
+    \@@_unskip_unkern:
+    \mode_if_vertical:TF
+      {
+        \nopagebreak\nointerlineskip
+      }
+      {
+        \par\nopagebreak\nointerlineskip
+        \skip_zero:c { l_@@_partopsep_ \__enumext_level: _skip }
+      }
+    \int_compare:nNnTF
+      { \int_use:c { l_@@_columns_ \@@_level: _int } } > { 1 }
+      {
+        \addvspace{ 0.445\box_ht:N \strutbox }
+      }
+      {
+        \addvspace{ 0.250\box_ht:N \strutbox }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_pre_itemsep_skip:}
+%   The function \cs{@@_pre_itemsep_skip:} will adjust the spaces below the
+%   environment \myenv{minipage} and the environment \myenv{multicols} if
+%   it is nested in it, taking into account the value of |\itemsep| from
+%   the previous level.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_pre_itemsep_skip:
   {
     \int_case:nn { \l_@@_level_int }
       {
@@ -6799,10 +6856,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                      { \l_@@_itemsep_i_skip } < { \l_@@_minipage_after_skip }
                      {
                        \typeout{ITEM-SEP-MENOR}
-                       \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
-                       \skip_sub:Nn \l_@@_multicols_below_ii_skip { \l_@@_itemsep_i_skip }
-                       \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
-                       \skip_add:Nn \l_@@_multicols_below_ii_skip { 0.350\box_ht:N \strutbox }
+                       \skip_sub:Nn \l_@@_minipage_after_skip
+                         { \l_@@_itemsep_i_skip }
+                       \skip_sub:Nn \l_@@_multicols_below_ii_skip
+                         { \l_@@_itemsep_i_skip }
+                       \skip_add:Nn \l_@@_minipage_after_skip
+                         { 0.150\box_ht:N \strutbox }
+                       \skip_add:Nn \l_@@_multicols_below_ii_skip
+                         { 0.350\box_ht:N \strutbox }
                      }
                    \dim_compare:nNnT
                      { \l_@@_itemsep_i_skip } > { \l_@@_minipage_after_skip }
@@ -6838,30 +6899,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                  }
              }
       }
-  }
-%    \end{macrocode}
-%   The function \cs{@@_minipage_add_space:} will apply the spaces on the \emph{\enquote{left side}} using
-%   |\addvspace| \emph{\enquote{above}} the \myvarenv*{__@@_mini_env*}
-%   environment, taking into account whether \hologo{TeX} is in
-%   \mymeta{horizontal mode} or \mymeta{vertical mode}. Here we use the plain \hologo{TeX} macro
-%   |\nointerlineskip| to prevent baseline \emph{\enquote{glue}} being
-%   added between the next pair of boxes in a \emph{vertical list}. For the latter we
-%   will make some adjustments since the |\partopsep| parameter comes into
-%   play and this affects the \emph{vertical spacing}.
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_minipage_add_space:
-  {
-    \@@_minipage_set_skip:
-    \@@_unskip_unkern:
-    \mode_if_vertical:TF
-      {
-        \nopagebreak\nointerlineskip
-      }
-      {
-        \par\nopagebreak\nointerlineskip
-        \skip_zero:c { l_@@_partopsep_ \__enumext_level: _skip }
-      }
-    \addvspace{ \l_@@_minipage_left_skip }
   }
 %    \end{macrocode}
 % \end{macro}

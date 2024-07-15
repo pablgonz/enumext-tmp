@@ -25,7 +25,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-07-10}
+  {2024-07-15}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -273,6 +273,25 @@
     * ~ #2
     \prg_replicate:nn { 14 - \str_count:n {#2} } { ~ }
       = ~ \use:c { #1_use:c } { l__enumext_#2_#3_#1 } \\
+  }
+%% Remove last skip or kern.
+\cs_new_protected:Npn \__enumext_unskip_unkern:
+  {
+    \int_case:nnT { \lastnodetype }
+      {
+        { 11 }
+             {
+               \typeout{SKIIIIIIIIIIIIIIIIP}
+               \typeout{\the\lastskip}
+               \unskip
+             }
+        { 12 }
+             {
+               \typeout{KERRRRRRRRRRRRRRRRRN}
+               \typeout{\the\lastkern}
+               \unkern
+             }
+      }
   }
 %% Function to check/set current environment for |enumext| and |enumext*|.
 \cs_new_protected:Nn \__enumext_is_not_nested:
@@ -1168,24 +1187,6 @@
   }
 \clist_map_inline:nn { {enumext*}{vii}, {keyans*}{viii} } { \__enumext_tmp:nn #1 }
 %% Adjustment of vertical spacing for |multicols| in |enumext|.
-\cs_new_protected:Npn \__enumext_unskip_unkern:
-  {
-    \int_case:nnT { \lastnodetype }
-      {
-        { 11 }
-             {
-               \typeout{SKIIIIIIIIIIIIIIIIP}
-               \typeout{\the\lastskip}
-               \unskip
-             }
-        { 12 }
-             {
-               \typeout{KERRRRRRRRRRRRRRRRRN}
-               \typeout{\the\lastkern}
-               \unkern
-             }
-      }
-  }
 \cs_new_protected:Nn \__enumext_multi_set_vskip:
   {
     \skip_set:cn { l__enumext_multicols_above_ \__enumext_level: _skip }
@@ -1287,10 +1288,11 @@
           }
       }
     \skip_set_eq:NN \l__enumext_minipage_after_skip \l__enumext_minipage_right_skip
-    \skip_set_eq:cN { l__enumext_multicols_above_ \__enumext_level: _skip } \l__enumext_minipage_right_skip
-    \skip_set_eq:cN { l__enumext_multicols_below_ \__enumext_level: _skip } \l__enumext_minipage_right_skip
-    % Adjust itemsep
-    \__enumext_previus_level_skip:
+    \skip_set_eq:cN
+      { l__enumext_multicols_above_ \__enumext_level: _skip } \l__enumext_minipage_right_skip
+    \skip_set_eq:cN
+      { l__enumext_multicols_below_ \__enumext_level: _skip } \l__enumext_minipage_right_skip
+    \__enumext_pre_itemsep_skip:
     \int_compare:nNnTF
       { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } > { 1 }
       {
@@ -1302,7 +1304,28 @@
         \skip_set:Nn \l__enumext_minipage_left_skip { 0.510\box_ht:N \strutbox }
       }
   }
-\cs_new_protected:Nn \__enumext_previus_level_skip:
+\cs_new_protected:Nn \__enumext_minipage_add_space:
+  {
+    \__enumext_minipage_set_skip:
+    \__enumext_unskip_unkern:
+    \mode_if_vertical:TF
+      {
+        \nopagebreak\nointerlineskip
+      }
+      {
+        \par\nopagebreak\nointerlineskip
+        \skip_zero:c { l__enumext_partopsep_ \__enumext_level: _skip }
+      }
+    \int_compare:nNnTF
+      { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } > { 1 }
+      {
+        \addvspace{ 0.445\box_ht:N \strutbox }
+      }
+      {
+        \addvspace{ 0.250\box_ht:N \strutbox }
+      }
+  }
+\cs_new_protected:Nn \__enumext_pre_itemsep_skip:
   {
     \int_case:nn { \l__enumext_level_int }
       {
@@ -1318,10 +1341,14 @@
                      { \l__enumext_itemsep_i_skip } < { \l__enumext_minipage_after_skip }
                      {
                        \typeout{ITEM-SEP-MENOR}
-                       \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
-                       \skip_sub:Nn \l__enumext_multicols_below_ii_skip { \l__enumext_itemsep_i_skip }
-                       \skip_add:Nn \l__enumext_minipage_after_skip { 0.150\box_ht:N \strutbox }
-                       \skip_add:Nn \l__enumext_multicols_below_ii_skip { 0.350\box_ht:N \strutbox }
+                       \skip_sub:Nn \l__enumext_minipage_after_skip
+                         { \l__enumext_itemsep_i_skip }
+                       \skip_sub:Nn \l__enumext_multicols_below_ii_skip
+                         { \l__enumext_itemsep_i_skip }
+                       \skip_add:Nn \l__enumext_minipage_after_skip
+                         { 0.150\box_ht:N \strutbox }
+                       \skip_add:Nn \l__enumext_multicols_below_ii_skip
+                         { 0.350\box_ht:N \strutbox }
                      }
                    \dim_compare:nNnT
                      { \l__enumext_itemsep_i_skip } > { \l__enumext_minipage_after_skip }
@@ -1357,20 +1384,6 @@
                  }
              }
       }
-  }
-\cs_new_protected:Nn \__enumext_minipage_add_space:
-  {
-    \__enumext_minipage_set_skip:
-    \__enumext_unskip_unkern:
-    \mode_if_vertical:TF
-      {
-        \nopagebreak\nointerlineskip
-      }
-      {
-        \par\nopagebreak\nointerlineskip
-        \skip_zero:c { l__enumext_partopsep_ \__enumext_level: _skip }
-      }
-    \addvspace{ \l__enumext_minipage_left_skip }
   }
 %% Adjustment of vertical spacing for |minipage| in |keyans|.
 \cs_new_protected:Nn \__enumext_keyans_minipage_set_skip:
