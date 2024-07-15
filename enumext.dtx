@@ -6966,7 +6966,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Adjustment of vertical spaces for \env{minipage} in \env{keyans}}
 %
-% \begin{macro}{\@@_keyans_minipage_set_skip:}
+% \begin{macro}{\@@_keyans_minipage_set_skip:, \@@_keyans_minipage_add_space:, \@@_keyans_pre_itemsep_skip:}
 %    The function \cs{@@_keyans_mini_set_vskip:} will take care of determining the
 %    \enquote{adjusted} spaces that we will apply \emph{\enquote{above}} and
 %    \emph{\enquote{below}} the \myvarenv*{__@@_mini_env*} environment in
@@ -6993,43 +6993,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
     \skip_set_eq:NN \l_@@_minipage_after_skip \l_@@_minipage_right_skip
-    %% prev level
-    \skip_if_eq:nnF { \l_@@_minipage_after_skip } { \c_zero_skip }
-      {
-        \skip_if_eq:nnTF { \l_@@_itemsep_i_skip } { \c_zero_skip }
-          {
-            \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
-          }
-          {
-            \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
-          }
-      }
-    %% columns
+    \skip_set_eq:NN \l_@@_multicols_above_v_skip \l_@@_minipage_right_skip
+    \skip_set_eq:NN \l_@@_multicols_below_v_skip \l_@@_minipage_right_skip
+    \@@_keyans_pre_itemsep_skip:
     \int_compare:nNnT { \l_@@_columns_v_int } > { 1 }
       {
         \skip_zero:N \topskip
         \skip_set_eq:NN \multicolsep \l_@@_minipage_right_skip
       }
   }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_minipage_add_space:}
-%    The function \cs{@@_keyans_minipage_add_space:} will apply the spaces set using
-%    |\addvspace| \emph{\enquote{above}} the \myvarenv*{__@@_mini_env*}
-%    environment in \myenv*{keyans}, taking into account whether  \hologo{TeX} is in
-%    \mymeta{horizontal mode} or \mymeta{vertical mode}. For the latter we
-%    will make some adjustments since the |\partopsep| parameter comes into
-%    play and this affects the \emph{vertical spacing}. The implementation
-%    of this function is the same as the one used in \myenv*{enumext}.
-%
-% \iffalse
-%% Apply \addvspace in horizontal and vertical mode for |keyans| environment.
-% \fi
-%    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_minipage_add_space:
   {
     \@@_keyans_minipage_set_skip:
+    \@@_unskip_unkern:
     \mode_if_vertical:TF
       {
         \nopagebreak\nointerlineskip
@@ -7038,7 +7014,46 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \par\nopagebreak\nointerlineskip
         \skip_zero:N \l_@@_partopsep_v_skip
       }
-    \addvspace{ 0.245\box_ht:N \strutbox }
+    \int_compare:nNnTF { \l_@@_columns_v_int } > { 1 }
+      {
+        \addvspace{ 0.445\box_ht:N \strutbox }
+      }
+      {
+        \addvspace{ 0.250\box_ht:N \strutbox }
+      }
+  }
+\cs_new_protected:Nn \@@_keyans_pre_itemsep_skip:
+  {
+    \skip_if_eq:nnTF
+      { \l_@@_itemsep_i_skip } { \l_@@_minipage_after_skip }
+      {
+        \skip_set:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+        \skip_set:Nn \l_@@_multicols_below_v_skip { 0.350\box_ht:N \strutbox }
+      }
+      {
+        \dim_compare:nNnT
+          { \l_@@_itemsep_i_skip } < { \l_@@_minipage_after_skip }
+          {
+            \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+            \skip_sub:Nn \l_@@_multicols_below_v_skip { \l_@@_itemsep_i_skip }
+            \skip_add:Nn \l_@@_minipage_after_skip { 0.150\box_ht:N \strutbox }
+            \skip_add:Nn \l_@@_multicols_below_v_skip { 0.350\box_ht:N \strutbox }
+          }
+        \dim_compare:nNnT
+          { \l_@@_itemsep_i_skip } > { \l_@@_minipage_after_skip }
+          {
+            \skip_set:Nn \l_tmpa_skip
+              {
+                \l_@@_itemsep_i_skip - \l_@@_minipage_after_skip
+              }
+            \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
+            \skip_sub:Nn \l_@@_multicols_below_v_skip { \l_@@_itemsep_i_skip }
+            \skip_add:Nn \l_@@_minipage_after_skip
+              { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+            \skip_add:Nn \l_@@_multicols_below_v_skip
+              { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+          }
+     }
   }
 %    \end{macrocode}
 % \end{macro}
