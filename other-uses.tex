@@ -11,7 +11,7 @@
 \usepackage{enumext,xcolor,textcomp}
 \usepackage[base]{babel}
 \setlength{\parindent}{20pt}
-\setlength{\parskip}{20pt}
+\setlength{\parskip}{0pt}
 \usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
 \usepackage{lua-visual-debug}
 % \labelbox
@@ -23,17 +23,35 @@
   }
 \newcommand*{\Item}{HOLA }
 \begin{document}
+Hola
+
+\makeatletter
+\ExplSyntaxOn
+\__enumext@minipage { 3cm }
+HHH
+\end__enumext@minipage
+\hfill
+\__enumext@minipage { 3cm }
+PPPP
+\end__enumext@minipage
+\ExplSyntaxOff
+
 ZZZZ
-\begin{enumext*}[widest={20},save-ans=test, nosep]
+\stop
+
+
+\begin{enumext*}[columns=2,widest={20},save-ans=test, itemsep=1cm,parsep=1cm]
  \item* Hanza en astillero, \par QUe no quiere nada más en este mundo o el \newline otro.  \anskey(2)*[store-brk]{PPPP}
  \item Harna antigua  \par QUe no quiere nada más en este mundo o el otro. \anskey(2)*[store-brk]{PPPP}
  \item Hocín flaco, y \anskey(2)*[store-brk]{PPPP}
  \item galgo corredor. \anskey(2)*[store-brk]{PPPP}
  \item* Hocín flaco, y \anskey(2)*[store-brk]{PPPP}
+
  \item galgo corredor. \anskey(2)*[store-brk]{PPPP}
 \end{enumext*}
 
-
+Below
+\stop
 \begin{enumext*}[topsep=2cm]
 \item \begin{enumext}[topsep=0pt]
     \item A

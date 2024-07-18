@@ -5162,7 +5162,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}[int]{\@@_internal_mini_page:, @@_mini_env*}
 %   The function \cs{@@_internal_mini_page:} creates a internal
-%   \myvarenv*{__@@_mini_env*} environment (\emph{custom version} of
+%   \myvarenv*{__@@_mini_page} environment (\emph{custom version} of
 %   \myenv{minipage}) setting the |\if@minipage| switch to
 %   \emph{\enquote{false}} to allow spaces at the \emph{\enquote{above}} of
 %   the environment, plus we will add |\skip_vertical:N \c_zero_skip| to maintain alignment
@@ -5181,7 +5181,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \int_compare:nNnT { \l_@@_level_int } = { 0 }
       {
-        \DeclareDocumentEnvironment{@@_mini_env*}{ m }
+        \DeclareDocumentEnvironment{@@_mini_page}{ m }
           {
             \@@_minipage:w [ t ] { ##1 }
               \legacy_if_gset_false:n { @minipage }
@@ -6748,7 +6748,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_minipage_set_skip:, \@@_minipage_add_space:}
 %    The function \cs{@@_minipage_set_skip:} will take care of determining the
 %    \emph{\enquote{adjust}} spaces that we will apply \emph{\enquote{above}} and
-%    \emph{\enquote{below}} the \myvarenv*{__@@_mini_env*} environment in
+%    \emph{\enquote{below}} the \myvarenv*{__@@_mini_page} environment in
 %    \myenv*{enumext}.
 %
 %    \smallskip
@@ -6797,7 +6797,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The function \cs{@@_minipage_add_space:} will apply the spaces on the \emph{\enquote{left side}} using
-%   |\addvspace| \emph{\enquote{above}} the \myvarenv*{__@@_mini_env*}
+%   |\addvspace| \emph{\enquote{above}} the \myvarenv*{__@@_mini_page}
 %   environment, taking into account whether \hologo{TeX} is in
 %   \mymeta{horizontal mode} or \mymeta{vertical mode}. Here we use the plain \hologo{TeX} macro
 %   |\nointerlineskip| to prevent baseline \emph{\enquote{glue}} being
@@ -6968,7 +6968,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_keyans_minipage_set_skip:, \@@_keyans_minipage_add_space:, \@@_keyans_pre_itemsep_skip:}
 %    The function \cs{@@_keyans_mini_set_vskip:} will take care of determining the
 %    \enquote{adjusted} spaces that we will apply \emph{\enquote{above}} and
-%    \emph{\enquote{below}} the \myvarenv*{__@@_mini_env*} environment in
+%    \emph{\enquote{below}} the \myvarenv*{__@@_mini_page} environment in
 %    \myenv*{keyans}. The implementation of this function is the same
 %    as the one used in \myenv*{enumext}.
 % \iffalse
@@ -7063,7 +7063,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_mini_set_vskip_vii:,\@@_mini_set_vskip_viii:}
 %    The functions \cs{@@_mini_set_vskip_vii:} and \cs{@@_mini_set_vskip_viii:} will take care of determining the
 %    \enquote{adjusted} spaces that we will apply \emph{\enquote{above}} and
-%    \emph{\enquote{below}} the \myvarenv*{__@@_mini_env*} environment in
+%    \emph{\enquote{below}} the \myvarenv*{__@@_mini_page} environment in
 %    \myenv*{enumext*} and \myenv*{keyans*}.
 % \iffalse
 %% Adjustment of vertical spacing for |minipage| in |enumext*| and |keyans*|.
@@ -7132,7 +7132,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_mini_addvspace_vii:,\@@_mini_addvspace_viii:}
 %   The functions \cs{@@_mini_addvspace_vii:} and
 %   \cs{@@_mini_addvspace_viii:} will apply the vertical space
-%   \emph{\enquote{only above}} the \myvarenv*{__@@_mini_env*} environment on
+%   \emph{\enquote{only above}} the \myvarenv*{__@@_mini_page} environment on
 %   the \emph{left side} when the \mykey{mini-right} key is active in the
 %   \myenv*{enumext*} and \myenv*{keyans*} environments.
 %
@@ -7160,13 +7160,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{The command \cs{miniright}}\label{cmd:miniright}
 %
-% The command \ics*{miniright} will close the \myvarenv*{__@@_mini_env*}
-% environment on the \emph{\enquote{left side}}, open the \myvarenv*{__@@_mini_env*}
+% The command \ics*{miniright} will close the \myvarenv*{__@@_mini_page}
+% environment on the \emph{\enquote{left side}}, open the \myvarenv*{__@@_mini_page}
 % environment on the \emph{\enquote{right side}} adding the \emph{adjusted vertical space}.
 % By default we will add |\centering| when starting the \emph{\enquote{right side}}
 % environment. The \emph{starred argument} ‘|*|’ inhibits the use of |\centering|
 % command i.e. the usual \hologo{LaTeX} justification is maintained in
-% the \myvarenv*{__@@_mini_env*} on the \emph{\enquote{right side}}.
+% the \myvarenv*{__@@_mini_page} on the \emph{\enquote{right side}}.
 %
 % \begin{macro}{\miniright}
 %   First we will perform some checks to prevent the command from being
@@ -7209,9 +7209,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    of the \ics*{miniright} command in the \myenv*{enumext} environment.
 %    We check if the \mykey{mini-env} key is active via the variable
 %    \myvarenv{l__@@_minipage_right_X_dim}, if so we close the
-%    \myenv{multicols} environment with the \myvarenv*{__@@_mini_env*}
+%    \myenv{multicols} environment with the \myvarenv*{__@@_mini_page}
 %    environment on the \emph{\enquote{left side}}, then we open the
-%    \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{right
+%    \myvarenv*{__@@_mini_page} environment on the \emph{\enquote{right
 %    side}}, apply our adjusted \emph{\enquote{vertical spaces}}, followed by
 %    adding the |\centering| command when the starred argument ‘|*|’ is not
 %    present and set zero \myvarenv{g__@@_minipage_stat_int}, otherwise we return an error.
@@ -7230,10 +7230,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \par\addvspace{ \l_@@_minipage_after_skip }
           }
-        \end{@@_mini_env*}
+        \end@@_mini_page
         \hfill
-        \begin{@@_mini_env*}
-          { \dim_use:c { l_@@_minipage_right_ \@@_level: _dim } }
+        \@@_mini_page{ \dim_use:c { l_@@_minipage_right_ \@@_level: _dim } }
           \par\nointerlineskip
           \addvspace { \l_@@_minipage_right_skip }
           \bool_if:nF {#1}
@@ -7271,9 +7270,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \par\addvspace{ \l_@@_minipage_after_skip }
           }
-        \end{@@_mini_env*}
+        \end@@_mini_page
         \hfill
-        \begin{@@_mini_env*}{ \l_@@_minipage_right_v_dim }
+        \@@_mini_page{ \l_@@_minipage_right_v_dim }
           \par\nointerlineskip
           \addvspace { \l_@@_minipage_right_skip }
           \bool_if:nF {#1}
@@ -10741,7 +10740,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_safe_exec:}\label{fun:enumext:safe-exe}
 %   The \cs{@@_safe_exec:} function first call the function \cs{@@_internal_mini_page:} to create
-%   the environment \myvarenv*{__@@_mini_env*}, then the function
+%   the environment \myvarenv*{__@@_mini_page}, then the function
 %   \cs{@@_is_not_nested:} which sets \cs{g_@@_standar_bool} to \emph{\enquote{true}} if we
 %   are not nested within \myenv*{enumext*}, we will increment
 %   \cs{l_@@_level_int} to restrict nesting of the environment, set
@@ -10872,11 +10871,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_check_ans_active:
 %    \end{macrocode}
 %    When the \mykey{mini-env} key is active it will set the value of the
-%    \myvarenv{l__@@_minipage_right_X_dim} to be the \emph{width} of the \myvarenv*{__@@_mini_env*}
+%    \myvarenv{l__@@_minipage_right_X_dim} to be the \emph{width} of the \myvarenv*{__@@_mini_page}
 %    environment on the \emph{\enquote{right side}}, using this value together with the value
 %    of the \myvarenv{l__@@_minipage_hsep_X_dim} set by the \mykey{mini-sep} key,
 %    the value of \myvarenv{l__@@_minipage_left_X_dim} will be set, which will be
-%    the \emph{width} of \myvarenv*{__@@_mini_env*} environment on the
+%    the \emph{width} of \myvarenv*{__@@_mini_page} environment on the
 %    \emph{\enquote{left side}}, always having a current \ics{linewidth}
 %    as \emph{maximum width} between them.
 % \iffalse
@@ -10897,7 +10896,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    activated and the integer variable \cs{g_@@_minipage_stat_int}
 %    used by the \ics*{miniright} command will be incremented, then
 %    the function \cs{@@_minipage_add_space:} is called and the
-%    \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{left
+%    \myvarenv*{__@@_mini_page} environment on the \emph{\enquote{left
 %    side}} will be initialized followed by the \emph{\enquote{vertical spacing}}
 %    applied to preserve the \emph{\enquote{baseline}} between the \emph{left}
 %    and \emph{right} side environments.
@@ -10911,8 +10910,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \bool_set_true:c { l_@@_minipage_active_ \@@_level: _bool }
         \int_gincr:N \g_@@_minipage_stat_int
         \@@_minipage_add_space:
-        \begin{@@_mini_env*}
-          { \dim_use:c { l_@@_minipage_left_ \@@_level: _dim } }
+        \@@_mini_page{ \dim_use:c { l_@@_minipage_left_ \@@_level: _dim } }
       }
     \@@_multicols_start:
   }
@@ -10989,8 +10987,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_after_list:} first check the state of
 %    the boolean variable \myvarenv{l__@@_minipage_active_X_bool}, if it is
 %    \enquote{true} a small test will be executed to check if we have
-%    omitted the use of \ics*{miniright} (the \myvarenv*{__@@_mini_env*}
-%    environment has not been closed), then close \myvarenv*{__@@_mini_env*}
+%    omitted the use of \ics*{miniright} (the \myvarenv*{__@@_mini_page}
+%    environment has not been closed), then close \myvarenv*{__@@_mini_page}
 %    and add the \emph{adjusted vertical space} \cs{l_@@_minipage_after_skip},
 %    otherwise we will close the \myenv{multicols} environment.
 %    \begin{macrocode}
@@ -11005,7 +11003,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
         \int_gzero:N \g_@@_minipage_stat_int
         \@@_unskip_unkern: % remove topsep + [partopsep]
-        \end{@@_mini_env*}
+        \end@@_mini_page
       }
       {
         \@@_multicols_stop:
@@ -11150,10 +11148,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Iternal functions for |keyans| environment.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@@_minipage:
-  {
-
-  }
 \cs_new_protected:Nn \@@_before_list_v:
   {
     \@@_vspace_above_v:
@@ -11167,7 +11161,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \bool_set_true:N \l_@@_minipage_active_v_bool
         \int_gincr:N \g_@@_minipage_stat_int
         \@@_keyans_minipage_add_space:
-        \begin{@@_mini_env*}{ \l_@@_minipage_left_v_dim }
+        \@@_mini_page{ \l_@@_minipage_left_v_dim }
       }
     \@@_keyans_multicols_start:
   }
@@ -11217,7 +11211,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
         \int_gzero:N \g_@@_minipage_stat_int
         \@@_unskip_unkern: % remove topsep + [partopsep]
-        \end{@@_mini_env*}
+        \end@@_mini_page
         \par\addvspace{ \l_@@_minipage_after_skip }
       }
       {
@@ -11835,7 +11829,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % The implementation of the \mykey{mini-env} key support is almost
 % identical to the one used in the \myenv*{enumext} and \myenv*{keyans}
-% environments, the difference is that the \myvarenv*{__@@_mini_env*}
+% environments, the difference is that the \myvarenv*{__@@_mini_page}
 % environment on the \emph{\enquote{right side}} is executed
 % \emph{\enquote{after}} closing the environment, so it is necessary to
 % make a global copy of the variable \cs{l_@@_minipage_right_vii_dim} in
@@ -11861,16 +11855,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \l_@@_minipage_right_vii_dim
         \@@_mini_addvspace_vii:
         \nointerlineskip\noindent
-        \begin{@@_mini_env*}{ \l_@@_minipage_left_vii_dim }
+        \@@_mini_page{ \l_@@_minipage_left_vii_dim }
       }
    }
 %    \end{macrocode}
 %   The function \cs{@@_stop_mini_vii:} closes the
-%   \myvarenv*{__@@_mini_env*} environment on the left side, applies
+%   \myvarenv*{__@@_mini_page} environment on the left side, applies
 %   |\hfill| and sets the value of the variable
 %   \cs{g_@@_minipage_active_vii_bool} to true which will be used in the
 %   function \cs{@@_after_env:nn} to execute the
-%   \myvarenv*{__@@_mini_env*} on the \emph{\enquote{right side}}.
+%   \myvarenv*{__@@_mini_page} on the \emph{\enquote{right side}}.
 % \iffalse
 %% Stop support for |mini-env| key in |enumext*| environment
 % \fi
@@ -11879,7 +11873,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_if:NT \l_@@_minipage_active_vii_bool
       {
-        \end{@@_mini_env*}
+        \end@@_mini_page
         \hfill
         \bool_gset_true:N \g_@@_minipage_active_vii_bool
       }
@@ -11887,7 +11881,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %  Finally we execute the \mymarg{code} passed to the \mykey{mini-right}
 %  or \mykey{mini-right*} keys stored in the variable \cs{g_@@_miniright_code_vii_tl}
-%  in the \myvarenv*{__@@_mini_env*} environment on the \emph{\enquote{right
+%  in the \myvarenv*{__@@_mini_page} environment on the \emph{\enquote{right
 %  side}}. For compatibility with the \mypkg{caption} package and possibly
 %  other \mymarg{code} passed to this key, we will pass it to a box and
 %  then print it.
@@ -11899,7 +11893,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_if:NT \g_@@_minipage_active_vii_bool
       {
-        \begin{@@_mini_env*}{ \g_@@_minipage_right_vii_dim }
+        \@@_mini_page{ \g_@@_minipage_right_vii_dim }
           \par\addvspace { \g_@@_minipage_right_skip }
           \bool_if:NF \g_@@_minipage_center_vii_bool
             {
@@ -11913,7 +11907,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               \tl_use:N \g_@@_miniright_code_vii_tl
             }
           \box_use_drop:N \l_@@_miniright_code_vii_box
-        \end{@@_mini_env*}
+        \end@@_mini_page
         \par\addvspace{ \g_@@_minipage_after_skip }
       }
     \bool_gset_false:N \g_@@_minipage_active_vii_bool
@@ -11949,14 +11943,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \l_@@_minipage_right_viii_dim
         \@@_mini_addvspace_viii:
         \nointerlineskip\noindent
-        \begin{@@_mini_env*}{ \l_@@_minipage_left_viii_dim }
+        \@@_mini_page{ \l_@@_minipage_left_viii_dim }
       }
    }
 \cs_new_protected:Nn \@@_stop_mini_viii:
   {
     \bool_if:NT \l_@@_minipage_active_viii_bool
       {
-        \end{@@_mini_env*}
+        \end@@_mini_page
         \hfill
         \bool_gset_true:N \g_@@_minipage_active_viii_bool
       }
@@ -11965,7 +11959,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_if:NT \g_@@_minipage_active_viii_bool
       {
-        \begin{@@_mini_env*}{ \g_@@_minipage_right_viii_dim }
+        \@@_mini_page{ \g_@@_minipage_right_viii_dim }
           \par\addvspace { \g_@@_minipage_right_skip }
           \bool_if:NF \g_@@_minipage_center_viii_bool
             {
@@ -11979,7 +11973,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               \tl_use:N \g_@@_miniright_code_viii_tl
             }
           \box_use_drop:N \l_@@_miniright_code_viii_box
-        \end{@@_mini_env*}
+        \end@@_mini_page
         \par\addvspace{ \g_@@_minipage_after_skip }
       }
     \bool_gset_false:N \g_@@_minipage_active_viii_bool
@@ -12029,7 +12023,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_safe_exec_vii:}\label{fun:starred:safe-exe}
 %   We will first call the function \cs{@@_internal_mini_page:} to create
-%   the environment \myvarenv*{__@@_mini_env*}, then the function
+%   the environment \myvarenv*{__@@_mini_page}, then the function
 %   \cs{@@_is_not_nested:} which sets \cs{g_@@_starred_bool} to true if we
 %   are not nested within \myenv*{enumext}, we will increment
 %   \cs{l_@@_level_h_int} to restrict nesting of the environment, set

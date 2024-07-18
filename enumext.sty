@@ -444,7 +444,7 @@
   {
     \int_compare:nNnT { \l__enumext_level_int } = { 0 }
       {
-        \DeclareDocumentEnvironment{__enumext_mini_env*}{ m }
+        \DeclareDocumentEnvironment{__enumext_mini_page}{ m }
           {
             \__enumext_minipage:w [ t ] { ##1 }
               \legacy_if_gset_false:n { @minipage }
@@ -1633,10 +1633,9 @@
           {
             \par\addvspace{ \l__enumext_minipage_after_skip }
           }
-        \end{__enumext_mini_env*}
+        \end__enumext_mini_page
         \hfill
-        \begin{__enumext_mini_env*}
-          { \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } }
+        \__enumext_mini_page{ \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } }
           \par\nointerlineskip
           \addvspace { \l__enumext_minipage_right_skip }
           \bool_if:nF {#1}
@@ -1662,9 +1661,9 @@
           {
             \par\addvspace{ \l__enumext_minipage_after_skip }
           }
-        \end{__enumext_mini_env*}
+        \end__enumext_mini_page
         \hfill
-        \begin{__enumext_mini_env*}{ \l__enumext_minipage_right_v_dim }
+        \__enumext_mini_page{ \l__enumext_minipage_right_v_dim }
           \par\nointerlineskip
           \addvspace { \l__enumext_minipage_right_skip }
           \bool_if:nF {#1}
@@ -3711,8 +3710,7 @@
         \bool_set_true:c { l__enumext_minipage_active_ \__enumext_level: _bool }
         \int_gincr:N \g__enumext_minipage_stat_int
         \__enumext_minipage_add_space:
-        \begin{__enumext_mini_env*}
-          { \dim_use:c { l__enumext_minipage_left_ \__enumext_level: _dim } }
+        \__enumext_mini_page{ \dim_use:c { l__enumext_minipage_left_ \__enumext_level: _dim } }
       }
     \__enumext_multicols_start:
   }
@@ -3768,7 +3766,7 @@
           }
         \int_gzero:N \g__enumext_minipage_stat_int
         \__enumext_unskip_unkern: % remove topsep + [partopsep]
-        \end{__enumext_mini_env*}
+        \end__enumext_mini_page
       }
       {
         \__enumext_multicols_stop:
@@ -3845,10 +3843,6 @@
     \keys_set:nn { enumext / keyans } {#1}
   }
 %% Iternal functions for |keyans| environment.
-\cs_new_protected:Nn \__enumext@_minipage:
-  {
-
-  }
 \cs_new_protected:Nn \__enumext_before_list_v:
   {
     \__enumext_vspace_above_v:
@@ -3862,7 +3856,7 @@
         \bool_set_true:N \l__enumext_minipage_active_v_bool
         \int_gincr:N \g__enumext_minipage_stat_int
         \__enumext_keyans_minipage_add_space:
-        \begin{__enumext_mini_env*}{ \l__enumext_minipage_left_v_dim }
+        \__enumext_mini_page{ \l__enumext_minipage_left_v_dim }
       }
     \__enumext_keyans_multicols_start:
   }
@@ -3912,7 +3906,7 @@
           }
         \int_gzero:N \g__enumext_minipage_stat_int
         \__enumext_unskip_unkern: % remove topsep + [partopsep]
-        \end{__enumext_mini_env*}
+        \end__enumext_mini_page
         \par\addvspace{ \l__enumext_minipage_after_skip }
       }
       {
@@ -4262,7 +4256,7 @@
           \l__enumext_minipage_right_vii_dim
         \__enumext_mini_addvspace_vii:
         \nointerlineskip\noindent
-        \begin{__enumext_mini_env*}{ \l__enumext_minipage_left_vii_dim }
+        \__enumext_mini_page{ \l__enumext_minipage_left_vii_dim }
       }
    }
 %% Stop support for |mini-env| key in |enumext*| environment
@@ -4270,7 +4264,7 @@
   {
     \bool_if:NT \l__enumext_minipage_active_vii_bool
       {
-        \end{__enumext_mini_env*}
+        \end__enumext_mini_page
         \hfill
         \bool_gset_true:N \g__enumext_minipage_active_vii_bool
       }
@@ -4280,7 +4274,7 @@
   {
     \bool_if:NT \g__enumext_minipage_active_vii_bool
       {
-        \begin{__enumext_mini_env*}{ \g__enumext_minipage_right_vii_dim }
+        \__enumext_mini_page{ \g__enumext_minipage_right_vii_dim }
           \par\addvspace { \g__enumext_minipage_right_skip }
           \bool_if:NF \g__enumext_minipage_center_vii_bool
             {
@@ -4294,7 +4288,7 @@
               \tl_use:N \g__enumext_miniright_code_vii_tl
             }
           \box_use_drop:N \l__enumext_miniright_code_vii_box
-        \end{__enumext_mini_env*}
+        \end__enumext_mini_page
         \par\addvspace{ \g__enumext_minipage_after_skip }
       }
     \bool_gset_false:N \g__enumext_minipage_active_vii_bool
@@ -4320,14 +4314,14 @@
           \l__enumext_minipage_right_viii_dim
         \__enumext_mini_addvspace_viii:
         \nointerlineskip\noindent
-        \begin{__enumext_mini_env*}{ \l__enumext_minipage_left_viii_dim }
+        \__enumext_mini_page{ \l__enumext_minipage_left_viii_dim }
       }
    }
 \cs_new_protected:Nn \__enumext_stop_mini_viii:
   {
     \bool_if:NT \l__enumext_minipage_active_viii_bool
       {
-        \end{__enumext_mini_env*}
+        \end__enumext_mini_page
         \hfill
         \bool_gset_true:N \g__enumext_minipage_active_viii_bool
       }
@@ -4336,7 +4330,7 @@
   {
     \bool_if:NT \g__enumext_minipage_active_viii_bool
       {
-        \begin{__enumext_mini_env*}{ \g__enumext_minipage_right_viii_dim }
+        \__enumext_mini_page{ \g__enumext_minipage_right_viii_dim }
           \par\addvspace { \g__enumext_minipage_right_skip }
           \bool_if:NF \g__enumext_minipage_center_viii_bool
             {
@@ -4350,7 +4344,7 @@
               \tl_use:N \g__enumext_miniright_code_viii_tl
             }
           \box_use_drop:N \l__enumext_miniright_code_viii_box
-        \end{__enumext_mini_env*}
+        \end__enumext_mini_page
         \par\addvspace{ \g__enumext_minipage_after_skip }
       }
     \bool_gset_false:N \g__enumext_minipage_active_viii_bool
