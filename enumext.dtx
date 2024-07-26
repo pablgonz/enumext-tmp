@@ -616,7 +616,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     columnseprule, footnote, footnotemark, footnotetext, raggedcolumns, hspace, parindent, %
                     subsection, list,endlist,leftmargin, itemindent,bfseries,endminipage, minipage, parskip, % item,
                     labelwidth,labelsep,labelindent,label,ref,topsep,parsep,includegraphics, itemize, description, %
-                    multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, value, %
+                    multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, value, noindent,%
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, %
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
                     textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_space,%
@@ -632,7 +632,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Reserved words 5 (plain TeX or internal)
     keywordstyle  = [5]{\color{red}},%
     keywords      = [5]{makeatletter,makeatother,let,verb,makebox,def,prevdepth,glue, if@minipage,if@hyper@item,if@noitemarg, %
-                    splittopskip,showboxdepth,topskip,showoutput,nointerlineskip, ignorespaces, unskip, unkern, lastnodetype},%
+                    splittopskip,showboxdepth,topskip,showoutput,nointerlineskip, ignorespaces, unskip, unkern, lastnodetype,%
+                    rightskip, @rightskip, @flushglue, hbadness},%
 % Reserved words 6 (optcolor) KEYS
     keywordstyle  = [6]{\color{optcolor}},%
     keywords      = [6]{save-ans,wrap-ans,save-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
@@ -11989,8 +11990,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{enumext*}
 %    First we will generate the environment and we will give a
 %    temporary definition to \cs{@@_stop_item_tmp_vii:} equal to
-%    |\noindent| and next to |\item| equal to
-%    \cs{@@_start_item_tmp_vii:} which we will redefine later.
+%    |\noindent| and next to |\item| equal to \cs{@@_start_item_tmp_vii:}
+%    which we will redefine later. Like the implementation used by the
+%    \mypkg{shortlst} package, we will set the values ​​of |\rightskip| and
+%    |\@rightskip| equal to |\@flushglue| whose value is \mydim{0.0pt plus
+%    1.0 fil}, the latter will only be set if the engine is different from
+%    \hologo{pdfTeX}, in the tests that I have performed setting |\rightskip|
+%    does not work well.
 % \iffalse
 %% Define |enumext*|
 % \fi
@@ -12008,8 +12014,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \@@_starred_columns_set_vii:
     \item[] \scan_stop:
+    \skip_set:cn { @rightskip } { 0.0pt plus 1.0 fil }
+    \sys_if_engine_pdftex:F
+      {
+        \skip_set_eq:Nc \rightskip { @rightskip }
+      }
     \cs_set_eq:NN \@@_stop_item_tmp_vii: \noindent
     \cs_set_eq:NN \item \@@_start_item_tmp_vii:
+    \ignorespaces
   }
   {
     \@@_stop_item_tmp_vii:
@@ -12340,9 +12352,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
 %    \end{macrocode}
-%
-%    Here we start capturing |\item| and its contents into a group using the
-%    plain form of the \myenv{lrbox} environment. If the state of the
+%    Here we start capturing |\item| and its contents in a horizontal box
+%    where the width will be |\itemwidth| plus |\labelwidth| plus |\labelsep|, unlike
+%    the implementation in \mypkg{shortlst} we will not use an extra group
+%    and the plain form of the \myenv{lrbox} environment. If the state of the
 %    variable \cs{l_@@_footnotes_key_bool} is false, we will redefine the
 %    command |\footnote|, followed by printing the \mymeta{symbol} defined
 %    for |\item*| if it is present and open a new group inside which we
@@ -12354,8 +12367,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \mykey{parsep} key which will be equal to |\parskip| and the
 %    \mykey{itemindent} key.
 %    \begin{macrocode}
-    \group_begin:
-      \lrbox{ \l_@@_item_text_vii_box }
+    \hbox_set_to_wd:Nnw \l_@@_item_text_vii_box
+      {
+        \l_@@_joined_width_vii_dim
+        + \l_@@_labelwidth_vii_dim
+        + \l_@@_labelsep_vii_dim
+      }
         \bool_if:NF \l_@@_footnotes_key_bool
           {
             \@@_renew_footnote:
@@ -12395,31 +12412,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_stop_item_vii:}
-%   The function \cs{@@_stop_item_vii:} shall terminate with the capture of
-%   |\item| and its \mymeta{contents}. Close the environments
-%   \myenv{minipage}, \myenv{lrbox} and the group. Then we
-%   only have to set the width of the box and print it next to
-%   |\footnote|, and add the horizontal and vertical separation between
-%   the boxes.
+%    The \cs{@@_stop_item_vii:} function will finish by capturing |\item|
+%    and its \mymeta{contents}, closing the \myenv{minipage} environment and
+%    the horizontal box. Here we will reduce the \emph{warnings} a bit by setting
+%    the value of |\hbadness| to \mydim{10000} and finally we will set the
+%    space between rows and columns.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_stop_item_vii:
   {
-        \@@_endminipage:
-      \endlrbox
-    \group_end:
-    \box_set_wd:Nn \l_@@_item_text_vii_box
-      {
-        \l_@@_joined_width_vii_dim
-        + \l_@@_labelwidth_vii_dim
-        + \l_@@_labelsep_vii_dim
-      }
+      \@@_endminipage:
+    \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_vii_box
     \bool_if:NF \l_@@_footnotes_key_bool
       {
         \@@_print_footnote:
       }
-    \int_compare:nNnTF { \l_@@_item_column_pos_vii_int } = { \l_@@_columns_vii_int }
+    \int_compare:nNnTF
+      { \l_@@_item_column_pos_vii_int } = { \l_@@_columns_vii_int }
       {
         \par\noindent
         \int_zero:N \l_@@_item_column_pos_vii_int
@@ -12433,7 +12443,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   Finally we will remove the vertical space equal to |\parsep| when the
 %   total number of items is divisible by the number of items in the last
 %   row of the environment.
-%
 % \iffalse
 %% Remove extra \parsep in |enumext*|
 % \fi
@@ -12442,7 +12451,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \int_compare:nNnT
       {
-        \int_mod:nn {  \g_@@_item_count_all_vii_int } { \l_@@_columns_vii_int }
+        \int_mod:nn
+          {  \g_@@_item_count_all_vii_int } { \l_@@_columns_vii_int }
       }
       =
       { 0 }

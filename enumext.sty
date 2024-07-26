@@ -4366,8 +4366,14 @@
       }
     \__enumext_starred_columns_set_vii:
     \item[] \scan_stop:
+    \skip_set:cn { @rightskip } { 0.0pt plus 1.0 fil }
+    \sys_if_engine_pdftex:F
+      {
+        \skip_set_eq:Nc \rightskip { @rightskip }
+      }
     \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \noindent
     \cs_set_eq:NN \item \__enumext_start_item_tmp_vii:
+    \ignorespaces
   }
   {
     \__enumext_stop_item_tmp_vii:
@@ -4535,8 +4541,12 @@
               }
           }
       }
-    \group_begin:
-      \lrbox{ \l__enumext_item_text_vii_box }
+    \hbox_set_to_wd:Nnw \l__enumext_item_text_vii_box
+      {
+        \l__enumext_joined_width_vii_dim
+        + \l__enumext_labelwidth_vii_dim
+        + \l__enumext_labelsep_vii_dim
+      }
         \bool_if:NF \l__enumext_footnotes_key_bool
           {
             \__enumext_renew_footnote:
@@ -4574,22 +4584,16 @@
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_item_vii:
   {
-        \__enumext_endminipage:
-      \endlrbox
-    \group_end:
-    \box_set_wd:Nn \l__enumext_item_text_vii_box
-      {
-        \l__enumext_joined_width_vii_dim
-        + \l__enumext_labelwidth_vii_dim
-        + \l__enumext_labelsep_vii_dim
-      }
+      \__enumext_endminipage:
+    \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_vii_box
     \bool_if:NF \l__enumext_footnotes_key_bool
       {
         \__enumext_print_footnote:
       }
-    \int_compare:nNnTF { \l__enumext_item_column_pos_vii_int } = { \l__enumext_columns_vii_int }
+    \int_compare:nNnTF
+      { \l__enumext_item_column_pos_vii_int } = { \l__enumext_columns_vii_int }
       {
         \par\noindent
         \int_zero:N \l__enumext_item_column_pos_vii_int
@@ -4601,7 +4605,8 @@
   {
     \int_compare:nNnT
       {
-        \int_mod:nn {  \g__enumext_item_count_all_vii_int } { \l__enumext_columns_vii_int }
+        \int_mod:nn
+          {  \g__enumext_item_count_all_vii_int } { \l__enumext_columns_vii_int }
       }
       =
       { 0 }

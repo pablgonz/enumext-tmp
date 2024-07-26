@@ -3,15 +3,15 @@
 % arara: clean: { extensions: [ aux, log, out] }
 \documentclass[12pt]{article}
 %\documentclass[full]{l3doc}
-\usepackage{lipsum,enumitem}
+\usepackage{xcolor}
 \usepackage[hyperfootnotes=false]{hyperref}%,footnotehyper ,,footnotehyper
 % \hypersetup{}
 %\makesavenoteenv{enumext*}
 %%\usepackage{multicol}%,footnotehyper ,,footnotehyper
-\usepackage{enumext,xcolor,textcomp}
-\usepackage[base]{babel}
-\setlength{\parindent}{20pt}
-\setlength{\parskip}{0pt}
+\usepackage{enumext}
+%%%\usepackage[base]{babel}
+%%%\setlength{\parindent}{20pt}
+%%%\setlength{\parskip}{0pt}
 \usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
 \usepackage{lua-visual-debug}
 % \labelbox
@@ -25,32 +25,49 @@
 \begin{document}
 Hola
 
-\makeatletter
-\ExplSyntaxOn
-\__enumext@minipage { 3cm }
-HHH
-\end__enumext@minipage
-\hfill
-\__enumext@minipage { 3cm }
-PPPP
-\end__enumext@minipage
-\ExplSyntaxOff
 
-ZZZZ
-\stop
+\begin{enumext*}[font=\Huge,columns=2,widest={20}, itemsep=0.1cm,parsep=1cm]
+\item Hanza en astillero, \par QUe no quiere nada más en este mundo o el otro. % \anskey(2)*[store-brk]{PPPP}
+\item Harna antigua  \color{red} And red!\par QUe no quiere nada más en este mundo o el otro. %\anskey(2)*[store-brk]{PPPP}
+\item Hocín flaco, y %\anskey(2)*[store-brk]{PPPP}
+\item galgo corredor. %\anskey(2)*[store-brk]{PPPP}
+\item Hocín flaco, y %\anskey(2)*[store-brk]{PPPP}
+ %%\item
+ galgo corredor. %\anskey(2)*[store-brk]{PPPP}
+\end{enumext*}
+
+Chao
+
+\begin{enumext}[columns=2,widest={20},save-ans=test, itemsep=0.4cm,parsep=0.1cm]
+ \item Hanza en astillero,% \par QUe no quiere nada más en este mundo o el otro.  \anskey(2)*[store-brk]{PPPP}
+ \item Harna antigua  %\par QUe no quiere nada más en este mundo o el otro. \anskey(2)*[store-brk]{PPPP}
+ \item Hocín flaco, y %\anskey(2)*[store-brk]{PPPP}
+ \item galgo corredor. %\anskey(2)*[store-brk]{PPPP}
+ \item Hocín flaco, y %\anskey(2)*[store-brk]{PPPP}
+ \item
 
 
-\begin{enumext*}[columns=2,widest={20},save-ans=test, itemsep=1cm,parsep=1cm]
- \item* Hanza en astillero, \par QUe no quiere nada más en este mundo o el \newline otro.  \anskey(2)*[store-brk]{PPPP}
+
+ galgo corredor. %\anskey(2)*[store-brk]{PPPP}
+\end{enumext}
+
+
+\end{document}
+
+\begin{enumext}[columns=2,widest={20},save-ans=test, itemsep=4cm,parsep=1cm]
+ \item* Hanza en astillero, \par QUe no quiere nada más en este mundo o el otro.  \anskey(2)*[store-brk]{PPPP}
  \item Harna antigua  \par QUe no quiere nada más en este mundo o el otro. \anskey(2)*[store-brk]{PPPP}
  \item Hocín flaco, y \anskey(2)*[store-brk]{PPPP}
  \item galgo corredor. \anskey(2)*[store-brk]{PPPP}
- \item* Hocín flaco, y \anskey(2)*[store-brk]{PPPP}
-
- \item galgo corredor. \anskey(2)*[store-brk]{PPPP}
-\end{enumext*}
+ \item(2)* Hocín flaco, y \anskey(2)*[store-brk]{PPPP}
+ %%\item
+ galgo corredor. \anskey(2)*[store-brk]{PPPP}
+\end{enumext}
 
 Below
+
+\end{document}
+
 \stop
 \begin{enumext*}[topsep=2cm]
 \item \begin{enumext}[topsep=0pt]
