@@ -4598,7 +4598,9 @@
         \par\noindent
         \int_zero:N \l__enumext_item_column_pos_vii_int
       }
-      { \hspace{ \l__enumext_columns_sep_vii_dim } }
+      {
+        \skip_horizontal:N \l__enumext_columns_sep_vii_dim
+      }
   }
 %% Remove extra \parsep in |enumext*|
 \cs_new_protected:Nn \__enumext_remove_extra_parsep_vii:
@@ -4611,8 +4613,9 @@
       =
       { 0 }
       {
-        \par
-        \vspace{ -\l__enumext_itemsep_vii_skip }
+        \para_end:
+        \skip_vertical:n { -\l__enumext_itemsep_vii_skip }
+        \skip_vertical:N \c_zero_skip
         \int_gzero:N \g__enumext_item_count_all_vii_int
       }
   }
@@ -4861,7 +4864,9 @@
         \par\noindent
         \int_zero:N \l__enumext_item_column_pos_viii_int
       }
-      { \hspace{ \l__enumext_columns_sep_viii_dim } }
+      {
+        \skip_horizontal:N \l__enumext_columns_sep_viii_dim
+      }
   }
 %% Remove extra \parsep in |keyans*|
 \cs_new_protected:Nn \__enumext_remove_extra_parsep_viii:
@@ -4875,8 +4880,9 @@
       =
       { 0 }
       {
-        \par
-        \vspace{ -\l__enumext_itemsep_viii_skip }
+        \para_end:
+        \skip_vertical:n { -\l__enumext_itemsep_viii_skip }
+        \skip_vertical:N \c_zero_skip
         \int_gzero:N \g__enumext_item_count_all_viii_int
       }
   }

@@ -12435,13 +12435,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \par\noindent
         \int_zero:N \l_@@_item_column_pos_vii_int
       }
-      { \hspace{ \l_@@_columns_sep_vii_dim } }
+      {
+        \skip_horizontal:N \l_@@_columns_sep_vii_dim
+      }
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@@_remove_extra_parsep_vii:}
-%   Finally we will remove the vertical space equal to |\parsep| when the
+%   Finally we will remove the vertical space equal to |\parsep=\itemsep| when the
 %   total number of items is divisible by the number of items in the last
 %   row of the environment.
 % \iffalse
@@ -12458,8 +12460,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       =
       { 0 }
       {
-        \par
-        \vspace{ -\l_@@_itemsep_vii_skip }
+        \para_end:
+        \skip_vertical:n { -\l_@@_itemsep_vii_skip }
+        \skip_vertical:N \c_zero_skip
         \int_gzero:N \g_@@_item_count_all_vii_int
       }
   }
@@ -12885,7 +12888,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   and its \mymeta{content} by closing the \myenv{minipage} environment
 %   and the \emph{horizontal box}. Here we will reduce the \emph{warnings}
 %   a bit by setting the value of |\hbadness| to \mydim{10000}, print the
-%   contents of the \emph{box} along with |\footnote| and finally set the
+%   \mymeta{contents} of the \emph{box} along with |\footnote| and finally set the
 %   vertical and horizontal spaces between rows and columns.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_stop_item_viii:
@@ -12904,7 +12907,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \par\noindent
         \int_zero:N \l_@@_item_column_pos_viii_int
       }
-      { \hspace{ \l_@@_columns_sep_viii_dim } }
+      {
+        \skip_horizontal:N \l_@@_columns_sep_viii_dim
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -12928,8 +12933,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       =
       { 0 }
       {
-        \par
-        \vspace{ -\l_@@_itemsep_viii_skip }
+        \para_end:
+        \skip_vertical:n { -\l_@@_itemsep_viii_skip }
+        \skip_vertical:N \c_zero_skip
         \int_gzero:N \g_@@_item_count_all_viii_int
       }
   }

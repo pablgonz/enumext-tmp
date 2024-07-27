@@ -23,22 +23,48 @@
   }
 \newcommand*{\Item}{HOLA }
 \begin{document}
+
+ \begin{enumext}[save-ans=test,show-ans=true,columns=2,nosep]
+  \item Text containing a question.
+
+    \begin{keyans*}[nosep,columns=2]
+      \item Choice
+      \item* Correct choice
+      \item Choice
+      \item Choice
+      \item Choice
+    \end{keyans*}
+
+   \item Text containing a question and image.
+
+     \begin{keyans}[nosep,mini-env={0.4\linewidth}]
+       \item Choice
+       \item Choice
+       \item Choice
+       \item Choice
+       \item*[note] Correct choice
+       \miniright
+       %%\includegraphics[scale=0.15]{example-image-a}
+
+       Some text
+     \end{keyans}
+ \end{enumext}
+
 Hola
 
-
-\begin{enumext*}[font=\Huge,itemindent=1cm,columns=2,widest={20}, itemsep=0.1cm,parsep=1cm]
+\begin{enumext*}[columns=2,widest={20}, itemsep=0.1cm,parsep=1cm]
 \item Hanza en astillero, \par QUe no quiere nada más en este mundo o el otro. % \anskey(2)*[store-brk]{PPPP}
 \item Harna antigua  \color{red} And red!\par QUe no quiere nada más en este mundo o el otro. %\anskey(2)*[store-brk]{PPPP}
 \item Hocín flaco, y %\anskey(2)*[store-brk]{PPPP}
 \item galgo corredor. %\anskey(2)*[store-brk]{PPPP}
 \item Hocín flaco, y %\anskey(2)*[store-brk]{PPPP}
- %%\item
+\item
  galgo corredor. %\anskey(2)*[store-brk]{PPPP}
 \end{enumext*}
 
 Chao
 
-\begin{enumext}[columns=2,widest={20},itemsep=0.4cm,parsep=0.1cm]
+\begin{enumext}[columns=2,widest={20},itemsep=0.4cm,parsep=0.1cm,save-ans=lll]
  \item Hanza en astillero,% \par QUe no quiere nada más en este mundo o el otro.  \anskey(2)*[store-brk]{PPPP}
  \item Harna antigua  %\par QUe no quiere nada más en este mundo o el otro. \anskey(2)*[store-brk]{PPPP}
  \item Hocín flaco, y %\anskey(2)*[store-brk]{PPPP}
@@ -49,6 +75,18 @@ Chao
  galgo corredor. %\anskey(2)*[store-brk]{PPPP}
   \begin{keyans*} \item hola \end{keyans*}
 \end{enumext}
+
+\begin{tabular}{|p{8cm}|}
+\hline
+\textbf{Name:} Foo \\
+\hline
+\textbf{Main success scenario:} \\
+\begin{enumext*}[above=-10pt,nosep,columns=2]
+  \item Entry action
+  \item next steps\ldots
+\end{enumext*}\\
+\hline
+\end{tabular}
 
 
 \end{document}
