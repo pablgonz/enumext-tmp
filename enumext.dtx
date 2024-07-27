@@ -11625,8 +11625,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Functions for item box width}
 % To achieve the horizontal list environment we will capture the |\item|
-% command and the content of this in an plain \myenv{lrbox} box using \ics{makebox} for
-% the \mykey{label} and a \myenv{minipage} environment for the content passed to
+% command and the \mymeta{content} of this in \emph{horizontal box} using \ics{makebox} for
+% the \mykey{label} and a \myenv{minipage} environment for the \mymeta{content} passed to
 % |\item|, we will also add the optional argument \myparg{number} to |\item|
 % to be able to \emph{join columns} horizontally, in simple terms, we want
 % |\item| to behave in the same way as in the \myenv*{enumext} environment but
@@ -11634,7 +11634,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_starred_columns_set_vii:, \@@_starred_columns_set_viii:,}
 %    We set the default value for the \emph{width of the box} containing the
-%    content of the items for \myenv*{enumext*} environment.
+%    \mymeta{content} of the items for \myenv*{enumext*} environment.
 % \iffalse
 %% Define default item width (columns width) for |enumext*| and |keyans*|.
 % \fi
@@ -11713,8 +11713,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Functions for join item columns}
 %
 % \begin{macro}{\@@_starred_joined_item_vii:n, \@@_starred_joined_item_viii:n,}
-%    The functions \cs{@@_starred_joined_item_vii:n} and \cs{@@_starred_joined_item_viii:n}  will set the \emph{width} of the
-%    box in which the content passed to \ics*{item}\myparg{columns} will be
+%    The functions \cs{@@_starred_joined_item_vii:n} and \cs{@@_starred_joined_item_viii:n}
+%    will set the \emph{width} of the box in which the \mymeta{content} passed to \ics*{item}\myparg{columns} will be
 %    stored together with the value of |\itemwidth| for the \myenv*{enumext*} environment.
 % \iffalse
 %% Set width for joined item's for |enumext*| and |keyans*|.
@@ -12538,7 +12538,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec_viii:
   {
-    \bool_if:NF \l__enumext_store_active_bool
+    \bool_if:NF \l_@@_store_active_bool
       {
         \msg_error:nnnn { enumext } { wrong-place }{ keyans* }{ save-ans }
       }
