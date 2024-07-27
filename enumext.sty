@@ -4631,8 +4631,14 @@
       }
     \__enumext_starred_columns_set_viii:
     \item[] \scan_stop:
+    \skip_set:cn { @rightskip } { 0.0pt plus 1.0 fil }
+    \sys_if_engine_pdftex:F
+      {
+        \skip_set_eq:Nc \rightskip { @rightskip }
+      }
     \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \noindent
     \cs_set_eq:NN \item \__enumext_start_item_tmp_viii:
+    \ignorespaces
   }
   {
     \__enumext_stop_item_tmp_viii:
@@ -4644,6 +4650,10 @@
 %% Test deep-level for |keyans*| and set bool vars.
 \cs_new_protected:Nn \__enumext_safe_exec_viii:
   {
+    \bool_if:NF \l__enumext_store_active_bool
+      {
+        \msg_error:nnnn { enumext } { wrong-place }{ keyans* }{ save-ans }
+      }
     \int_incr:N \l__enumext_keyans_level_h_int
     \int_compare:nNnT { \l__enumext_keyans_level_h_int } > { 1 }
       {

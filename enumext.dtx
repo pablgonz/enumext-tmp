@@ -12480,7 +12480,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    First we will generate the environment and we will give a
 %    temporary definition to \cs{@@_stop_item_tmp_viii:} equal to
 %    |\noindent| and next to |\item| equal to
-%    \cs{@@_start_item_tmp_viii:} which we will redefine later.
+%    \cs{@@_start_item_tmp_viii:} which we will redefine later. The
+%    implementation of this environment is the same as that used by the
+%    \myenv*{enumext*} environment except for the \cs{@@_check_starred_cmd:n}
+%    function added in the second part.
 % \iffalse
 %% Define |keyans*| environment.
 % \fi
@@ -12497,8 +12500,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \@@_starred_columns_set_viii:
     \item[] \scan_stop:
+    \skip_set:cn { @rightskip } { 0.0pt plus 1.0 fil }
+    \sys_if_engine_pdftex:F
+      {
+        \skip_set_eq:Nc \rightskip { @rightskip }
+      }
     \cs_set_eq:NN \@@_stop_item_tmp_viii: \noindent
     \cs_set_eq:NN \item \@@_start_item_tmp_viii:
+    \ignorespaces
   }
   {
     \@@_stop_item_tmp_viii:
@@ -12511,14 +12520,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_safe_exec_viii:}
-%    First check the maximum nesting level for the \myenv*{keyans*}
-%    environment.
+%   The \cs{@@_safe_exec_viii:} function will first check if the
+%   \mykey{save-ans} key is active and only when this is true the
+%   environment will be available, it will increment the value of
+%   \cs{l_@@_keyans_level_h_int} and return an error message when we are
+%   nesting the environment, then it will call the
+%   \cs{@@_keyans_name_and_start:} function in charge of saving the name of
+%   the environment and the line it is running on, then it will check if we
+%   are trying to nest \myenv*{keyans*} in \myenv*{enumext*} returning an
+%   error and we will set \cs{l_@@_starred_bool} to true, finally we will
+%   check if we are within the appropriate level within the
+%   \myenv*{enumext} environment.
 % \iffalse
 %% Test deep-level for |keyans*| and set bool vars.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec_viii:
   {
+    \bool_if:NF \l__enumext_store_active_bool
+      {
+        \msg_error:nnnn { enumext } { wrong-place }{ keyans* }{ save-ans }
+      }
     \int_incr:N \l_@@_keyans_level_h_int
     \int_compare:nNnT { \l_@@_keyans_level_h_int } > { 1 }
       {
