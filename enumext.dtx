@@ -11991,12 +11991,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    First we will generate the environment and we will give a
 %    temporary definition to \cs{@@_stop_item_tmp_vii:} equal to
 %    |\noindent| and next to |\item| equal to \cs{@@_start_item_tmp_vii:}
-%    which we will redefine later. Like the implementation used by the
-%    \mypkg{shortlst} package, we will set the values ​​of |\rightskip| and
-%    |\@rightskip| equal to |\@flushglue| whose value is \mydim{0.0pt plus
-%    1.0 fil}, the latter will only be set if the engine is different from
-%    \hologo{pdfTeX}, in the tests that I have performed setting |\rightskip|
-%    does not work well.
+%    which we will redefine later. Unlike the implementation used by
+%    the \mypkg{shortlst} package, we will not set the values ​​of
+%    |\rightskip| and |\@rightskip| equal to |\@flushglue| whose value is
+%    \mydim{0.0pt plus 1.0 fil}, in the tests I have performed this fails in
+%    some circumstances and different results are obtained when using
+%    \hologo{pdfTeX} and \hologo{LuaTeX}.
 % \iffalse
 %% Define |enumext*|
 % \fi
@@ -12014,11 +12014,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \@@_starred_columns_set_vii:
     \item[] \scan_stop:
-    \skip_set:cn { @rightskip } { 0.0pt plus 1.0 fil }
-    \sys_if_engine_pdftex:F
-      {
-        \skip_set_eq:Nc \rightskip { @rightskip }
-      }
     \cs_set_eq:NN \@@_stop_item_tmp_vii: \noindent
     \cs_set_eq:NN \item \@@_start_item_tmp_vii:
     \ignorespaces
@@ -12445,7 +12440,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_remove_extra_parsep_vii:}
 %   Finally we will remove the vertical space equal to |\parsep=\itemsep| when the
 %   total number of items is divisible by the number of items in the last
-%   row of the environment.
+%   row of the environment. Here the use of |\unskip| or
+%   |\removelastskip| fails and does not obtain the expected result, using
+%   |\vspace| is the option and in this case, we can use a simplified
+%   version since we are always in \mymeta{vertical mode}.
 % \iffalse
 %% Remove extra \parsep in |enumext*|
 % \fi
@@ -12483,11 +12481,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{keyans*}
 %    First we will generate the environment and we will give a
 %    temporary definition to \cs{@@_stop_item_tmp_viii:} equal to
-%    |\noindent| and next to |\item| equal to
-%    \cs{@@_start_item_tmp_viii:} which we will redefine later. The
-%    implementation of this environment is the same as that used by the
-%    \myenv*{enumext*} environment except for the \cs{@@_check_starred_cmd:n}
-%    function added in the second part.
+%    |\noindent| and next to |\item| equal to \cs{@@_start_item_tmp_viii:}
+%    which we will redefine later. The implementation of this environment
+%    is the same as that used by the \myenv*{enumext*} environment except
+%    for the \cs{@@_check_starred_cmd:n} function added in the second part.
 % \iffalse
 %% Define |keyans*| environment.
 % \fi
@@ -12504,11 +12501,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \@@_starred_columns_set_viii:
     \item[] \scan_stop:
-    \skip_set:cn { @rightskip } { 0.0pt plus 1.0 fil }
-    \sys_if_engine_pdftex:F
-      {
-        \skip_set_eq:Nc \rightskip { @rightskip }
-      }
     \cs_set_eq:NN \@@_stop_item_tmp_viii: \noindent
     \cs_set_eq:NN \item \@@_start_item_tmp_viii:
     \ignorespaces
@@ -12838,7 +12830,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
 %    \end{macrocode}
-%    Here we start capturing |\item| and its contents in a \emph{horizontal box}.
+%    Here we start capturing |\item| and its \mymeta{contents} in a \emph{horizontal box}.
 %    \begin{macrocode}
     \hbox_set_to_wd:Nnw \l_@@_item_text_viii_box
       {
