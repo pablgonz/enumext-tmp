@@ -10094,7 +10094,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \mode_leave_vertical:
         \skip_horizontal:n { -\dim_use:c { l_@@_item_symbol_sep_ \@@_level: _dim } }
-        \makebox[ 0pt ][ r ]{ \g_@@_item_symbol_aux_tl }
+        \hbox_overlap_left:n { \g_@@_item_symbol_aux_tl }
         \skip_horizontal:n { \dim_use:c { l_@@_item_symbol_sep_ \@@_level: _dim } }
       }
   }
