@@ -11990,7 +11990,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{enumext*}
 %    First we will generate the environment and we will give a
 %    temporary definition to \cs{@@_stop_item_tmp_vii:} equal to
-%    |\noindent| and next to |\item| equal to \cs{@@_start_item_tmp_vii:}
+%    \cs{@@_first_item_tmp_vii:} and next to |\item| equal to \cs{@@_start_item_tmp_vii:}
 %    which we will redefine later. Unlike the implementation used by
 %    the \mypkg{shortlst} package, we will not set the values ​​of
 %    |\rightskip| and |\@rightskip| equal to |\@flushglue| whose value is
@@ -12014,7 +12014,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \@@_starred_columns_set_vii:
     \item[] \scan_stop:
-    \cs_set_eq:NN \@@_stop_item_tmp_vii: \noindent
+    \cs_set_eq:NN \@@_stop_item_tmp_vii: \@@_first_item_tmp_vii:
     \cs_set_eq:NN \item \@@_start_item_tmp_vii:
     \ignorespaces
   }
@@ -12161,8 +12161,25 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{The command \cs{item} in \env{enumext*}}\label{cmd:item-boxed-vii}
 %
-% \begin{macro}{\@@_start_item_tmp_vii:}
+% \begin{macro}{\@@_first_item_tmp_vii:}
 %
+% The \cs{@@_first_item_tmp_vii:} function will remove horizontal space 
+% equal to |\labelwidth| plus |\labelsep| to the left of the first 
+% |\item| in the environment at the point of execution of this function, 
+% where it is equal to the \cs{@@_stop_item_tmp_vii:} function inside the 
+% environment body definition.
+% \iffalse
+%% Remove |\labelwidth+\labelsep| on left in first |\item| for |enumext*|
+% \fi
+%    \begin{macrocode}
+\cs_new_protected_nopar:Nn \@@_first_item_tmp_vii:
+  {
+    \skip_horizontal:n { -\l_@@_labelwidth_vii_dim - \l_@@_labelsep_vii_dim }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_start_item_tmp_vii:}
 % First we will call the function \cs{@@_stop_item_tmp_vii:} that we
 % will redefine later, we will increment the value of
 % \cs{l_@@_item_column_pos_vii_int} that will count the item's by rows and
@@ -12171,7 +12188,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % function \cs{@@_item_peek_args_vii:} that will handle the
 % arguments passed to \ics*{item}.
 % \iffalse
-%% % Start boxed item's for |enumext*|
+%% Start boxed item's for |enumext*|
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_start_item_tmp_vii:
@@ -12247,18 +12264,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_standar_item_vii:w
   {
     \bool_set_false:N \l_@@_item_starred_vii_bool
-      \peek_meaning:NTF [
-        {
-          \bool_set_eq:NN
-            \l_@@_wrap_label_vii_bool
-            \l_@@_wrap_label_opt_vii_bool
-          \@@_start_item_vii:w
-        }
-        {
-          \bool_set_true:N \l_@@_wrap_label_vii_bool
-          \legacy_if_set_true:n { @noitemarg }
-          \@@_start_item_vii:w [ \l_@@_label_vii_tl ]
-        }
+    \peek_meaning:NTF [
+      {
+        \bool_set_eq:NN \l_@@_wrap_label_vii_bool \l_@@_wrap_label_opt_vii_bool
+        \@@_start_item_vii:w
+      }
+      {
+        \bool_set_true:N \l_@@_wrap_label_vii_bool
+        \legacy_if_set_true:n { @noitemarg }
+        \@@_start_item_vii:w [ \l_@@_label_vii_tl ]
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -12293,9 +12308,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \peek_meaning:NTF [
       { \@@_starred_item_vii_aux_iii:w }
       {
-        \dim_set_eq:NN
-          \l_@@_item_symbol_sep_vii_dim
-          \l_@@_labelsep_vii_dim
+        \dim_set_eq:NN \l_@@_item_symbol_sep_vii_dim \l_@@_labelsep_vii_dim
         \legacy_if_set_true:n { @noitemarg }
         \@@_start_item_vii:w [ \l_@@_label_vii_tl ]
       }
@@ -12349,13 +12362,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %    Here we start capturing |\item| and its contents in a \emph{horizontal box}
 %    where the width will be |\itemwidth| plus |\labelwidth| plus |\labelsep|, unlike
-%    the implementation in \mypkg{shortlst} we will not use an extra group
+%    the implementation in \mypkg{shortlst} we will NOT use an extra group
 %    and the plain form of the \myenv{lrbox} environment. If the state of the
 %    variable \cs{l_@@_footnotes_key_bool} is false, we will redefine the
 %    command |\footnote|, followed by printing the \mymeta{symbol} defined
-%    for |\item*| if it is present and open a new group inside which we
-%    execute \mykey{font} key next to |\item| and the keys
-%    \mykey{wrap-label}, \mykey{wrap-label*}, \mykey{align}, close the group and execute
+%    for |\item*| if it is present and execute \mykey{align}, \mykey{font}, 
+%    \mykey{wrap-label}, \mykey{wrap-label*} keys, then execute
 %    the key \mykey{labelsep} and then the key \mykey{first}. Finally we
 %    open the \myenv{minipage} environment and execute the
 %    \mykey{listparindent} key which will be equal to |\parindent|, the
@@ -12385,17 +12397,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \skip_horizontal:N \l_@@_item_symbol_sep_vii_dim
             \tl_gclear:N \g_@@_item_symbol_aux_vii_tl
           }
-        \group_begin:
-          \tl_use:N \l_@@_label_font_style_vii_tl
-          \bool_if:NTF \l_@@_wrap_label_vii_bool
-            {
-              \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]
-                { \@@_wrapper_label_vii:n {#1} }
-            }
-            {
-              \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]{ #1 }
-            }
-        \group_end:
+        \bool_if:NTF \l_@@_wrap_label_vii_bool
+          {
+            \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]
+              { 
+                \tl_use:N \l_@@_label_font_style_vii_tl
+                \@@_wrapper_label_vii:n {#1} 
+              }
+          }
+          {
+            \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]
+              { 
+                \tl_use:N \l_@@_label_font_style_vii_tl #1 
+              }
+          }
         \skip_horizontal:N \l_@@_labelsep_vii_dim
         \tl_use:N \l_@@_after_list_args_vii_tl
         \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
@@ -12481,7 +12496,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{keyans*}
 %    First we will generate the environment and we will give a
 %    temporary definition to \cs{@@_stop_item_tmp_viii:} equal to
-%    |\noindent| and next to |\item| equal to \cs{@@_start_item_tmp_viii:}
+%    \cs{@@_first_item_tmp_viii:} and next to |\item| equal to \cs{@@_start_item_tmp_viii:}
 %    which we will redefine later. The implementation of this environment
 %    is the same as that used by the \myenv*{enumext*} environment except
 %    for the \cs{@@_check_starred_cmd:n} function added in the second part.
@@ -12501,7 +12516,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \@@_starred_columns_set_viii:
     \item[] \scan_stop:
-    \cs_set_eq:NN \@@_stop_item_tmp_viii: \noindent
+    \cs_set_eq:NN \@@_stop_item_tmp_viii: \@@_first_item_tmp_viii:
     \cs_set_eq:NN \item \@@_start_item_tmp_viii:
     \ignorespaces
   }
@@ -12617,6 +12632,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % |\item*|, |\item*|\myoarg{content}, |\item|\myparg{number}|*| and
 % |\item|\myparg{number}|*|\myoarg{content} commands.
 %
+% \begin{macro}{\@@_first_item_tmp_viii:}
+%
+% The \cs{@@_first_item_tmp_viii:} function will remove horizontal space 
+% equal to |\labelwidth| plus |\labelsep| to the left of the first 
+% |\item| in the environment at the point of execution of this function, 
+% where it is equal to the \cs{@@_stop_item_tmp_viii:} function inside the 
+% environment body definition.
+% \iffalse
+%% Remove |\labelwidth+\labelsep| on left in first |\item| for |keyans*|
+% \fi
+%    \begin{macrocode}
+\cs_new_protected_nopar:Nn \@@_first_item_tmp_viii:
+  {
+    \skip_horizontal:n { -\l_@@_labelwidth_viii_dim - \l_@@_labelsep_viii_dim }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\@@_start_item_tmp_viii:}
 %
 % First we will call the function \cs{@@_stop_item_tmp_viii:} that we
@@ -12627,7 +12660,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % function \cs{@@_item_peek_args_viii:} that will handle the
 % arguments passed to \ics*{item}.
 % \iffalse
-%% % Start boxed item's for |keyans*|
+%% Start boxed item's for |keyans*|
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_start_item_tmp_viii:
@@ -12700,18 +12733,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected:Npn \@@_standar_item_viii:w
   {
     \bool_set_false:N \l_@@_item_starred_viii_bool
-      \peek_meaning:NTF [
-        {
-          \bool_set_eq:NN
-            \l_@@_wrap_label_viii_bool
-            \l_@@_wrap_label_opt_viii_bool
-          \@@_start_item_viii:w
-        }
-        {
-          \bool_set_true:N \l_@@_wrap_label_viii_bool
-          \legacy_if_set_true:n { @noitemarg }
-          \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
-        }
+    \peek_meaning:NTF [
+      {
+        \bool_set_eq:NN \l_@@_wrap_label_viii_bool \l_@@_wrap_label_opt_viii_bool
+        \@@_start_item_viii:w
+      }
+      {
+        \bool_set_true:N \l_@@_wrap_label_viii_bool
+        \legacy_if_set_true:n { @noitemarg }
+        \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -12747,7 +12778,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \tl_if_empty:NF \l_@@_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l_@@_store_current_label_tl { \l_@@_store_keyans_item_opt_sep_tl }
+            \tl_put_right:Ne \l_@@_store_current_label_tl 
+              { 
+                \l_@@_store_keyans_item_opt_sep_tl 
+              }
             \tl_put_right:Ne \l_@@_store_current_label_tl { #1 }
           }
         \tl_set:Ne \l_@@_store_current_opt_arg_tl { #1 }
@@ -12846,17 +12880,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \@@_starred_item_exec:
           }
-        \group_begin:
-          \tl_use:N \l_@@_label_font_style_viii_tl
-          \bool_if:NTF \l_@@_wrap_label_viii_bool
-            {
-              \makebox[ \l_@@_labelwidth_viii_dim ][ \l_@@_align_label_viii_str ]
-                { \@@_wrapper_label_viii:n {#1} }
-            }
-            {
-              \makebox[ \l_@@_labelwidth_viii_dim ][ \l_@@_align_label_viii_str ]{ #1 }
-            }
-        \group_end:
+        \bool_if:NTF \l_@@_wrap_label_viii_bool
+          {
+            \makebox[ \l_@@_labelwidth_viii_dim ][ \l_@@_align_label_viii_str ]
+              { 
+                \tl_use:N \l_@@_label_font_style_viii_tl
+                \@@_wrapper_label_viii:n {#1} 
+              }
+           }
+           {
+             \makebox[ \l_@@_labelwidth_viii_dim ][ \l_@@_align_label_viii_str ]
+               { 
+                \tl_use:N \l_@@_label_font_style_viii_tl #1 
+               
+               }
+           }
         \skip_horizontal:N \l_@@_labelsep_viii_dim
         \tl_use:N \l_@@_after_list_args_viii_tl
         \@@_minipage:w [ t ]{ \l_@@_joined_width_viii_dim  }

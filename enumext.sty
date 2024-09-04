@@ -3299,7 +3299,7 @@
       {
         \mode_leave_vertical:
         \skip_horizontal:n { -\dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
-        \makebox[ 0pt ][ r ]{ \g__enumext_item_symbol_aux_tl }
+        \hbox_overlap_left:n { \g__enumext_item_symbol_aux_tl }
         \skip_horizontal:n { \dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
       }
   }
@@ -4366,7 +4366,7 @@
       }
     \__enumext_starred_columns_set_vii:
     \item[] \scan_stop:
-    \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \noindent
+    \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \__enumext_first_item_tmp_vii:
     \cs_set_eq:NN \item \__enumext_start_item_tmp_vii:
     \ignorespaces
   }
@@ -4443,7 +4443,12 @@
           }
       }
   }
-%% % Start boxed item's for |enumext*|
+%% Remove |\labelwidth+\labelsep| on left in first |\item| for |enumext*|
+\cs_new_protected_nopar:Nn \__enumext_first_item_tmp_vii:
+  {
+    \skip_horizontal:n { -\l__enumext_labelwidth_vii_dim - \l__enumext_labelsep_vii_dim }
+  }
+%% Start boxed item's for |enumext*|
 \cs_new_protected_nopar:Nn \__enumext_start_item_tmp_vii:
   {
     \__enumext_stop_item_tmp_vii:
@@ -4470,18 +4475,16 @@
 \cs_new_protected:Npn \__enumext_standar_item_vii:w
   {
     \bool_set_false:N \l__enumext_item_starred_vii_bool
-      \peek_meaning:NTF [
-        {
-          \bool_set_eq:NN
-            \l__enumext_wrap_label_vii_bool
-            \l__enumext_wrap_label_opt_vii_bool
-          \__enumext_start_item_vii:w
-        }
-        {
-          \bool_set_true:N \l__enumext_wrap_label_vii_bool
-          \legacy_if_set_true:n { @noitemarg }
-          \__enumext_start_item_vii:w [ \l__enumext_label_vii_tl ]
-        }
+    \peek_meaning:NTF [
+      {
+        \bool_set_eq:NN \l__enumext_wrap_label_vii_bool \l__enumext_wrap_label_opt_vii_bool
+        \__enumext_start_item_vii:w
+      }
+      {
+        \bool_set_true:N \l__enumext_wrap_label_vii_bool
+        \legacy_if_set_true:n { @noitemarg }
+        \__enumext_start_item_vii:w [ \l__enumext_label_vii_tl ]
+      }
   }
 %% Set \item*[sym][sep] for |enumext*| environment.
 \cs_new_protected:Npn \__enumext_starred_item_vii:w
@@ -4502,9 +4505,7 @@
     \peek_meaning:NTF [
       { \__enumext_starred_item_vii_aux_iii:w }
       {
-        \dim_set_eq:NN
-          \l__enumext_item_symbol_sep_vii_dim
-          \l__enumext_labelsep_vii_dim
+        \dim_set_eq:NN \l__enumext_item_symbol_sep_vii_dim \l__enumext_labelsep_vii_dim
         \legacy_if_set_true:n { @noitemarg }
         \__enumext_start_item_vii:w [ \l__enumext_label_vii_tl ]
       }
@@ -4559,17 +4560,20 @@
             \skip_horizontal:N \l__enumext_item_symbol_sep_vii_dim
             \tl_gclear:N \g__enumext_item_symbol_aux_vii_tl
           }
-        \group_begin:
-          \tl_use:N \l__enumext_label_font_style_vii_tl
-          \bool_if:NTF \l__enumext_wrap_label_vii_bool
-            {
-              \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
-                { \__enumext_wrapper_label_vii:n {#1} }
-            }
-            {
-              \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]{ #1 }
-            }
-        \group_end:
+        \bool_if:NTF \l__enumext_wrap_label_vii_bool
+          {
+            \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
+              {
+                \tl_use:N \l__enumext_label_font_style_vii_tl
+                \__enumext_wrapper_label_vii:n {#1}
+              }
+          }
+          {
+            \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
+              {
+                \tl_use:N \l__enumext_label_font_style_vii_tl #1
+              }
+          }
         \skip_horizontal:N \l__enumext_labelsep_vii_dim
         \tl_use:N \l__enumext_after_list_args_vii_tl
         \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_vii_dim  }
@@ -4629,7 +4633,7 @@
       }
     \__enumext_starred_columns_set_viii:
     \item[] \scan_stop:
-    \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \noindent
+    \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \__enumext_first_item_tmp_viii:
     \cs_set_eq:NN \item \__enumext_start_item_tmp_viii:
     \ignorespaces
   }
@@ -4685,7 +4689,12 @@
     \__enumext_after_stop_list_viii:
     \__enumext_vspace_below_viii:
   }
-%% % Start boxed item's for |keyans*|
+%% Remove |\labelwidth+\labelsep| on left in first |\item| for |keyans*|
+\cs_new_protected_nopar:Nn \__enumext_first_item_tmp_viii:
+  {
+    \skip_horizontal:n { -\l__enumext_labelwidth_viii_dim - \l__enumext_labelsep_viii_dim }
+  }
+%% Start boxed item's for |keyans*|
 \cs_new_protected_nopar:Nn \__enumext_start_item_tmp_viii:
   {
     \__enumext_stop_item_tmp_viii:
@@ -4712,18 +4721,16 @@
 \cs_new_protected:Npn \__enumext_standar_item_viii:w
   {
     \bool_set_false:N \l__enumext_item_starred_viii_bool
-      \peek_meaning:NTF [
-        {
-          \bool_set_eq:NN
-            \l__enumext_wrap_label_viii_bool
-            \l__enumext_wrap_label_opt_viii_bool
-          \__enumext_start_item_viii:w
-        }
-        {
-          \bool_set_true:N \l__enumext_wrap_label_viii_bool
-          \legacy_if_set_true:n { @noitemarg }
-          \__enumext_start_item_viii:w [ \l__enumext_label_viii_tl ]
-        }
+    \peek_meaning:NTF [
+      {
+        \bool_set_eq:NN \l__enumext_wrap_label_viii_bool \l__enumext_wrap_label_opt_viii_bool
+        \__enumext_start_item_viii:w
+      }
+      {
+        \bool_set_true:N \l__enumext_wrap_label_viii_bool
+        \legacy_if_set_true:n { @noitemarg }
+        \__enumext_start_item_viii:w [ \l__enumext_label_viii_tl ]
+      }
   }
 %% Set \item*[content] for |keyans*| environment.
 \cs_new_protected:Npn \__enumext_starred_item_viii:w
@@ -4741,7 +4748,10 @@
       {
         \tl_if_empty:NF \l__enumext_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l__enumext_store_current_label_tl { \l__enumext_store_keyans_item_opt_sep_tl }
+            \tl_put_right:Ne \l__enumext_store_current_label_tl
+              {
+                \l__enumext_store_keyans_item_opt_sep_tl
+              }
             \tl_put_right:Ne \l__enumext_store_current_label_tl { #1 }
           }
         \tl_set:Ne \l__enumext_store_current_opt_arg_tl { #1 }
@@ -4812,17 +4822,21 @@
           {
             \__enumext_starred_item_exec:
           }
-        \group_begin:
-          \tl_use:N \l__enumext_label_font_style_viii_tl
-          \bool_if:NTF \l__enumext_wrap_label_viii_bool
-            {
-              \makebox[ \l__enumext_labelwidth_viii_dim ][ \l__enumext_align_label_viii_str ]
-                { \__enumext_wrapper_label_viii:n {#1} }
-            }
-            {
-              \makebox[ \l__enumext_labelwidth_viii_dim ][ \l__enumext_align_label_viii_str ]{ #1 }
-            }
-        \group_end:
+        \bool_if:NTF \l__enumext_wrap_label_viii_bool
+          {
+            \makebox[ \l__enumext_labelwidth_viii_dim ][ \l__enumext_align_label_viii_str ]
+              {
+                \tl_use:N \l__enumext_label_font_style_viii_tl
+                \__enumext_wrapper_label_viii:n {#1}
+              }
+           }
+           {
+             \makebox[ \l__enumext_labelwidth_viii_dim ][ \l__enumext_align_label_viii_str ]
+               {
+                \tl_use:N \l__enumext_label_font_style_viii_tl #1
+
+               }
+           }
         \skip_horizontal:N \l__enumext_labelsep_viii_dim
         \tl_use:N \l__enumext_after_list_args_viii_tl
         \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_viii_dim  }
