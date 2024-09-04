@@ -14,6 +14,46 @@
 %\makesavenoteenv{enumext*}
 \begin{document}
 
+BEFORE XXX
+
+\begin{enumext}[columns=2,topsep=0pt,itemsep=10pt]%[topsep=0pt,parsep=0pt,partopsep=0pt,itemsep=0pt,columns=1]%,,itemsep=0pt,nosep
+
+\item Using [columns=1] here UNO
+
+  \begin{enumext}[columns=1,nosep]%,topsep=10pt,parsep=0pt,partopsep=0cm
+     \item  P \item Q \item Q  \item R \item S
+  \end{enumext}
+
+\item Using [columns=2] here below
+
+\begin{enumext}[columns=1,nosep]%,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X  \item R \item S
+  \end{enumext}
+
+\columnbreak
+
+\item Using [columns=2,mini-env] here DOS
+
+  \begin{enumext}[columns=2,mini-env=0.4\linewidth,nosep]%,topsep=10pt,parsep=30pt
+    \item  P \item Q \item RS \item T \item U \footnote{ditto}
+    \miniright
+    \rule{30pt}{20pt}\par
+    P Tikz image here
+  \end{enumext}
+
+\item Using [columns=1] here below
+
+\begin{enumext}[columns=1,nosep]%,topsep=20pt,parsep=10pt
+     \item  P \item Q \item X  \item R \item S \footnote{Otto}
+  \end{enumext}
+
+\end{enumext}
+
+After enumext XXXXXXXXXXXXXXXXXXXX
+
+\stop
+
+
 \begin{enumext}[columns=2,nosep,parsep=0pt,partopsep=0pt,itemsep=0pt,topsep=0pt]%%,]%,nosep]
 \item Using [columns=1] here UNO
 \begin{enumext}[columns=1,nosep,topsep=0pt,itemsep=0pt]%,topsep=20pt,parsep=10pt
@@ -43,7 +83,7 @@
 \end{enumext}
 After
 
-\stop
+%%%\stop
 
 \section{TEST-VERTICAL}
 
@@ -81,7 +121,7 @@ BEFORE
 \end{enumext}
 After
 
-\stop
+%%\stop
 \section{TEST-HORIZONTAL}
 
 \begin{enumext}[columns=2]

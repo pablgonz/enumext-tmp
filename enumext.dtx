@@ -4211,7 +4211,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-07-15}
+  {2024-09-04}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -5115,9 +5115,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \@@_at_begin_document:n
   {
-    \cs_new_eq:NN \@@_start_list:nn \list
-    \cs_new_eq:NN \@@_stop_list: \endlist
-    \cs_new_eq:NN \@@_item_std:w \item
+    \cs_new_eq:NN   \@@_start_list:nn \list
+    \cs_new_eq:NN   \@@_stop_list: \endlist
+    \NewCommandCopy \@@_item_std:w \item
   }
 %    \end{macrocode}
 % \end{macro}
@@ -12381,7 +12381,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               }
             \mode_leave_vertical:
             \skip_horizontal:n { -\l_@@_item_symbol_sep_vii_dim }
-            \makebox[ 0pt ][ r ]{ \g_@@_item_symbol_aux_vii_tl }
+            \hbox_overlap_left:n { \g_@@_item_symbol_aux_vii_tl }
             \skip_horizontal:N \l_@@_item_symbol_sep_vii_dim
             \tl_gclear:N \g_@@_item_symbol_aux_vii_tl
           }
@@ -12399,7 +12399,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \skip_horizontal:N \l_@@_labelsep_vii_dim
         \tl_use:N \l_@@_after_list_args_vii_tl
         \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
-          \skip_set_eq:NN \parindent \l_@@_listparindent_vii_dim
+          \dim_set_eq:NN \parindent \l_@@_listparindent_vii_dim
           \skip_set_eq:NN \parskip \l_@@_parsep_vii_skip
           \tl_use:N \l_@@_fake_item_indent_vii_tl
    }
@@ -12860,7 +12860,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \skip_horizontal:N \l_@@_labelsep_viii_dim
         \tl_use:N \l_@@_after_list_args_viii_tl
         \@@_minipage:w [ t ]{ \l_@@_joined_width_viii_dim  }
-          \skip_set_eq:NN \parindent \l_@@_listparindent_viii_dim
+          \dim_set_eq:NN \parindent \l_@@_listparindent_viii_dim
           \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
           \bool_if:NT \l_@@_item_starred_viii_bool
             {

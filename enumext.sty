@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-07-15}
+  {2024-09-04}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -429,9 +429,9 @@
 %% Copy list tools.
 \__enumext_at_begin_document:n
   {
-    \cs_new_eq:NN \__enumext_start_list:nn \list
-    \cs_new_eq:NN \__enumext_stop_list: \endlist
-    \cs_new_eq:NN \__enumext_item_std:w \item
+    \cs_new_eq:NN   \__enumext_start_list:nn \list
+    \cs_new_eq:NN   \__enumext_stop_list: \endlist
+    \NewCommandCopy \__enumext_item_std:w \item
   }
 %% Copy minipage tools.
 \__enumext_at_begin_document:n
@@ -4555,7 +4555,7 @@
               }
             \mode_leave_vertical:
             \skip_horizontal:n { -\l__enumext_item_symbol_sep_vii_dim }
-            \makebox[ 0pt ][ r ]{ \g__enumext_item_symbol_aux_vii_tl }
+            \hbox_overlap_left:n { \g__enumext_item_symbol_aux_vii_tl }
             \skip_horizontal:N \l__enumext_item_symbol_sep_vii_dim
             \tl_gclear:N \g__enumext_item_symbol_aux_vii_tl
           }
@@ -4573,7 +4573,7 @@
         \skip_horizontal:N \l__enumext_labelsep_vii_dim
         \tl_use:N \l__enumext_after_list_args_vii_tl
         \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_vii_dim  }
-          \skip_set_eq:NN \parindent \l__enumext_listparindent_vii_dim
+          \dim_set_eq:NN \parindent \l__enumext_listparindent_vii_dim
           \skip_set_eq:NN \parskip \l__enumext_parsep_vii_skip
           \tl_use:N \l__enumext_fake_item_indent_vii_tl
    }
@@ -4826,7 +4826,7 @@
         \skip_horizontal:N \l__enumext_labelsep_viii_dim
         \tl_use:N \l__enumext_after_list_args_viii_tl
         \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_viii_dim  }
-          \skip_set_eq:NN \parindent \l__enumext_listparindent_viii_dim
+          \dim_set_eq:NN \parindent \l__enumext_listparindent_viii_dim
           \skip_set_eq:NN \parskip \l__enumext_parsep_viii_skip
           \bool_if:NT \l__enumext_item_starred_viii_bool
             {
