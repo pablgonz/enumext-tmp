@@ -4572,7 +4572,7 @@
     \legacy_if_set_true:n { @noitemarg }
     \__enumext_start_item_vii:w [ \l__enumext_label_vii_tl ]
   }
-%% Real \item definition for |enumext*| \legacy_if_set_true:n { @hyper@item } :D. (doc p170)
+%% Fake \makelabel definition for |enumext*|
 \cs_new_protected_nopar:Npn \__enumext_fake_make_label_vii:n #1
   {
     \legacy_if:nT { @noitemarg }
@@ -4626,11 +4626,13 @@
         + \l__enumext_labelwidth_vii_dim
         + \l__enumext_labelsep_vii_dim
       }
-      \bool_if:NF \l__enumext_footnotes_key_bool
-        {
-          \__enumext_renew_footnote:
-        }
-      % Tagging
+     \IfDocumentMetadataTF { }
+       {
+         \bool_if:NF \l__enumext_footnotes_key_bool
+           {
+             \__enumext_renew_footnote:
+           }
+       }
       \__enumext_start_list_tag:n {enumext*}
       \__enumext_fake_make_label_vii:n {#1}
       \__enumext_stop_start_list_tag:
@@ -4647,9 +4649,12 @@
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_vii_box
-    \bool_if:NF \l__enumext_footnotes_key_bool
+    \IfDocumentMetadataTF { }
       {
-        \__enumext_print_footnote:
+        \bool_if:NF \l__enumext_footnotes_key_bool
+          {
+            \__enumext_print_footnote:
+          }
       }
     \int_compare:nNnTF
       { \l__enumext_item_column_pos_vii_int } = { \l__enumext_columns_vii_int }

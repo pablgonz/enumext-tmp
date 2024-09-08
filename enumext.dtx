@@ -11575,17 +11575,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % a cascade of functions.
 %
 % \subsubsection{Tagging support for horizontal environments}\label{ltx:tag-horizontal}
-% We will implement the necessary code to be able to have support for 
-% \texttt{tagPDF}.
+%
+% To maintain a correct list structure when |\DocumentMetadata| is 
+% active, it is necessary to do some things manually. This implementation 
+% is an adaptation of my answer thanks to Ulrike Fischer's comments in 
+% \href{https://tex.stackexchange.com/a/725902}{How can I modify my \texttt{\textbackslash item} redefinition to be compatible with \texttt{tagging-pdf}}.
 %
 % \begin{macro}[int]{start-list-tags, stop-start-tags, stop-list-tags, 
 %                    \@@_start_list_tag:n,\@@_stop_start_list_tag:,
 %                    \@@_stop_list_tag:n}
-%   To keep the correct numbering of \ics{footnote} and to make it work
-%   correctly in the \myenv*{enumext*} and \myenv*{keyans*}
-%   environments, it is necessary to redefine the command.
-%   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
-%   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
+%  We will first define the necessary \texttt{socket}s and their behavior.
 % \iffalse
 %% Implement socket for tagging support in |enumext*| and |keyans*|.
 % \fi
@@ -11616,7 +11615,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-% Wraper socket
+% And now we'll wrap them so that they're only active when |\DocumentMetadata| is present.
 %
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_start_list_tag:n #1
@@ -12400,17 +12399,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-%  \subsubsection{Real definition of \cs{item} in \env{enumext*}}
+% \begin{macro}{\@@_fake_make_label_vii:n}
 %
-% \begin{macro}{\@@_start_item_vii:w}
-%   The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
-%   \ics*{item} inside the \myenv*{enumext*} environment.
-%   The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to
-%   \cs{@@_stop_item_vii:} which we will define later and add the
-%   \mypkg{hyperref} compatible \icounter{enumXvii} counter, after that we will
-%   start capturing the item content in a box. 
+%   The \cs{@@_fake_make_label_vii:n} function will be in charge of 
+%   handling our definition of |\item|. First we increment the counter 
+%   \icounter{enumXvii} for the enumerated items and activate support for 
+%   the \emph{check answers} mechanism, followed by support for 
+%   \ics*{item*}\myoarg{symbol}\myoarg{offset} if present, then the 
+%   \mykey{wrap-label} and \mykey{wrap-label*} keys which we execute using 
+%   |\makebox| whose width will be given by the \mykey{labelwidth} key and 
+%   position by the \mykey{align} key, inside the argument of this we will 
+%   execute the \mykey{font} key together with the function defined by the 
+%   \mykey{wrap-label} or \mykey{wrap-label*} keys. Finally we execute the 
+%   \mykey{labelsep} key applying a \emph{horizontal space}.
+%
 % \iffalse
-%% Real \item definition for |enumext*| \legacy_if_set_true:n { @hyper@item } :D. (doc p170)
+%% Fake \makelabel definition for |enumext*|
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_fake_make_label_vii:n #1
@@ -12457,38 +12461,54 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \skip_horizontal:N \l_@@_labelsep_vii_dim
   }
+%    \end{macrocode}
+% \end{macro}
+%
+%  \subsubsection{Real definition of \cs{item} in \env{enumext*}}
+%
+%   The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
+%   \ics*{item} inside the \myenv*{enumext*} environment, unlike
+%   the implementation in \mypkg{shortlst} we will NOT use an extra group
+%   and the plain form of the \myenv{lrbox} environment.
+%
+% \begin{macro}{\@@_start_item_vii:w}
+%    The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to
+%    \cs{@@_stop_item_vii:} which we will define later, after that we will
+%    start capturing |\item| and its \mymeta{contents} in a \emph{horizontal box}
+%    where the width will be |\itemwidth| plus |\labelwidth| plus |\labelsep|.
+%    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_start_item_vii:w [#1]
   {
     \cs_set_eq:NN \@@_stop_item_tmp_vii: \@@_stop_item_vii:
-%    \end{macrocode}
-%    Here we start capturing |\item| and its contents in a \emph{horizontal box}
-%    where the width will be |\itemwidth| plus |\labelwidth| plus |\labelsep|, unlike
-%    the implementation in \mypkg{shortlst} we will NOT use an extra group
-%    and the plain form of the \myenv{lrbox} environment. If the state of the
-%    variable \cs{l_@@_footnotes_key_bool} is false, we will redefine the
-%    command |\footnote|, followed by printing the \mymeta{symbol} defined
-%    for |\item*| if it is present and execute \mykey{align}, \mykey{font}, 
-%    \mykey{wrap-label}, \mykey{wrap-label*} keys, then execute
-%    the key \mykey{labelsep} and then the key \mykey{first}. Finally we
-%    open the \myenv{minipage} environment and execute the
-%    \mykey{listparindent} key which will be equal to |\parindent|, the
-%    \mykey{parsep} key which will be equal to |\parskip| and the
-%    \mykey{itemindent} key.
-%    \begin{macrocode}
     \hbox_set_to_wd:Nnw \l_@@_item_text_vii_box
       {
         \l_@@_joined_width_vii_dim
         + \l_@@_labelwidth_vii_dim
         + \l_@@_labelsep_vii_dim
       }
-      \bool_if:NF \l_@@_footnotes_key_bool
-        {
-          \@@_renew_footnote:
-        }
-      % Tagging 
+%    \end{macrocode}
+%    If the state of the variable \cs{l_@@_footnotes_key_bool} is false, we will redefine the
+%    command |\footnote|.
+%    \begin{macrocode}
+     \IfDocumentMetadataTF { }
+       {
+         \bool_if:NF \l_@@_footnotes_key_bool
+           {
+             \@@_renew_footnote:
+           }
+       }
+%    \end{macrocode}
+% TAGGGGG
+%    \begin{macrocode}
       \@@_start_list_tag:n {enumext*}
       \@@_fake_make_label_vii:n {#1}
       \@@_stop_start_list_tag:
+%    \end{macrocode}
+%    Finally we open the \myenv{minipage} environment and execute the \mykey{first} key,
+%    \mykey{listparindent} key which will be equal to |\parindent|, the
+%    \mykey{parsep} key which will be equal to |\parskip| and the
+%    \mykey{itemindent} key.
+%    \begin{macrocode}
       \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
         \tl_use:N \l_@@_after_list_args_vii_tl
         \dim_set_eq:NN \parindent \l_@@_listparindent_vii_dim
@@ -12513,9 +12533,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_vii_box
-    \bool_if:NF \l_@@_footnotes_key_bool
+    \IfDocumentMetadataTF { }
       {
-        \@@_print_footnote:
+        \bool_if:NF \l_@@_footnotes_key_bool
+          {
+            \@@_print_footnote:
+          }
       }
     \int_compare:nNnTF
       { \l_@@_item_column_pos_vii_int } = { \l_@@_columns_vii_int }
