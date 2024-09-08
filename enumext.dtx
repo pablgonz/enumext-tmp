@@ -11225,6 +11225,92 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsection{Tagging PDF support for non-standart list environments}\label{ltx:tag-nonestandarlist}
+%
+% The \hologo{LaTeX} release 2022-06-01 brings automatic support for 
+% \texttt{tagPDF} in several aspects, including the standart \emph{list environments} 
+% and the \myenv{list} environment. Unfortunately non-standard \emph{list environments} 
+% like \myenv*{keyanspic} or the horizontal list environments 
+% \myenv*{enumext*} and \myenv*{keyans*} are not structured in a nice 
+% way, i.e. the expected result in the \texttt{PDF} file is the expected 
+% one, but the underlying structure is not correct. In simple terms, for 
+% \texttt{tagPDF} a list environment is a list environment, no matter 
+% what it looks like in the \texttt{PDF} file.
+%
+% \smallskip
+%
+% To maintain a correct list structure when |\DocumentMetadata| is 
+% active, it is necessary to do some things manually. This implementation 
+% is an adaptation of my answer thanks to Ulrike Fischer's comments in 
+% \href{https://tex.stackexchange.com/a/725902}{How can I modify my \texttt{\textbackslash item} redefinition to be compatible with \texttt{tagging-pdf}}.
+%
+% \begin{macro}[int]{start-list-tags, stop-start-tags, stop-list-tags, 
+%                    \@@_start_list_tag:n,\@@_stop_start_list_tag:,
+%                    \@@_stop_list_tag:n}
+%  We will first define the necessary \texttt{socket}s and their behavior.
+% \iffalse
+%% Implement socket for tagging support in |enumext*| and |keyans*|.
+% \fi
+%    \begin{macrocode}
+\socket_new:nn {tagsupport/enumext/starred}{ 1 }
+\socket_new_plug:nnn {tagsupport/enumext/starred} {start-list-tags}
+  {
+    \ResumeTagging{#1}
+    \tag_struct_begin:n {tag=LI}
+    \tag_struct_begin:n {tag=Lbl}
+    \tag_mc_begin:n {tag=Lbl}
+  }
+\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-start-tags}
+  {
+    \tag_mc_end:% close {tag=Lbl}
+    \tag_struct_end:% close {tag=Lbl}
+    \tag_struct_begin:n {tag=LBody}
+    \tag_struct_begin:n {tag=text-unit}
+    \tag_struct_begin:n {tag=text}
+  }
+\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-list-tags}
+  {
+    \tag_struct_end:% close {tag=text}
+    \tag_struct_end:% close {tag=text-unit}
+    \tag_struct_end:% close {tag=LBody}
+    \tag_struct_end:% close {tag=LI}
+    \SuspendTagging{#1}
+  }
+%    \end{macrocode}
+%
+% And now we'll wrap them so that they're only active when |\DocumentMetadata| is present.
+%
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_start_list_tag:n #1
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {start-list-tags}
+        \socket_use:n {tagsupport/enumext/starred} {#1}
+      }
+      {}
+   }
+\cs_new_protected_nopar:Nn \@@_stop_start_list_tag:
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-start-tags}
+        \socket_use:nn {tagsupport/enumext/starred} { }
+      }
+      {}
+   }
+\cs_new_protected_nopar:Npn \@@_stop_list_tag:n #1
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-list-tags}
+        \socket_use:nn {tagsupport/enumext/starred} {#1}
+      }
+      {}
+   }  
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsection{The environment \env{keyanspic} and \cs{anspic}}
 %
 % The \myenv*{keyanspic} environment is a list-based environment that
@@ -11573,80 +11659,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % It is not possible to redefine |\item| and \ics{makelabel} as in
 % the non starred versions, we have no other option than to define
 % a cascade of functions.
-%
-% \subsubsection{Tagging support for horizontal environments}\label{ltx:tag-horizontal}
-%
-% To maintain a correct list structure when |\DocumentMetadata| is 
-% active, it is necessary to do some things manually. This implementation 
-% is an adaptation of my answer thanks to Ulrike Fischer's comments in 
-% \href{https://tex.stackexchange.com/a/725902}{How can I modify my \texttt{\textbackslash item} redefinition to be compatible with \texttt{tagging-pdf}}.
-%
-% \begin{macro}[int]{start-list-tags, stop-start-tags, stop-list-tags, 
-%                    \@@_start_list_tag:n,\@@_stop_start_list_tag:,
-%                    \@@_stop_list_tag:n}
-%  We will first define the necessary \texttt{socket}s and their behavior.
-% \iffalse
-%% Implement socket for tagging support in |enumext*| and |keyans*|.
-% \fi
-%    \begin{macrocode}
-\socket_new:nn {tagsupport/enumext/starred}{ 1 }
-\socket_new_plug:nnn {tagsupport/enumext/starred} {start-list-tags}
-  {
-    \ResumeTagging{#1}
-    \tag_struct_begin:n {tag=LI}
-    \tag_struct_begin:n {tag=Lbl}
-    \tag_mc_begin:n {tag=Lbl}
-  }
-\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-start-tags}
-  {
-    \tag_mc_end:% close {tag=Lbl}
-    \tag_struct_end:% close {tag=Lbl}
-    \tag_struct_begin:n {tag=LBody}
-    \tag_struct_begin:n {tag=text-unit}
-    \tag_struct_begin:n {tag=text}
-  }
-\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-list-tags}
-  {
-    \tag_struct_end:% close {tag=text}
-    \tag_struct_end:% close {tag=text-unit}
-    \tag_struct_end:% close {tag=LBody}
-    \tag_struct_end:% close {tag=LI}
-    \SuspendTagging{#1}
-  }
-%    \end{macrocode}
-%
-% And now we'll wrap them so that they're only active when |\DocumentMetadata| is present.
-%
-%    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_start_list_tag:n #1
-  {
-    \IfDocumentMetadataTF
-      {
-        \socket_assign_plug:nn {tagsupport/enumext/starred} {start-list-tags}
-        \socket_use:n {tagsupport/enumext/starred} {#1}
-      }
-      {}
-   }
-\cs_new_protected_nopar:Nn \@@_stop_start_list_tag:
-  {
-    \IfDocumentMetadataTF
-      {
-        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-start-tags}
-        \socket_use:nn {tagsupport/enumext/starred} { }
-      }
-      {}
-   }
-\cs_new_protected_nopar:Npn \@@_stop_list_tag:n #1
-  {
-    \IfDocumentMetadataTF
-      {
-        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-list-tags}
-        \socket_use:nn {tagsupport/enumext/starred} {#1}
-      }
-      {}
-   }  
-%    \end{macrocode}
-% \end{macro}
 %
 % \subsubsection{Redefining \cs{footnote} command}\label{ltx:footnote}
 %
@@ -12487,8 +12499,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         + \l_@@_labelsep_vii_dim
       }
 %    \end{macrocode}
-%    If the state of the variable \cs{l_@@_footnotes_key_bool} is false, we will redefine the
-%    command |\footnote|.
+%   If |\DocumentMetadata| is not active and the state of the variable 
+%   \cs{l_@@_footnotes_key_bool} is false, we will redefine the |\footnote| 
+%   command.
 %    \begin{macrocode}
      \IfDocumentMetadataTF { }
        {
@@ -12498,15 +12511,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
            }
        }
 %    \end{macrocode}
-% TAGGGGG
+%   Now we insert our \emph{sockets} for the \texttt{tagPDF} support and print |\item|.
 %    \begin{macrocode}
       \@@_start_list_tag:n {enumext*}
       \@@_fake_make_label_vii:n {#1}
       \@@_stop_start_list_tag:
 %    \end{macrocode}
-%    Finally we open the \myenv{minipage} environment and execute the \mykey{first} key,
-%    \mykey{listparindent} key which will be equal to |\parindent|, the
-%    \mykey{parsep} key which will be equal to |\parskip| and the
+%    Finally we open the \myenv{minipage} environment capture the \mymeta{item content} 
+%    and execute the \mykey{first} key, \mykey{listparindent} key which will be equal 
+%    to |\parindent|, the \mykey{parsep} key which will be equal to |\parskip| and the
 %    \mykey{itemindent} key.
 %    \begin{macrocode}
       \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
@@ -12520,17 +12533,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_stop_item_vii:}
 %   The \cs{@@_stop_item_vii:} function will finish the fetching |\item|
-%   and its \mymeta{content} by closing the \myenv{minipage} environment
-%   and the \emph{horizontal box}. Here we will reduce the \emph{warnings}
-%   a bit by setting the value of |\hbadness| to \mydim{10000}, print the
-%   contents of the \emph{box} along with |\footnote| and finally set the
-%   vertical and horizontal spaces between rows and columns.
+%   and its \mymeta{content} by closing the \myenv{minipage} 
+%   environment, the \emph{sockets} for the \texttt{tagPDF} and the 
+%   \emph{horizontal box}.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_stop_item_vii:
   {
       \@@_endminipage:
     \@@_stop_list_tag:n {enumext*}
     \hbox_set_end:
+%    \end{macrocode}
+%   Here we will reduce the \emph{warnings} a bit by setting the value 
+%   of |\hbadness| to \mydim{10000}, print the \mymeta{contents} of the 
+%   \emph{box} along with |\footnote|.
+%    \begin{macrocode}
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_vii_box
     \IfDocumentMetadataTF { }
@@ -12540,6 +12556,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \@@_print_footnote:
           }
       }
+%    \end{macrocode}
+%   Finally set the \emph{vertical} and \emph{horizontal} spaces between 
+%   rows and columns.
+%    \begin{macrocode}
     \int_compare:nNnTF
       { \l_@@_item_column_pos_vii_int } = { \l_@@_columns_vii_int }
       {

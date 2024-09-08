@@ -3916,6 +3916,58 @@
     \__enumext_after_stop_list_v:
     \__enumext_vspace_below_v:
   }
+%% Implement socket for tagging support in |enumext*| and |keyans*|.
+\socket_new:nn {tagsupport/enumext/starred}{ 1 }
+\socket_new_plug:nnn {tagsupport/enumext/starred} {start-list-tags}
+  {
+    \ResumeTagging{#1}
+    \tag_struct_begin:n {tag=LI}
+    \tag_struct_begin:n {tag=Lbl}
+    \tag_mc_begin:n {tag=Lbl}
+  }
+\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-start-tags}
+  {
+    \tag_mc_end:% close {tag=Lbl}
+    \tag_struct_end:% close {tag=Lbl}
+    \tag_struct_begin:n {tag=LBody}
+    \tag_struct_begin:n {tag=text-unit}
+    \tag_struct_begin:n {tag=text}
+  }
+\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-list-tags}
+  {
+    \tag_struct_end:% close {tag=text}
+    \tag_struct_end:% close {tag=text-unit}
+    \tag_struct_end:% close {tag=LBody}
+    \tag_struct_end:% close {tag=LI}
+    \SuspendTagging{#1}
+  }
+\cs_new_protected_nopar:Npn \__enumext_start_list_tag:n #1
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {start-list-tags}
+        \socket_use:n {tagsupport/enumext/starred} {#1}
+      }
+      {}
+   }
+\cs_new_protected_nopar:Nn \__enumext_stop_start_list_tag:
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-start-tags}
+        \socket_use:nn {tagsupport/enumext/starred} { }
+      }
+      {}
+   }
+\cs_new_protected_nopar:Npn \__enumext_stop_list_tag:n #1
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-list-tags}
+        \socket_use:nn {tagsupport/enumext/starred} {#1}
+      }
+      {}
+   }
 %% Define |\anspic| for |keyanspic|.
 \NewDocumentCommand \anspic { s o +m }
   {
@@ -4043,58 +4095,6 @@
       }
     \par
   }
-%% Implement socket for tagging support in |enumext*| and |keyans*|.
-\socket_new:nn {tagsupport/enumext/starred}{ 1 }
-\socket_new_plug:nnn {tagsupport/enumext/starred} {start-list-tags}
-  {
-    \ResumeTagging{#1}
-    \tag_struct_begin:n {tag=LI}
-    \tag_struct_begin:n {tag=Lbl}
-    \tag_mc_begin:n {tag=Lbl}
-  }
-\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-start-tags}
-  {
-    \tag_mc_end:% close {tag=Lbl}
-    \tag_struct_end:% close {tag=Lbl}
-    \tag_struct_begin:n {tag=LBody}
-    \tag_struct_begin:n {tag=text-unit}
-    \tag_struct_begin:n {tag=text}
-  }
-\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-list-tags}
-  {
-    \tag_struct_end:% close {tag=text}
-    \tag_struct_end:% close {tag=text-unit}
-    \tag_struct_end:% close {tag=LBody}
-    \tag_struct_end:% close {tag=LI}
-    \SuspendTagging{#1}
-  }
-\cs_new_protected_nopar:Npn \__enumext_start_list_tag:n #1
-  {
-    \IfDocumentMetadataTF
-      {
-        \socket_assign_plug:nn {tagsupport/enumext/starred} {start-list-tags}
-        \socket_use:n {tagsupport/enumext/starred} {#1}
-      }
-      {}
-   }
-\cs_new_protected_nopar:Nn \__enumext_stop_start_list_tag:
-  {
-    \IfDocumentMetadataTF
-      {
-        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-start-tags}
-        \socket_use:nn {tagsupport/enumext/starred} { }
-      }
-      {}
-   }
-\cs_new_protected_nopar:Npn \__enumext_stop_list_tag:n #1
-  {
-    \IfDocumentMetadataTF
-      {
-        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-list-tags}
-        \socket_use:nn {tagsupport/enumext/starred} {#1}
-      }
-      {}
-   }
 %% Redefining \footnote.
 \cs_new_protected:Nn \__enumext_footnotetext:nn
   {
