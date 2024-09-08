@@ -4211,7 +4211,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-09-04}
+  {2024-09-07}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -5632,7 +5632,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \l_@@_ref_the_count_tl { l_@@_the_counter_ \@@_level: _tl }
         \tl_put_right:ce { l_@@_renew_the_count_ \@@_level: _tl }
           {
-            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
+            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl } 
               { \exp_not:V \l_@@_ref_key_arg_tl }
           }
       }
@@ -5642,7 +5642,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    modification for the reference system in the second argument of the
 %    environment definition \myenv*{enumext}.
 % \iffalse
-%% Activate |ref| key in second arg of list for enumext environment.
+%% Activate |ref| key in second arg of list for |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_standar_ref:
@@ -5725,7 +5725,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_viii_tl
             \tl_put_right:Ne \l_@@_renew_the_count_viii_tl
               {
-                \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
+                \exp_not:N \renewcommand  { \exp_not:V \l_@@_ref_the_count_tl }
                   { \exp_not:V \l_@@_ref_key_arg_tl }
               }
           }
@@ -11571,11 +11571,85 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \hologo{LaTeX} list environments. The fundamental part of the code is adapted
 % from the \mypkg{shortlst} package to a more modern version using \mypkg{expl3}.
 % It is not possible to redefine |\item| and \ics{makelabel} as in
-% the non starred versions (at least I have not achieved it) and as we
-% will make it behave differently, we have no other option than to define
+% the non starred versions, we have no other option than to define
 % a cascade of functions.
 %
-% \subsection{Redefining \cs{footnote} command}\label{ltx:footnote}
+% \subsubsection{Tagging support for horizontal environments}\label{ltx:tag-horizontal}
+% We will implement the necessary code to be able to have support for 
+% \texttt{tagPDF}.
+%
+% \begin{macro}[int]{start-list-tags, stop-start-tags, stop-list-tags, 
+%                    \@@_start_list_tag:n,\@@_stop_start_list_tag:,
+%                    \@@_stop_list_tag:n}
+%   To keep the correct numbering of \ics{footnote} and to make it work
+%   correctly in the \myenv*{enumext*} and \myenv*{keyans*}
+%   environments, it is necessary to redefine the command.
+%   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
+%   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
+% \iffalse
+%% Implement socket for tagging support in |enumext*| and |keyans*|.
+% \fi
+%    \begin{macrocode}
+\socket_new:nn {tagsupport/enumext/starred}{ 1 }
+\socket_new_plug:nnn {tagsupport/enumext/starred} {start-list-tags}
+  {
+    \ResumeTagging{#1}
+    \tag_struct_begin:n {tag=LI}
+    \tag_struct_begin:n {tag=Lbl}
+    \tag_mc_begin:n {tag=Lbl}
+  }
+\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-start-tags}
+  {
+    \tag_mc_end:% close {tag=Lbl}
+    \tag_struct_end:% close {tag=Lbl}
+    \tag_struct_begin:n {tag=LBody}
+    \tag_struct_begin:n {tag=text-unit}
+    \tag_struct_begin:n {tag=text}
+  }
+\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-list-tags}
+  {
+    \tag_struct_end:% close {tag=text}
+    \tag_struct_end:% close {tag=text-unit}
+    \tag_struct_end:% close {tag=LBody}
+    \tag_struct_end:% close {tag=LI}
+    \SuspendTagging{#1}
+  }
+%    \end{macrocode}
+%
+% Wraper socket
+%
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_start_list_tag:n #1
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {start-list-tags}
+        \socket_use:n {tagsupport/enumext/starred} {#1}
+      }
+      {}
+   }
+\cs_new_protected_nopar:Nn \@@_stop_start_list_tag:
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-start-tags}
+        \socket_use:nn {tagsupport/enumext/starred} { }
+      }
+      {}
+   }
+\cs_new_protected_nopar:Npn \@@_stop_list_tag:n #1
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-list-tags}
+        \socket_use:nn {tagsupport/enumext/starred} {#1}
+      }
+      {}
+   }  
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Redefining \cs{footnote} command}\label{ltx:footnote}
 %
 % \begin{macro}[int]{\@@_footnotetext:nn, \@@_renew_footnote:,\@@_print_footnote:}
 %   To keep the correct numbering of \ics{footnote} and to make it work
@@ -12012,6 +12086,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_list_arg_two_vii:
         \@@_before_keys_exec_vii:
       }
+    % Stop tagging
+    \SuspendTagging{enumext*}
     \@@_starred_columns_set_vii:
     \item[] \scan_stop:
     \cs_set_eq:NN \@@_stop_item_tmp_vii: \@@_first_item_tmp_vii:
@@ -12019,6 +12095,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \ignorespaces
   }
   {
+    % Close for first \item
+    \IfDocumentMetadataTF { \tag_struct_end: } { }
     \@@_stop_item_tmp_vii:
     \@@_remove_extra_parsep_vii:
     \@@_stop_list:
@@ -12330,27 +12408,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to
 %   \cs{@@_stop_item_vii:} which we will define later and add the
 %   \mypkg{hyperref} compatible \icounter{enumXvii} counter, after that we will
-%   start capturing the item content in a box. Here need setting the |\if@hyper@item| switch to
-%   \emph{\enquote{true}} for \mypkg{hyperref} compatible. The
-%   explanation for this is given by the master Heiko Oberdiek on
-%   \href{https://tex.stackexchange.com/a/404911}{\textbackslash refstepcounter\{enumi\} twice (or more) creates destination with the same identifier}.
-%
+%   start capturing the item content in a box. 
 % \iffalse
 %% Real \item definition for |enumext*| \legacy_if_set_true:n { @hyper@item } :D. (doc p170)
 % \fi
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_start_item_vii:w [#1]
+\cs_new_protected_nopar:Npn \@@_fake_make_label_vii:n #1
   {
-    \cs_set_eq:NN \@@_stop_item_tmp_vii: \@@_stop_item_vii:
     \legacy_if:nT { @noitemarg }
       {
         \legacy_if_set_false:n { @noitemarg }
         \legacy_if:nT { @nmbrlist }
           {
-            \bool_if:NT \l_@@_hyperref_bool
-              {
-                \legacy_if_set_true:n { @hyper@item }
-              }
             \refstepcounter{enumXvii}
             \bool_if:NT \l_@@_check_answers_bool
               {
@@ -12359,6 +12428,38 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               }
           }
       }
+    \bool_if:NT \l_@@_item_starred_vii_bool
+      {
+        \tl_if_blank:VT \g_@@_item_symbol_aux_vii_tl
+          {
+            \tl_gset_eq:NN
+              \g_@@_item_symbol_aux_vii_tl \l_@@_item_symbol_vii_tl
+          }
+        \mode_leave_vertical:
+        \skip_horizontal:n { -\l_@@_item_symbol_sep_vii_dim }
+        \hbox_overlap_left:n { \g_@@_item_symbol_aux_vii_tl }
+        \skip_horizontal:N \l_@@_item_symbol_sep_vii_dim
+        \tl_gclear:N \g_@@_item_symbol_aux_vii_tl
+      }
+    \bool_if:NTF \l_@@_wrap_label_vii_bool
+      {
+        \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]
+          {
+            \tl_use:N \l_@@_label_font_style_vii_tl
+                \@@_wrapper_label_vii:n {#1}
+          }
+      }
+      {
+         \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]
+           {
+             \tl_use:N \l_@@_label_font_style_vii_tl #1
+           }
+      }
+    \skip_horizontal:N \l_@@_labelsep_vii_dim
+  }
+\cs_new_protected_nopar:Npn \@@_start_item_vii:w [#1]
+  {
+    \cs_set_eq:NN \@@_stop_item_tmp_vii: \@@_stop_item_vii:
 %    \end{macrocode}
 %    Here we start capturing |\item| and its contents in a \emph{horizontal box}
 %    where the width will be |\itemwidth| plus |\labelwidth| plus |\labelsep|, unlike
@@ -12380,43 +12481,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         + \l_@@_labelwidth_vii_dim
         + \l_@@_labelsep_vii_dim
       }
-        \bool_if:NF \l_@@_footnotes_key_bool
-          {
-            \@@_renew_footnote:
-          }
-        \bool_if:NT \l_@@_item_starred_vii_bool
-          {
-            \tl_if_blank:VT \g_@@_item_symbol_aux_vii_tl
-              {
-                \tl_gset_eq:NN
-                  \g_@@_item_symbol_aux_vii_tl \l_@@_item_symbol_vii_tl
-              }
-            \mode_leave_vertical:
-            \skip_horizontal:n { -\l_@@_item_symbol_sep_vii_dim }
-            \hbox_overlap_left:n { \g_@@_item_symbol_aux_vii_tl }
-            \skip_horizontal:N \l_@@_item_symbol_sep_vii_dim
-            \tl_gclear:N \g_@@_item_symbol_aux_vii_tl
-          }
-        \bool_if:NTF \l_@@_wrap_label_vii_bool
-          {
-            \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]
-              { 
-                \tl_use:N \l_@@_label_font_style_vii_tl
-                \@@_wrapper_label_vii:n {#1} 
-              }
-          }
-          {
-            \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]
-              { 
-                \tl_use:N \l_@@_label_font_style_vii_tl #1 
-              }
-          }
-        \skip_horizontal:N \l_@@_labelsep_vii_dim
+      \bool_if:NF \l_@@_footnotes_key_bool
+        {
+          \@@_renew_footnote:
+        }
+      % Tagging 
+      \@@_start_list_tag:n {enumext*}
+      \@@_fake_make_label_vii:n {#1}
+      \@@_stop_start_list_tag:
+      \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
         \tl_use:N \l_@@_after_list_args_vii_tl
-        \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
-          \dim_set_eq:NN \parindent \l_@@_listparindent_vii_dim
-          \skip_set_eq:NN \parskip \l_@@_parsep_vii_skip
-          \tl_use:N \l_@@_fake_item_indent_vii_tl
+        \dim_set_eq:NN \parindent \l_@@_listparindent_vii_dim
+        \skip_set_eq:NN \parskip \l_@@_parsep_vii_skip
+        \tl_use:N \l_@@_fake_item_indent_vii_tl
    }
 %    \end{macrocode}
 % \end{macro}
@@ -12432,6 +12509,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected_nopar:Nn \@@_stop_item_vii:
   {
       \@@_endminipage:
+    \@@_stop_list_tag:n {enumext*}
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_vii_box

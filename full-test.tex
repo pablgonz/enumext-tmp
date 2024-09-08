@@ -24,8 +24,8 @@
 % \crefalias{postulate}{enumXi}
 % \crefname{postulate}{postulate}{postulates}
 % \Crefname{postulate}{Postulate}{Postulates}
-\crefname{enumXi}{postulate}{postulates}
-\Crefname{enumXi}{Postulate}{Postulates}
+%\crefname{enumXi}{postulate}{postulates}
+%\Crefname{enumXi}{Postulate}{Postulates}
 
 \AtBeginEnvironment{tikzpicture}{\tracinglostchars=0\relax}
 \begin{document}
@@ -79,9 +79,9 @@ After enumext XXXXXXXXXXXXXXXXXXXX
 
 BEFORE XXX in horizontal mode
 
-\begin{enumext}[columns=2,nosep,label={(\arabic*.)}]%[topsep=0pt,parsep=0pt,partopsep=0pt,itemsep=0pt,columns=1]%,,itemsep=0pt
+\begin{enumext}[columns=2,nosep,label={(\arabic*.)},ref=[\roman*]]%[topsep=0pt,parsep=0pt,partopsep=0pt,itemsep=0pt,columns=1]%,,itemsep=0pt
 
-   \item\label{1} Blah % note use of optional argument of \label
+   \item\label{1} ZZZ Blah % note use of optional argument of \label
    \item\label{2} Blah % ditto
    \item\label{3} Blah
 
@@ -112,10 +112,11 @@ BEFORE XXX in horizontal mode
 \end{enumext}
 
 
-\newpage
+%%\newpage
 
-After enumext [nosep] in vertical mode \ref{test}. See \cref{2,3}. \Cref{1} instead, perhaps.
+After enumext [nosep] in vertical mode \ref{1}. %%See \cref{2,3}. \Cref{1} instead, perhaps.
 
+\end{document}
 BEFORE XXX in verical mode
 
 \begin{enumext}[columns=2,nosep,resume]%[topsep=0pt,parsep=0pt,partopsep=0pt,itemsep=0pt,columns=1]%,,itemsep=0pt

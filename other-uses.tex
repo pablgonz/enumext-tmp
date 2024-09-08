@@ -1,65 +1,15 @@
-% arara: lualatex
-% arara: lualatex
-% arara: clean: { extensions: [ aux, log, out] }
-\documentclass[12pt]{article}
-%\documentclass[full]{l3doc}
-\usepackage{lipsum,enumitem}
-\usepackage[hyperfootnotes=false]{hyperref}%,footnotehyper ,,footnotehyper
-% \hypersetup{}
-%\makesavenoteenv{enumext*}
-%%\usepackage{multicol}%,footnotehyper ,,footnotehyper
-\usepackage{enumext,xcolor,textcomp}
-\usepackage[base]{babel}
-\setlength{\parindent}{20pt}
-\setlength{\parskip}{20pt}
-\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
-\usepackage{lua-visual-debug}
-% \labelbox
-\NewDocumentCommand \itembox { s +m }
-  {%
-    \IfBooleanTF{#1}
-      {\strut\smash{\parbox[t]{\labelwidth}{\raggedright{#2}}}}%
-      {\strut\smash{\parbox[t]{\labelwidth}{\raggedleft{#2}}}}%
+\DocumentMetadata
+  {
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    testphase={phase-III,math,table,title,firstaid},
+    uncompress
   }
-\newcommand*{\Item}{HOLA }
-\begin{document}
-ZZZZ
-
-\begin{enumext*}[topsep=2cm]
-\item \begin{enumext}[topsep=0pt]
-    \item A
-    \item C \begin{enumerate} \item Soy un texto quote \item Soy un texto quote \item Soy un texto quote \end{enumerate}
-    \item D \begin{verbatim} ZZ,,,sss \end{verbatim}
- \end{enumext}
- %\begin{enumerate} \item Soy un texto quote \item Soy un texto quote \item Soy un texto quote \end{enumerate}
-\end{enumext*}
-
-\begin{enumerate}[nosep,left=0pt]
-  \item Soy un texto quote
-    \begin{enumext*}[nosep] \item Soy un texto quote \item Soy un texto quote \item Soy un texto quote \end{enumext*}
-
-  \item Soy un texto quote \end{enumerate}
-
-After
-\end{document}
-
-
-
-
-
-
-% \DocumentMetadata
-%  {
-%    lang=en-US,
-%    pdfversion=2.0,
-%    pdfstandard=ua-2,
-%    testphase={phase-III,math,table,title,firstaid},
-%    uncompress
-%  }
 \documentclass{article}
 %\documentclass[full]{l3doc}
 \usepackage{xcolor}
-\usepackage[hyperfootnotes=false]{hyperref}%,footnotehyper ,,footnotehyper
+%%\usepackage[hyperfootnotes=false]{hyperref}%,footnotehyper ,,footnotehyper
 % \hypersetup{}
 %\makesavenoteenv{enumext*}
 %%\usepackage{multicol}%,footnotehyper ,,footnotehyper
@@ -67,7 +17,7 @@ After
 %%%\usepackage[base]{babel}
 %%%\setlength{\parindent}{20pt}
 %%%\setlength{\parskip}{0pt}
-%%\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
+\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
 %%\usepackage{lua-visual-debug}
 % \labelbox
 \NewDocumentCommand \itembox { s +m }
@@ -79,50 +29,14 @@ After
 \newcommand*{\Item}{HOLA }
 \begin{document}
 
-\begin{enumerate}
-  \item This text is in the first level.
-  \item This text is in the first level. \begin{enumerate} \item item here. \end{enumerate}
-  \item[X] This text is in the first level.
-  \item* This text is in the first level.
-\end{enumerate}
-
-XXX
-\begin{enumext}[columns=2]
-  \item This text is in the first level.
-  \item This text is in the first level. \begin{enumerate} \item item here. \end{enumerate}
-  \item This text is in the first level.
-  \item* This text is in the first level.
-\end{enumext}
-YYY
-
 \begin{enumext*}[columns=2]
   \item This text is in the first level.
-  \item This text is in the first level. \begin{enumerate} \item item here. \end{enumerate}
   \item This text is in the first level.
+  \item[X] This text is in the first level.
   \item* This text is in the first level.
 \end{enumext*}
 
-
-\end{document}
-
-
-
-
-
-    \begin{enumext*}[nosep,columns=2]
-      \item Choice
-      \item* Correct choice
-      %\item Choice
-      %\item Choice
-      \item Choice
-    \end{enumext*}
-
-\end{document}
-
-
-
-
-
+\stop
 
  \begin{enumext}[save-ans=test,show-ans=true,columns=2,nosep]
   \item Text containing a question.
@@ -130,8 +44,8 @@ YYY
     \begin{keyans*}[nosep,columns=2]
       \item Choice
       \item* Correct choice
-      %\item Choice
-      %\item Choice
+      \item Choice
+      \item Choice
       \item Choice
     \end{keyans*}
 

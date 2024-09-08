@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-09-04}
+  {2024-09-07}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -682,7 +682,7 @@
           }
       }
   }
-%% Activate |ref| key in second arg of list for enumext environment.
+%% Activate |ref| key in second arg of list for |enumext| environment.
 \cs_new_protected:Nn \__enumext_standar_ref:
   {
     \tl_if_empty:cF { l__enumext_renew_the_count_ \__enumext_level: _tl }
@@ -742,7 +742,7 @@
             \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_viii_tl
             \tl_put_right:Ne \l__enumext_renew_the_count_viii_tl
               {
-                \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
+                \exp_not:N \renewcommand  { \exp_not:V \l__enumext_ref_the_count_tl }
                   { \exp_not:V \l__enumext_ref_key_arg_tl }
               }
           }
@@ -4043,6 +4043,58 @@
       }
     \par
   }
+%% Implement socket for tagging support in |enumext*| and |keyans*|.
+\socket_new:nn {tagsupport/enumext/starred}{ 1 }
+\socket_new_plug:nnn {tagsupport/enumext/starred} {start-list-tags}
+  {
+    \ResumeTagging{#1}
+    \tag_struct_begin:n {tag=LI}
+    \tag_struct_begin:n {tag=Lbl}
+    \tag_mc_begin:n {tag=Lbl}
+  }
+\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-start-tags}
+  {
+    \tag_mc_end:% close {tag=Lbl}
+    \tag_struct_end:% close {tag=Lbl}
+    \tag_struct_begin:n {tag=LBody}
+    \tag_struct_begin:n {tag=text-unit}
+    \tag_struct_begin:n {tag=text}
+  }
+\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-list-tags}
+  {
+    \tag_struct_end:% close {tag=text}
+    \tag_struct_end:% close {tag=text-unit}
+    \tag_struct_end:% close {tag=LBody}
+    \tag_struct_end:% close {tag=LI}
+    \SuspendTagging{#1}
+  }
+\cs_new_protected_nopar:Npn \__enumext_start_list_tag:n #1
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {start-list-tags}
+        \socket_use:n {tagsupport/enumext/starred} {#1}
+      }
+      {}
+   }
+\cs_new_protected_nopar:Nn \__enumext_stop_start_list_tag:
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-start-tags}
+        \socket_use:nn {tagsupport/enumext/starred} { }
+      }
+      {}
+   }
+\cs_new_protected_nopar:Npn \__enumext_stop_list_tag:n #1
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-list-tags}
+        \socket_use:nn {tagsupport/enumext/starred} {#1}
+      }
+      {}
+   }
 %% Redefining \footnote.
 \cs_new_protected:Nn \__enumext_footnotetext:nn
   {
@@ -4364,6 +4416,8 @@
         \__enumext_list_arg_two_vii:
         \__enumext_before_keys_exec_vii:
       }
+    % Stop tagging
+    \SuspendTagging{enumext*}
     \__enumext_starred_columns_set_vii:
     \item[] \scan_stop:
     \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \__enumext_first_item_tmp_vii:
@@ -4371,6 +4425,8 @@
     \ignorespaces
   }
   {
+    % Close for first \item
+    \IfDocumentMetadataTF { \tag_struct_end: } { }
     \__enumext_stop_item_tmp_vii:
     \__enumext_remove_extra_parsep_vii:
     \__enumext_stop_list:
@@ -4517,18 +4573,13 @@
     \__enumext_start_item_vii:w [ \l__enumext_label_vii_tl ]
   }
 %% Real \item definition for |enumext*| \legacy_if_set_true:n { @hyper@item } :D. (doc p170)
-\cs_new_protected_nopar:Npn \__enumext_start_item_vii:w [#1]
+\cs_new_protected_nopar:Npn \__enumext_fake_make_label_vii:n #1
   {
-    \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \__enumext_stop_item_vii:
     \legacy_if:nT { @noitemarg }
       {
         \legacy_if_set_false:n { @noitemarg }
         \legacy_if:nT { @nmbrlist }
           {
-            \bool_if:NT \l__enumext_hyperref_bool
-              {
-                \legacy_if_set_true:n { @hyper@item }
-              }
             \refstepcounter{enumXvii}
             \bool_if:NT \l__enumext_check_answers_bool
               {
@@ -4537,6 +4588,51 @@
               }
           }
       }
+    \bool_if:NT \l__enumext_item_starred_vii_bool
+      {
+        \tl_if_blank:VT \g__enumext_item_symbol_aux_vii_tl
+          {
+            \tl_gset_eq:NN
+              \g__enumext_item_symbol_aux_vii_tl \l__enumext_item_symbol_vii_tl
+          }
+        \mode_leave_vertical:
+        \skip_horizontal:n { -\l__enumext_item_symbol_sep_vii_dim }
+        \hbox_overlap_left:n { \g__enumext_item_symbol_aux_vii_tl }
+        \skip_horizontal:N \l__enumext_item_symbol_sep_vii_dim
+        \tl_gclear:N \g__enumext_item_symbol_aux_vii_tl
+      }
+    \bool_if:NTF \l__enumext_wrap_label_vii_bool
+      {
+        \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
+          {
+            \tl_use:N \l__enumext_label_font_style_vii_tl
+                \__enumext_wrapper_label_vii:n {#1}
+          }
+      }
+      {
+         \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
+           {
+             \tl_use:N \l__enumext_label_font_style_vii_tl #1
+           }
+       }
+    \skip_horizontal:N \l__enumext_labelsep_vii_dim
+  }
+\cs_new_protected_nopar:Npn \__enumext_start_item_vii:w [#1]
+  {
+    \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \__enumext_stop_item_vii:
+    %\legacy_if:nT { @noitemarg }
+      %{
+        %\legacy_if_set_false:n { @noitemarg }
+        %\legacy_if:nT { @nmbrlist }
+          %{
+            %\refstepcounter{enumXvii}
+            %\bool_if:NT \l__enumext_check_answers_bool
+              %{
+                %\int_gincr:N \g__enumext_item_number_int
+                %\bool_set_true:N \l__enumext_item_number_bool
+              %}
+          %}
+      %}
     \hbox_set_to_wd:Nnw \l__enumext_item_text_vii_box
       {
         \l__enumext_joined_width_vii_dim
@@ -4547,36 +4643,40 @@
           {
             \__enumext_renew_footnote:
           }
-        \bool_if:NT \l__enumext_item_starred_vii_bool
-          {
-            \tl_if_blank:VT \g__enumext_item_symbol_aux_vii_tl
-              {
-                \tl_gset_eq:NN
-                  \g__enumext_item_symbol_aux_vii_tl \l__enumext_item_symbol_vii_tl
-              }
-            \mode_leave_vertical:
-            \skip_horizontal:n { -\l__enumext_item_symbol_sep_vii_dim }
-            \hbox_overlap_left:n { \g__enumext_item_symbol_aux_vii_tl }
-            \skip_horizontal:N \l__enumext_item_symbol_sep_vii_dim
-            \tl_gclear:N \g__enumext_item_symbol_aux_vii_tl
-          }
-        \bool_if:NTF \l__enumext_wrap_label_vii_bool
-          {
-            \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
-              {
-                \tl_use:N \l__enumext_label_font_style_vii_tl
-                \__enumext_wrapper_label_vii:n {#1}
-              }
-          }
-          {
-            \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
-              {
-                \tl_use:N \l__enumext_label_font_style_vii_tl #1
-              }
-          }
-        \skip_horizontal:N \l__enumext_labelsep_vii_dim
-        \tl_use:N \l__enumext_after_list_args_vii_tl
+        %\bool_if:NT \l__enumext_item_starred_vii_bool
+          %{
+            %\tl_if_blank:VT \g__enumext_item_symbol_aux_vii_tl
+              %{
+                %\tl_gset_eq:NN
+                  %\g__enumext_item_symbol_aux_vii_tl \l__enumext_item_symbol_vii_tl
+              %}
+            %\mode_leave_vertical:
+            %\skip_horizontal:n { -\l__enumext_item_symbol_sep_vii_dim }
+            %\hbox_overlap_left:n { \g__enumext_item_symbol_aux_vii_tl }
+            %\skip_horizontal:N \l__enumext_item_symbol_sep_vii_dim
+            %\tl_gclear:N \g__enumext_item_symbol_aux_vii_tl
+          %}
+        %\bool_if:NTF \l__enumext_wrap_label_vii_bool
+          %{
+            %\makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
+              %{
+                %\tl_use:N \l__enumext_label_font_style_vii_tl
+                %\__enumext_wrapper_label_vii:n {#1}
+              %}
+          %}
+          %{
+            %\makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
+              %{
+                %\tl_use:N \l__enumext_label_font_style_vii_tl #1
+              %}
+          %}
+        %\skip_horizontal:N \l__enumext_labelsep_vii_dim
+        % Tagging
+        \__enumext_start_list_tag:n {enumext*}
+        \__enumext_fake_make_label_vii:n {#1}
+        \__enumext_stop_start_list_tag:
         \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_vii_dim  }
+          \tl_use:N \l__enumext_after_list_args_vii_tl
           \dim_set_eq:NN \parindent \l__enumext_listparindent_vii_dim
           \skip_set_eq:NN \parskip \l__enumext_parsep_vii_skip
           \tl_use:N \l__enumext_fake_item_indent_vii_tl
@@ -4584,6 +4684,7 @@
 \cs_new_protected_nopar:Nn \__enumext_stop_item_vii:
   {
       \__enumext_endminipage:
+    \__enumext_stop_list_tag:n {enumext*}
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_vii_box
