@@ -210,7 +210,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \newcommand*\arara{\araratext{ar\kern-.03emar\kern-.03ema}}
 % User level commands
 \ExplSyntaxOn
-% Logo with fetamont font
+% Logo
 \NewDocumentCommand{\pkglogo}{}
   {
     \group_begin:
@@ -11244,10 +11244,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % is an adaptation of my answer thanks to Ulrike Fischer's comments in 
 % \href{https://tex.stackexchange.com/a/725902}{How can I modify my \texttt{\textbackslash item} redefinition to be compatible with \texttt{tagging-pdf}}.
 %
+% \subsubsection{Socket for tagging support in \env{enumext*} and \env{keyans*}}
+%
 % \begin{macro}[int]{start-list-tags, stop-start-tags, stop-list-tags, 
 %                    \@@_start_list_tag:n,\@@_stop_start_list_tag:,
 %                    \@@_stop_list_tag:n}
-%  We will first define the necessary \texttt{socket}s and their behavior.
+%    We will first define the necessary \texttt{socket}s and their 
+%    behavior for \myenv*{enumext*} and \myenv*{keyans*}.
 % \iffalse
 %% Implement socket for tagging support in |enumext*| and |keyans*|.
 % \fi
@@ -11260,7 +11263,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tag_struct_begin:n {tag=Lbl}
     \tag_mc_begin:n {tag=Lbl}
   }
-\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-start-tags}
+\socket_new_plug:nnn {tagsupport/enumext/starred} {stop-start-tags}
   {
     \tag_mc_end:% close {tag=Lbl}
     \tag_struct_end:% close {tag=Lbl}
@@ -11268,7 +11271,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tag_struct_begin:n {tag=text-unit}
     \tag_struct_begin:n {tag=text}
   }
-\socket_new_plug:nnn {tagsupport/enumext/starred}{stop-list-tags}
+\socket_new_plug:nnn {tagsupport/enumext/starred} {stop-list-tags}
   {
     \tag_struct_end:% close {tag=text}
     \tag_struct_end:% close {tag=text-unit}
@@ -11279,7 +11282,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %
 % And now we'll wrap them so that they're only active when |\DocumentMetadata| is present.
-%
+% \iffalse
+%% Wrap socket in conditional functions for tagging |enumext*| and |keyans*|.
+% \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_start_list_tag:n #1
   {
@@ -11305,6 +11310,82 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-list-tags}
         \socket_use:nn {tagsupport/enumext/starred} {#1}
+      }
+      {}
+   }  
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Socket for tagging support in \env{keyanspic}}
+%
+% \begin{macro}[int]{start-list-tags, stop-start-tags, stop-list-tags, 
+%                    \@@_anspic_start_list_tag:n,\@@_anspic_stop_start_list_tag:,
+%                    \@@_anspic_stop_list_tag:n}
+%    We will first define the necessary \texttt{socket}s and their 
+%    behavior for \myenv*{enumext*} and \myenv*{keyans*}.
+% \iffalse
+%% Implement socket for tagging support in |keyanspic|.
+% \fi
+%    \begin{macrocode}
+\socket_new:nn {tagsupport/enumext/keyanspic}{ 1 }
+\socket_new_plug:nnn {tagsupport/enumext/keyanspic} {start-list-tags}
+  {
+    \ResumeTagging{#1}
+    \tag_start:n {#1}
+    \tag_struct_begin:n {tag=LI}
+    \tag_struct_begin:n {tag=Lbl}
+    \tag_mc_begin:n {tag=Lbl}
+  }
+\socket_new_plug:nnn {tagsupport/enumext/keyanspic} {stop-start-tags}
+  {
+    \tag_mc_end:
+    \tag_struct_end:n {tag=Lbl}
+    \tag_struct_begin:n {tag=LBody}
+    \tag_struct_begin:n {tag=text-unit}
+    \tag_struct_begin:n {tag=text}
+    \tag_mc_begin:n {tag=text}
+  }
+\socket_new_plug:nnn {tagsupport/enumext/keyanspic} {stop-list-tags}
+  {
+    \tag_mc_end:
+    \tag_struct_end:n {tag=text-unit}
+    \tag_struct_end:n {tag=text}
+    \tag_struct_end:n {tag=LBody}
+    \tag_struct_end:n {tag=LI}
+    \tag_stop:n {#1}
+    \SuspendTagging{#1}
+  }
+%    \end{macrocode}
+%   And now we'll wrap them so that they're only active when 
+%   |\DocumentMetadata| is present.
+% \iffalse
+%% Wrap socket in conditional functions for tagging |keyanspic|.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_anspic_start_list_tag:n #1
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {start-list-tags}
+        \socket_use:n {tagsupport/enumext/keyanspic} {#1}
+      }
+      {}
+   }
+\cs_new_protected_nopar:Nn \@@_anspic_stop_start_list_tag:
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {stop-start-tags}
+        \socket_use:nn {tagsupport/enumext/keyanspic} { }
+      }
+      {}
+   }
+\cs_new_protected_nopar:Npn \@@_anspic_stop_list_tag:n #1
+  {
+    \IfDocumentMetadataTF
+      {
+        \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {stop-list-tags}
+        \socket_use:nn {tagsupport/enumext/keyanspic} {#1}
       }
       {}
    }  
@@ -11446,7 +11527,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_keyans_anspic_code:nnn,}
+% \begin{macro}{\@@_keyans_anspic_code:nnn, \@@_keyans_anspic_label:nn}
 %    The function \cs{@@_keyans_anspic_code:nnn} will be in charge of
 %    handling the \emph{\enquote{counter}} and \mymeta{label},
 %    which will have the same configuration as the \myenv*{keyans}
@@ -11455,10 +11536,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal code for |\anspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_anspic_code:nnn
+\cs_new_protected:Npn \@@_keyans_anspic_label:nn #1 #2
   {
     \stepcounter { enumXvi }
-    #3 \\
     \bool_if:nT { #1 }
       {
         \@@_keyans_addto_prop:n { #2 }
@@ -11477,6 +11557,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_use:N \l_@@_label_font_style_v_tl
     \@@_wrapper_label_v:n { \l_@@_label_vi_tl } \@@_keyans_show_item_opt:
   }
+\tl_new:N \l_@@_anspic_body_arg_tl
+\cs_new_protected:Nn \@@_keyans_anspic_code:nnn
+  {
+    \@@_anspic_start_list_tag:n {keyanspic}
+    \@@_keyans_anspic_label:nn { #1 } { #2 }
+    \@@_anspic_stop_start_list_tag:
+    \\ #3 
+    \@@_anspic_stop_list_tag:n {keyanspic}
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -11491,17 +11580,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Define |keyanspic| environment.
 % \fi
 %    \begin{macrocode}
-\NewDocumentEnvironment{keyanspic}{ o }
+\NewDocumentEnvironment{keyanspic}{ s o }
   {
     \@@_keyans_pic_safe_exec:
-    \@@_start_list:nn
-      { }
+    \begin{list} { } { \@@_keyans_pic_arg_two: }
+    \SuspendTagging{list} % non op in LaTeX2e
+    \item[] \scan_stop:
+    % paranoia
+    \RenewDocumentCommand \item {}
       {
-        \@@_keyans_pic_arg_two:
+        \msg_error:nn { enumext } { keyanspic-item-cmd }
       }
-%    \end{macrocode}
-%    We apply the \enquote{adjusted} vertical spacing above the environment
-%    \begin{macrocode}
+    \IfDocumentMetadataTF 
+      { 
+        \tagpdfparaOff
+        \SuspendTagging{keyanspic} % non op in LaTeX2e
+      } { }
     \vspace { \l_@@_keyans_pic_above_skip }
   }
 %    \end{macrocode}
@@ -11513,12 +11607,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \enquote{adjusted} vertical space below the environment.
 %    \begin{macrocode}
   {
-    \tl_if_novalue:nTF { #1 }
+    \IfDocumentMetadataTF 
+      {
+        \tag_start:n {keyanspic}
+        \tag_struct_begin:n {tag=L,attribute=enumerate}
+      }{ }
+    \tl_if_novalue:nTF { #2 }
       {
         \@@_keyans_pic_do:e { \seq_count:N \l_@@_keyans_pic_body_seq }
       }
-      { \@@_keyans_pic_do:n { #1 } }
-    \@@_stop_list:
+      { \@@_keyans_pic_do:n { #2 } }
+    \IfDocumentMetadataTF { \tag_stop:n {keyanspic} } { }
+    \end{list}
+    \IfDocumentMetadataTF { \tag_struct_end: } { }
     \@@_check_starred_cmd:n { anspic }
     \setcounter { enumXvi } { 0 }
     \vspace { \l_@@_topsep_v_skip }
@@ -11603,12 +11704,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         + \l_@@_topsep_v_skip
         - \parsep
       }
-    \@@_item_std:w \scan_stop:
-    % paranoia
-    \RenewDocumentCommand \item {}
-      {
-        \msg_error:nn { enumext } { keyanspic-item-cmd }
-      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11641,10 +11736,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_keyans_pic_above_int + 1 }
       { \l_@@_keyans_pic_below_int }
       {
-        \@@_minipage:w [ b ]{ \l_@@_keyans_pic_width_dim }
+        \IfDocumentMetadataTF { \tag_stop:n {minipage} } { }
+        \begin{minipage}[ b ]{ \l_@@_keyans_pic_width_dim }
           \centering
           \seq_item:Nn \l_@@_keyans_pic_body_seq { ##1 }
-        \@@_endminipage:
+        \end{minipage}
+        \IfDocumentMetadataTF { \tag_start:n {minipage} } { }
       }
     \par
   }
