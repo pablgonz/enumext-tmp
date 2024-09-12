@@ -11536,6 +11536,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal code for |\anspic|.
 % \fi
 %    \begin{macrocode}
+\str_new:N \l_@@_keyans_pic_label_pos_str
+\tl_new:N \l_@@_anspic_body_arg_tl
+\bool_new:N \l_@@_keyans_pic_star_bool
 \cs_new_protected:Npn \@@_keyans_anspic_label:nn #1 #2
   {
     \stepcounter { enumXvi }
@@ -11557,7 +11560,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_use:N \l_@@_label_font_style_v_tl
     \@@_wrapper_label_v:n { \l_@@_label_vi_tl } \@@_keyans_show_item_opt:
   }
-\tl_new:N \l_@@_anspic_body_arg_tl
 \cs_new_protected:Nn \@@_keyans_anspic_code:nnn
   {
     \@@_anspic_start_list_tag:n {keyanspic}
@@ -11612,6 +11614,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tag_start:n {keyanspic}
         \tag_struct_begin:n {tag=L,attribute=enumerate}
       }{ }
+    \bool_if:nTF { #1 }
+      {
+        \bool_set_true:N \l_@@_keyans_pic_star_bool
+        \str_set:Nn \l_@@_keyans_pic_label_pos_str { t }
+      }
+      {
+        \str_set:Nn \l_@@_keyans_pic_label_pos_str { b }
+      }
     \tl_if_novalue:nTF { #2 }
       {
         \@@_keyans_pic_do:e { \seq_count:N \l_@@_keyans_pic_body_seq }
@@ -11737,7 +11747,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_keyans_pic_below_int }
       {
         \IfDocumentMetadataTF { \tag_stop:n {minipage} } { }
-        \begin{minipage}[ b ]{ \l_@@_keyans_pic_width_dim }
+        \begin{minipage}[ \l_@@_keyans_pic_label_pos_str ]{ \l_@@_keyans_pic_width_dim }
           \centering
           \seq_item:Nn \l_@@_keyans_pic_body_seq { ##1 }
         \end{minipage}
