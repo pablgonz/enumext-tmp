@@ -4050,9 +4050,9 @@
 \str_new:N \l__enumext_keyans_pic_label_pos_str
 \tl_new:N \l__enumext_anspic_body_arg_tl
 \bool_new:N \l__enumext_keyans_pic_star_bool
-\cs_new_protected:Npn \__enumext_keyans_anspic_label:nn #1 #2
+\cs_new_protected:Npn \__enumext_keyans_anspic_label:nnn #1 #2 #3
   {
-    \str_show:N \l__enumext_keyans_pic_label_pos_str 
+    \tl_set:Nn \l__enumext_anspic_body_arg_tl { #3 }
     \stepcounter { enumXvi }
     \bool_if:nT { #1 }
       {
@@ -4069,13 +4069,17 @@
             \tl_set_eq:NN \l__enumext_label_vi_tl \l__enumext_label_v_tl
           }
       }
-    \tl_use:N \l__enumext_label_font_style_v_tl
-    \__enumext_wrapper_label_v:n { \l__enumext_label_vi_tl } \__enumext_keyans_show_item_opt:
+    % Using minipage width here
+    \makebox[ \l__enumext_keyans_pic_width_dim ][ c ]
+      {
+        \tl_use:N \l__enumext_label_font_style_v_tl
+        \__enumext_wrapper_label_v:n { \l__enumext_label_vi_tl } \__enumext_keyans_show_item_opt:
+      }
   }
 \cs_new_protected:Nn \__enumext_keyans_anspic_code:nnn
   {
     \__enumext_anspic_start_list_tag:n {keyanspic}
-    \__enumext_keyans_anspic_label:nn { #1 } { #2 }
+    \__enumext_keyans_anspic_label:nnn { #1 } { #2 } { #3 }
     \__enumext_anspic_stop_start_list_tag:
     \\ #3
     \__enumext_anspic_stop_list_tag:n {keyanspic}
@@ -4175,7 +4179,6 @@
       { \l__enumext_keyans_pic_below_int }
       {
         \IfDocumentMetadataTF { \tag_stop:n {minipage} } { }
-        %\str_show:N \l__enumext_keyans_pic_label_pos_str 
         \begin{minipage}[ \l__enumext_keyans_pic_label_pos_str ]{ \l__enumext_keyans_pic_width_dim }
           \centering
           \seq_item:Nn \l__enumext_keyans_pic_body_seq { ##1 }

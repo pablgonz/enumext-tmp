@@ -11527,7 +11527,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_keyans_anspic_code:nnn, \@@_keyans_anspic_label:nn}
+% \begin{macro}{\@@_keyans_anspic_code:nnn, \@@_keyans_anspic_label:nnn}
 %    The function \cs{@@_keyans_anspic_code:nnn} will be in charge of
 %    handling the \emph{\enquote{counter}} and \mymeta{label},
 %    which will have the same configuration as the \myenv*{keyans}
@@ -11539,8 +11539,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \str_new:N \l_@@_keyans_pic_label_pos_str
 \tl_new:N \l_@@_anspic_body_arg_tl
 \bool_new:N \l_@@_keyans_pic_star_bool
-\cs_new_protected:Npn \@@_keyans_anspic_label:nn #1 #2
+\cs_new_protected:Npn \@@_keyans_anspic_label:nnn #1 #2 #3
   {
+    \tl_set:Nn \l_@@_anspic_body_arg_tl { #3 }
     \stepcounter { enumXvi }
     \bool_if:nT { #1 }
       {
@@ -11557,13 +11558,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \tl_set_eq:NN \l_@@_label_vi_tl \l_@@_label_v_tl
           }
       }
-    \tl_use:N \l_@@_label_font_style_v_tl
-    \@@_wrapper_label_v:n { \l_@@_label_vi_tl } \@@_keyans_show_item_opt:
+    % Using minipage width here
+    \makebox[ \l_@@_keyans_pic_width_dim ][ c ]
+      {
+        \tl_use:N \l_@@_label_font_style_v_tl
+        \@@_wrapper_label_v:n { \l_@@_label_vi_tl } \@@_keyans_show_item_opt:
+      }
   }
 \cs_new_protected:Nn \@@_keyans_anspic_code:nnn
   {
     \@@_anspic_start_list_tag:n {keyanspic}
-    \@@_keyans_anspic_label:nn { #1 } { #2 }
+    \@@_keyans_anspic_label:nnn { #1 } { #2 } { #3 }
     \@@_anspic_stop_start_list_tag:
     \\ #3 
     \@@_anspic_stop_list_tag:n {keyanspic}
