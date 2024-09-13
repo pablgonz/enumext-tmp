@@ -1,9 +1,10 @@
+\DocumentMetadata{lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress}% pdfstandard=ua-2,
 % arara: pdflatex
 % arara: pdflatex
 % arara: clean: { extensions: [ aux, log, out] }
 \documentclass{article}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+\usepackage{lmodern,tagpdf-debug}
 \usepackage[margin=2cm]{geometry}
 \usepackage{tikz}
 \newcommand*{\myCircled}[1]{%
@@ -15,15 +16,19 @@
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
+\setenumext[keyans]{label=\Alph*,font=\small,parsep=1cm,wrap-label={\myCircled{##1}}}
 \begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
 \item First type of questions
-  \begin{keyans}[columns=1,noitemsep]
+  \begin{enumext*}[columns=1,noitemsep]
     \item value
-    \item*[$x=5$] correct
+    \item correct
     \item value
     \item value
-  \end{keyans}
+  \end{enumext*}
+\end{enumext}
+
+\end{document}
+
 \item Second type of questions
   \begin{enumext}[no-store,label=\Roman*.,nosep]
     \item $2\alpha+2\delta=90^{\circ}$
@@ -38,7 +43,7 @@
     \item I, II, and III
   \end{keyans}
 \item Third type of questions
-    \begin{enumext}[no-store,list-offset=0.5cm,label=(\arabic*),nosep]
+    \begin{enumext}[no-store,list-offset=0.25cm,label=(\arabic*),nosep]
         \item $2\alpha+2\delta=90^{\circ}$
         \item $\angle EDF=45^{\circ}$
     \end{enumext}
@@ -52,23 +57,28 @@
 
 \item Question with image and label below:
 \begin{keyanspic}[3,2]
+
+
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
-\anspic{\includegraphics[scale=0.15]{example-image-b}}
+\anspic{\includegraphics[scale=0.25]{example-image-b}}
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
+
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
+
 \anspic*[A duck]{\includegraphics[scale=0.32]{example-image-duck}}
+
 \end{keyanspic}
 
 \item Question with image on left side:
-\begin{keyans}[mini-env=0.5\linewidth, columns=1,noitemsep]
-    \item value
-    \item value
-    \item value
-    \item*[other note] correct
-    \item value
-    \miniright
-    \includegraphics[scale=0.15]{example-image-b}
-\end{keyans}
+%\begin{keyans}[mini-env=0.5\linewidth, columns=1,noitemsep]
+%    \item value
+%    \item value
+%    \item value
+%    \item*[other note] correct
+%    \item value
+%    \miniright
+%    \includegraphics[scale=0.15]{example-image-b}
+%\end{keyans}
 \end{enumext}
 
 \medskip

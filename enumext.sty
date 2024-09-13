@@ -4102,7 +4102,12 @@
       {
         \raisebox
           {
-            -\dim_eval:n { \l__enumext_anspic_label_htdp_dim + \l__enumext_anspic_body_htdp_dim + \box_ht_plus_dp:N \strutbox }
+            -\dim_eval:n
+              {
+                \l__enumext_anspic_label_htdp_dim
+                + \l__enumext_anspic_body_htdp_dim
+                + \box_ht_plus_dp:N \strutbox
+              }
           }
           [ 0pt ] [ 0pt ]
           {
@@ -4122,6 +4127,14 @@
 \NewDocumentEnvironment{keyanspic}{ s o }
   {
     \__enumext_keyans_pic_safe_exec:
+    \bool_if:nTF { #1 }
+      {
+        \bool_set_true:N \l__enumext_keyans_pic_star_bool
+        \str_set:Nn \l__enumext_keyans_pic_label_pos_str { t }
+      }
+      {
+        \str_set:Nn \l__enumext_keyans_pic_label_pos_str { b }
+      }
     \begin{list} { } { \__enumext_keyans_pic_arg_two: }
     \SuspendTagging{list} % non op in LaTeX2e
     \item[] \scan_stop:
@@ -4143,14 +4156,6 @@
         \tag_start:n {keyanspic}
         \tag_struct_begin:n {tag=L,attribute=enumerate}
       }{ }
-    \bool_if:nTF { #1 }
-      {
-        \bool_set_true:N \l__enumext_keyans_pic_star_bool
-        \str_set:Nn \l__enumext_keyans_pic_label_pos_str { t }
-      }
-      {
-        \str_set:Nn \l__enumext_keyans_pic_label_pos_str { b }
-      }
     \tl_if_novalue:nTF { #2 }
       {
         \__enumext_keyans_pic_do:e { \seq_count:N \l__enumext_keyans_pic_body_seq }
@@ -4219,7 +4224,13 @@
         \end{minipage}
         \IfDocumentMetadataTF { \tag_start:n {minipage} } { }
       }
-    \par
+    \bool_if:NTF \l__enumext_keyans_pic_star_bool
+      {
+        \par
+      }
+      {
+        \par\vspace{ \box_ht_plus_dp:N \strutbox }
+      }
   }
 %% Redefining \footnote.
 \cs_new_protected:Nn \__enumext_footnotetext:nn
@@ -4552,7 +4563,7 @@
   }
   {
     % Close for first \item
-    \IfDocumentMetadataTF { \tag_struct_end: } { }
+    \IfDocumentMetadataTF { \tag_struct_end: } { } %
     \__enumext_stop_item_tmp_vii:
     \__enumext_remove_extra_parsep_vii:
     \__enumext_stop_list:
