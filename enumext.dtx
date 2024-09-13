@@ -11265,18 +11265,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \socket_new_plug:nnn {tagsupport/enumext/starred} {stop-start-tags}
   {
-    \tag_mc_end:% close {tag=Lbl}
-    \tag_struct_end:% close {tag=Lbl}
+    \tag_mc_end:
+    \tag_struct_end:n {tag=Lbl}
     \tag_struct_begin:n {tag=LBody}
     \tag_struct_begin:n {tag=text-unit}
     \tag_struct_begin:n {tag=text}
   }
 \socket_new_plug:nnn {tagsupport/enumext/starred} {stop-list-tags}
   {
-    \tag_struct_end:% close {tag=text}
-    \tag_struct_end:% close {tag=text-unit}
-    \tag_struct_end:% close {tag=LBody}
-    \tag_struct_end:% close {tag=LI}
+    \tag_struct_end:n {tag=text}
+    \tag_struct_end:n {tag=text-unit} 
+    \tag_struct_end:n {tag=LBody}
+    \tag_struct_end:n {tag=LI}
     \SuspendTagging{#1}
   }
 %    \end{macrocode}
@@ -11319,19 +11319,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Socket for tagging support in \env{keyanspic}}
 %
 % \begin{macro}[int]{start-list-tags, stop-start-tags, stop-list-tags, 
-%                    \@@_anspic_start_list_tag:n,\@@_anspic_stop_start_list_tag:,
-%                    \@@_anspic_stop_list_tag:n}
+%                    \@@_anspic_start_list_tag:,\@@_anspic_stop_start_list_tag:,
+%                    \@@_anspic_stop_list_tag:}
 %    We will first define the necessary \texttt{socket}s and their 
-%    behavior for \myenv*{enumext*} and \myenv*{keyans*}.
+%    behavior for \myenv*{keyanspic}.
 % \iffalse
 %% Implement socket for tagging support in |keyanspic|.
 % \fi
 %    \begin{macrocode}
-\socket_new:nn {tagsupport/enumext/keyanspic}{ 1 }
+\socket_new:nn {tagsupport/enumext/keyanspic}{ 0 }
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {start-list-tags}
   {
-    \ResumeTagging{#1}
-    \tag_start:n {#1}
+    \ResumeTagging{keyanspic}
+    \tag_start:n {keyanspic}
     \tag_struct_begin:n {tag=LI}
     \tag_struct_begin:n {tag=Lbl}
     \tag_mc_begin:n {tag=Lbl}
@@ -11352,8 +11352,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tag_struct_end:n {tag=text}
     \tag_struct_end:n {tag=LBody}
     \tag_struct_end:n {tag=LI}
-    \tag_stop:n {#1}
-    \SuspendTagging{#1}
+    \tag_stop:n {keyanspic}
+    \SuspendTagging{keyanspic}
   }
 %    \end{macrocode}
 %   And now we'll wrap them so that they're only active when 
@@ -11362,12 +11362,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Wrap socket in conditional functions for tagging |keyanspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_anspic_start_list_tag:n #1
+\cs_new_protected_nopar:Nn \@@_anspic_start_list_tag:
   {
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {start-list-tags}
-        \socket_use:n {tagsupport/enumext/keyanspic} {#1}
+        \socket_use:n {tagsupport/enumext/keyanspic}
       }
       {}
    }
@@ -11376,16 +11376,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {stop-start-tags}
-        \socket_use:nn {tagsupport/enumext/keyanspic} { }
+        \socket_use:nn {tagsupport/enumext/keyanspic} 
       }
       {}
    }
-\cs_new_protected_nopar:Npn \@@_anspic_stop_list_tag:n #1
+\cs_new_protected_nopar:Nn \@@_anspic_stop_list_tag:
   {
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {stop-list-tags}
-        \socket_use:nn {tagsupport/enumext/keyanspic} {#1}
+        \socket_use:nn {tagsupport/enumext/keyanspic}
       }
       {}
    }  
@@ -11567,11 +11567,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_keyans_anspic_code:nnn
   {
-    \@@_anspic_start_list_tag:n {keyanspic}
+    \@@_anspic_start_list_tag:
     \@@_keyans_anspic_label:nnn { #1 } { #2 } { #3 }
     \@@_anspic_stop_start_list_tag:
     \\ #3 
-    \@@_anspic_stop_list_tag:n {keyanspic}
+    \@@_anspic_stop_list_tag:
   }
 %    \end{macrocode}
 % \end{macro}
