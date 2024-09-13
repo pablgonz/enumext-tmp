@@ -4048,12 +4048,28 @@
   }
 %% Internal code for |\anspic|.
 \str_new:N \l__enumext_keyans_pic_label_pos_str
-\tl_new:N \l__enumext_anspic_body_arg_tl
 \bool_new:N \l__enumext_keyans_pic_star_bool
-\cs_new_protected:Npn \__enumext_keyans_anspic_label:nnn #1 #2 #3
+\box_new:N \l__enumext_anspic_label_box
+\box_new:N \l__enumext_anspic_body_box
+\dim_new:N \l__enumext_anspic_label_htdp_dim
+\dim_new:N \l__enumext_anspic_body_htdp_dim
+\cs_new_protected:Npn \__enumext_anspic_box_set_dim:n #1
   {
-    \tl_set:Nn \l__enumext_anspic_body_arg_tl { #3 }
-    \stepcounter { enumXvi }
+    % body
+    \vbox_set:Nn \l__enumext_anspic_body_box { #1 }
+    \dim_set:Nn \l__enumext_anspic_body_htdp_dim
+      {
+        \box_ht_plus_dp:N \l__enumext_anspic_body_box
+      }
+    % label
+    \vbox_set:Nn \l__enumext_anspic_label_box { \l__enumext_label_v_tl }
+    \dim_set:Nn \l__enumext_anspic_label_htdp_dim
+      {
+        \box_ht_plus_dp:N \l__enumext_anspic_label_box
+      }
+  }
+\cs_new_protected:Npn \__enumext_anspic_label:nn #1 #2
+  {
     \bool_if:nT { #1 }
       {
         \__enumext_keyans_addto_prop:n { #2 }
@@ -4069,11 +4085,29 @@
             \tl_set_eq:NN \l__enumext_label_vi_tl \l__enumext_label_v_tl
           }
       }
-    % Using minipage width here
     \makebox[ \l__enumext_keyans_pic_width_dim ][ c ]
       {
         \tl_use:N \l__enumext_label_font_style_v_tl
         \__enumext_wrapper_label_v:n { \l__enumext_label_vi_tl } \__enumext_keyans_show_item_opt:
+      }
+  }
+\cs_new_protected:Npn \__enumext_keyans_anspic_label:nnn #1 #2 #3
+  {
+    \stepcounter { enumXvi }
+    \__enumext_anspic_box_set_dim:n { #3 }
+    \bool_if:NTF \l__enumext_keyans_pic_star_bool
+      {
+        \__enumext_anspic_label:nn { #1 } { #2 }
+      }
+      {
+        \raisebox
+          {
+            -\dim_eval:n { \l__enumext_anspic_label_htdp_dim + \l__enumext_anspic_body_htdp_dim + \box_ht_plus_dp:N \strutbox }
+          }
+          [ 0pt ] [ 0pt ]
+          {
+            \__enumext_anspic_label:nn { #1 } { #2 }
+          }
       }
   }
 \cs_new_protected:Nn \__enumext_keyans_anspic_code:nnn
