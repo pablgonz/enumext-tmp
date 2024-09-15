@@ -11527,7 +11527,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_keyans_anspic_code:nnn, \@@_keyans_anspic_label:nnn}
+% \begin{macro}{\@@_anspic_box_set_dim:n, \@@_keyans_anspic_label:nnn,
+%               \@@_keyans_anspic_code:nnn, }
 %    The function \cs{@@_keyans_anspic_code:nnn} will be in charge of
 %    handling the \emph{\enquote{counter}} and \mymeta{label},
 %    which will have the same configuration as the \myenv*{keyans}
@@ -11649,7 +11650,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
     \IfDocumentMetadataTF 
       { 
-        \tagpdfparaOff
+        %\tagpdfparaOff (not work see chat TSX)
+        \ResumeTagging{keyanspic}
+        \tag_tool:n {para/tagging=false}
         \SuspendTagging{keyanspic} % non op in LaTeX2e
       } { }
     \vspace { \l_@@_keyans_pic_above_skip }
@@ -13189,6 +13192,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             {
               \tl_use:N \l_@@_fake_item_indent_viii_tl
             }
+%%          First atempt here, need stop tag and set counter for enumi, and more...need test
+%%          \RenewDocumentCommand \item { o }
+%%            {
+%%              \tl_if_novalue:nTF {#1}
+%%                {
+%%                  \@@_item_std:w
+%%                }
+%%                {
+%%                  \@@_item_std:w [#1]
+%%                }
+%%            }
    }
 %    \end{macrocode}
 % \end{macro}

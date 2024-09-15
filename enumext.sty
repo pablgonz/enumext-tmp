@@ -4145,7 +4145,9 @@
       }
     \IfDocumentMetadataTF
       {
-        \tagpdfparaOff
+        %\tagpdfparaOff (not work see chat TSX)
+        \ResumeTagging{keyanspic}
+        \tag_tool:n {para/tagging=false}
         \SuspendTagging{keyanspic} % non op in LaTeX2e
       } { }
     \vspace { \l__enumext_keyans_pic_above_skip }
@@ -4563,7 +4565,7 @@
   }
   {
     % Close for first \item
-    \IfDocumentMetadataTF { \tag_struct_end: } { } %
+    \IfDocumentMetadataTF { \tag_struct_end: } { }
     \__enumext_stop_item_tmp_vii:
     \__enumext_remove_extra_parsep_vii:
     \__enumext_stop_list:
@@ -5052,6 +5054,16 @@
             }
             {
               \tl_use:N \l__enumext_fake_item_indent_viii_tl
+            }
+          \RenewDocumentCommand \item { o }
+            {
+              \tl_if_novalue:nTF {#1}
+                {
+                  \__enumext_item_std:w
+                }
+                {
+                  \__enumext_item_std:w [#1]
+                }
             }
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_item_viii:
