@@ -11655,7 +11655,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tag_tool:n {para/tagging=false}
         \SuspendTagging{keyanspic} % non op in LaTeX2e
       } { }
-    \vspace { \l_@@_keyans_pic_above_skip }
+    \vspace { \l_@@_keyans_pic_above_skip } % need see what this on space
   }
 %    \end{macrocode}
 %    If the optional argument is not present, the number of times the
@@ -11678,10 +11678,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \@@_keyans_pic_do:n { #2 } }
     \IfDocumentMetadataTF { \tag_stop:n {keyanspic} } { }
     \end{list}
-    \IfDocumentMetadataTF { \tag_struct_end: } { }
+    \IfDocumentMetadataTF { \tag_struct_end: \tag_struct_end: } { }
     \@@_check_starred_cmd:n { anspic }
     \setcounter { enumXvi } { 0 }
-    \vspace { \l_@@_topsep_v_skip }
+    %%\vspace { \l_@@_topsep_v_skip }
+    \par\addvspace{ \dim_eval:n { -\parsep + \box_dp:N \strutbox } }
     %\bool_set_false:N \l_@@_store_active_bool
   }
 %    \end{macrocode}
@@ -11742,7 +11743,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   Then we make equal to zero \ics{labelwidth}, \ics{labelsep}, \ics{partopsep}
 %   and \ics{itemsep} so that the horizontal and vertical spacing is not affected.
 %    \begin{macrocode}
-    \skip_add:Nn \parsep { \itemsep }
+    %%%\skip_add:Nn \parsep { \itemsep }
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \dim_zero:N  \labelwidth
     \dim_zero:N  \listparindent
@@ -11761,7 +11762,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \box_dp:N \strutbox
         + \l_@@_topsep_v_skip
-        - \parsep
+        %%%- \parsep
       }
   }
 %    \end{macrocode}
@@ -11807,7 +11808,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \par
       }
       {
-        \par\vspace{ \box_ht_plus_dp:N \strutbox }
+        \par%\vspace{ \box_ht_plus_dp:N \strutbox }
       }
   }
 %    \end{macrocode}
