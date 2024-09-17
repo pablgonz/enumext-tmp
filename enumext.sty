@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-09-07}
+  {2024-09-17}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -4145,7 +4145,6 @@
       }
     \IfDocumentMetadataTF
       {
-        %\tagpdfparaOff (not work see chat TSX)
         \ResumeTagging{keyanspic}
         \tag_tool:n {para/tagging=false}
         \SuspendTagging{keyanspic} % non op in LaTeX2e
