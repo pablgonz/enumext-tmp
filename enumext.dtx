@@ -11491,6 +11491,216 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  This implementation is adapted from the answer given by Enrico Gregorio
 %  in \href{https://tex.stackexchange.com/a/577705/7832}{How to process the body of an environment and divide it by a \textbackslash macro?}.
 %
+% \subsubsection{The environment \env{keyanspic}}\label{env:keyanspic}
+%
+% The environment we wish to build will be based on the \myenv{list}
+% environment and will take two optional arguments, the starred argument
+% |*| will set the position of the \mymeta{label} to the top if present
+% and bottom otherwise, the second optional argument will process the
+% number of \emph{drawing} or \emph{tabular} that will be on top, bottom
+% or inline when present or not.
+%
+% \begin{macro}{\@@_keyans_pic_safe_exec:n}
+%    The function \cs{@@_keyans_pic_safe_exec:n} check the starred argument
+%    and nested level position inside the \myenv*{enumext} environment.
+%
+%    We will set the state of the variable \cs{l_@@_keyans_pic_star_bool}
+%    along with the value of the variable \cs{l_@@_keyans_pic_label_pos_str}
+%    according to the presence of the starred argument.
+% \iffalse
+%% Internal check code for |keyanspic| environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_keyans_pic_safe_exec:n #1
+  {
+    \int_incr:N \l_@@_keyans_pic_level_int
+    \int_compare:nNnT { \l_@@_keyans_pic_level_int } > { 1 }
+      {
+        \msg_error:nn { enumext } { keyanspic-nested }
+      }
+    \@@_keyans_name_and_start:
+    \bool_if:nTF { #1 }
+      {
+        \bool_set_true:N \l_@@_keyans_pic_star_bool
+        \str_set:Nn \l_@@_keyans_pic_label_pos_str { t }
+      }
+      {
+        \str_set:Nn \l_@@_keyans_pic_label_pos_str { b }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_keyans_pic_skip_abs:N}
+%    The function \cs{@@_keyans_pic_skip_abs:N} will return a positive
+%    value \ics{parsep}.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_keyans_pic_skip_abs:N #1
+  {
+    \dim_compare:nNnT { #1 } < { \c_zero_dim }
+      {
+        \skip_set:Nn #1 { -#1 }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_keyans_pic_arg_two:}
+%    The function \cs{@@_keyans_pic_arg_two:} will be used in the
+%    second argument of the \cs{@@_start_list:nn} function that defines
+%    the \myenv*{keyanspic} environment, it will handle the setting of
+%    spaces.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_keyans_pic_arg_two:
+  {
+%    \end{macrocode}
+%    The first thing to do is to set the boolean variable
+%    \cs{l_@@_leftmargin_tmp_v_bool} handled by the \mykey{list-indent} key
+%    to false, then we copy the definition of the second list argument from
+%    the \myenv*{keyans} environment.
+%    \begin{macrocode}
+    \bool_set_false:N \l_@@_leftmargin_tmp_v_bool
+    \@@_list_arg_two_v:
+%    \end{macrocode}
+%   We will add the value of \ics{itemsep} to \ics{parsep} which we will
+%   use as vertical spacing between the above and below \myenv{minipage}
+%   environments. and adjust the value of |\leftmargin|, the label and
+%   counter are handled directly by the \ics*{anspic} command.
+%   Then we make equal to zero \ics{labelwidth}, \ics{labelsep}, \ics{partopsep}
+%   and \ics{itemsep} so that the horizontal and vertical spacing is not affected.
+%    \begin{macrocode}
+    %%%\skip_add:Nn \parsep { \itemsep }
+    \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
+    \dim_zero:N  \labelwidth
+    \dim_zero:N  \listparindent
+    \dim_zero:N  \labelsep
+    \skip_zero:N \partopsep
+    \skip_zero:N \itemsep
+%    \end{macrocode}
+%    We set the value of \cs{l_@@_keyans_pic_above_skip} which we will use
+%    to apply our \enquote{adjust} space above \myenv*{keyanspic}, finally
+%    we call \cs{@@_item_std:w} followed by \cs{scan_stop:} to prevent the error
+%    message returned by \hologo{LaTeX} when not using the |\item|
+%    command.
+%    \begin{macrocode}
+    \@@_keyans_pic_skip_abs:N \parsep
+    \skip_set:Nn \l_@@_keyans_pic_above_skip
+      {
+        \box_dp:N \strutbox
+        + \l_@@_topsep_v_skip
+        %%%- \parsep
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{keyanspic}
+%    Now we define the environment \myenv*{keyanspic} based on list.
+%    The optional argument \myoarg{number above, number below}
+%    will determine the number of \myenv{minipage} environments that
+%    will be above and below separated by \ics{parsep}+\ics{itemsep} within it.
+% \iffalse
+%% Define |keyanspic| environment.
+% \fi
+%    \begin{macrocode}
+\NewDocumentEnvironment{keyanspic}{ s o }
+  {
+    \@@_keyans_pic_safe_exec:n { #1 }
+    \begin{list} { } { \@@_keyans_pic_arg_two: }
+    \IfDocumentMetadataTF
+      {
+        \tag_suspend:n {list}
+      }{}
+    \item[] \scan_stop:
+    % paranoia
+    \RenewDocumentCommand \item {}
+      {
+        \msg_error:nn { enumext } { keyanspic-item-cmd }
+      }
+    \IfDocumentMetadataTF
+      {
+        \tag_resume:n {keyanspic}
+        \tag_tool:n {para/tagging=false}
+        \tag_suspend:n {keyanspic}
+      } { }
+    \vspace { \l_@@_keyans_pic_above_skip } % need see what this on space
+  }
+%    \end{macrocode}
+%    If the optional argument is not present, the number of times the
+%    \ics*{anspic} command appears will be counted from
+%    \cs{l_@@_keyans_pic_body_seq} and placed in \myenv{minipage}
+%    environments on a single line. Finally we check if \ics*{anspic*}
+%    has been used, set the counter to zero and apply our
+%    \enquote{adjusted} vertical space below the environment.
+%    \begin{macrocode}
+  {
+    \IfDocumentMetadataTF
+      {
+        \tag_start:n {keyanspic}
+        \tag_struct_begin:n {tag=L,attribute=enumerate}
+      }{ }
+    \tl_if_novalue:nTF { #2 }
+      {
+        \@@_keyans_pic_do:e { \seq_count:N \l_@@_keyans_pic_body_seq }
+      }
+      { \@@_keyans_pic_do:n { #2 } }
+    \IfDocumentMetadataTF { \tag_stop:n {keyanspic} } { }
+    \end{list}
+    \IfDocumentMetadataTF { \tag_struct_end: \tag_struct_end: } { }
+    \@@_check_starred_cmd:n { anspic }
+    \setcounter { enumXvi } { 0 }
+    \par\addvspace{ \dim_eval:n { -\parsep + \box_dp:N \strutbox } }
+    %\bool_set_false:N \l_@@_store_active_bool
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_keyans_pic_do:n, \@@_keyans_pic_do:e}
+%    The optional argument is split by comma and is handled directly by
+%    the function \cs{@@_keyans_pic_do:n} and passed to the function
+%    \cs{@@_keyans_pic_row:n}.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_keyans_pic_do:n
+  {
+    \clist_map_function:nN { #1 } \@@_keyans_pic_row:n
+  }
+\cs_generate_variant:Nn \@@_keyans_pic_do:n { e }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_keyans_pic_row:n}
+%    The function \cs{@@_keyans_pic_row:n} will set the widths for
+%    the \myenv{minipage} environments and place the content \mymeta{stored}
+%    by \ics*{anspic*} in the \cs{l_@@_keyans_pic_body_seq} sequence inside
+%    them.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_keyans_pic_row:n
+  {
+    \dim_set:Nn \l_@@_keyans_pic_width_dim { \linewidth / #1 }
+    \int_set:Nn \l_@@_keyans_pic_above_int { \l_@@_keyans_pic_below_int }
+    \int_set:Nn \l_@@_keyans_pic_below_int { \l_@@_keyans_pic_above_int + #1 }
+    \int_step_inline:nnn
+      { \l_@@_keyans_pic_above_int + 1 }
+      { \l_@@_keyans_pic_below_int }
+      {
+        \IfDocumentMetadataTF { \tag_stop:n {minipage} } { }
+        \begin{minipage}[ \l_@@_keyans_pic_label_pos_str ]{ \l_@@_keyans_pic_width_dim }
+          \centering
+          \seq_item:Nn \l_@@_keyans_pic_body_seq { ##1 }
+        \end{minipage}
+        \IfDocumentMetadataTF { \tag_start:n {minipage} } { }
+      }
+    \bool_if:NTF \l_@@_keyans_pic_star_bool
+      {
+        \par
+      }
+      {
+        \par%\vspace{ \box_ht_plus_dp:N \strutbox }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsubsection{The command \cs{anspic}}\label{cmd:anspic}
 %
 % \begin{macro}{\anspic}
@@ -11615,204 +11825,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_anspic_stop_start_list_tag:
     \\ #3
     \@@_anspic_stop_list_tag:
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \subsubsection{The environment \env{keyanspic}}\label{env:keyanspic}
-%
-% \begin{macro}{keyanspic}
-%    Now we define the environment \myenv*{keyanspic} based on list.
-%    The optional argument \myoarg{number above, number below}
-%    will determine the number of \myenv{minipage} environments that
-%    will be above and below separated by \ics{parsep}+\ics{itemsep} within it.
-% \iffalse
-%% Define |keyanspic| environment.
-% \fi
-%    \begin{macrocode}
-\NewDocumentEnvironment{keyanspic}{ s o }
-  {
-    \@@_keyans_pic_safe_exec:
-    \bool_if:nTF { #1 }
-      {
-        \bool_set_true:N \l_@@_keyans_pic_star_bool
-        \str_set:Nn \l_@@_keyans_pic_label_pos_str { t }
-      }
-      {
-        \str_set:Nn \l_@@_keyans_pic_label_pos_str { b }
-      }
-    \begin{list} { } { \@@_keyans_pic_arg_two: }
-    \IfDocumentMetadataTF
-      {
-        \tag_suspend:n {list}
-      }{}
-    \item[] \scan_stop:
-    % paranoia
-    \RenewDocumentCommand \item {}
-      {
-        \msg_error:nn { enumext } { keyanspic-item-cmd }
-      }
-    \IfDocumentMetadataTF
-      {
-        \tag_resume:n {keyanspic}
-        \tag_tool:n {para/tagging=false}
-        \tag_suspend:n {keyanspic}
-      } { }
-    \vspace { \l_@@_keyans_pic_above_skip } % need see what this on space
-  }
-%    \end{macrocode}
-%    If the optional argument is not present, the number of times the
-%    \ics*{anspic} command appears will be counted from
-%    \cs{l_@@_keyans_pic_body_seq} and placed in \myenv{minipage}
-%    environments on a single line. Finally we check if \ics*{anspic*}
-%    has been used, set the counter to zero and apply our
-%    \enquote{adjusted} vertical space below the environment.
-%    \begin{macrocode}
-  {
-    \IfDocumentMetadataTF
-      {
-        \tag_start:n {keyanspic}
-        \tag_struct_begin:n {tag=L,attribute=enumerate}
-      }{ }
-    \tl_if_novalue:nTF { #2 }
-      {
-        \@@_keyans_pic_do:e { \seq_count:N \l_@@_keyans_pic_body_seq }
-      }
-      { \@@_keyans_pic_do:n { #2 } }
-    \IfDocumentMetadataTF { \tag_stop:n {keyanspic} } { }
-    \end{list}
-    \IfDocumentMetadataTF { \tag_struct_end: \tag_struct_end: } { }
-    \@@_check_starred_cmd:n { anspic }
-    \setcounter { enumXvi } { 0 }
-    %%\vspace { \l_@@_topsep_v_skip }
-    \par\addvspace{ \dim_eval:n { -\parsep + \box_dp:N \strutbox } }
-    %\bool_set_false:N \l_@@_store_active_bool
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_pic_safe_exec:}
-%    The function \cs{@@_keyans_pic_safe_exec:} check nested and
-%    level position inside the \myenv*{enumext} environment.
-% \iffalse
-%% Internal code for |keyanspic| environment.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_pic_safe_exec:
-  {
-    \int_incr:N \l_@@_keyans_pic_level_int
-    \int_compare:nNnT { \l_@@_keyans_pic_level_int } > { 1 }
-      {
-        \msg_error:nn { enumext } { keyanspic-nested }
-      }
-    \@@_keyans_name_and_start:
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_pic_skip_abs:N}
-%    The function \cs{@@_keyans_pic_skip_abs:N} will return a positive
-%    value \ics{parsep}.
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_keyans_pic_skip_abs:N #1
-  {
-    \dim_compare:nNnT { #1 } < { 0pt }
-      { \skip_set:Nn #1 { -#1 } }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_pic_arg_two:}
-%    The function \cs{@@_keyans_pic_arg_two:} will be used in the
-%    second argument of the \cs{@@_start_list:nn} function that defines
-%    the \myenv*{keyanspic} environment, it will handle the setting of
-%    spaces.
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_pic_arg_two:
-  {
-%    \end{macrocode}
-%    The first thing to do is to set the boolean variable
-%    \cs{l_@@_leftmargin_tmp_v_bool} handled by the \mykey{list-indent} key
-%    to false, then we copy the definition of the second list argument from
-%    the \myenv*{keyans} environment.
-%    \begin{macrocode}
-    \bool_set_false:N \l_@@_leftmargin_tmp_v_bool
-    \@@_list_arg_two_v:
-%    \end{macrocode}
-%   We will add the value of \ics{itemsep} to \ics{parsep} which we will
-%   use as vertical spacing between the above and below \myenv{minipage}
-%   environments. and adjust the value of |\leftmargin|, the label and
-%   counter are handled directly by the \ics*{anspic} command.
-%   Then we make equal to zero \ics{labelwidth}, \ics{labelsep}, \ics{partopsep}
-%   and \ics{itemsep} so that the horizontal and vertical spacing is not affected.
-%    \begin{macrocode}
-    %%%\skip_add:Nn \parsep { \itemsep }
-    \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
-    \dim_zero:N  \labelwidth
-    \dim_zero:N  \listparindent
-    \dim_zero:N  \labelsep
-    \skip_zero:N \partopsep
-    \skip_zero:N \itemsep
-%    \end{macrocode}
-%    We set the value of \cs{l_@@_keyans_pic_above_skip} which we will use
-%    to apply our \enquote{adjust} space above \myenv*{keyanspic}, finally
-%    we call \cs{@@_item_std:w} followed by \cs{scan_stop:} to prevent the error
-%    message returned by \hologo{LaTeX} when not using the |\item|
-%    command.
-%    \begin{macrocode}
-    \@@_keyans_pic_skip_abs:N \parsep
-    \skip_set:Nn \l_@@_keyans_pic_above_skip
-      {
-        \box_dp:N \strutbox
-        + \l_@@_topsep_v_skip
-        %%%- \parsep
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_pic_do:n, \@@_keyans_pic_do:e}
-%    The optional argument is split by comma and is handled directly by
-%    the function \cs{@@_keyans_pic_do:n} and passed to the function
-%    \cs{@@_keyans_pic_row:n}.
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_pic_do:n
-  {
-    \clist_map_function:nN { #1 } \@@_keyans_pic_row:n
-  }
-\cs_generate_variant:Nn \@@_keyans_pic_do:n { e }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_pic_row:n}
-%    The function \cs{@@_keyans_pic_row:n} will set the widths for
-%    the \myenv{minipage} environments and place the content \mymeta{stored}
-%    by \ics*{anspic*} in the \cs{l_@@_keyans_pic_body_seq} sequence inside
-%    them.
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_pic_row:n
-  {
-    \dim_set:Nn \l_@@_keyans_pic_width_dim { \linewidth / #1 }
-    \int_set:Nn \l_@@_keyans_pic_above_int { \l_@@_keyans_pic_below_int }
-    \int_set:Nn \l_@@_keyans_pic_below_int { \l_@@_keyans_pic_above_int + #1 }
-    \int_step_inline:nnn
-      { \l_@@_keyans_pic_above_int + 1 }
-      { \l_@@_keyans_pic_below_int }
-      {
-        \IfDocumentMetadataTF { \tag_stop:n {minipage} } { }
-        \begin{minipage}[ \l_@@_keyans_pic_label_pos_str ]{ \l_@@_keyans_pic_width_dim }
-          \centering
-          \seq_item:Nn \l_@@_keyans_pic_body_seq { ##1 }
-        \end{minipage}
-        \IfDocumentMetadataTF { \tag_start:n {minipage} } { }
-      }
-    \bool_if:NTF \l_@@_keyans_pic_star_bool
-      {
-        \par
-      }
-      {
-        \par%\vspace{ \box_ht_plus_dp:N \strutbox }
-      }
   }
 %    \end{macrocode}
 % \end{macro}
