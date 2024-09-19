@@ -11341,7 +11341,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {start-list-tags}
   {
     \tag_resume:n {keyanspic}
-    \tag_start:n {keyanspic}
     \tag_struct_begin:n {tag=LI}
     \tag_struct_begin:n {tag=Lbl}
     \tag_mc_begin:n {tag=Lbl}
@@ -11362,7 +11361,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tag_struct_end:n {tag=text}
     \tag_struct_end:n {tag=LBody}
     \tag_struct_end:n {tag=LI}
-    \tag_stop:n {keyanspic}
     \tag_suspend:n {keyanspic}
   }
 %    \end{macrocode}
@@ -11636,15 +11634,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \IfDocumentMetadataTF
       {
-        \tag_start:n {keyanspic}
+        \tag_resume:n {keyanspic}
         \tag_struct_begin:n {tag=L,attribute=enumerate}
-      }{ }
+      } { }
     \tl_if_novalue:nTF { #2 }
       {
         \@@_keyans_pic_do:e { \seq_count:N \l_@@_keyans_pic_body_seq }
       }
       { \@@_keyans_pic_do:n { #2 } }
-    \IfDocumentMetadataTF { \tag_stop:n {keyanspic} } { }
+    \IfDocumentMetadataTF
+      {
+        \tag_suspend:n {keyanspic}
+      } { }
     \end{list}
     \IfDocumentMetadataTF { \tag_struct_end: \tag_struct_end: } { }
     \@@_check_starred_cmd:n { anspic }
@@ -11683,12 +11684,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \l_@@_keyans_pic_above_int + 1 }
       { \l_@@_keyans_pic_below_int }
       {
-        \IfDocumentMetadataTF { \tag_stop:n {minipage} } { }
+        \IfDocumentMetadataTF
+          {
+            \tag_suspend:n {minipage}
+          } { }
         \begin{minipage}[ \l_@@_keyans_pic_label_pos_str ]{ \l_@@_keyans_pic_width_dim }
           \centering
           \seq_item:Nn \l_@@_keyans_pic_body_seq { ##1 }
         \end{minipage}
-        \IfDocumentMetadataTF { \tag_start:n {minipage} } { }
+        \IfDocumentMetadataTF
+          {
+            \tag_resume:n {minipage}
+          } { }
       }
     \bool_if:NTF \l_@@_keyans_pic_star_bool
       {
