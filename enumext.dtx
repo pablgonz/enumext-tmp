@@ -613,7 +613,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Other words 2
     keywordstyle  = [2]{\color{blue!75}},%
     keywords      = [2]{usepackage,section,documentclass,input,listparindent,linewidth, emph, textbf,makesavenoteenv,%
-                    columnseprule, footnote, footnotemark, footnotetext, raggedcolumns, hspace, parindent, %
+                    columnseprule, footnote, footnotemark, footnotetext, raggedcolumns, hspace, parindent, removelastskip, %
                     subsection, list,endlist,leftmargin, itemindent,bfseries,endminipage, minipage, parskip, % item,
                     labelwidth,labelsep,labelindent,label,ref,topsep,parsep,includegraphics, itemize, description, %
                     multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, value, noindent,%
@@ -11548,17 +11548,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    second argument of the \cs{@@_start_list:nn} function that defines
 %    the \myenv*{keyanspic} environment, it will handle the setting of
 %    spaces.
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_pic_arg_two:
-  {
-%    \end{macrocode}
+%
 %    The first thing to do is to set the boolean variable
 %    \cs{l_@@_leftmargin_tmp_v_bool} handled by the \mykey{list-indent} key
 %    to false, then we copy the definition of the second list argument from
 %    the \myenv*{keyans} environment.
 %    \begin{macrocode}
+\cs_new_protected:Nn \@@_keyans_pic_arg_two:
+  {
     \bool_set_false:N \l_@@_leftmargin_tmp_v_bool
     \@@_list_arg_two_v:
+%    \end{macrocode}
+%    Ahora guardamos la altura total de nuestra \mymeta{labe} en \cs{l_@@_anspic_label_htdp_dim}
+%    \begin{macrocode}
+    \bool_if:NF \l_@@_keyans_pic_star_bool
+      {
+        \hbox_set:Nn \l_@@_anspic_label_box { \l_@@_label_v_tl }
+        \dim_set:Nn \l_@@_anspic_label_htdp_dim
+          {
+            \box_ht_plus_dp:N \l_@@_anspic_label_box
+          }
+      }
 %    \end{macrocode}
 %   We will add the value of \ics{itemsep} to \ics{parsep} which we will
 %   use as vertical spacing between the above and below \myenv{minipage}
@@ -11567,6 +11577,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   Then we make equal to zero \ics{labelwidth}, \ics{labelsep}, \ics{partopsep}
 %   and \ics{itemsep} so that the horizontal and vertical spacing is not affected.
 %    \begin{macrocode}
+    \bool_if:NF \l_@@_keyans_pic_star_bool
+      {
+        \skip_add:Nn \parsep { \l_@@_anspic_label_htdp_dim }
+      }
     %%%\skip_add:Nn \parsep { \itemsep }
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \dim_zero:N  \labelwidth
@@ -11584,9 +11598,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_pic_skip_abs:N \parsep
     \skip_set:Nn \l_@@_keyans_pic_above_skip
       {
-        \box_dp:N \strutbox
-        + \l_@@_topsep_v_skip
-        %%%- \parsep
+        \box_dp:N \strutbox + \l_@@_topsep_v_skip %- \parsep
       }
   }
 %    \end{macrocode}
@@ -11621,7 +11633,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tag_tool:n {para/tagging=false}
         \tag_suspend:n {keyanspic}
       } { }
-    \vspace { \l_@@_keyans_pic_above_skip } % need see what this on space
+    %%\par\addvspace{ \l_@@_keyans_pic_above_skip } % need see what this on space
   }
 %    \end{macrocode}
 %    If the optional argument is not present, the number of times the
@@ -11771,11 +11783,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \box_ht_plus_dp:N \l_@@_anspic_body_box
       }
-    \vbox_set:Nn \l_@@_anspic_label_box { \l_@@_label_v_tl }
-    \dim_set:Nn \l_@@_anspic_label_htdp_dim
-      {
-        \box_ht_plus_dp:N \l_@@_anspic_label_box
-      }
+    %%\vbox_set:Nn \l_@@_anspic_label_box { \l_@@_label_v_tl }
+    %%\dim_set:Nn \l_@@_anspic_label_htdp_dim
+    %%  {
+    %%    \box_ht_plus_dp:N \l_@@_anspic_label_box
+    %%  }
   }
 % process label
 \cs_new_protected:Npn \@@_anspic_label:nn #1 #2

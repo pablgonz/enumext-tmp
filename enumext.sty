@@ -4059,6 +4059,22 @@
   {
     \bool_set_false:N \l__enumext_leftmargin_tmp_v_bool
     \__enumext_list_arg_two_v:
+    \bool_if:NF \l__enumext_keyans_pic_star_bool
+      {
+        \stepcounter { enumXv }
+        %\tl_set:Ne  \l_tmpb_tl { \l__enumext_label_v_tl }
+        %\tl_show:N \l_tmpb_tl
+        \hbox_set:Nn \l__enumext_anspic_label_box { \tl_use:N \l__enumext_label_v_tl }
+        \dim_set:Nn \l__enumext_anspic_label_htdp_dim
+          {
+            \box_ht_plus_dp:N \l__enumext_anspic_label_box
+          }
+        \dim_show:N \l__enumext_anspic_label_htdp_dim
+      }
+    \bool_if:NF \l__enumext_keyans_pic_star_bool
+      {
+        \skip_add:Nn \parsep { \l__enumext_anspic_label_htdp_dim }
+      }
     %%%\skip_add:Nn \parsep { \itemsep }
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \dim_zero:N  \labelwidth
@@ -4066,12 +4082,10 @@
     \dim_zero:N  \labelsep
     \skip_zero:N \partopsep
     \skip_zero:N \itemsep
-    \__enumext_keyans_pic_skip_abs:N \parsep
+    %\__enumext_keyans_pic_skip_abs:N \parsep
     \skip_set:Nn \l__enumext_keyans_pic_above_skip
       {
-        \box_dp:N \strutbox
-        + \l__enumext_topsep_v_skip
-        %%%- \parsep
+        \box_dp:N \strutbox + \l__enumext_topsep_v_skip %- \parsep
       }
   }
 %% Define |keyanspic| environment.
@@ -4095,7 +4109,7 @@
         \tag_tool:n {para/tagging=false}
         \tag_suspend:n {keyanspic}
       } { }
-    \vspace { \l__enumext_keyans_pic_above_skip } % need see what this on space
+    %%\par\addvspace{ \l__enumext_keyans_pic_above_skip } % need see what this on space
   }
   {
     \IfDocumentMetadataTF
@@ -4182,11 +4196,11 @@
       {
         \box_ht_plus_dp:N \l__enumext_anspic_body_box
       }
-    \vbox_set:Nn \l__enumext_anspic_label_box { \l__enumext_label_v_tl }
-    \dim_set:Nn \l__enumext_anspic_label_htdp_dim
-      {
-        \box_ht_plus_dp:N \l__enumext_anspic_label_box
-      }
+    %%\vbox_set:Nn \l__enumext_anspic_label_box { \l__enumext_label_v_tl }
+    %%\dim_set:Nn \l__enumext_anspic_label_htdp_dim
+    %%  {
+    %%    \box_ht_plus_dp:N \l__enumext_anspic_label_box
+    %%  }
   }
 \cs_new_protected:Npn \__enumext_anspic_label:nn #1 #2
   {
