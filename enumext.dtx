@@ -11558,11 +11558,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_set_false:N \l_@@_leftmargin_tmp_v_bool
     \@@_list_arg_two_v:
+    \@@_keyans_pic_skip_abs:N \parsep
 %    \end{macrocode}
-%    Ahora guardamos la altura total de nuestra \mymeta{labe} en \cs{l_@@_anspic_label_htdp_dim}
+%    Now we increment the counter |enumXv| of the \myenv*{keyans}
+%    environment and save the total height of our \mymeta{label} in
+%    \cs{l_@@_anspic_label_htdp_dim}.
 %    \begin{macrocode}
     \bool_if:NF \l_@@_keyans_pic_star_bool
       {
+        \stepcounter { enumXv }
         \hbox_set:Nn \l_@@_anspic_label_box { \l_@@_label_v_tl }
         \dim_set:Nn \l_@@_anspic_label_htdp_dim
           {
@@ -11579,7 +11583,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
     \bool_if:NF \l_@@_keyans_pic_star_bool
       {
-        \skip_add:Nn \parsep { \l_@@_anspic_label_htdp_dim }
+        \skip_add:Nn \parsep
+          {
+            \l_@@_anspic_label_htdp_dim %%+ \box_dp:N \strutbox
+          }
       }
     %%%\skip_add:Nn \parsep { \itemsep }
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
@@ -11595,7 +11602,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    message returned by \hologo{LaTeX} when not using the |\item|
 %    command.
 %    \begin{macrocode}
-    \@@_keyans_pic_skip_abs:N \parsep
+    %%\@@_keyans_pic_skip_abs:N \parsep
     \skip_set:Nn \l_@@_keyans_pic_above_skip
       {
         \box_dp:N \strutbox + \l_@@_topsep_v_skip %- \parsep
@@ -11792,23 +11799,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % process label
 \cs_new_protected:Npn \@@_anspic_label:nn #1 #2
   {
-    \bool_if:nT { #1 }
-      {
-        \@@_keyans_addto_prop:n { #2 }
-        \@@_keyans_store_ref:
-        \@@_keyans_addto_seq:n { #2 }
-        \int_gincr:N \g_@@_check_starred_cmd_int
-        \bool_lazy_or:nnT
-          { \bool_if_p:N \l_@@_show_answer_bool }
-          { \bool_if_p:N \l_@@_show_position_bool }
-          {
-            \tl_set_eq:NN \l_@@_label_v_tl \l_@@_label_vi_tl
-            \@@_keyans_show_left:n { #2 }
-            \tl_set_eq:NN \l_@@_label_vi_tl \l_@@_label_v_tl
-          }
-      }
     \makebox[ \l_@@_keyans_pic_width_dim ][ c ]
       {
+        \bool_if:nT { #1 }
+          {
+            \@@_keyans_addto_prop:n { #2 }
+            \@@_keyans_store_ref:
+            \@@_keyans_addto_seq:n { #2 }
+            \int_gincr:N \g_@@_check_starred_cmd_int
+            \bool_lazy_or:nnT
+              { \bool_if_p:N \l_@@_show_answer_bool }
+              { \bool_if_p:N \l_@@_show_position_bool }
+              {
+                \tl_set_eq:NN \l_@@_label_v_tl \l_@@_label_vi_tl
+                \@@_keyans_show_left:n { #2 }
+                \tl_set_eq:NN \l_@@_label_vi_tl \l_@@_label_v_tl
+              }
+          }
         \tl_use:N \l_@@_label_font_style_v_tl
         \@@_wrapper_label_v:n { \l_@@_label_vi_tl } \@@_keyans_show_item_opt:
       }
@@ -11828,7 +11835,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               {
                 \l_@@_anspic_label_htdp_dim
                 + \l_@@_anspic_body_htdp_dim
-                + \box_ht_plus_dp:N \strutbox
+                %+ \box_ht_plus_dp:N \strutbox
               }
           }
           [ 0pt ] [ 0pt ]

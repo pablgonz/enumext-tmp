@@ -4,7 +4,7 @@
 % arara: clean: { extensions: [ aux, log, out] }
 \documentclass{article}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+\usepackage{lmodern,lua-visual-debug}
 \usepackage[margin=2cm]{geometry}
 \usepackage{tikz}
 \newcommand*{\myCircled}[1]{%
@@ -16,15 +16,15 @@
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\setenumext[keyans]{label=(\Alph*),topsep=0pt,wrap-label={\myCircled{##1}}}
-\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
+\setenumext[keyans]{label=\Alph*,font=\small,topsep=0pt,parsep=0.0cm}
+\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true,show-ans=false]
 \item Question with image and label below:
-\begin{keyanspic}[3,2]
-\anspic{\includegraphics[scale=0.15]{example-image-a}}
-\anspic{\includegraphics[scale=0.15]{example-image-b}}
-\anspic{\includegraphics[scale=0.15]{example-image-a}}
-\anspic{\includegraphics[scale=0.15]{example-image-a}}
-\anspic*[A duck]{\includegraphics[scale=0.32]{example-image-duck}}
+\begin{keyanspic}*%%[3,2]
+%\anspic{\includegraphics[scale=0.15]{example-image-a}}
+%\anspic{\includegraphics[scale=0.25]{example-image-b}}
+%\anspic{\includegraphics[scale=0.15]{example-image-a}}
+%\anspic{\includegraphics[scale=0.15]{example-image-a}}
+\anspic*[NOTE]{\includegraphics[scale=0.25]{example-image-duck}}
 \end{keyanspic}
 
 
@@ -34,5 +34,5 @@
 
 Test keys
 
-\printkeyans{simplemc}
+%\printkeyans{simplemc}
 \end{document}
