@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-09-18}
+  {2024-09-23}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -4068,26 +4068,21 @@
           {
             \box_ht_plus_dp:N \l__enumext_anspic_label_box
           }
-      }
-    \bool_if:NF \l__enumext_keyans_pic_star_bool
-      {
         \skip_add:Nn \parsep
           {
-            \l__enumext_anspic_label_htdp_dim %%+ \box_dp:N \strutbox
+            \l__enumext_anspic_label_htdp_dim % \box_dp:N \strutbox
+          }
+        \skip_add:Nn \topsep
+          {
+            0.5\box_dp:N \strutbox
           }
       }
-    %%%\skip_add:Nn \parsep { \itemsep }
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \dim_zero:N  \labelwidth
     \dim_zero:N  \listparindent
     \dim_zero:N  \labelsep
     \skip_zero:N \partopsep
     \skip_zero:N \itemsep
-    %%\__enumext_keyans_pic_skip_abs:N \parsep
-    \skip_set:Nn \l__enumext_keyans_pic_above_skip
-      {
-        \box_dp:N \strutbox + \l__enumext_topsep_v_skip %- \parsep
-      }
   }
 %% Define |keyanspic| environment.
 \NewDocumentEnvironment{keyanspic}{ s o }
@@ -4110,7 +4105,6 @@
         \tag_tool:n {para/tagging=false}
         \tag_suspend:n {keyanspic}
       } { }
-    %%\par\addvspace{ \l__enumext_keyans_pic_above_skip } % need see what this on space
   }
   {
     \IfDocumentMetadataTF
@@ -4161,13 +4155,7 @@
             \tag_resume:n {minipage}
           } { }
       }
-    \bool_if:NTF \l__enumext_keyans_pic_star_bool
-      {
-        \par
-      }
-      {
-        \par%\vspace{ \box_ht_plus_dp:N \strutbox }
-      }
+    \par
   }
 %% Define |\anspic| for |keyanspic|.
 \NewDocumentCommand \anspic { s o +m }
@@ -4192,16 +4180,22 @@
 %% Internal code for |\anspic|.
 \cs_new_protected:Npn \__enumext_anspic_box_set_dim:n #1
   {
-    \vbox_set:Nn \l__enumext_anspic_body_box { #1 }
-    \dim_set:Nn \l__enumext_anspic_body_htdp_dim
+    \bool_if:NF \l__enumext_keyans_pic_star_bool
       {
-        \box_ht_plus_dp:N \l__enumext_anspic_body_box
+        \IfDocumentMetadataTF
+          {
+            \tag_suspend:n {keyanspic}
+          } { }
+        \vbox_set:Nn \l__enumext_anspic_body_box { #1 }
+        \dim_set:Nn \l__enumext_anspic_body_htdp_dim
+          {
+            \box_ht_plus_dp:N \l__enumext_anspic_body_box
+          }
+        \IfDocumentMetadataTF
+          {
+            \tag_resume:n {keyanspic}
+          } { }
       }
-    %%\vbox_set:Nn \l__enumext_anspic_label_box { \l__enumext_label_v_tl }
-    %%\dim_set:Nn \l__enumext_anspic_label_htdp_dim
-    %%  {
-    %%    \box_ht_plus_dp:N \l__enumext_anspic_label_box
-    %%  }
   }
 \cs_new_protected:Npn \__enumext_anspic_label:nn #1 #2
   {
@@ -4223,7 +4217,8 @@
               }
           }
         \tl_use:N \l__enumext_label_font_style_v_tl
-        \__enumext_wrapper_label_v:n { \l__enumext_label_vi_tl } \__enumext_keyans_show_item_opt:
+        \__enumext_wrapper_label_v:n { \l__enumext_label_vi_tl }
+        \__enumext_keyans_show_item_opt:
       }
   }
 \cs_new_protected:Npn \__enumext_keyans_anspic_label:nnn #1 #2 #3

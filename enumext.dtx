@@ -4211,7 +4211,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-09-18}
+  {2024-09-23}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -11572,6 +11572,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \box_ht_plus_dp:N \l_@@_anspic_label_box
           }
+        \skip_add:Nn \parsep
+          {
+            \l_@@_anspic_label_htdp_dim % \box_dp:N \strutbox
+          }
+        \skip_add:Nn \topsep
+          {
+            0.5\box_dp:N \strutbox
+          }
       }
 %    \end{macrocode}
 %   We will add the value of \ics{itemsep} to \ics{parsep} which we will
@@ -11581,14 +11589,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   Then we make equal to zero \ics{labelwidth}, \ics{labelsep}, \ics{partopsep}
 %   and \ics{itemsep} so that the horizontal and vertical spacing is not affected.
 %    \begin{macrocode}
-    \bool_if:NF \l_@@_keyans_pic_star_bool
-      {
-        \skip_add:Nn \parsep
-          {
-            \l_@@_anspic_label_htdp_dim %%+ \box_dp:N \strutbox
-          }
-      }
-    %%%\skip_add:Nn \parsep { \itemsep }
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \dim_zero:N  \labelwidth
     \dim_zero:N  \listparindent
@@ -11602,11 +11602,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    message returned by \hologo{LaTeX} when not using the |\item|
 %    command.
 %    \begin{macrocode}
-    %%\@@_keyans_pic_skip_abs:N \parsep
-    \skip_set:Nn \l_@@_keyans_pic_above_skip
-      {
-        \box_dp:N \strutbox + \l_@@_topsep_v_skip %- \parsep
-      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11640,7 +11635,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tag_tool:n {para/tagging=false}
         \tag_suspend:n {keyanspic}
       } { }
-    %%\par\addvspace{ \l_@@_keyans_pic_above_skip } % need see what this on space
   }
 %    \end{macrocode}
 %    If the optional argument is not present, the number of times the
@@ -11716,13 +11710,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \tag_resume:n {minipage}
           } { }
       }
-    \bool_if:NTF \l_@@_keyans_pic_star_bool
-      {
-        \par
-      }
-      {
-        \par%\vspace{ \box_ht_plus_dp:N \strutbox }
-      }
+    \par
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11785,16 +11773,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_anspic_box_set_dim:n #1
   {
-    \vbox_set:Nn \l_@@_anspic_body_box { #1 }
-    \dim_set:Nn \l_@@_anspic_body_htdp_dim
+    \bool_if:NF \l_@@_keyans_pic_star_bool
       {
-        \box_ht_plus_dp:N \l_@@_anspic_body_box
+        \IfDocumentMetadataTF
+          {
+            \tag_suspend:n {keyanspic}
+          } { }
+        \vbox_set:Nn \l_@@_anspic_body_box { #1 }
+        \dim_set:Nn \l_@@_anspic_body_htdp_dim
+          {
+            \box_ht_plus_dp:N \l_@@_anspic_body_box
+          }
+        \IfDocumentMetadataTF
+          {
+            \tag_resume:n {keyanspic}
+          } { }
       }
-    %%\vbox_set:Nn \l_@@_anspic_label_box { \l_@@_label_v_tl }
-    %%\dim_set:Nn \l_@@_anspic_label_htdp_dim
-    %%  {
-    %%    \box_ht_plus_dp:N \l_@@_anspic_label_box
-    %%  }
   }
 % process label
 \cs_new_protected:Npn \@@_anspic_label:nn #1 #2
@@ -11817,7 +11811,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               }
           }
         \tl_use:N \l_@@_label_font_style_v_tl
-        \@@_wrapper_label_v:n { \l_@@_label_vi_tl } \@@_keyans_show_item_opt:
+        \@@_wrapper_label_v:n { \l_@@_label_vi_tl }
+        \@@_keyans_show_item_opt:
       }
   }
 \cs_new_protected:Npn \@@_keyans_anspic_label:nnn #1 #2 #3
