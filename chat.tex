@@ -1,3 +1,37 @@
+\DocumentMetadata{ lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress }% pdfstandard=ua-2,
+% arara: pdflatex
+% arara: pdflatex
+% arara: clean: { extensions: [ aux, log, out] }
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=2cm]{geometry}
+\usepackage{tikz}
+\newcommand*{\myCircled}[1]{%
+  \begin{tikzpicture}[baseline=(number.base)]
+    \node[circle, draw=green!10!gray, inner sep=1pt, fill=blue!30!green!10] (number) {#1};
+  \end{tikzpicture}%
+}
+\usepackage[colorlinks]{hyperref}
+\usepackage{enumext}
+\pagestyle{empty}
+\begin{document}
+\setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
+\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
+\item Question with image on left side:
+\begin{minipage}[t]{0.5\linewidth}
+\begin{keyans}[columns=1,noitemsep]
+    \item*[other note] correct
+\end{keyans}
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+ZZZ
+\end{minipage}
+\item Question with image on left side:
+\end{enumext}
+\end{document}
+
+
 \DocumentMetadata{lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress}
 \documentclass{article}
 \ExplSyntaxOn

@@ -16,24 +16,18 @@
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}% nosep
-\begin{enumext}[save-ans=simplemc,columns=1,save-ref=true,nosep]% nosep
-\item First type of questions
-  \begin{keyans}[columns=1,noitemsep]
-    \item value
-    \item*[$x=5$] correct
-    \item value
-    \item value
-  \end{keyans}
+\setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
+\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
 \item Question with image and label below:
-\begin{keyanspic}*[3,2]
+\begin{keyanspic}[3,2]
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
 \anspic{\includegraphics[scale=0.15]{example-image-b}}
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
 \anspic*[A duck]{\includegraphics[scale=0.32]{example-image-duck}}
 \end{keyanspic}
-\item Question with image and label below:
+
+\item Question with image on left side:
 \end{enumext}
 
 \medskip

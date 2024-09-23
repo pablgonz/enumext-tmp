@@ -4595,10 +4595,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}{\l_@@_keyans_pic_body_seq, \l_@@_keyans_pic_width_dim,
 %                  \l_@@_keyans_pic_above_int,\l_@@_keyans_pic_below_int,
-%                  \l_@@_keyans_pic_above_skip, \l_@@_keyans_pic_star_bool,
-%                  \l_@@_keyans_pic_label_pos_str, \l_@@_anspic_label_box,
-%                  \l_@@_anspic_body_box, \l_@@_anspic_label_htdp_dim,
-%                  \l_@@_anspic_body_htdp_dim,}
+%                  \l_@@_keyans_pic_star_bool, \l_@@_keyans_pic_label_pos_str,
+%                  \g_@@_keyans_pic_parsep_skip, \l_@@_anspic_label_box, \l_@@_anspic_body_box,
+%                  \l_@@_anspic_label_htdp_dim, \l_@@_anspic_body_htdp_dim,}
 %    Internal variables used by \myenv*{keyanspic} environment and
 %   \ics*{anspic} command (\S\ref{env:keyanspic}).
 % \iffalse
@@ -4609,9 +4608,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \dim_new:N  \l_@@_keyans_pic_width_dim
 \int_new:N  \l_@@_keyans_pic_above_int
 \int_new:N  \l_@@_keyans_pic_below_int
-\skip_new:N \l_@@_keyans_pic_above_skip
 \bool_new:N \l_@@_keyans_pic_star_bool
 \str_new:N  \l_@@_keyans_pic_label_pos_str
+\skip_new:N \g_@@_keyans_pic_parsep_skip
 \box_new:N  \l_@@_anspic_label_box
 \box_new:N  \l_@@_anspic_body_box
 \dim_new:N  \l_@@_anspic_label_htdp_dim
@@ -11563,8 +11562,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   Now we increment the |enumXv| counter of the \myenv*{keyans}
 %   environment and save the total height of our \mymeta{label} in
 %   \cs{l_@@_anspic_label_htdp_dim} and we will adjust the values ​​of
-%   |\parsep| along with |\topsep| only if the starred argument is not
-%   present (default version).
+%   |\parsep| only if the starred argument is NOT present (default version).
 %    \begin{macrocode}
     \bool_if:NF \l_@@_keyans_pic_star_bool
       {
@@ -11578,14 +11576,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \l_@@_anspic_label_htdp_dim + \box_dp:N \strutbox
           }
-        \skip_add:Nn \topsep { 0.5\box_dp:N \strutbox }
+        \skip_gset_eq:NN \g_@@_keyans_pic_parsep_skip \parsep
       }
 %    \end{macrocode}
-%   Finally we adjust the value of |\leftmargin| and then set
+%   Finally we adjust the value of |\leftmargin| and |\topsep| then set
 %   |\labelwidth|, |\labelsep|, |\partopsep| and |\itemsep| to zero so that
 %   the horizontal and vertical space is not affected.
 %    \begin{macrocode}
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
+    \skip_add:Nn \topsep { 0.5\box_dp:N \strutbox }
     \dim_zero:N  \labelwidth
     \dim_zero:N  \listparindent
     \dim_zero:N  \labelsep
@@ -11594,18 +11593,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
-%
-%^^A   We will add the value of \ics{itemsep} to \ics{parsep} which we will
-%^^A   use as vertical spacing between the above and below \myenv{minipage}
-%^^A   environments. and adjust the value of |\leftmargin|, the label and
-%^^A   counter are handled directly by the \ics*{anspic} command.
-%^^A   Then we make equal to zero \ics{labelwidth}, \ics{labelsep}, \ics{partopsep}
-%^^A   and \ics{itemsep} so that the horizontal and vertical spacing is not affected.
-%^^A    We set the value of \cs{l_@@_keyans_pic_above_skip} which we will use
-%^^A    to apply our \enquote{adjust} space above \myenv*{keyanspic}, finally
-%^^A    we call \cs{@@_item_std:w} followed by \cs{scan_stop:} to prevent the error
-%^^A    message returned by \hologo{LaTeX} when not using the |\item|
-%^^A    command.
 %
 % \begin{macro}{keyanspic}
 %    Now we define the environment \myenv*{keyanspic} based on list.
@@ -11666,7 +11653,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \IfDocumentMetadataTF { \tag_struct_end: \tag_struct_end: } { }
     \@@_check_starred_cmd:n { anspic }
     \setcounter { enumXvi } { 0 }
-    \par\addvspace{ \dim_eval:n { -\parsep + \box_dp:N \strutbox } }
+    \bool_if:NTF \l_@@_keyans_pic_star_bool
+      {
+        \par\addvspace{ 0.5\box_dp:N \strutbox }
+      }
+      {
+        \par\addvspace{ \g_@@_keyans_pic_parsep_skip }
+      }
     %\bool_set_false:N \l_@@_store_active_bool
   }
 %    \end{macrocode}
