@@ -4070,12 +4070,9 @@
           }
         \skip_add:Nn \parsep
           {
-            \l__enumext_anspic_label_htdp_dim % \box_dp:N \strutbox
+            \l__enumext_anspic_label_htdp_dim + \box_dp:N \strutbox
           }
-        \skip_add:Nn \topsep
-          {
-            0.5\box_dp:N \strutbox
-          }
+        \skip_add:Nn \topsep { 0.5\box_dp:N \strutbox }
       }
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \dim_zero:N  \labelwidth
@@ -4125,7 +4122,7 @@
     \IfDocumentMetadataTF { \tag_struct_end: \tag_struct_end: } { }
     \__enumext_check_starred_cmd:n { anspic }
     \setcounter { enumXvi } { 0 }
-    \par\addvspace{ \dim_eval:n { -\parsep + \box_dp:N \strutbox } }
+    %%\par\addvspace{ \dim_eval:n {  \box_ht:N \strutbox } } % -\parsep +
     %\bool_set_false:N \l__enumext_store_active_bool
   }
 \cs_new_protected:Nn \__enumext_keyans_pic_do:n
@@ -4236,7 +4233,7 @@
               {
                 \l__enumext_anspic_label_htdp_dim
                 + \l__enumext_anspic_body_htdp_dim
-                %+ \box_ht_plus_dp:N \strutbox
+                + \box_dp:N \strutbox
               }
           }
           [ 0pt ] [ 0pt ]

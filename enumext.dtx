@@ -11405,15 +11405,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % The \myenv*{keyanspic} environment is a list-based environment that
 % uses the same configuration for \emph{\enquote{spacing}} and \mymeta{label}
 % as the \myenv*{keyans} environment, but it does not use |\item|.
-%
-% The contents are passed to the environment by means of the \ics*{anspic}
+% The \mymeta{contents} are passed to the environment by means of the \ics*{anspic}
 % command and are placed inside \myenv{minipage} environments, with the
 % \mymeta{label} underneath, adjusting widths according to the
 % options passed to the environment.
 %
-% Again it is necessary to \enquote{adjust} the spacing, both vertical and
-% horizontal, to obtain an output like the one shown in the figure
-% \ref{fig:keyanspic}.
+%^^A Again it is necessary to \enquote{adjust} the spacing, both vertical and
+%^^A horizontal, to obtain an output like the one shown in the figure
+%^^A \ref{fig:keyanspic}.
 %
 % \begin{figure}[ht]
 %   \centering
@@ -11492,7 +11491,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{The environment \env{keyanspic}}\label{env:keyanspic}
 %
 % The environment we wish to build will be based on the \myenv{list}
-% environment and will take two optional arguments, the starred argument
+% environment and will take two optional arguments, the \emph{starred argument}
 % |*| will set the position of the \mymeta{label} to the top if present
 % and bottom otherwise, the second optional argument will process the
 % number of \emph{drawing} or \emph{tabular} that will be on top, bottom
@@ -11501,7 +11500,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_keyans_pic_safe_exec:n}
 %    The function \cs{@@_keyans_pic_safe_exec:n} check the starred argument
 %    and nested level position inside the \myenv*{enumext} environment.
-%
 %    We will set the state of the variable \cs{l_@@_keyans_pic_star_bool}
 %    along with the value of the variable \cs{l_@@_keyans_pic_label_pos_str}
 %    according to the presence of the starred argument.
@@ -11544,15 +11542,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_keyans_pic_arg_two:}
-%    The function \cs{@@_keyans_pic_arg_two:} will be used in the
-%    second argument of the \cs{@@_start_list:nn} function that defines
-%    the \myenv*{keyanspic} environment, it will handle the setting of
-%    spaces.
+%    The \cs{@@_keyans_pic_arg_two:} function will be used in the second
+%    argument of the list environment that defines the \myenv*{keyanspic}
+%    environment, with this we will take the configuration of the spaces and
+%    the keys \mykey{label} and \mykey{wrap-label} from the \myenv*{keyans}
+%    environment.
 %
-%    The first thing to do is to set the boolean variable
+%    The first thing we need to do is set the boolean variable
 %    \cs{l_@@_leftmargin_tmp_v_bool} handled by the \mykey{list-indent} key
-%    to false, then we copy the definition of the second list argument from
-%    the \myenv*{keyans} environment.
+%    to false, then copy the definition of the second list argument from the
+%    \myenv*{keyans} environment and make sure that |\parsep| does not have a
+%    negative value.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_pic_arg_two:
   {
@@ -11560,9 +11560,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_list_arg_two_v:
     \@@_keyans_pic_skip_abs:N \parsep
 %    \end{macrocode}
-%    Now we increment the counter |enumXv| of the \myenv*{keyans}
-%    environment and save the total height of our \mymeta{label} in
-%    \cs{l_@@_anspic_label_htdp_dim}.
+%   Now we increment the |enumXv| counter of the \myenv*{keyans}
+%   environment and save the total height of our \mymeta{label} in
+%   \cs{l_@@_anspic_label_htdp_dim} and we will adjust the values ​​of
+%   |\parsep| along with |\topsep| only if the starred argument is not
+%   present (default version).
 %    \begin{macrocode}
     \bool_if:NF \l_@@_keyans_pic_star_bool
       {
@@ -11574,20 +11576,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
         \skip_add:Nn \parsep
           {
-            \l_@@_anspic_label_htdp_dim % \box_dp:N \strutbox
+            \l_@@_anspic_label_htdp_dim + \box_dp:N \strutbox
           }
-        \skip_add:Nn \topsep
-          {
-            0.5\box_dp:N \strutbox
-          }
+        \skip_add:Nn \topsep { 0.5\box_dp:N \strutbox }
       }
 %    \end{macrocode}
-%   We will add the value of \ics{itemsep} to \ics{parsep} which we will
-%   use as vertical spacing between the above and below \myenv{minipage}
-%   environments. and adjust the value of |\leftmargin|, the label and
-%   counter are handled directly by the \ics*{anspic} command.
-%   Then we make equal to zero \ics{labelwidth}, \ics{labelsep}, \ics{partopsep}
-%   and \ics{itemsep} so that the horizontal and vertical spacing is not affected.
+%   Finally we adjust the value of |\leftmargin| and then set
+%   |\labelwidth|, |\labelsep|, |\partopsep| and |\itemsep| to zero so that
+%   the horizontal and vertical space is not affected.
 %    \begin{macrocode}
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \dim_zero:N  \labelwidth
@@ -11595,22 +11591,29 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \dim_zero:N  \labelsep
     \skip_zero:N \partopsep
     \skip_zero:N \itemsep
-%    \end{macrocode}
-%    We set the value of \cs{l_@@_keyans_pic_above_skip} which we will use
-%    to apply our \enquote{adjust} space above \myenv*{keyanspic}, finally
-%    we call \cs{@@_item_std:w} followed by \cs{scan_stop:} to prevent the error
-%    message returned by \hologo{LaTeX} when not using the |\item|
-%    command.
-%    \begin{macrocode}
   }
 %    \end{macrocode}
 % \end{macro}
 %
+%^^A   We will add the value of \ics{itemsep} to \ics{parsep} which we will
+%^^A   use as vertical spacing between the above and below \myenv{minipage}
+%^^A   environments. and adjust the value of |\leftmargin|, the label and
+%^^A   counter are handled directly by the \ics*{anspic} command.
+%^^A   Then we make equal to zero \ics{labelwidth}, \ics{labelsep}, \ics{partopsep}
+%^^A   and \ics{itemsep} so that the horizontal and vertical spacing is not affected.
+%^^A    We set the value of \cs{l_@@_keyans_pic_above_skip} which we will use
+%^^A    to apply our \enquote{adjust} space above \myenv*{keyanspic}, finally
+%^^A    we call \cs{@@_item_std:w} followed by \cs{scan_stop:} to prevent the error
+%^^A    message returned by \hologo{LaTeX} when not using the |\item|
+%^^A    command.
+%
 % \begin{macro}{keyanspic}
 %    Now we define the environment \myenv*{keyanspic} based on list.
-%    The optional argument \myoarg{number above, number below}
-%    will determine the number of \myenv{minipage} environments that
-%    will be above and below separated by \ics{parsep}+\ics{itemsep} within it.
+%    The starred argument will determine whether the \mymeta{labels}
+%    will be displayed \emph{\enquote{above}} or \emph{\enquote{below}} the
+%    drawing or tabular. The second optional argument \myoarg{number above,
+%    number below} will determine the number of \myenv{minipage} environments that
+%    will be above and below separated by \ics{parsep} within it.
 % \iffalse
 %% Define |keyanspic| environment.
 % \fi
@@ -11830,7 +11833,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               {
                 \l_@@_anspic_label_htdp_dim
                 + \l_@@_anspic_body_htdp_dim
-                %+ \box_ht_plus_dp:N \strutbox
+                + \box_dp:N \strutbox
               }
           }
           [ 0pt ] [ 0pt ]
