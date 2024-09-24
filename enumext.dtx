@@ -11856,8 +11856,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % from the \mypkg{shortlst} package to a more modern version using \mypkg{expl3}.
 % It is not possible to redefine |\item| and \ics{makelabel} as in
 % the vertical \emph{non starred} versions.
-%^^A, we have no other option than to define
-%^^A a cascade of functions.
 %
 % \subsubsection{Functions for item box width}
 % To achieve the horizontal list environment we will capture the |\item|
@@ -12062,16 +12060,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Functions for \texttt{mini-env}, \texttt{mini-right} and \texttt{mini-right*} keys}
 %
+% To have compatibility with the \texttt{tagPDF} we close the environment
+% according to the presence or not of the \mykey{mini-right} key.
+%
 % \begin{macro}{\@@_start_mini_vii:, \@@_stop_mini_vii:}
-%
-% The implementation of the \mykey{mini-env} key support is almost
-% identical to the one used in the \myenv*{enumext} and \myenv*{keyans}
-% environments, the difference is that the \myvarenv*{__@@_mini_page}
-% environment on the \emph{\enquote{right side}} is executed
-% \emph{\enquote{after}} closing the environment, so it is necessary to
-% make a global copy of the variable \cs{l_@@_minipage_right_vii_dim} in
-% the variable \cs{g_@@_minipage_right_vii_dim}.
-%
+%   The implementation of the \mykey{mini-env} key support is almost
+%   identical to the one used in the \myenv*{enumext} and \myenv*{keyans}
+%   environments, the difference is that the \myvarenv*{__@@_mini_page}
+%   environment on the \emph{\enquote{right side}} is executed
+%   \emph{\enquote{after}} closing the environment, so it is necessary to
+%   make a global copy of the variable \cs{l_@@_minipage_right_vii_dim} in
+%   the variable \cs{g_@@_minipage_right_vii_dim}.%
 % \iffalse
 %% Start support for |mini-env| key in |enumext*| environment
 % \fi
@@ -12096,29 +12095,35 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
    }
 %    \end{macrocode}
-%   The function \cs{@@_stop_mini_vii:} closes the
-%   \myvarenv*{__@@_mini_page} environment on the left side, applies
-%   |\hfill| and sets the value of the variable
-%   \cs{g_@@_minipage_active_vii_bool} to true which will be used in the
-%   function \cs{@@_after_env:nn} to execute the
-%   \myvarenv*{__@@_mini_page} on the \emph{\enquote{right side}}.
+%   The function \cs{@@_stop_mini_vii:} closes the \myvarenv*{__@@_mini_page}
+%   environment on the \emph{\enquote{left side}}, applies |\hfill| and
+%   set the variable \cs{g_@@_minipage_active_vii_bool} to \emph{\enquote{true}}
+%   which will be used in the function \cs{@@_after_env:nn} to execute the
+%   \myenv{minipage} on the \emph{\enquote{right side}}.
 % \iffalse
-%% Stop support for |mini-env| key in |enumext*| environment
+%% Stop support for |mini-env| key in |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_stop_mini_vii:
   {
-    \bool_if:NT \l_@@_minipage_active_vii_bool
+    \bool_if:NTF \l_@@_minipage_active_vii_bool
       {
+        \@@_stop_list:
+        \@@_stop_store_level_vii:
+        \IfDocumentMetadataTF { \tag_resume:n {enumext*} } { }
         \end@@_mini_page
         \hfill
         \bool_gset_true:N \g_@@_minipage_active_vii_bool
+      }
+      {
+        \@@_stop_list:
+        \@@_stop_store_level_vii:
       }
    }
 %    \end{macrocode}
 %  Finally we execute the \mymarg{code} passed to the \mykey{mini-right}
 %  or \mykey{mini-right*} keys stored in the variable \cs{g_@@_miniright_code_vii_tl}
-%  in the \myvarenv*{__@@_mini_page} environment on the \emph{\enquote{right
+%  in the \myenv{minipage} environment on the \emph{\enquote{right
 %  side}}. For compatibility with the \mypkg{caption} package and possibly
 %  other \mymarg{code} passed to this key, we will pass it to a box and
 %  then print it.
@@ -12130,7 +12135,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
     \bool_if:NT \g_@@_minipage_active_vii_bool
       {
-        \@@_mini_page{ \g_@@_minipage_right_vii_dim }
+        \@@_minipage:w [ t ] { \g_@@_minipage_right_vii_dim }
+          \legacy_if_gset_false:n { @minipage }
+          \skip_vertical:N \c_zero_skip
           \par\addvspace { \g_@@_minipage_right_skip }
           \bool_if:NF \g_@@_minipage_center_vii_bool
             {
@@ -12144,7 +12151,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               \tl_use:N \g_@@_miniright_code_vii_tl
             }
           \box_use_drop:N \l_@@_miniright_code_vii_box
-        \end@@_mini_page
+          \skip_vertical:N \c_zero_skip
+        \@@_endminipage:
         \par\addvspace{ \g_@@_minipage_after_skip }
       }
     \bool_gset_false:N \g_@@_minipage_active_vii_bool
@@ -12309,8 +12317,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \IfDocumentMetadataTF { \tag_struct_end: } { }
     \@@_stop_item_tmp_vii:
     \@@_remove_extra_parsep_vii:
-    \@@_stop_list:
-    \@@_stop_store_level_vii:
+    %\@@_stop_list:
+    %\@@_stop_store_level_vii:
     \@@_after_list_vii:
   }
 %    \end{macrocode}

@@ -4442,14 +4442,21 @@
         \__enumext_mini_page{ \l__enumext_minipage_left_vii_dim }
       }
    }
-%% Stop support for |mini-env| key in |enumext*| environment
+%% Stop support for |mini-env| key in |enumext*| environment.
 \cs_new_protected:Nn \__enumext_stop_mini_vii:
   {
-    \bool_if:NT \l__enumext_minipage_active_vii_bool
+    \bool_if:NTF \l__enumext_minipage_active_vii_bool
       {
+        \__enumext_stop_list:
+        \__enumext_stop_store_level_vii:
+        \IfDocumentMetadataTF { \tag_resume:n {enumext*} } { }
         \end__enumext_mini_page
         \hfill
         \bool_gset_true:N \g__enumext_minipage_active_vii_bool
+      }
+      {
+        \__enumext_stop_list:
+        \__enumext_stop_store_level_vii:
       }
    }
 %% Exec |mini-right|, |mini-right*| keys in |enumext*| environment.
@@ -4457,7 +4464,9 @@
   {
     \bool_if:NT \g__enumext_minipage_active_vii_bool
       {
-        \__enumext_mini_page{ \g__enumext_minipage_right_vii_dim }
+        \__enumext_minipage:w [ t ] { \g__enumext_minipage_right_vii_dim }
+          \legacy_if_gset_false:n { @minipage }
+          \skip_vertical:N \c_zero_skip
           \par\addvspace { \g__enumext_minipage_right_skip }
           \bool_if:NF \g__enumext_minipage_center_vii_bool
             {
@@ -4471,7 +4480,8 @@
               \tl_use:N \g__enumext_miniright_code_vii_tl
             }
           \box_use_drop:N \l__enumext_miniright_code_vii_box
-        \end__enumext_mini_page
+          \skip_vertical:N \c_zero_skip
+        \__enumext_endminipage:
         \par\addvspace{ \g__enumext_minipage_after_skip }
       }
     \bool_gset_false:N \g__enumext_minipage_active_vii_bool
@@ -4594,8 +4604,8 @@
     \IfDocumentMetadataTF { \tag_struct_end: } { }
     \__enumext_stop_item_tmp_vii:
     \__enumext_remove_extra_parsep_vii:
-    \__enumext_stop_list:
-    \__enumext_stop_store_level_vii:
+    %\__enumext_stop_list:
+    %\__enumext_stop_store_level_vii:
     \__enumext_after_list_vii:
   }
 %% Safe exec for |enumext*| (set bool vars for storage system).
