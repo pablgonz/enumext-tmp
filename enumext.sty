@@ -3597,17 +3597,33 @@
     \__enumext_parse_keys:n {#1}
     \__enumext_before_list:
     \__enumext_start_store_level:
+    %\tag_suspend:n {list}
     \__enumext_start_list:nn
       { \tl_use:c { l__enumext_label_ \__enumext_level: _tl } }
       {
         \use:c { __enumext_list_arg_two_ \__enumext_level: : }
         \__enumext_before_keys_exec:
+       % \tag_resume:n {list}
+       \tag_suspend:n {enumext}
+       \tag_tool:n {para/tagging=false}
+       \tag_resume:n {enumext}
+       
       }
     \__enumext_set_item_width:
     \__enumext_after_args_exec:
   }
   {
+   %\tag_struct_end:
     \__enumext_stop_list:
+    %\tag_struct_end:
+    \tag_mc_end:
+%\tag_struct_end:
+%\tag_struct_end:
+%\tag_struct_end:
+
+%\tag_struct_end:\tag_struct_end:\tag_struct_end:\tag_struct_end:\tag_struct_end:\tag_struct_end:
+
+    
     \__enumext_stop_store_level:
     \__enumext_after_list:
   }
@@ -4257,40 +4273,6 @@
     \\ #3
     \__enumext_anspic_stop_list_tag:
   }
-%% Redefining \footnote.
-\cs_new_protected:Nn \__enumext_footnotetext:nn
-  {
-    \footnotetext[#1]{#2}
-  }
-\cs_new_protected:Nn \__enumext_renew_footnote:
-  {
-    \seq_gclear:N \g__enumext_footnote_arg_seq
-    \seq_gclear:N \g__enumext_footnote_int_seq
-    \RenewDocumentCommand \footnote { o +m }
-      {
-        \tl_if_novalue:nTF {##1}
-          {
-            \stepcounter{footnote}
-            \int_gset_eq:Nc \g__enumext_footnote_int { c@footnote }
-          }
-          {
-            \int_gset:Nn \g__enumext_footnote_int { ##1 }
-          }
-        \footnotemark [ \g__enumext_footnote_int ]
-        \seq_gput_right:Nn \g__enumext_footnote_arg_seq { ##2 }
-        \seq_gput_right:NV \g__enumext_footnote_int_seq \g__enumext_footnote_int
-     }
-  }
-\cs_new_protected:Nn \__enumext_print_footnote:
-  {
-    \seq_if_empty:NF \g__enumext_footnote_int_seq
-      {
-        \seq_map_pairwise_function:NNN
-          \g__enumext_footnote_int_seq
-          \g__enumext_footnote_arg_seq
-          \__enumext_footnotetext:nn
-      }
-  }
 %% Define default item width (columns width) for |enumext*| and |keyans*|.
 \cs_new_protected:Nn \__enumext_starred_columns_set_vii:
   {
@@ -4565,6 +4547,40 @@
     \bool_gset_true:N \g__enumext_minipage_center_viii_bool
     \tl_gclear:N \g__enumext_miniright_code_viii_tl
     \dim_gzero:N \g__enumext_minipage_right_viii_dim
+  }
+%% Redefining \footnote.
+\cs_new_protected:Nn \__enumext_footnotetext:nn
+  {
+    \footnotetext[#1]{#2}
+  }
+\cs_new_protected:Nn \__enumext_renew_footnote:
+  {
+    \seq_gclear:N \g__enumext_footnote_arg_seq
+    \seq_gclear:N \g__enumext_footnote_int_seq
+    \RenewDocumentCommand \footnote { o +m }
+      {
+        \tl_if_novalue:nTF {##1}
+          {
+            \stepcounter{footnote}
+            \int_gset_eq:Nc \g__enumext_footnote_int { c@footnote }
+          }
+          {
+            \int_gset:Nn \g__enumext_footnote_int { ##1 }
+          }
+        \footnotemark [ \g__enumext_footnote_int ]
+        \seq_gput_right:Nn \g__enumext_footnote_arg_seq { ##2 }
+        \seq_gput_right:NV \g__enumext_footnote_int_seq \g__enumext_footnote_int
+     }
+  }
+\cs_new_protected:Nn \__enumext_print_footnote:
+  {
+    \seq_if_empty:NF \g__enumext_footnote_int_seq
+      {
+        \seq_map_pairwise_function:NNN
+          \g__enumext_footnote_int_seq
+          \g__enumext_footnote_arg_seq
+          \__enumext_footnotetext:nn
+      }
   }
 %% Define |enumext*|
 \NewDocumentEnvironment{enumext*}{ o }

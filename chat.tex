@@ -1,22 +1,40 @@
-\DocumentMetadata{ lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress }% pdfstandard=ua-2,
-% arara: pdflatex
-% arara: pdflatex
+% arara: lualatex
 % arara: clean: { extensions: [ aux, log, out] }
+\DocumentMetadata{ lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress }% pdfstandard=ua-2,
 \documentclass{article}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage[margin=2cm]{geometry}
-\usepackage{tikz}
-\newcommand*{\myCircled}[1]{%
-  \begin{tikzpicture}[baseline=(number.base)]
-    \node[circle, draw=green!10!gray, inner sep=1pt, fill=blue!30!green!10] (number) {#1};
-  \end{tikzpicture}%
-}
 \usepackage[colorlinks]{hyperref}
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
+% test
+%\begin{enumerate}
+%\item TEXT
+\begin{minipage}[t]{0.5\linewidth}
+\begin{enumerate}
+    \item ITEM
+\end{enumerate}
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+IMAGE
+\end{minipage}
+%\item TEXT
+%\end{enumerate}
+
+\begin{enumext}[mini-env=0.5\linewidth, columns=3,noitemsep]
+    \item value
+    \miniright
+    IMAGE
+\end{enumext}
+
+
+\end{document}
+
+\newpage
+
+
+
+
+\setenumext[keyans]{label=\Alph*,nosep}
 \begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
 \item Question with image on left side:
 \begin{minipage}[t]{0.5\linewidth}
@@ -29,7 +47,9 @@ ZZZ
 \end{minipage}
 \item Question with image on left side:
 \end{enumext}
-\end{document}
+
+
+
 
 
 \DocumentMetadata{lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress}
