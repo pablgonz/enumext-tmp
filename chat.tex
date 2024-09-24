@@ -3,25 +3,27 @@
 \DocumentMetadata{ lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress }% pdfstandard=ua-2,
 \documentclass{article}
 \usepackage[colorlinks]{hyperref}
+\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
 % test
 %\begin{enumerate}
 %\item TEXT
-\begin{minipage}[t]{0.5\linewidth}
+\noindent\begin{minipage}[t]{0.5\linewidth}
 \begin{enumerate}
     \item ITEM
 \end{enumerate}
-\end{minipage}
+\end{minipage}\hfill
 \begin{minipage}[t]{0.5\linewidth}
 IMAGE
 \end{minipage}
 %\item TEXT
 %\end{enumerate}
+so,e
 
-\begin{enumext}[mini-env=0.5\linewidth, columns=3,noitemsep]
-    \item value
+\begin{enumext}[mini-env=0.6\linewidth, columns=2,noitemsep]
+    \item value \item value
     \miniright
     IMAGE
 \end{enumext}

@@ -3597,34 +3597,16 @@
     \__enumext_parse_keys:n {#1}
     \__enumext_before_list:
     \__enumext_start_store_level:
-    %\tag_suspend:n {list}
     \__enumext_start_list:nn
       { \tl_use:c { l__enumext_label_ \__enumext_level: _tl } }
       {
         \use:c { __enumext_list_arg_two_ \__enumext_level: : }
         \__enumext_before_keys_exec:
-       % \tag_resume:n {list}
-       \tag_suspend:n {enumext}
-       \tag_tool:n {para/tagging=false}
-       \tag_resume:n {enumext}
-       
       }
     \__enumext_set_item_width:
     \__enumext_after_args_exec:
   }
   {
-   %\tag_struct_end:
-    \__enumext_stop_list:
-    %\tag_struct_end:
-    \tag_mc_end:
-%\tag_struct_end:
-%\tag_struct_end:
-%\tag_struct_end:
-
-%\tag_struct_end:\tag_struct_end:\tag_struct_end:\tag_struct_end:\tag_struct_end:\tag_struct_end:
-
-    
-    \__enumext_stop_store_level:
     \__enumext_after_list:
   }
 %% Set |\itemwidth| for |enumext|.
@@ -3732,6 +3714,7 @@
         \bool_set_true:c { l__enumext_minipage_active_ \__enumext_level: _bool }
         \int_gincr:N \g__enumext_minipage_stat_int
         \__enumext_minipage_add_space:
+        \noindent
         \__enumext_mini_page{ \dim_use:c { l__enumext_minipage_left_ \__enumext_level: _dim } }
       }
     \__enumext_multicols_start:
@@ -3768,13 +3751,19 @@
   }
 \cs_new_protected:Nn \__enumext_multicols_stop:
   {
-    \int_compare:nNnT
+    \int_compare:nNnTF
       { \int_use:c { l__enumext_columns_ \__enumext_level: _int } } > { 1 }
       {
+        \__enumext_stop_list:
+        \__enumext_stop_store_level:
         \end{multicols}
         \__enumext_unskip_unkern:
         \__enumext_unskip_unkern:
         \par\addvspace{ \skip_use:c { l__enumext_multicols_below_ \__enumext_level: _skip } }
+      }
+      {
+        \__enumext_stop_list:
+        \__enumext_stop_store_level:
       }
   }
 \cs_new_protected:Nn \__enumext_after_list:
@@ -3818,7 +3807,7 @@
   }
   {
     \__enumext_check_starred_cmd:n { item }
-    \__enumext_stop_list:
+    %%\__enumext_stop_list:
     \__enumext_after_list_v:
   }
 \cs_new_protected:Nn \__enumext_keyans_set_item_width:
@@ -3909,12 +3898,16 @@
   }
 \cs_new_protected:Nn \__enumext_keyans_multicols_stop:
   {
-    \int_compare:nNnT { \l__enumext_columns_v_int } > { 1 }
+    \int_compare:nNnTF { \l__enumext_columns_v_int } > { 1 }
       {
+        \__enumext_stop_list:
         \end{multicols}
         \__enumext_unskip_unkern:
         \__enumext_unskip_unkern:
         \par\addvspace{ \l__enumext_multicols_below_v_skip }
+      }
+      {
+        \__enumext_stop_list:
       }
   }
 \cs_new_protected:Nn \__enumext_after_list_v:
@@ -3970,8 +3963,7 @@
       {
         \socket_assign_plug:nn {tagsupport/enumext/starred} {start-list-tags}
         \socket_use:n {tagsupport/enumext/starred} {#1}
-      }
-      {}
+      } {}
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_start_list_tag:
   {
@@ -3979,8 +3971,7 @@
       {
         \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-start-tags}
         \socket_use:nn {tagsupport/enumext/starred} { }
-      }
-      {}
+      } {}
    }
 \cs_new_protected_nopar:Npn \__enumext_stop_list_tag:n #1
   {
@@ -3988,8 +3979,7 @@
       {
         \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-list-tags}
         \socket_use:nn {tagsupport/enumext/starred} {#1}
-      }
-      {}
+      } {}
    }
 %% Implement socket for tagging support in |keyanspic|.
 \socket_new:nn {tagsupport/enumext/keyanspic}{ 0 }
@@ -4025,8 +4015,7 @@
       {
         \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {start-list-tags}
         \socket_use:n {tagsupport/enumext/keyanspic}
-      }
-      {}
+      } {}
    }
 \cs_new_protected_nopar:Nn \__enumext_anspic_stop_start_list_tag:
   {
@@ -4034,8 +4023,7 @@
       {
         \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {stop-start-tags}
         \socket_use:nn {tagsupport/enumext/keyanspic}
-      }
-      {}
+      } {}
    }
 \cs_new_protected_nopar:Nn \__enumext_anspic_stop_list_tag:
   {
@@ -4043,8 +4031,7 @@
       {
         \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {stop-list-tags}
         \socket_use:nn {tagsupport/enumext/keyanspic}
-      }
-      {}
+      } {}
    }
 %% Internal check code for |keyanspic| environment.
 \cs_new_protected:Npn \__enumext_keyans_pic_safe_exec:n #1

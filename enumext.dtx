@@ -10713,8 +10713,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_after_args_exec:
   }
   {
-    \@@_stop_list:
-    \@@_stop_store_level:
     \@@_after_list:
   }
 %    \end{macrocode}
@@ -10920,6 +10918,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \bool_set_true:c { l_@@_minipage_active_ \@@_level: _bool }
         \int_gincr:N \g_@@_minipage_stat_int
         \@@_minipage_add_space:
+        \noindent
         \@@_mini_page{ \dim_use:c { l_@@_minipage_left_ \@@_level: _dim } }
       }
     \@@_multicols_start:
@@ -10981,13 +10980,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_multicols_stop:
   {
-    \int_compare:nNnT
+    \int_compare:nNnTF
       { \int_use:c { l_@@_columns_ \@@_level: _int } } > { 1 }
       {
+        \@@_stop_list:
+        \@@_stop_store_level:
         \end{multicols}
         \@@_unskip_unkern:
         \@@_unskip_unkern:
         \par\addvspace{ \skip_use:c { l_@@_multicols_below_ \@@_level: _skip } }
+      }
+      {
+        \@@_stop_list:
+        \@@_stop_store_level:
       }
   }
 %    \end{macrocode}
@@ -11073,7 +11078,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
   {
     \@@_check_starred_cmd:n { item }
-    \@@_stop_list:
+    %%\@@_stop_list:
     \@@_after_list_v:
   }
 %    \end{macrocode}
@@ -11202,12 +11207,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \cs_new_protected:Nn \@@_keyans_multicols_stop:
   {
-    \int_compare:nNnT { \l_@@_columns_v_int } > { 1 }
+    \int_compare:nNnTF { \l_@@_columns_v_int } > { 1 }
       {
+        \@@_stop_list:
         \end{multicols}
         \@@_unskip_unkern:
         \@@_unskip_unkern:
         \par\addvspace{ \l_@@_multicols_below_v_skip }
+      }
+      {
+        \@@_stop_list:
       }
   }
 \cs_new_protected:Nn \@@_after_list_v:
@@ -11301,8 +11310,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \socket_assign_plug:nn {tagsupport/enumext/starred} {start-list-tags}
         \socket_use:n {tagsupport/enumext/starred} {#1}
-      }
-      {}
+      } {}
    }
 \cs_new_protected_nopar:Nn \@@_stop_start_list_tag:
   {
@@ -11310,8 +11318,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-start-tags}
         \socket_use:nn {tagsupport/enumext/starred} { }
-      }
-      {}
+      } {}
    }
 \cs_new_protected_nopar:Npn \@@_stop_list_tag:n #1
   {
@@ -11319,8 +11326,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-list-tags}
         \socket_use:nn {tagsupport/enumext/starred} {#1}
-      }
-      {}
+      } {}
    }
 %    \end{macrocode}
 % \end{macro}
@@ -11375,8 +11381,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {start-list-tags}
         \socket_use:n {tagsupport/enumext/keyanspic}
-      }
-      {}
+      } {}
    }
 \cs_new_protected_nopar:Nn \@@_anspic_stop_start_list_tag:
   {
@@ -11384,8 +11389,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {stop-start-tags}
         \socket_use:nn {tagsupport/enumext/keyanspic}
-      }
-      {}
+      } {}
    }
 \cs_new_protected_nopar:Nn \@@_anspic_stop_list_tag:
   {
@@ -11393,8 +11397,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {stop-list-tags}
         \socket_use:nn {tagsupport/enumext/keyanspic}
-      }
-      {}
+      } {}
    }
 %    \end{macrocode}
 % \end{macro}
@@ -11421,7 +11424,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %       { \textcolor{blue}{\texttt{space above keyanspic}} };
 %     % space between
 %     \draw[color=white] (7.0,4.5) rectangle (17.5,4.9) node[pos=.5,text=black]%
-%       { \textcolor{blue}{\texttt{\textbackslash{}parsep [+\textbackslash{}itemsep]}} };
+%       { \textcolor{blue}{\texttt{\textbackslash{}parsep [+\textbackslash{}box\_dp:N \textbackslash{}strutbox]}} };
 %     % space below
 %     \draw[color=white] (7.0,2.9) rectangle (17.5,3.3) node[pos=.5,text=black]%
 %       { \textcolor{blue}{\texttt{space below keyanspic}} };
