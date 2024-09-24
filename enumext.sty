@@ -4512,11 +4512,16 @@
    }
 \cs_new_protected:Nn \__enumext_stop_mini_viii:
   {
-    \bool_if:NT \l__enumext_minipage_active_viii_bool
+    \bool_if:NTF \l__enumext_minipage_active_viii_bool
       {
+        \__enumext_stop_list:
+        \IfDocumentMetadataTF { \tag_resume:n {keyans*} } { }
         \end__enumext_mini_page
         \hfill
         \bool_gset_true:N \g__enumext_minipage_active_viii_bool
+      }
+      {
+        \__enumext_stop_list:
       }
    }
 \__enumext_after_env:nn {keyans*}
@@ -4592,7 +4597,7 @@
         \__enumext_before_keys_exec_vii:
       }
     % Stop tagging
-    \SuspendTagging{enumext*}
+    \IfDocumentMetadataTF { \tag_suspend:n {enumext*} } { }
     \__enumext_starred_columns_set_vii:
     \item[] \scan_stop:
     \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \__enumext_first_item_tmp_vii:
@@ -4600,12 +4605,9 @@
     \ignorespaces
   }
   {
-    % Close for first \item
     \IfDocumentMetadataTF { \tag_struct_end: } { }
     \__enumext_stop_item_tmp_vii:
     \__enumext_remove_extra_parsep_vii:
-    %\__enumext_stop_list:
-    %\__enumext_stop_store_level_vii:
     \__enumext_after_list_vii:
   }
 %% Safe exec for |enumext*| (set bool vars for storage system).
@@ -4871,6 +4873,7 @@
         \__enumext_list_arg_two_viii:
         \__enumext_before_keys_exec_viii:
       }
+    \IfDocumentMetadataTF { \tag_suspend:n {keyans*} } { }
     \__enumext_starred_columns_set_viii:
     \item[] \scan_stop:
     \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \__enumext_first_item_tmp_viii:
@@ -4878,10 +4881,11 @@
     \ignorespaces
   }
   {
+    \IfDocumentMetadataTF { \tag_struct_end: } { }
     \__enumext_stop_item_tmp_viii:
     \__enumext_remove_extra_parsep_viii:
     \__enumext_check_starred_cmd:n { item }
-    \__enumext_stop_list:
+    %%\__enumext_stop_list:
     \__enumext_after_list_viii:
   }
 %% Test deep-level for |keyans*| and set bool vars.
@@ -5032,86 +5036,79 @@
         \__enumext_print_keyans_box:NN \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
       }
   }
-%% Real |\item| definition for |keyans*| environment.
-\cs_new_protected_nopar:Npn \__enumext_start_item_viii:w [#1]
+%% Define a fake |\makelabel| for |keyans*| environment.
+\cs_new_protected_nopar:Npn \__enumext_fake_make_label_viii:n #1
   {
-    \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \__enumext_stop_item_viii:
     \legacy_if:nT { @noitemarg }
       {
         \legacy_if_set_false:n { @noitemarg }
         \legacy_if:nT { @nmbrlist }
           {
-            \bool_if:NT \l__enumext_hyperref_bool
-              {
-                \legacy_if_set_true:n { @hyper@item }
-              }
             \refstepcounter{enumXviii}
           }
       }
+    \bool_if:NT \l__enumext_item_starred_viii_bool
+      {
+        \__enumext_starred_item_exec:
+      }
+    \makebox[ \l__enumext_labelwidth_viii_dim ][ \l__enumext_align_label_viii_str ]
+      {
+        \tl_use:N \l__enumext_label_font_style_viii_tl
+        \bool_if:NTF \l__enumext_wrap_label_viii_bool
+          {
+            \__enumext_wrapper_label_viii:n {#1}
+          }
+          { #1 }
+      }
+    \skip_horizontal:N \l__enumext_labelsep_viii_dim
+  }
+%% Real |\item| definition for |keyans*| environment.
+\cs_new_protected_nopar:Npn \__enumext_start_item_viii:w [#1]
+  {
+    \cs_set_eq:NN \__enumext_stop_item_tmp_viii: \__enumext_stop_item_viii:
     \hbox_set_to_wd:Nnw \l__enumext_item_text_viii_box
       {
         \l__enumext_joined_width_viii_dim
         + \l__enumext_labelwidth_viii_dim
         + \l__enumext_labelsep_viii_dim
       }
-        \bool_if:NF \l__enumext_footnotes_key_bool
-          {
-            \__enumext_renew_footnote:
-          }
+      \IfDocumentMetadataTF { }
+        {
+          \bool_if:NF \l__enumext_footnotes_key_bool
+            {
+              \__enumext_renew_footnote:
+            }
+        }
+      \__enumext_start_list_tag:n {keyans*}
+      \__enumext_fake_make_label_viii:n {#1}
+      \__enumext_stop_start_list_tag:
+      \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_viii_dim  }
+        \tl_use:N \l__enumext_after_list_args_viii_tl
+        \dim_set_eq:NN \parindent \l__enumext_listparindent_viii_dim
+        \skip_set_eq:NN \parskip \l__enumext_parsep_viii_skip
         \bool_if:NT \l__enumext_item_starred_viii_bool
           {
-            \__enumext_starred_item_exec:
+            \tl_use:N \l__enumext_fake_item_indent_viii_tl
+            \__enumext_keyans_show_item_opt:
+            \skip_horizontal:n { -\l__enumext_fake_item_indent_viii_dim - \l__enumext_labelsep_viii_dim }
           }
-        \bool_if:NTF \l__enumext_wrap_label_viii_bool
           {
-            \makebox[ \l__enumext_labelwidth_viii_dim ][ \l__enumext_align_label_viii_str ]
-              {
-                \tl_use:N \l__enumext_label_font_style_viii_tl
-                \__enumext_wrapper_label_viii:n {#1}
-              }
-           }
-           {
-             \makebox[ \l__enumext_labelwidth_viii_dim ][ \l__enumext_align_label_viii_str ]
-               {
-                \tl_use:N \l__enumext_label_font_style_viii_tl #1
-
-               }
-           }
-        \skip_horizontal:N \l__enumext_labelsep_viii_dim
-        \tl_use:N \l__enumext_after_list_args_viii_tl
-        \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_viii_dim  }
-          \dim_set_eq:NN \parindent \l__enumext_listparindent_viii_dim
-          \skip_set_eq:NN \parskip \l__enumext_parsep_viii_skip
-          \bool_if:NT \l__enumext_item_starred_viii_bool
-            {
-              \tl_use:N \l__enumext_fake_item_indent_viii_tl
-              \__enumext_keyans_show_item_opt:
-              \skip_horizontal:n { -\l__enumext_fake_item_indent_viii_dim - \l__enumext_labelsep_viii_dim }
-            }
-            {
-              \tl_use:N \l__enumext_fake_item_indent_viii_tl
-            }
-%%          First atempt here, need stop tag and set counter for enumi, and more...need test
-%%          \RenewDocumentCommand \item { o }
-%%            {
-%%              \tl_if_novalue:nTF {#1}
-%%                {
-%%                  \@@_item_std:w
-%%                }
-%%                {
-%%                  \@@_item_std:w [#1]
-%%                }
-%%            }
+            \tl_use:N \l__enumext_fake_item_indent_viii_tl
+          }
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_item_viii:
   {
-        \__enumext_endminipage:
+      \__enumext_endminipage:
+    \__enumext_stop_list_tag:n {keyans*}
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_viii_box
-    \bool_if:NF \l__enumext_footnotes_key_bool
+    \IfDocumentMetadataTF { }
       {
-        \__enumext_print_footnote:
+        \bool_if:NF \l__enumext_footnotes_key_bool
+          {
+            \__enumext_print_footnote:
+          }
       }
     \int_compare:nNnTF
       { \l__enumext_item_column_pos_viii_int } = { \l__enumext_columns_viii_int }

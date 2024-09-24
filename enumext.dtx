@@ -12193,11 +12193,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
    }
 \cs_new_protected:Nn \@@_stop_mini_viii:
   {
-    \bool_if:NT \l_@@_minipage_active_viii_bool
+    \bool_if:NTF \l_@@_minipage_active_viii_bool
       {
+        \@@_stop_list:
+        \IfDocumentMetadataTF { \tag_resume:n {keyans*} } { }
         \end@@_mini_page
         \hfill
         \bool_gset_true:N \g_@@_minipage_active_viii_bool
+      }
+      {
+        \@@_stop_list:
       }
    }
 \@@_after_env:nn {keyans*}
@@ -12305,7 +12310,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_before_keys_exec_vii:
       }
     % Stop tagging
-    \SuspendTagging{enumext*}
+    \IfDocumentMetadataTF { \tag_suspend:n {enumext*} } { }
     \@@_starred_columns_set_vii:
     \item[] \scan_stop:
     \cs_set_eq:NN \@@_stop_item_tmp_vii: \@@_first_item_tmp_vii:
@@ -12313,12 +12318,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \ignorespaces
   }
   {
-    % Close for first \item
     \IfDocumentMetadataTF { \tag_struct_end: } { }
     \@@_stop_item_tmp_vii:
     \@@_remove_extra_parsep_vii:
-    %\@@_stop_list:
-    %\@@_stop_store_level_vii:
     \@@_after_list_vii:
   }
 %    \end{macrocode}
@@ -12842,6 +12844,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_list_arg_two_viii:
         \@@_before_keys_exec_viii:
       }
+    \IfDocumentMetadataTF { \tag_suspend:n {keyans*} } { }
     \@@_starred_columns_set_viii:
     \item[] \scan_stop:
     \cs_set_eq:NN \@@_stop_item_tmp_viii: \@@_first_item_tmp_viii:
@@ -12849,10 +12852,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \ignorespaces
   }
   {
+    \IfDocumentMetadataTF { \tag_struct_end: } { }
     \@@_stop_item_tmp_viii:
     \@@_remove_extra_parsep_viii:
     \@@_check_starred_cmd:n { item }
-    \@@_stop_list:
+    %%\@@_stop_list:
     \@@_after_list_viii:
   }
 %    \end{macrocode}
@@ -13167,10 +13171,46 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\@@_fake_make_label_viii:n}
+%    The implementation at this is very similar to that of the
+%    \myenv*{enumext*} environment.
+% \iffalse
+%% Define a fake |\makelabel| for |keyans*| environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_fake_make_label_viii:n #1
+  {
+    \legacy_if:nT { @noitemarg }
+      {
+        \legacy_if_set_false:n { @noitemarg }
+        \legacy_if:nT { @nmbrlist }
+          {
+            \refstepcounter{enumXviii}
+          }
+      }
+    \bool_if:NT \l_@@_item_starred_viii_bool
+      {
+        \@@_starred_item_exec:
+      }
+    \makebox[ \l_@@_labelwidth_viii_dim ][ \l_@@_align_label_viii_str ]
+      {
+        \tl_use:N \l_@@_label_font_style_viii_tl
+        \bool_if:NTF \l_@@_wrap_label_viii_bool
+          {
+            \@@_wrapper_label_viii:n {#1}
+          }
+          { #1 }
+      }
+    \skip_horizontal:N \l_@@_labelsep_viii_dim
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+%
 % \subsubsection{Real definition of \cs{item} in \env{keyans*}}
 %
 % \begin{macro}{\@@_start_item_viii:w}
-%    The implementation at this point is very similar to that of the
+%    The implementation at this is very similar to that of the
 %    \myenv*{enumext*} environment.
 % \iffalse
 %% Real |\item| definition for |keyans*| environment.
@@ -13179,75 +13219,35 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_new_protected_nopar:Npn \@@_start_item_viii:w [#1]
   {
     \cs_set_eq:NN \@@_stop_item_tmp_viii: \@@_stop_item_viii:
-    \legacy_if:nT { @noitemarg }
-      {
-        \legacy_if_set_false:n { @noitemarg }
-        \legacy_if:nT { @nmbrlist }
-          {
-            \bool_if:NT \l_@@_hyperref_bool
-              {
-                \legacy_if_set_true:n { @hyper@item }
-              }
-            \refstepcounter{enumXviii}
-          }
-      }
-%    \end{macrocode}
-%    Here we start capturing |\item| and its \mymeta{contents} in a \emph{horizontal box}.
-%    \begin{macrocode}
     \hbox_set_to_wd:Nnw \l_@@_item_text_viii_box
       {
         \l_@@_joined_width_viii_dim
         + \l_@@_labelwidth_viii_dim
         + \l_@@_labelsep_viii_dim
       }
-        \bool_if:NF \l_@@_footnotes_key_bool
-          {
-            \@@_renew_footnote:
-          }
+      \IfDocumentMetadataTF { }
+        {
+          \bool_if:NF \l_@@_footnotes_key_bool
+            {
+              \@@_renew_footnote:
+            }
+        }
+      \@@_start_list_tag:n {keyans*}
+      \@@_fake_make_label_viii:n {#1}
+      \@@_stop_start_list_tag:
+      \@@_minipage:w [ t ]{ \l_@@_joined_width_viii_dim  }
+        \tl_use:N \l_@@_after_list_args_viii_tl
+        \dim_set_eq:NN \parindent \l_@@_listparindent_viii_dim
+        \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
         \bool_if:NT \l_@@_item_starred_viii_bool
           {
-            \@@_starred_item_exec:
+            \tl_use:N \l_@@_fake_item_indent_viii_tl
+            \@@_keyans_show_item_opt:
+            \skip_horizontal:n { -\l_@@_fake_item_indent_viii_dim - \l_@@_labelsep_viii_dim }
           }
-        \bool_if:NTF \l_@@_wrap_label_viii_bool
           {
-            \makebox[ \l_@@_labelwidth_viii_dim ][ \l_@@_align_label_viii_str ]
-              {
-                \tl_use:N \l_@@_label_font_style_viii_tl
-                \@@_wrapper_label_viii:n {#1}
-              }
-           }
-           {
-             \makebox[ \l_@@_labelwidth_viii_dim ][ \l_@@_align_label_viii_str ]
-               {
-                \tl_use:N \l_@@_label_font_style_viii_tl #1
-
-               }
-           }
-        \skip_horizontal:N \l_@@_labelsep_viii_dim
-        \tl_use:N \l_@@_after_list_args_viii_tl
-        \@@_minipage:w [ t ]{ \l_@@_joined_width_viii_dim  }
-          \dim_set_eq:NN \parindent \l_@@_listparindent_viii_dim
-          \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
-          \bool_if:NT \l_@@_item_starred_viii_bool
-            {
-              \tl_use:N \l_@@_fake_item_indent_viii_tl
-              \@@_keyans_show_item_opt:
-              \skip_horizontal:n { -\l_@@_fake_item_indent_viii_dim - \l_@@_labelsep_viii_dim }
-            }
-            {
-              \tl_use:N \l_@@_fake_item_indent_viii_tl
-            }
-%%          First atempt here, need stop tag and set counter for enumi, and more...need test
-%%          \RenewDocumentCommand \item { o }
-%%            {
-%%              \tl_if_novalue:nTF {#1}
-%%                {
-%%                  \@@_item_std:w
-%%                }
-%%                {
-%%                  \@@_item_std:w [#1]
-%%                }
-%%            }
+            \tl_use:N \l_@@_fake_item_indent_viii_tl
+          }
    }
 %    \end{macrocode}
 % \end{macro}
@@ -13262,13 +13262,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_stop_item_viii:
   {
-        \@@_endminipage:
+      \@@_endminipage:
+    \@@_stop_list_tag:n {keyans*}
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_viii_box
-    \bool_if:NF \l_@@_footnotes_key_bool
+    \IfDocumentMetadataTF { }
       {
-        \@@_print_footnote:
+        \bool_if:NF \l_@@_footnotes_key_bool
+          {
+            \@@_print_footnote:
+          }
       }
     \int_compare:nNnTF
       { \l_@@_item_column_pos_viii_int } = { \l_@@_columns_viii_int }
