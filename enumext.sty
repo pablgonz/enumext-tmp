@@ -4832,19 +4832,14 @@
         \skip_horizontal:N \l__enumext_item_symbol_sep_vii_dim
         \tl_gclear:N \g__enumext_item_symbol_aux_vii_tl
       }
-    \bool_if:NTF \l__enumext_wrap_label_vii_bool
+    \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
       {
-        \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
+        \tl_use:N \l__enumext_label_font_style_vii_tl
+        \bool_if:NTF \l__enumext_wrap_label_vii_bool
           {
-            \tl_use:N \l__enumext_label_font_style_vii_tl
-                \__enumext_wrapper_label_vii:n {#1}
+            \__enumext_wrapper_label_vii:n {#1}
           }
-      }
-      {
-         \makebox[ \l__enumext_labelwidth_vii_dim ][ \l__enumext_align_label_vii_str ]
-           {
-             \tl_use:N \l__enumext_label_font_style_vii_tl #1
-           }
+          { #1 }
       }
     \skip_horizontal:N \l__enumext_labelsep_vii_dim
   }

@@ -2839,13 +2839,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{function}{keyanspic}
 %   \begin{syntax}
-%     |\begin{keyanspic}|\myoarg{nº above, nº below}\ics*{anspic}\mymarg{drawing}\ics*{anspic}|*|\myoarg{content}\mymarg{drawing}
+%     |\begin{keyanspic}*|\myoarg{nº above, nº below}\ics*{anspic}\mymarg{drawing}\ics*{anspic}|*|\myoarg{content}\mymarg{drawing}
 %   \end{syntax}
 % The \myenv*{keyanspic} is a \emph{\enquote{fake enumerated list}}
 % environment that which uses the \ics*{anspic} command instead of
 % |\item|. It is activated by the \mykey{save-ans} key and has the
 % same settings as the \myenv*{keyans} environment. It is intended for placing
-% \emph{\enquote{drawings}} or \emph{\enquote{tabular}} with an in-line
+% \emph{\enquote{drawings}} or \emph{\enquote{tabular}} with an \emph{in-line}
 % or \emph{above} and \emph{below} layout. A representation of
 % the output can be seen in the figure \ref{fig:keyanspicdoc}.
 % \end{function}
@@ -2857,7 +2857,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %     \draw[color=white] (7.0,6.10) rectangle (17.5,6.5) node[pos=.5,text=black]%
 %       { \textcolor{lightgray}{\texttt{number of drawings or tabular above}} };
 %     \draw[color=white] (7.0,4.5) rectangle (17.5,4.9) node[pos=.5,text=black]%
-%       { \textcolor{optcolor}{\texttt{parsep [+itemsep]}} };
+%       { \textcolor{optcolor}{\texttt{parsep }} }; %%%[+itemsep]
 %     \draw[color=white] (7.0,2.9) rectangle (17.5,3.3) node[pos=.5,text=black]%
 %       { \textcolor{lightgray}{\texttt{number of drawings or tabular below}} };
 %     \draw[<->,color=gray] (2.0,7.0) --node[above,text=optcolor]{\vphantom{p}\texttt{labelwidth}} (5.0,7.0);
@@ -2914,12 +2914,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \label{fig:keyanspicdoc}
 % \end{figure}
 %
-% The optional argument determines the number drawings
-% or tabular \emph{\enquote{above}} and \emph{\enquote{below}} within the environment. The vertical separation
-% between \emph{\enquote{above}} and \emph{\enquote{below}} is controlled by the values set
-% by \mykey{parsep} and \mykey{itemsep} keys passed to \myenv*{keyans}
+% The \emph{starred argument} ‘|*|’ places \mymeta{labels} \enquote{above} the drawings
+% or tabular, the optional argument determines the number drawings or
+% tabular \emph{\enquote{above}} and \emph{\enquote{below}} within
+% the environment. The vertical separation between \emph{\enquote{above}}
+% and \emph{\enquote{below}} is controlled by the values set
+% by \mykey{parsep} key passed to \myenv*{keyans}
 % environment. If the optional argument or the second part of it is
-% omitted the drawings or  tabular will be put on a single line.
+% omitted the drawings or tabular will be put on a \emph{single line}.
 %
 % \subsubsection{The command \cs[no-index]{anspic}}
 %
@@ -2965,9 +2967,18 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</example>
 % \fi
 %
-% \begin{enumext}[save-ans=test,show-ans=true,nosep]
-%  \item Question with images.
+% \begin{enumext}[save-ans=test,show-ans=true,nosep, before= {\setenumext[keyans]{nosep,parsep=3mm} }]
+% \item Question with images.
 %    \begin{keyanspic}[3,2]
+%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+%      \anspic{\includegraphics[scale=0.15]{example-image-b}}
+%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+%      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
+%    \end{keyanspic}
+%
+%  \item Question with images.
+%    \begin{keyanspic}*[3,2]
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-b}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -10395,7 +10406,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\item*,\@@_keyans_redefine_item:, \@@_keyans_make_label:}
+% \begin{macro}{\item*,\@@_keyans_redefine_item:}
 %    The function \cs{@@_keyans_redefine_item:} is responsible for adding
 %    the \emph{starred} and \emph{optional} argument by the
 %    \cs{@@_list_arg_two_v:} function in the definition of the
@@ -10477,7 +10488,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    This functions are passed to \myvarenv{__@@_list_arg_two_v:} used
 %    in the definition of the \myenv*{keyans} environment (\S\ref{ltx:second-arg}).
 % \end{important}
-%
 %
 % \subsection{Second argument of the lists}\label{ltx:second-arg}
 %
@@ -12727,19 +12737,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \skip_horizontal:N \l_@@_item_symbol_sep_vii_dim
         \tl_gclear:N \g_@@_item_symbol_aux_vii_tl
       }
-    \bool_if:NTF \l_@@_wrap_label_vii_bool
+    \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]
       {
-        \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]
+        \tl_use:N \l_@@_label_font_style_vii_tl
+        \bool_if:NTF \l_@@_wrap_label_vii_bool
           {
-            \tl_use:N \l_@@_label_font_style_vii_tl
-                \@@_wrapper_label_vii:n {#1}
+            \@@_wrapper_label_vii:n {#1}
           }
-      }
-      {
-         \makebox[ \l_@@_labelwidth_vii_dim ][ \l_@@_align_label_vii_str ]
-           {
-             \tl_use:N \l_@@_label_font_style_vii_tl #1
-           }
+          { #1 }
       }
     \skip_horizontal:N \l_@@_labelsep_vii_dim
   }
