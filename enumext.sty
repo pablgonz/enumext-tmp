@@ -101,17 +101,18 @@
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \bool_new:c { l__enumext_leftmargin_tmp_#1_bool }
-    \dim_new:c  { l__enumext_leftmargin_tmp_#1_dim }
-    \dim_new:c  { l__enumext_leftmargin_#1_dim     }
-    \dim_new:c  { l__enumext_itemindent_#1_dim     }
+    \dim_new:c  { l__enumext_leftmargin_tmp_#1_dim  }
+    \dim_new:c  { l__enumext_leftmargin_#1_dim      }
+    \dim_new:c  { l__enumext_itemindent_#1_dim      }
   }
 \clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
-%% Variables used by |columns| key in |enumext| and |keyans|.
+%% Variables used by |columns| and |align| keys in |enumext| and |keyans|.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \skip_new:c  { l__enumext_multicols_above_#1_skip }
     \skip_new:c  { l__enumext_multicols_below_#1_skip }
     \skip_new:c  { g__enumext_multicols_right_#1_skip }
+    \str_new:c   { l__enumext_align_label_pos_#1_str  }
   }
 \clist_map_inline:nn { i, ii, iii, iv, v } { \__enumext_tmp:n {#1} }
 %% Variables used by |miniright|, |mini-env|, |mini-sep| and |\miniright|.
@@ -606,16 +607,19 @@
                           {
                             \tl_clear:c { l__enumext_label_fill_left_#2_tl  }
                             \tl_set:cn  { l__enumext_label_fill_right_#2_tl } { \hfill }
+                            \str_set:cn { l__enumext_align_label_pos_#2_str } { l }
                           },
         align / right   .code:n =
                           {
                             \tl_set:cn  { l__enumext_label_fill_left_#2_tl  } { \hfill }
                             \tl_clear:c { l__enumext_label_fill_right_#2_tl }
+                            \str_set:cn { l__enumext_align_label_pos_#2_str } { r }
                           },
         align / center  .code:n =
                           {
                             \tl_set:cn { l__enumext_label_fill_left_#2_tl  } { \hfill }
                             \tl_set:cn { l__enumext_label_fill_right_#2_tl } { \hfill }
+                            \str_set:cn { l__enumext_align_label_pos_#2_str } { c }
                           },
         align / unknown .code:n =
                           \msg_error:nneee { enumext } { unknown-choice }
@@ -3324,6 +3328,14 @@
 %% Redefinition of |\makelabel| for |\item| and |\item*[sym][sep]| in |enumext|.
 \cs_new_protected:Nn \__enumext_make_label:
   {
+    \IfDocumentMetadataTF
+      {
+        \__enumext_make_label_box:
+      }
+      { \__enumext_make_label_std: }
+  }
+\cs_new_protected:Nn \__enumext_make_label_std:
+  {
     \RenewDocumentCommand \makelabel { m }
       {
         \tl_use:c { l__enumext_label_fill_left_ \__enumext_level: _tl }
@@ -3336,6 +3348,25 @@
           { ##1 }
         \tl_use:c { l__enumext_label_fill_right_ \__enumext_level: _tl }
         \tl_gclear:N \g__enumext_item_symbol_aux_tl
+      }
+  }
+\cs_new_protected:Nn \__enumext_make_label_box:
+  {
+    \RenewDocumentCommand \makelabel { m }
+      {
+        \makebox
+          [ \dim_use:c { l__enumext_labelwidth_ \__enumext_level: _dim } ]
+          [ \str_use:c { l__enumext_align_label_pos_ \__enumext_level: _str } ]
+          {
+            \tl_use:c { l__enumext_label_font_style_ \__enumext_level: _tl }
+            \bool_if:cTF { l__enumext_wrap_label_ \__enumext_level: _bool }
+              {
+                \__enumext_item_star_exec:
+                \use:c { __enumext_wrapper_label_ \__enumext_level: :n } { ##1 }
+              }
+              { ##1 }
+            \tl_gclear:N \g__enumext_item_symbol_aux_tl
+          }
       }
   }
 %% Add |item-sym*| and |item-sep*| keys.
@@ -3464,6 +3495,14 @@
 %% Redefine |\makelabel| for |keyans|.
 \cs_new_protected:Nn \__enumext_keyans_make_label:
   {
+    \IfDocumentMetadataTF
+      {
+        \__enumext_keyans_make_label_box:
+      }
+      { \__enumext_keyans_make_label_std: }
+  }
+\cs_new_protected:Nn \__enumext_keyans_make_label_std:
+  {
     \RenewDocumentCommand \makelabel { m }
       {
         \tl_use:N \l__enumext_label_fill_left_v_tl
@@ -3474,6 +3513,21 @@
           }
           { ##1 }
         \tl_use:N \l__enumext_label_fill_right_v_tl
+      }
+  }
+\cs_new_protected:Nn \__enumext_keyans_make_label_box:
+  {
+    \RenewDocumentCommand \makelabel { m }
+      {
+        \makebox[ \l__enumext_labelwidth_v_dim ][ \l__enumext_align_label_pos_v_str ]
+          {
+            \tl_use:N \l__enumext_label_font_style_v_tl
+            \bool_if:NTF \l__enumext_wrap_label_v_bool
+              {
+                \__enumext_wrapper_label_v:n { ##1 }
+              }
+              { ##1 }
+          }
       }
   }
 %% Function to calc of horizontal length for all list environment.

@@ -1,12 +1,15 @@
 % arara: lualatex
 % arara: clean: { extensions: [ aux, log, out] }
-\DocumentMetadata{ lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress }% pdfstandard=ua-2,
+%%\DocumentMetadata{ lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress }% pdfstandard=ua-2,
 \documentclass{article}
 \usepackage[colorlinks]{hyperref}
 \usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
 \usepackage{enumext}
 \pagestyle{empty}
+%\show\makelabel
 \begin{document}
+%\show\makelabel
+%\end{document}
 % test
 %\begin{enumerate}
 %\item TEXT
@@ -20,22 +23,13 @@ IMAGE
 \end{minipage}
 %\item TEXT
 %\end{enumerate}
-so,e
 
-\begin{enumext*}
-    \item value
-    \item value
-    \item value
+\begin{enumext*}[mini-env=0.6\linewidth, mini-right={HOLA},columns=2,noitemsep]
+    \item value \item value
 \end{enumext*}
 
 
-\end{document}
-
-\newpage
-
-
-
-
+% \end{document}\newpage
 \setenumext[keyans]{label=\Alph*,nosep}
 \begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
 \item Question with image on left side:
@@ -50,7 +44,7 @@ ZZZ
 \item Question with image on left side:
 \end{enumext}
 
-
+\end{document}
 
 
 

@@ -4401,19 +4401,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 \cs_set_protected:Npn \@@_tmp:n #1
   {
     \bool_new:c { l_@@_leftmargin_tmp_#1_bool }
-    \dim_new:c  { l_@@_leftmargin_tmp_#1_dim }
-    \dim_new:c  { l_@@_leftmargin_#1_dim     }
-    \dim_new:c  { l_@@_itemindent_#1_dim     }
+    \dim_new:c  { l_@@_leftmargin_tmp_#1_dim  }
+    \dim_new:c  { l_@@_leftmargin_#1_dim      }
+    \dim_new:c  { l_@@_itemindent_#1_dim      }
   }
 \clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \@@_tmp:n {#1} }
 %    \end{macrocode}
 % \end{variable}
 %
 % \begin{variable}[int]{ \l_@@_multicols_above_X_skip, \l_@@_multicols_below_X_skip,
-%                        \g_@@_multicols_right_X_skip, }
-%    Internal variables used by \mykey{columns} key \S\ref{vspace:multi}).
+%                        \g_@@_multicols_right_X_skip, \l_@@_align_label_pos_X_str,}
+%    Internal variables used by \mykey{columns} key (\S\ref{vspace:multi})
+%    and \mykey{align} key (\S\ref{key:label}).
 % \iffalse
-%% Variables used by |columns| key in |enumext| and |keyans|.
+%% Variables used by |columns| and |align| keys in |enumext| and |keyans|.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:n #1
@@ -4421,6 +4422,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \skip_new:c  { l_@@_multicols_above_#1_skip }
     \skip_new:c  { l_@@_multicols_below_#1_skip }
     \skip_new:c  { g_@@_multicols_right_#1_skip }
+    \str_new:c   { l_@@_align_label_pos_#1_str  }
   }
 \clist_map_inline:nn { i, ii, iii, iv, v } { \@@_tmp:n {#1} }
 %    \end{macrocode}
@@ -5526,16 +5528,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                           {
                             \tl_clear:c { l_@@_label_fill_left_#2_tl  }
                             \tl_set:cn  { l_@@_label_fill_right_#2_tl } { \hfill }
+                            \str_set:cn { l_@@_align_label_pos_#2_str } { l }
                           },
         align / right   .code:n =
                           {
                             \tl_set:cn  { l_@@_label_fill_left_#2_tl  } { \hfill }
                             \tl_clear:c { l_@@_label_fill_right_#2_tl }
+                            \str_set:cn { l_@@_align_label_pos_#2_str } { r }
                           },
         align / center  .code:n =
                           {
                             \tl_set:cn { l_@@_label_fill_left_#2_tl  } { \hfill }
                             \tl_set:cn { l_@@_label_fill_right_#2_tl } { \hfill }
+                            \str_set:cn { l_@@_align_label_pos_#2_str } { c }
                           },
         align / unknown .code:n =
                           \msg_error:nneee { enumext } { unknown-choice }
@@ -10110,7 +10115,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_redefine_item:, \@@_make_label}
+% \begin{macro}{\@@_redefine_item:}
 %    The function \cs{@@_redefine_item:} will redefine the |\item|
 %    command in the \myenv*{enumext} environment adding |\item*|.
 % \iffalse
@@ -10129,6 +10134,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_make_label:,\@@_make_label_std:,\@@_make_label_box:}
 %    The function \cs{@@_make_label:} redefine \ics{makelabel} for the keys \mykey{align}, \mykey{font},
 %    \mykey{wrap-label}, \mykey{wrap-label*} and |\item*| for \myenv*{enumext} environment.
 % \iffalse
@@ -10136,6 +10144,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_make_label:
+  {
+    \IfDocumentMetadataTF
+      {
+        \@@_make_label_box:
+      }
+      { \@@_make_label_std: }
+  }
+\cs_new_protected:Nn \@@_make_label_std:
   {
     \RenewDocumentCommand \makelabel { m }
       {
@@ -10149,6 +10165,25 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           { ##1 }
         \tl_use:c { l_@@_label_fill_right_ \@@_level: _tl }
         \tl_gclear:N \g_@@_item_symbol_aux_tl
+      }
+  }
+\cs_new_protected:Nn \@@_make_label_box:
+  {
+    \RenewDocumentCommand \makelabel { m }
+      {
+        \makebox
+          [ \dim_use:c { l_@@_labelwidth_ \@@_level: _dim } ]
+          [ \str_use:c { l_@@_align_label_pos_ \@@_level: _str } ]
+          {
+            \tl_use:c { l_@@_label_font_style_ \@@_level: _tl }
+            \bool_if:cTF { l_@@_wrap_label_ \@@_level: _bool }
+              {
+                \@@_item_star_exec:
+                \use:c { @@_wrapper_label_ \@@_level: :n } { ##1 }
+              }
+              { ##1 }
+            \tl_gclear:N \g_@@_item_symbol_aux_tl
+          }
       }
   }
 %    \end{macrocode}
@@ -10388,6 +10423,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_keyans_make_label:,\@@_keyans_make_label_std:,\@@_keyans_make_label_box:}
 %    The function \cs{@@_keyans_make_label:} redefine \ics{makelabel}
 %    for the keys \mykey{align}, \mykey{font}, \mykey{wrap-label}, \mykey{wrap-label*} and |\item*|
 %    for \myenv*{keyans} environment.
@@ -10396,6 +10434,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_make_label:
+  {
+    \IfDocumentMetadataTF
+      {
+        \@@_keyans_make_label_box:
+      }
+      { \@@_keyans_make_label_std: }
+  }
+\cs_new_protected:Nn \@@_keyans_make_label_std:
   {
     \RenewDocumentCommand \makelabel { m }
       {
@@ -10407,6 +10453,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
           { ##1 }
         \tl_use:N \l_@@_label_fill_right_v_tl
+      }
+  }
+\cs_new_protected:Nn \@@_keyans_make_label_box:
+  {
+    \RenewDocumentCommand \makelabel { m }
+      {
+        \makebox[ \l_@@_labelwidth_v_dim ][ \l_@@_align_label_pos_v_str ]
+          {
+            \tl_use:N \l_@@_label_font_style_v_tl
+            \bool_if:NTF \l_@@_wrap_label_v_bool
+              {
+                \@@_wrapper_label_v:n { ##1 }
+              }
+              { ##1 }
+          }
       }
   }
 %    \end{macrocode}
