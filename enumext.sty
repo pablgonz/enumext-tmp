@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-09-25}
+  {2024-09-23}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -4872,9 +4872,12 @@
   {
       \__enumext_endminipage:
     \__enumext_stop_list_tag:n {enumext*}
+    
+    %\IfDocumentMetadataTF { \tag_resume:n {enumext*} } { }
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_vii_box
+    %%\IfDocumentMetadataTF { \tag_struct_end: } { }
     \IfDocumentMetadataTF { }
       {
         \bool_if:NF \l__enumext_footnotes_key_bool
@@ -4934,7 +4937,6 @@
     \__enumext_stop_item_tmp_viii:
     \__enumext_remove_extra_parsep_viii:
     \__enumext_check_starred_cmd:n { item }
-    %%\__enumext_stop_list:
     \__enumext_after_list_viii:
   }
 %% Test deep-level for |keyans*| and set bool vars.
@@ -5272,12 +5274,9 @@
                   }
                   {
                     \tl_use:N \l__enumext_print_keyans_starred_tl
-                    \IfDocumentMetadataTF
-                      {
-                        \tag_tool:n {para/flattened}
-                      } { }
+                    \keys_set:nn { enumext / level-1 }{ base-fix }
+                    \tag_tool:n {para/flattened}
                     \begin{enumext*}[#2]
-                      %%\keys_set:nn { enumext / level-1 }{ base-fix }
                       \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }
                     \end{enumext*}
                   }
