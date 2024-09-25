@@ -4872,9 +4872,12 @@
   {
       \__enumext_endminipage:
     \__enumext_stop_list_tag:n {enumext*}
+    
+    %\IfDocumentMetadataTF { \tag_resume:n {enumext*} } { }
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_vii_box
+    %%\IfDocumentMetadataTF { \tag_struct_end: } { }
     \IfDocumentMetadataTF { }
       {
         \bool_if:NF \l__enumext_footnotes_key_bool
@@ -4934,7 +4937,6 @@
     \__enumext_stop_item_tmp_viii:
     \__enumext_remove_extra_parsep_viii:
     \__enumext_check_starred_cmd:n { item }
-    %%\__enumext_stop_list:
     \__enumext_after_list_viii:
   }
 %% Test deep-level for |keyans*| and set bool vars.
@@ -5272,10 +5274,35 @@
                   }
                   {
                     \tl_use:N \l__enumext_print_keyans_starred_tl
-                    \begin{enumext*}[#2]
                       \keys_set:nn { enumext / level-1 }{ base-fix }
+                    % \tag_suspend:n {minipage}
+                    %\tag_suspend:n {enumext*}
+                    %\tag_resume:n {enumext*}
+                    %\tagpdfparaOff
+                    %\tagpdfparaOff
+                    %\tagpdfparaOff
+                     %\tag_resume:n {enumext*}
+                     %
+                    %\tag_tool:n {para/tagging=false}
+                    %\tag_resume:n {enumext*}
+                    %\tag_suspend:n {list}
+                    %\tag_struct_end:n {list}
+                    %\tag_suspend:n {list}
+                    %\ShowTagging{struct-stack =show}
+                    \tag_tool:n {para/flattened}
+                    \begin{enumext*}[#2]
+                    %\tag_struct_end:n {tag=text-unit}
+                    %\ShowTagging{debug/structures = 1}
+                    %\tag_get:n {struct_tag}
+                    %\tag_get:n {struct_tag}
+                    %\ShowTagging{mc-current}
+                    %\tagpdfparaOff
                       \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }
                     \end{enumext*}
+                    %\ShowTagging{debug/show=para}
+                    %\ShowTagging{struct-stack =show}
+                    %\tag_tool:n {para/tagging=false}
+                    %\tag_resume:n {enumext*}
                   }
               }
               {

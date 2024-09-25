@@ -4222,7 +4222,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-09-23}
+  {2024-09-25}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -13555,6 +13555,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                   }
                   {
                     \tl_use:N \l_@@_print_keyans_starred_tl
+                    \IfDocumentMetadataTF
+                      {
+                        \tag_tool:n {para/flattened}
+                      } { }
                     \begin{enumext*}[#2]
                       \keys_set:nn { enumext / level-1 }{ base-fix }
                       \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
