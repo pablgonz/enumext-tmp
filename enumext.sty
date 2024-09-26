@@ -287,14 +287,12 @@
       {
         { 11 }
              {
-               % \typeout{SKIP}
-               \typeout{\the\lastskip}
+               % \typeout{SKIP} \typeout{\the\lastskip}
                \unskip
              }
         { 12 }
              {
-               % \typeout{KERN}
-               \typeout{\the\lastkern}
+               % \typeout{KERN} \typeout{\the\lastkern}
                \unkern
              }
       }
@@ -1266,7 +1264,7 @@
     \par\nopagebreak
     \addvspace{ \skip_use:c { l__enumext_multicols_above_ \__enumext_level: _skip } }
   }
-%% Adjustment of vertical spacing for |multicols| in |keyans| environment.
+%% Adjustment of vertical spacing for |multicols| in |keyans| environments.
 \cs_new_protected:Nn \__enumext_keyans_multi_set_vskip:
   {
     \skip_set:Nn \l__enumext_multicols_above_v_skip
@@ -1329,10 +1327,10 @@
     \__enumext_unskip_unkern:
     \mode_if_vertical:TF
       {
-        \nopagebreak\nointerlineskip\noindent
+        \nopagebreak\nointerlineskip
       }
       {
-        \par\nopagebreak\nointerlineskip\noindent
+        \par\nopagebreak\nointerlineskip
         \skip_zero:c { l__enumext_partopsep_ \__enumext_level: _skip }
       }
     \int_compare:nNnTF
@@ -1469,7 +1467,7 @@
              }
       }
   }
-%% Adjustment of vertical spacing for |minipage| in |keyans|.
+%% Adjustment of vertical spacing for |minipage| in |keyans| environments.
 \cs_new_protected:Nn \__enumext_keyans_minipage_set_skip:
   {
     \skip_zero:N \l__enumext_minipage_after_skip
@@ -1502,10 +1500,10 @@
     \__enumext_unskip_unkern:
     \mode_if_vertical:TF
       {
-        \nopagebreak\nointerlineskip\noindent
+        \nopagebreak\nointerlineskip
       }
       {
-        \par\nopagebreak\nointerlineskip\noindent
+        \par\nopagebreak\nointerlineskip
         \skip_zero:N \l__enumext_partopsep_v_skip
       }
     \int_compare:nNnTF { \l__enumext_columns_v_int } > { 1 }

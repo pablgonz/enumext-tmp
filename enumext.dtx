@@ -4892,14 +4892,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         { 11 }
              {
-               % \typeout{SKIP}
-               \typeout{\the\lastskip}
+               % \typeout{SKIP} \typeout{\the\lastskip}
                \unskip
              }
         { 12 }
              {
-               % \typeout{KERN}
-               \typeout{\the\lastkern}
+               % \typeout{KERN} \typeout{\the\lastkern}
                \unkern
              }
       }
@@ -6702,7 +6700,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{keyans}. The implementation of this function is the same
 %    as the one used in \myenv*{enumext}.
 % \iffalse
-%% Adjustment of vertical spacing for |multicols| in |keyans| environment.
+%% Adjustment of vertical spacing for |multicols| in |keyans| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_multi_set_vskip:
@@ -6876,10 +6874,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_unskip_unkern:
     \mode_if_vertical:TF
       {
-        \nopagebreak\nointerlineskip\noindent
+        \nopagebreak\nointerlineskip
       }
       {
-        \par\nopagebreak\nointerlineskip\noindent
+        \par\nopagebreak\nointerlineskip
         \skip_zero:c { l_@@_partopsep_ \@@_level: _skip }
       }
     \int_compare:nNnTF
@@ -7037,7 +7035,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{keyans}. The implementation of this function is the same
 %    as the one used in \myenv*{enumext}.
 % \iffalse
-%% Adjustment of vertical spacing for |minipage| in |keyans|.
+%% Adjustment of vertical spacing for |minipage| in |keyans| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_minipage_set_skip:
@@ -7072,10 +7070,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_unskip_unkern:
     \mode_if_vertical:TF
       {
-        \nopagebreak\nointerlineskip\noindent
+        \nopagebreak\nointerlineskip
       }
       {
-        \par\nopagebreak\nointerlineskip\noindent
+        \par\nopagebreak\nointerlineskip
         \skip_zero:N \l_@@_partopsep_v_skip
       }
     \int_compare:nNnTF { \l_@@_columns_v_int } > { 1 }
