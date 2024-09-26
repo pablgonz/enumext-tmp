@@ -857,7 +857,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{abstract}
 % This package provides \emph{\enquote{enumerated list}} environments
-% for creating \emph{\enquote{simple exercise sheets}} along with
+% compatible with tagging PDF for creating \emph{\enquote{simple exercise sheets}} along with
 % \emph{\enquote{multiple choice questions}}, storing the
 % \mymeta{answers} to these in memory using \mypkg{multicol} and \mypkg{scontents} packages
 % and the \mypkg{l3seq} and \mypkg{l3prop} modules.
@@ -1401,6 +1401,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \iffalse
 %</example>
 % \fi
+%
+% \begin{important}
+%  At the moment the \mypkg{footnotehyper} package is not compatible
+%  with \hologo{LaTeX} \emph{tagged} \texttt{PDF}.
+% \end{important}
 %
 % \section{The environments provided}
 %
@@ -4887,13 +4892,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         { 11 }
              {
-               \typeout{SKIIIIIIIIIIIIIIIIP}
+               % \typeout{SKIP}
                \typeout{\the\lastskip}
                \unskip
              }
         { 12 }
              {
-               \typeout{KERRRRRRRRRRRRRRRRRN}
+               % \typeout{KERN}
                \typeout{\the\lastkern}
                \unkern
              }
@@ -5126,12 +5131,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % case any package redefines the \myenv{list} environment or a related
 % command.
 %
+% \smallskip
+%
+% \begin{important}
+% For compatibility with \hologo{LaTeX} \emph{tagged} \texttt{PDF} we
+% should use |\NewCommandCopy| and not |\cs_new_eq:NN|. When
+% \emph{tagged} \texttt{PDF} is active |\item| is redefined using
+% \mypkg{ltcmd} (see \texttt{latex-lab-block}).
+% \end{important}
+%
+% \smallskip
+%
 % \begin{macro}{\@@_start_list:nn, \@@_stop_list:, \@@_item_std:w,}
 %    The functions \cs{@@_start_list:nn}, \cs{@@_stop_list:} and
 %    \cs{@@_item_std:w} correspond to copies of |\list|, |\endlist|
 %    and |\item| from plain definition of \myenv{list} environment.
 % \iffalse
-%% Copy list tools.
+%% Copy |list| environment and |\item| command.
 % \fi
 %    \begin{macrocode}
 \@@_at_begin_document:n
@@ -5142,6 +5158,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
+%
+% \smallskip
 %
 % The \myenv{minipage} environment provided by \hologo{LaTeX} has the
 % following (simplified) plain form:
@@ -5169,7 +5187,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   correspond to copies of |\minipage|, |\endminipage|
 %   from plain definition of \myenv{minipage} environment.
 % \iffalse
-%% Copy minipage tools.
+%% Copy |minipage| environment.
 % \fi
 %    \begin{macrocode}
 \@@_at_begin_document:n
@@ -5196,7 +5214,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \cs{@@_safe_exec_vii:} in the \myenv*{enumext*} environment definition (\S\ref{env:starred})
 %
 % \iffalse
-%% Function for define a internal minipage environment.
+%% Function for define a internal |minipage| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_internal_mini_page:
@@ -5247,10 +5265,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \bool_set_true:N \l_@@_hyperref_bool
         \IfHyperBoolean{hyperfootnotes}
           {
-            \typeout{hyperfootnotes=true}
+            % \typeout{hyperfootnotes=true}
             \bool_set_true:N \l_@@_footnotes_key_bool
           }
-          { \typeout{hyperfootnotes=false} }
+          {
+            % \typeout{hyperfootnotes=false}
+          }
       }
       {  }
 %    \end{macrocode}
@@ -5270,8 +5290,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
            \msg_info:nnn { enumext } { package-load } { footnotehyper }
          }
          {
-           \typeout{No ~ footnotehyper ~ load}
-           \typeout{Load ~ and  ~ use  ~ \string\makesavenoteenv{enumext*}}
+           % \typeout{No ~ footnotehyper ~ load}
+           % \typeout{Load ~ and  ~ use  ~ \string\makesavenoteenv{enumext*}}
            \bool_set_false:N \l_@@_footnotes_key_bool
          }
      }
@@ -5484,7 +5504,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \mykey{labelwidth}, \mykey{wrap-label} and \mykey{wrap-label*} keys for
 %    \myenv*{enumext} and \myenv*{keyans} environments.
 % \iffalse
-%% Add |font|, |labelsep|, |labelwidth| and |wrap-label| keys.
+%% Add |font|, |labelsep|, |labelwidth|, |wrap-label| and |wrap-label*| keys.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:nn #1 #2
@@ -5521,12 +5541,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{important}
 %
 % \begin{macro}[int]{align}
-%
 %   The \mykey{align} key is implemented differently for
 %   \emph{\enquote{starred}} and \emph{\enquote{non starred}} environments.
-%
 % \iffalse
-%% Add |align| key for |enumext| and |keyans|.
+%% Add |align| key for |enumext| and |keyans| environments.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:nn #1 #2
@@ -5565,8 +5583,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
   { \@@_tmp:nn #1 }
 %    \end{macrocode}
+%
+% \smallskip
+%
+% \begin{important}
+%  For compatibility with \hologo{LaTeX} \emph{tagged} \texttt{PDF} we
+%  must set \myvarenv{l__@@_align_label_pos_X_str}. When \emph{tagged}
+%  \texttt{PDF} is active |\makelabel| is redefined and the only way to
+%  get the \mykey{align} key to work correctly is by using |\makebox|.
+% \end{important}
+%
+% \smallskip
+%
 % \iffalse
-%% Add |align| key for enummext* and keyans*.
+%% Add |align| key for |enummext*| and |keyans*| environments.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:nn #1 #2
@@ -6082,6 +6112,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   in the \myenv*{enumext} environment definition (\S\ref{env:enumext})
 %   and to the function \cs{@@_parse_keys_vii:n} in the \myenv*{enumext*}
 %   environment definition (\S\ref{env:starred})
+%   \begin{important}*
+%    This key is enabled by default in the command |\printkeyans|
+%    (\S\ref{cmd:printkeyans}).
+%   \end{important}
 % \iffalse
 %% Internal function for |base-fix| key.
 % \fi
@@ -6113,12 +6147,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_set_false:N \l_@@_base_line_fix_bool
   }
 %    \end{macrocode}
-%
-% \begin{important}*
-% This key is enabled by default in the command |\printkeyans|
-% (\S\ref{cmd:printkeyans}).
-% \end{important}
-%
 % \end{macro}
 %
 % \subsection{Setting keys for horizontal spaces}\label{key:list-indent}
@@ -6227,6 +6255,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l_@@_fake_item_indent_v_dim
+            \ignorespaces
           }
       }
    }
@@ -6239,6 +6268,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l_@@_fake_item_indent_vii_dim
+            \ignorespaces
           }
       }
    }
@@ -6251,6 +6281,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l_@@_fake_item_indent_viii_dim
+            \ignorespaces
           }
       }
    }
@@ -6603,19 +6634,28 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { 2 }{
                \skip_if_eq:nnF { \l_@@_parsep_i_skip } { \c_zero_skip }
                  {
-                   \skip_add:Nn \l_@@_multicols_above_ii_skip { \l_@@_parsep_i_skip }
+                   \skip_add:Nn \l_@@_multicols_above_ii_skip
+                     {
+                       \l_@@_parsep_i_skip
+                     }
                  }
              }
         { 3 }{
                \skip_if_eq:nnF { \l_@@_parsep_ii_skip } { \c_zero_skip }
                  {
-                   \skip_add:Nn \l_@@_multicols_above_iii_skip { \l_@@_parsep_ii_skip }
+                   \skip_add:Nn \l_@@_multicols_above_iii_skip
+                     {
+                       \l_@@_parsep_ii_skip
+                     }
                  }
              }
         { 4 }{
                \skip_if_eq:nnF { \l_@@_parsep_iii_skip } { \c_zero_skip }
                  {
-                   \skip_add:Nn \l_@@_multicols_above_iv_skip { \l_@@_parsep_iii_skip }
+                   \skip_add:Nn \l_@@_multicols_above_iv_skip
+                     {
+                       \l_@@_parsep_iii_skip
+                     }
                  }
              }
       }
@@ -6629,7 +6669,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   in \myenv*{enumext}, taking into account whether  \hologo{TeX} is in
 %   \mymeta{horizontal mode} or \mymeta{vertical mode}.
 % \iffalse
-%% Add vertical spacing for |multicols| in |enumext|.
+%% Add vertical spacing for |multicols| in |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_multi_addvspace:
@@ -6646,7 +6686,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \skip_use:c { l_@@_partopsep_ \@@_level: _skip }
           }
       }
-    %%\@@_unskip_unkern:
+    \@@_unskip_unkern: % revisar
     \par\nopagebreak
     \addvspace{ \skip_use:c { l_@@_multicols_above_ \@@_level: _skip } }
   }
@@ -6662,7 +6702,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{keyans}. The implementation of this function is the same
 %    as the one used in \myenv*{enumext}.
 % \iffalse
-%% Adjustment of vertical spacing for |multicols| in |keyans|.
+%% Adjustment of vertical spacing for |multicols| in |keyans| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_multi_set_vskip:
@@ -6711,7 +6751,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \draw[color=white] (13.5,6.10) rectangle (17.5,6.5) node[pos=.5,text=black]%
 %   { \textcolor{blue}{\texttt{space above right}} };% space above right
 % \draw[color=white] (7.0,4.85) rectangle (17.5,5.25) node[pos=.5,text=black]%
-%   { \textcolor{blue}{\texttt{space below after second minipage}} };% space below
+%   { \textcolor{blue}{\texttt{space below minipage's}} };% space below after second
 % \draw[color=white] (2.0,6.10) rectangle (5,6.50) node[pos=.5,text=optcolor,font=\footnotesize\ttfamily] { topsep };% topsep above
 % \draw[color=white] (2.0,4.85) rectangle (5,5.25) node[pos=.5,text=optcolor,font=\footnotesize\ttfamily] { topsep };% topsep below
 % \draw[->,color=lightgray,shorten >=3pt] (4.5,6.3) -- (7.0,6.3); % glue space = topsep (above)
@@ -6782,7 +6822,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   |\topsep|, then we will see if \hologo{TeX} is in \mymeta{vertical mode} and we
 %   will add |\partopsep|, followed by that we set the value of \cs{l_@@_minipage_after_skip}.
 % \iffalse
-%% Adjustment of vertical spacing for |minipage| in |enumext|.
+%% Adjustment of vertical spacing for |minipage| in |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_minipage_set_skip:
@@ -6836,10 +6876,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_unskip_unkern:
     \mode_if_vertical:TF
       {
-        \nopagebreak\nointerlineskip
+        \nopagebreak\nointerlineskip\noindent
       }
       {
-        \par\nopagebreak\nointerlineskip
+        \par\nopagebreak\nointerlineskip\noindent
         \skip_zero:c { l_@@_partopsep_ \@@_level: _skip }
       }
     \int_compare:nNnTF
@@ -7032,10 +7072,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_unskip_unkern:
     \mode_if_vertical:TF
       {
-        \nopagebreak\nointerlineskip
+        \nopagebreak\nointerlineskip\noindent
       }
       {
-        \par\nopagebreak\nointerlineskip
+        \par\nopagebreak\nointerlineskip\noindent
         \skip_zero:N \l_@@_partopsep_v_skip
       }
     \int_compare:nNnTF { \l_@@_columns_v_int } > { 1 }
@@ -7081,7 +7121,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
-%
 %
 % \subsubsection{Adjustment of vertical spaces for \env{minipage} in \env{enumext*} and \env{keyans*}}
 %

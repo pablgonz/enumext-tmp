@@ -287,13 +287,13 @@
       {
         { 11 }
              {
-               \typeout{SKIIIIIIIIIIIIIIIIP}
+               % \typeout{SKIP}
                \typeout{\the\lastskip}
                \unskip
              }
         { 12 }
              {
-               \typeout{KERRRRRRRRRRRRRRRRRN}
+               % \typeout{KERN}
                \typeout{\the\lastkern}
                \unkern
              }
@@ -433,20 +433,20 @@
       { \int_use:N \g__enumext_item_anskey_int }
       { \int_eval:n { \g__enumext_item_number_int - \g__enumext_item_anskey_int} }
   }
-%% Copy list tools.
+%% Copy |list| environment and |\item| command.
 \__enumext_at_begin_document:n
   {
     \cs_new_eq:NN   \__enumext_start_list:nn \list
     \cs_new_eq:NN   \__enumext_stop_list: \endlist
     \NewCommandCopy \__enumext_item_std:w \item
   }
-%% Copy minipage tools.
+%% Copy |minipage| environment.
 \__enumext_at_begin_document:n
   {
     \cs_new_eq:NN \__enumext_minipage:w \minipage
     \cs_new_eq:NN \__enumext_endminipage: \endminipage
   }
-%% Function for define a internal minipage environment.
+%% Function for define a internal |minipage| environment.
 \cs_new_protected:Nn \__enumext_internal_mini_page:
   {
     \int_compare:nNnT { \l__enumext_level_int } = { 0 }
@@ -474,10 +474,12 @@
         \bool_set_true:N \l__enumext_hyperref_bool
         \IfHyperBoolean{hyperfootnotes}
           {
-            \typeout{hyperfootnotes=true}
+            % \typeout{hyperfootnotes=true}
             \bool_set_true:N \l__enumext_footnotes_key_bool
           }
-          { \typeout{hyperfootnotes=false} }
+          {
+            % \typeout{hyperfootnotes=false}
+          }
       }
       {  }
 %% Detection off |footnotehyper| package.
@@ -488,8 +490,8 @@
            \msg_info:nnn { enumext } { package-load } { footnotehyper }
          }
          {
-           \typeout{No ~ footnotehyper ~ load}
-           \typeout{Load ~ and  ~ use  ~ \string\makesavenoteenv{enumext*}}
+           % \typeout{No ~ footnotehyper ~ load}
+           % \typeout{Load ~ and  ~ use  ~ \string\makesavenoteenv{enumext*}}
            \bool_set_false:N \l__enumext_footnotes_key_bool
          }
      }
@@ -574,7 +576,7 @@
     \tl_set_eq:cN { the #2 } #1
   }
 \cs_generate_variant:Nn \__enumext_label_style:Nnn { cvn }
-%% Add |font|, |labelsep|, |labelwidth| and |wrap-label| keys.
+%% Add |font|, |labelsep|, |labelwidth|, |wrap-label| and |wrap-label*| keys.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
@@ -597,7 +599,7 @@
       }
   }
 \clist_map_inline:Nn \c__enumext_all_envs_clist { \__enumext_tmp:nn #1 }
-%% Add |align| key for |enumext| and |keyans|.
+%% Add |align| key for |enumext| and |keyans| environments.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
@@ -633,7 +635,7 @@
     {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {keyans}{v}
   }
   { \__enumext_tmp:nn #1 }
-%% Add |align| key for enummext* and keyans*.
+%% Add |align| key for |enummext*| and |keyans*| environments.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {
     \keys_define:nn { enumext / #1 }
@@ -1042,6 +1044,7 @@
           {
             \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_v_dim
+            \ignorespaces
           }
       }
    }
@@ -1054,6 +1057,7 @@
           {
             \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_vii_dim
+            \ignorespaces
           }
       }
    }
@@ -1066,6 +1070,7 @@
           {
             \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_viii_dim
+            \ignorespaces
           }
       }
    }
@@ -1216,24 +1221,33 @@
         { 2 }{
                \skip_if_eq:nnF { \l__enumext_parsep_i_skip } { \c_zero_skip }
                  {
-                   \skip_add:Nn \l__enumext_multicols_above_ii_skip { \l__enumext_parsep_i_skip }
+                   \skip_add:Nn \l__enumext_multicols_above_ii_skip
+                     {
+                       \l__enumext_parsep_i_skip
+                     }
                  }
              }
         { 3 }{
                \skip_if_eq:nnF { \l__enumext_parsep_ii_skip } { \c_zero_skip }
                  {
-                   \skip_add:Nn \l__enumext_multicols_above_iii_skip { \l__enumext_parsep_ii_skip }
+                   \skip_add:Nn \l__enumext_multicols_above_iii_skip
+                     {
+                       \l__enumext_parsep_ii_skip
+                     }
                  }
              }
         { 4 }{
                \skip_if_eq:nnF { \l__enumext_parsep_iii_skip } { \c_zero_skip }
                  {
-                   \skip_add:Nn \l__enumext_multicols_above_iv_skip { \l__enumext_parsep_iii_skip }
+                   \skip_add:Nn \l__enumext_multicols_above_iv_skip
+                     {
+                       \l__enumext_parsep_iii_skip
+                     }
                  }
              }
       }
   }
-%% Add vertical spacing for |multicols| in |enumext|.
+%% Add vertical spacing for |multicols| in |enumext| environment.
 \cs_new_protected:Nn \__enumext_multi_addvspace:
   {
     \__enumext_multi_set_vskip:
@@ -1248,11 +1262,11 @@
             \skip_use:c { l__enumext_partopsep_ \__enumext_level: _skip }
           }
       }
-    %%\__enumext_unskip_unkern:
+    \__enumext_unskip_unkern: % revisar
     \par\nopagebreak
     \addvspace{ \skip_use:c { l__enumext_multicols_above_ \__enumext_level: _skip } }
   }
-%% Adjustment of vertical spacing for |multicols| in |keyans|.
+%% Adjustment of vertical spacing for |multicols| in |keyans| environment.
 \cs_new_protected:Nn \__enumext_keyans_multi_set_vskip:
   {
     \skip_set:Nn \l__enumext_multicols_above_v_skip
@@ -1282,7 +1296,7 @@
     \par\nopagebreak
     \addvspace{ \l__enumext_multicols_above_v_skip }
   }
-%% Adjustment of vertical spacing for |minipage| in |enumext|.
+%% Adjustment of vertical spacing for |minipage| in |enumext| environment.
 \cs_new_protected:Nn \__enumext_minipage_set_skip:
   {
     \skip_set:Nn \l__enumext_minipage_right_skip
@@ -1315,10 +1329,10 @@
     \__enumext_unskip_unkern:
     \mode_if_vertical:TF
       {
-        \nopagebreak\nointerlineskip
+        \nopagebreak\nointerlineskip\noindent
       }
       {
-        \par\nopagebreak\nointerlineskip
+        \par\nopagebreak\nointerlineskip\noindent
         \skip_zero:c { l__enumext_partopsep_ \__enumext_level: _skip }
       }
     \int_compare:nNnTF
@@ -1488,10 +1502,10 @@
     \__enumext_unskip_unkern:
     \mode_if_vertical:TF
       {
-        \nopagebreak\nointerlineskip
+        \nopagebreak\nointerlineskip\noindent
       }
       {
-        \par\nopagebreak\nointerlineskip
+        \par\nopagebreak\nointerlineskip\noindent
         \skip_zero:N \l__enumext_partopsep_v_skip
       }
     \int_compare:nNnTF { \l__enumext_columns_v_int } > { 1 }
