@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-09-23}
+  {2024-09-25}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -4659,7 +4659,7 @@
     \ignorespaces
   }
   {
-    \IfDocumentMetadataTF { \tag_struct_end: } { }
+    \IfDocumentMetadataTF { \tag_struct_end:n {tag=text-unit} } { }
     \__enumext_stop_item_tmp_vii:
     \__enumext_remove_extra_parsep_vii:
     \__enumext_after_list_vii:
@@ -4872,12 +4872,9 @@
   {
       \__enumext_endminipage:
     \__enumext_stop_list_tag:n {enumext*}
-    
-    %\IfDocumentMetadataTF { \tag_resume:n {enumext*} } { }
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_vii_box
-    %%\IfDocumentMetadataTF { \tag_struct_end: } { }
     \IfDocumentMetadataTF { }
       {
         \bool_if:NF \l__enumext_footnotes_key_bool
@@ -5274,9 +5271,9 @@
                   }
                   {
                     \tl_use:N \l__enumext_print_keyans_starred_tl
-                    \keys_set:nn { enumext / level-1 }{ base-fix }
-                    \tag_tool:n {para/flattened}
+                    % \IfDocumentMetadataTF { \tag_tool:n {para/flattened} } { }
                     \begin{enumext*}[#2]
+                      \keys_set:nn { enumext / level-1 }{ base-fix }
                       \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }
                     \end{enumext*}
                   }

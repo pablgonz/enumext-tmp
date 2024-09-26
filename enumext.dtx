@@ -1474,6 +1474,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \item You cannot have floating environments like \myenv{figure} or
 %  \myenv{table} but \ics{footnote} with \mypkg{hyperref} support is
 %  supported if the \mypkg{footnotehyper} package is loaded.
+%
+% \item You cannot have any standard list environments like \myenv{itemize},
+%  \myenv{enumerate}, \myenv{description}, \myenv{quote}, \myenv{quotation},
+%  \myenv{verse}, \myenv{center}, \myenv{flushleft}, \myenv{flushright},
+%  \myenv{verbatim}, \myenv{tabbing}, \myenv{trivlist}, \myenv{list}
+%  and all environments created with |\newtheorem|.
 % \end{itemize}
 %
 % \subsubsection*{Example with \texttt{columns=2}}
@@ -2068,7 +2074,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % set this key per level.
 % \end{important}
 %
-%^^A \smallskip
 %
 % \keyexamp{after}{code}{not used}
 % Execute \mymarg{code} \emph{\enquote{after}} finishing the
@@ -2088,7 +2093,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \mykey{label} key on the current level, i.e. it is equivalent to enter
 % |start=5|, |start=E| or |start=v|.
 %
-% \smallskip\newpage
+% \smallskip
 %
 % \begin{important}*
 % The following \mymeta{keys} are \emph{\enquote{only}} available for the
@@ -2230,7 +2235,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{mini-right\textcolor{MediumOrchid}{*}}{content}{not used}
 % Same as above, but \emph{without} starting with |\centering|.
 %
-% \smallskip\newpage
+%^^A \smallskip\newpage
 %
 %^^A \begin{important}*
 %^^A The keys \mykey{mini-right} and \mykey{mini-right*} has a \emph{slightly different}
@@ -2441,7 +2446,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % This position is used by the \ics*{getkeyans} command and by the |\ref|
 % command if the \mykey{save-ref} key is active.
 %
-% \smallskip
+%^^A \smallskip
 %
 % \keyexamp{check-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Enables the  \emph{checking answer} mechanism displaying an
@@ -2452,7 +2457,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % or \myenv*{anskey*}. It is intended to be used in conjunction with the
 % \mykey{no-store} key.
 %
-% \smallskip
+%^^A \smallskip
 %
 % \keyexamp*{no-store}{value forbidden}{not used}
 % This is a \emph{meta-key} that does not receive an argument
@@ -2493,11 +2498,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
+% \end{function}
+%
+% \newpage
+%
 % The \ics*{anskey} command is available for all levels of the
 % \myenv*{enumext} environment and the \myenv*{enumext*} environment, but
 % is disabled for the \myenv*{keyans}, \myenv*{keyans*} and
 % \myenv*{keyanspic} environments.
-% \end{function}
 %
 % \subsubsection{Keys for \cs[no-index]{anskey}}
 %
@@ -2560,6 +2568,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \item Text containing our instructions or questions. \anskey{third answer}
 %   \item Text containing our instructions or questions. \anskey{fourth answer}
 % \end{enumext}
+%
+% \medskip
 %
 % \subsection{The environment \env{anskey*}}
 %
@@ -2759,14 +2769,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 %    in \emph{sequence} and \emph{prop list} \mymarg{store name} set by
 %    \mykey{save-ans} key in the \emph{\enquote{first level}} of the
 %    \myenv*{enumext} or \myenv*{enumext*} environments.
-%
-%    \smallskip
-%
-%    The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
-%    from the command, i.e. \ics*{item*} and the optional argument does \emph{\enquote{not support}} verbatim
-%    content. By design it is assumed that the |\item*| will only
-%    appear \emph{\enquote{once}} within the environment.
 % \end{function}
+%
+% The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
+% from the command, i.e. \ics*{item*} and the optional argument does \emph{\enquote{not support}} verbatim
+% content. By design it is assumed that the |\item*| will only
+% appear \emph{\enquote{once}} within the environment.
 %
 % \smallskip
 %
@@ -2976,15 +2984,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
 %    \end{keyanspic}
-%
-%  \item Question with images.
-%    \begin{keyanspic}*[3,2]
-%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
-%      \anspic{\includegraphics[scale=0.15]{example-image-b}}
-%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
-%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
-%      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
-%    \end{keyanspic}
 % \end{enumext}
 %
 % \subsection{Printing stored content}
@@ -3074,7 +3073,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{function}{\printkeyans}
 %   \begin{syntax}
-%      \cmdexamp{printkeyans}[keys]{store name}
+%^^A      \cmdexamp{printkeyans}[keys]{store name}
 %      \cmdexamp[*]{printkeyans}[keys]{store name}
 %   \end{syntax}
 %   The command \ics*{printkeyans} prints \emph{\enquote{all stored content}}
@@ -12389,7 +12388,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \ignorespaces
   }
   {
-    \IfDocumentMetadataTF { \tag_struct_end: } { }
+    \IfDocumentMetadataTF { \tag_struct_end:n {tag=text-unit} } { }
     \@@_stop_item_tmp_vii:
     \@@_remove_extra_parsep_vii:
     \@@_after_list_vii:
@@ -12922,7 +12921,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_stop_item_tmp_viii:
     \@@_remove_extra_parsep_viii:
     \@@_check_starred_cmd:n { item }
-    %%\@@_stop_list:
     \@@_after_list_viii:
   }
 %    \end{macrocode}
@@ -13555,12 +13553,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                   }
                   {
                     \tl_use:N \l_@@_print_keyans_starred_tl
-                    \IfDocumentMetadataTF
-                      {
-                        \tag_tool:n {para/flattened}
-                      } { }
+                    % \IfDocumentMetadataTF { \tag_tool:n {para/flattened} } { }
                     \begin{enumext*}[#2]
-                      %%\keys_set:nn { enumext / level-1 }{ base-fix }
+                      \keys_set:nn { enumext / level-1 }{ base-fix }
                       \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
                     \end{enumext*}
                   }
