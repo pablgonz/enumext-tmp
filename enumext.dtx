@@ -1889,6 +1889,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % environment or nested level.
 % \end{important}
 %
+% \smallskip
+%
 % \keyexamp{itemsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
 % Set the \emph{vertical space} between items, beyond the \mykey{parsep}.
 % Internally sets the value of \ics{itemsep} for the current level.
@@ -1897,6 +1899,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % for the rest of the levels are \mydim{2.0pt plus 1.0pt minus 1.0pt}.
 % For \myenv*{keyans} and \myenv*{keyans*} environments the default
 % value is \mydim{4.0pt plus 2.0pt minus 1.0pt}.
+%
+% \smallskip
 %
 % \keyexamp*{noitemsep}{value forbidden}{not used}
 % This is a \emph{\enquote{meta-key}} that does not receive an argument. Set
@@ -1923,14 +1927,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \begin{important}*
-% The following \mymeta{keys} should be used with \emph{\enquote{caution}}, they
-% are intended to be used at the \enquote{top} and \enquote{bottom} of
-% the environment when the \mykey{columns} or \mykey{mini-env} keys do
-% not provide adequate \emph{vertical spaces}.
-% The values ​​passed can be \emph{rubber} or \emph{rigid} lengths, the
-% way they are applied is the way you differ, using the \emph{star} ‘|*|’
-% \mymeta{keys} applies |\vspace*| so that \hologo{LaTeX} does
-% \emph{not discard} this space at page break.
+%  The following \mymeta{keys} should be used with \emph{\enquote{caution}}, they
+%  are intended to be used at the \enquote{top} and \enquote{bottom} of
+%  the environment when the \mykey{columns} or \mykey{mini-env} keys do
+%  not provide adequate \emph{vertical spaces}.
+%  The values ​​passed can be \emph{rubber} or \emph{rigid} lengths, the
+%  way they are applied is the way you differ, using the \emph{star} ‘|*|’
+%  \mymeta{keys} applies |\vspace*| so that \hologo{LaTeX} does
+%  \emph{not discard} this space at page break.
 % \end{important}
 %
 % \smallskip
@@ -2027,7 +2031,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsection{Keys for add \texttt{code}}
 %
-% \begin{important}*
+%^^A \begin{important}*
 % The following \mymeta{keys} should be used with \emph{\enquote{caution}}, they
 % are intended to inject \mymarg{code} into different parts of
 % the defined environments. We must keep in mind that the defined
@@ -2037,7 +2041,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Using the \mykey{before*} key does not allow access to the \myenv{list}
 % parameters defined by \myoarg{key
 % \textnormal{\textcolor{gray}{=}} val}.
-% \end{important}
+%^^A \end{important}
 %
 % \smallskip
 %
@@ -2079,6 +2083,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % set this key per level.
 % \end{important}
 %
+% \smallskip
 %
 % \keyexamp{after}{code}{not used}
 % Execute \mymarg{code} \emph{\enquote{after}} finishing the
@@ -2086,11 +2091,15 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsection{Keys for \texttt{start}, \texttt{series} and \texttt{resume}}
 %
+% \smallskip
+%
 % \keyexamp{start}{integer \textnormal{\textcolor{lightgray}{\textbar}} integer expression}{\mydim{1}}
 % Sets the \emph{start value} of the numbering on the current level.
 % The \mymarg{integer expression} must be passed between braces, internally is evaluated and pass
 % to the counter defined by \mykey{label} key on the current level, i.e. it is equivalent to enter
 % |start={\dimeval{100*\value{chapter}}| or |start={100*\value{chapter}}|.
+%
+% \smallskip
 %
 % \keyexamp{start\textcolor{MediumOrchid}{*}}{integer \textnormal{\textcolor{lightgray}{\textbar}} string}{not used}
 % Sets the \emph{start value} of the numbering on the current level.
@@ -2100,14 +2109,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \begin{important}*
+%^^A \begin{important}*
 % The following \mymeta{keys} are \emph{\enquote{only}} available for the
 % \myenv*{enumext*} environment and the \emph{\enquote{first level}} of
 % the \myenv*{enumext} environment and are ignored if set when nested
 % within each other.
-% \end{important}
+%^^A \end{important}
 %
-% \smallskip
+% \newpage
 %
 % \keyexamp{series}{series name}{not used}
 % Stores the \emph{keys} of the optional argument of the \emph{\enquote{first level}}
@@ -2115,6 +2124,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % name} which is used as an argument in the key \mykey{resume}. The \mymeta{keys}
 % stored in \mymarg{series name} are not cumulative and are overwritten
 % if the same \mymarg{series name} is used again.
+%
+% \smallskip
 %
 % \keyexamp{resume}{series name}{not used}
 % Sets the \emph{start value} and \emph{options} for the \emph{\enquote{first
@@ -2126,6 +2137,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \mykey{save-ans} key is active it will continue the numbering from the
 % last environment in which it was executed. The \emph{start value} can be
 % overwritten using \mykey{start} or \mykey{start*} keys.
+%
+% \smallskip
 %
 % \keyexamp*{resume\textcolor{MediumOrchid}{*}}{value forbidden}{not used}
 % Sets the \emph{start value} and \emph{options} for the
@@ -2190,6 +2203,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \myenv{minipage} environment on the \emph{\enquote{left side}}, taking
 % \ics{linewidth} as the maximum reference value.
 %
+% \smallskip
+%
 % \keyexamp{mini-sep}{rigid length}{\mydim{0.3333}em}
 % Sets the \emph{space between} the \myenv{minipage} environment on the
 % \emph{\enquote{left side}} and the \myenv{minipage} environment on
@@ -2214,9 +2229,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 % current environment and \emph{\enquote{before}} starting the material
 % to be placed on the \emph{\enquote{right side}}.
 %
+% \smallskip
+%
 % The \emph{starred argument} ‘|*|’ inhibits the use of |\centering|
 % command i.e. the usual \hologo{LaTeX} justification is maintained in
 % the \myenv{minipage} on the \emph{\enquote{right side}}.
+%
+% \smallskip
 %
 % \begin{important}*
 % The |\footnote|\mymarg{text} command in \myenv{minipage} environment will work as
@@ -2232,20 +2251,22 @@ This work consists of the files enumext.dtx and enumext.sty.
 % it is not possible to use the \ics*{miniright} command and the \mykey{mini-right}
 % key must be used instead.
 %
+% \smallskip
+%
 % \keyexamp{mini-right}{content}{not used}
 % Set the \emph{content} for the drawing or tabular to be placed in the
 % \myenv{minipage} environment on the \emph{\enquote{right side}} by
 % starting it with |\centering|. The \mymarg{content} must be passed between braces.
 %
+% \smallskip
+%
 % \keyexamp{mini-right\textcolor{MediumOrchid}{*}}{content}{not used}
 % Same as above, but \emph{without} starting with |\centering|.
 %
-%^^A \smallskip\newpage
-%
 %^^A \begin{important}*
-%^^A The keys \mykey{mini-right} and \mykey{mini-right*} has a \emph{slightly different}
-%^^A implementation, the argument \mymarg{content} is saved in a box
-%^^A and then printed outside the environment using \emph{hooks}.
+%^^A  The keys \mykey{mini-right} and \mykey{mini-right*} has a \emph{slightly different}
+%^^A  implementation, the argument \mymarg{content} is saved in a \emph{box}
+%^^A  and then printed outside the environment using \emph{hooks}.
 %^^A \end{important}
 %
 % \section{The storage system}\label{sec:storage system}
@@ -2500,12 +2521,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  \mypkg{hyperref}\cite{hyperref} package is detected, |\hyperlink| and
 %  |\hypertarget| will be used, otherwise the usual \emph{\enquote{label
 %  and ref}} system provided by \hologo{LaTeX} will be used.
-%
-% \smallskip
-%
 % \end{function}
 %
-% \newpage
+% \smallskip
 %
 % The \ics*{anskey} command is available for all levels of the
 % \myenv*{enumext} environment and the \myenv*{enumext*} environment, but
@@ -2520,13 +2538,19 @@ This work consists of the files enumext.dtx and enumext.sty.
 % modifying the way in which it is \emph{\enquote{stored}} in the
 % \emph{sequence}.
 %
+% \smallskip
+%
 % \keyexampcmd*{break-col}{value forbidden}{not used}
 % Stores \mymarg{content} in the \emph{sequence} \mymarg{store name} of
 % the form \ics{columnbreak} |\item| \mymeta{content}.
 %
+% \smallskip
+%
 % \keyexampcmd{item-join}{columns}{not set}
 % Set the \emph{number of columns} to be used for |\item|\myparg{columns} and stores \mymarg{content} in the \emph{sequence}
 % \mymarg{store name} of the form |\item|\myparg{columns} \mymeta{content}.
+%
+% \smallskip
 %
 % \keyexampcmd*{item-star}{value forbidden}{not used}
 % Stores \mymarg{content} in the \emph{sequence} \mymarg{store name} of
@@ -2538,6 +2562,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \mymarg{store name} of the form |\item*|\myoarg{symbol} \mymeta{content}.
 % The \emph{symbol} can be in text or math mode, for example
 % \mykeycmd{item-sym*}|={$\ast$}| stores |\item*||[$\ast$]| \mymeta{content}.
+%
+% \smallskip
 %
 % \keyexampcmd{item-pos\textcolor{MediumOrchid}{*}}{rigid length}{not set}
 % Sets the \emph{offset} for |\item*| when using the keys
@@ -2619,14 +2645,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsubsection{Keys for \texttt{anskey*}}
 %
-%  The \myenv*{anskey*} environment uses the same \mymeta{keys} as the
-%  \ics*{anskey} command  next to the keys inherited from package \mypkg{scontents}.
-%  The environment is available for all levels of the
-%  \myenv*{enumext} environment and the \myenv*{enumext*} environment, but
-%  it is disabled for the \myenv*{keyans}, \myenv*{keyans*} and
-%  \myenv*{keyanspic} environments.
+% The \myenv*{anskey*} environment uses the same \mymeta{keys} as the
+% \ics*{anskey} command  next to the keys inherited from package \mypkg{scontents}.
+% The environment is available for all levels of the
+% \myenv*{enumext} environment and the \myenv*{enumext*} environment, but
+% it is disabled for the \myenv*{keyans}, \myenv*{keyans*} and
+% \myenv*{keyanspic} environments.
 %
-%  \smallskip
+% \smallskip
 %
 % \keyexampenv{write-env}{file.ext}{not used}
 % Sets the name of the \mymeta{external file} in which the \mymeta{contents} of
@@ -2634,9 +2660,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 % in the working directory, relative or absolute paths are not supported. If \mymeta{file.ext}
 % does not exist, it will be created or overwritten if the \mykey{overwrite} key is used.
 %
+%^^A \smallskip
+%
 % \keyexampenv{overwrite}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Sets whether the \mymeta{file.ext} generated by \mykey{write-env}
 % from the \myenv*{anskey*} environment will be rewritten.
+%
+%^^A \smallskip
 %
 % \keyexampenv{force-eol}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Sets if the \emph{end of line} for the \mymeta{stored content} is hidden or not.
@@ -2645,12 +2675,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 % or another environment that does not support a comments \enquote{\ttfamily\textcolor{gray}{\%}}
 % after closing |\end{|\myenv{Verbatim}|}%|.
 %
+%^^A \smallskip
 %
 % \begin{important}*
 %  For security reasons the keys |store-env|, |print-env| and |write-out|
 %  they have been left disabled. It is recommended that you review the
-%  \mypkg{scontents}\cite{scontents} documentation to understand how the keys described
-%  here work.
+%  \mypkg{scontents}\cite{scontents} documentation to understand how
+%  the keys described here work.
 % \end{important}
 %
 % \subsubsection*{Example}
