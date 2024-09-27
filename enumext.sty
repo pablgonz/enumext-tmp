@@ -117,6 +117,7 @@
 \clist_map_inline:nn { i, ii, iii, iv, v } { \__enumext_tmp:n {#1} }
 %% Variables used by |miniright|, |mini-env|, |mini-sep| and |\miniright|.
 \int_new:N  \g__enumext_minipage_stat_int
+\skip_new:N \l__enumext_minipage_temp_skip
 \skip_new:N \l__enumext_minipage_left_skip
 \skip_new:N \l__enumext_minipage_right_skip
 \skip_new:N \l__enumext_minipage_after_skip
@@ -1369,7 +1370,7 @@
                    \dim_compare:nNnT
                      { \l__enumext_itemsep_i_skip } > { \l__enumext_minipage_after_skip }
                      {
-                       \skip_set:Nn \l_tmpa_skip
+                       \skip_set:Nn \l__enumext_minipage_temp_skip
                          {
                            \l__enumext_itemsep_i_skip - \l__enumext_minipage_after_skip
                          }
@@ -1379,10 +1380,10 @@
                          \l__enumext_multicols_below_ii_skip { \l__enumext_itemsep_i_skip }
                        \skip_add:Nn
                          \l__enumext_minipage_after_skip
-                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.150\box_ht:N \strutbox + \l__enumext_minipage_temp_skip }
                        \skip_add:Nn
                          \l__enumext_multicols_below_ii_skip
-                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.350\box_ht:N \strutbox + \l__enumext_minipage_temp_skip }
                      }
                  }
              }
@@ -1409,7 +1410,7 @@
                    \dim_compare:nNnT
                      { \l__enumext_itemsep_ii_skip } > { \l__enumext_minipage_after_skip }
                      {
-                       \skip_set:Nn \l_tmpa_skip
+                       \skip_set:Nn \l__enumext_minipage_temp_skip
                          {
                            \l__enumext_itemsep_ii_skip - \l__enumext_minipage_after_skip
                          }
@@ -1419,10 +1420,10 @@
                          \l__enumext_multicols_below_iii_skip { \l__enumext_itemsep_ii_skip }
                        \skip_add:Nn
                          \l__enumext_minipage_after_skip
-                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.150\box_ht:N \strutbox + \l__enumext_minipage_temp_skip }
                        \skip_add:Nn
                          \l__enumext_multicols_below_iii_skip
-                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.350\box_ht:N \strutbox + \l__enumext_minipage_temp_skip }
                      }
                  }
              }
@@ -1448,7 +1449,7 @@
                    \dim_compare:nNnT
                      { \l__enumext_itemsep_iii_skip } > { \l__enumext_minipage_after_skip }
                      {
-                       \skip_set:Nn \l_tmpa_skip
+                       \skip_set:Nn \l__enumext_minipage_temp_skip
                          {
                            \l__enumext_itemsep_iii_skip - \l__enumext_minipage_after_skip
                          }
@@ -1458,10 +1459,10 @@
                          \l__enumext_multicols_below_iv_skip { \l__enumext_itemsep_iii_skip }
                        \skip_add:Nn
                          \l__enumext_minipage_after_skip
-                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.150\box_ht:N \strutbox + \l__enumext_minipage_temp_skip }
                        \skip_add:Nn
                          \l__enumext_multicols_below_iv_skip
-                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.350\box_ht:N \strutbox + \l__enumext_minipage_temp_skip }
                      }
                  }
              }
@@ -1534,16 +1535,16 @@
         \dim_compare:nNnT
           { \l__enumext_itemsep_i_skip } > { \l__enumext_minipage_after_skip }
           {
-            \skip_set:Nn \l_tmpa_skip
+            \skip_set:Nn \l__enumext_minipage_temp_skip
               {
                 \l__enumext_itemsep_i_skip - \l__enumext_minipage_after_skip
               }
             \skip_sub:Nn \l__enumext_minipage_after_skip { \l__enumext_itemsep_i_skip }
             \skip_sub:Nn \l__enumext_multicols_below_v_skip { \l__enumext_itemsep_i_skip }
             \skip_add:Nn \l__enumext_minipage_after_skip
-              { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+              { 0.150\box_ht:N \strutbox + \l__enumext_minipage_temp_skip }
             \skip_add:Nn \l__enumext_multicols_below_v_skip
-              { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+              { 0.350\box_ht:N \strutbox + \l__enumext_minipage_temp_skip }
           }
      }
   }

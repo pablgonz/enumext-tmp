@@ -4474,10 +4474,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}[int]{\g_@@_minipage_stat_int, \l_@@_minipage_left_skip,
-%                       \l_@@_minipage_right_skip, \l_@@_minipage_after_skip,
-%                       \g_@@_minipage_right_skip, \g_@@_minipage_after_skip,
-%                       \l_@@_minipage_left_X_dim, \l_@@_minipage_active_X_bool}
+% \begin{variable}[int]{\g_@@_minipage_stat_int, \l_@@_minipage_temp_skip,
+%                       \l_@@_minipage_left_skip, \l_@@_minipage_right_skip,
+%                       \l_@@_minipage_after_skip, \g_@@_minipage_right_skip,
+%                       \g_@@_minipage_after_skip, \l_@@_minipage_left_X_dim,
+%                       \l_@@_minipage_active_X_bool,}
 %    Internal variables used by \ics*{miniright} command (\S\ref{cmd:miniright})
 %    and the keys \mykey{mini-right}, \mykey{mini-right*}, \mykey{mini-env}
 %    and \mykey{mini-sep} (\S\ref{key:mini-multi}, \S\ref{vspace:minipage}).
@@ -4486,6 +4487,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \fi
 %    \begin{macrocode}
 \int_new:N  \g_@@_minipage_stat_int
+\skip_new:N \l_@@_minipage_temp_skip
 \skip_new:N \l_@@_minipage_left_skip
 \skip_new:N \l_@@_minipage_right_skip
 \skip_new:N \l_@@_minipage_after_skip
@@ -6956,7 +6958,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                    \dim_compare:nNnT
                      { \l_@@_itemsep_i_skip } > { \l_@@_minipage_after_skip }
                      {
-                       \skip_set:Nn \l_tmpa_skip
+                       \skip_set:Nn \l_@@_minipage_temp_skip
                          {
                            \l_@@_itemsep_i_skip - \l_@@_minipage_after_skip
                          }
@@ -6966,10 +6968,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                          \l_@@_multicols_below_ii_skip { \l_@@_itemsep_i_skip }
                        \skip_add:Nn
                          \l_@@_minipage_after_skip
-                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.150\box_ht:N \strutbox + \l_@@_minipage_temp_skip }
                        \skip_add:Nn
                          \l_@@_multicols_below_ii_skip
-                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.350\box_ht:N \strutbox + \l_@@_minipage_temp_skip }
                      }
                  }
              }
@@ -6996,7 +6998,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                    \dim_compare:nNnT
                      { \l_@@_itemsep_ii_skip } > { \l_@@_minipage_after_skip }
                      {
-                       \skip_set:Nn \l_tmpa_skip
+                       \skip_set:Nn \l_@@_minipage_temp_skip
                          {
                            \l_@@_itemsep_ii_skip - \l_@@_minipage_after_skip
                          }
@@ -7006,10 +7008,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                          \l_@@_multicols_below_iii_skip { \l_@@_itemsep_ii_skip }
                        \skip_add:Nn
                          \l_@@_minipage_after_skip
-                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.150\box_ht:N \strutbox + \l_@@_minipage_temp_skip }
                        \skip_add:Nn
                          \l_@@_multicols_below_iii_skip
-                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.350\box_ht:N \strutbox + \l_@@_minipage_temp_skip }
                      }
                  }
              }
@@ -7035,7 +7037,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                    \dim_compare:nNnT
                      { \l_@@_itemsep_iii_skip } > { \l_@@_minipage_after_skip }
                      {
-                       \skip_set:Nn \l_tmpa_skip
+                       \skip_set:Nn \l_@@_minipage_temp_skip
                          {
                            \l_@@_itemsep_iii_skip - \l_@@_minipage_after_skip
                          }
@@ -7045,10 +7047,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                          \l_@@_multicols_below_iv_skip { \l_@@_itemsep_iii_skip }
                        \skip_add:Nn
                          \l_@@_minipage_after_skip
-                         { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.150\box_ht:N \strutbox + \l_@@_minipage_temp_skip }
                        \skip_add:Nn
                          \l_@@_multicols_below_iv_skip
-                         { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+                         { 0.350\box_ht:N \strutbox + \l_@@_minipage_temp_skip }
                      }
                  }
              }
@@ -7135,16 +7137,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \dim_compare:nNnT
           { \l_@@_itemsep_i_skip } > { \l_@@_minipage_after_skip }
           {
-            \skip_set:Nn \l_tmpa_skip
+            \skip_set:Nn \l_@@_minipage_temp_skip
               {
                 \l_@@_itemsep_i_skip - \l_@@_minipage_after_skip
               }
             \skip_sub:Nn \l_@@_minipage_after_skip { \l_@@_itemsep_i_skip }
             \skip_sub:Nn \l_@@_multicols_below_v_skip { \l_@@_itemsep_i_skip }
             \skip_add:Nn \l_@@_minipage_after_skip
-              { 0.150\box_ht:N \strutbox + \l_tmpa_skip }
+              { 0.150\box_ht:N \strutbox + \l_@@_minipage_temp_skip }
             \skip_add:Nn \l_@@_multicols_below_v_skip
-              { 0.350\box_ht:N \strutbox + \l_tmpa_skip }
+              { 0.350\box_ht:N \strutbox + \l_@@_minipage_temp_skip }
           }
      }
   }
