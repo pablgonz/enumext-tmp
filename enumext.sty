@@ -5147,8 +5147,6 @@
       \__enumext_stop_start_list_tag:
       \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_viii_dim  }
         \tl_use:N \l__enumext_after_list_args_viii_tl
-        \dim_set_eq:NN \parindent \l__enumext_listparindent_viii_dim
-        \skip_set_eq:NN \parskip \l__enumext_parsep_viii_skip
         \bool_if:NT \l__enumext_item_starred_viii_bool
           {
             \tl_use:N \l__enumext_fake_item_indent_viii_tl
@@ -5158,6 +5156,8 @@
           {
             \tl_use:N \l__enumext_fake_item_indent_viii_tl
           }
+        \dim_set_eq:NN \parindent \l__enumext_listparindent_viii_dim
+        \skip_set_eq:NN \parskip \l__enumext_parsep_viii_skip
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_item_viii:
   {
@@ -5183,7 +5183,7 @@
         \skip_horizontal:N \l__enumext_columns_sep_viii_dim
       }
   }
-%% Remove extra \parsep in |keyans*|
+%% Remove extra \parsep in |keyans*| environment.
 \cs_new_protected:Nn \__enumext_remove_extra_parsep_viii:
   {
     \int_compare:nNnT
@@ -5201,7 +5201,7 @@
         \int_gzero:N \g__enumext_item_count_all_viii_int
       }
   }
-%% Define |\getkeyans|, need \exp_args:Ne \tl_to_str:e
+%% Define |\getkeyans|.
 \NewDocumentCommand \getkeyans { m }
   {
     \exp_args:Ne \__enumext_getkeyans_aux:n
@@ -5277,7 +5277,6 @@
       {
         \seq_if_empty:cF { g__enumext_#3_seq }
           {
-            %%\seq_show:c { g__enumext_#3_seq }
             \bool_if:nTF {#1}
               {
                 \seq_if_in:cnTF { g__enumext_#3_seq } { \end{enumext*} }

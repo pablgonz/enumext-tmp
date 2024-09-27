@@ -608,7 +608,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Important words 1
     keywordstyle  = [1]{\color{gray}},%
     keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,strut,smash, newlength, %
-                        settowidth, dimeval, dimexpr, IfBooleanTF,footnotehyper, %
+                        settowidth, dimeval, dimexpr, IfBooleanTF,footnotehyper, DocumentMetadata, %
                     },%
 % Other words 2
     keywordstyle  = [2]{\color{blue!75}},%
@@ -620,7 +620,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, cs_new_eq, N, NN,%
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
                     textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_space, skip_horizontal, %
-                    triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean, DocumentMetadata,%
+                    triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean,newtheorem, %
                     aux_i, aux_ii, aux_iii, w, },%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
@@ -854,10 +854,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{abstract}
 % This package provides \enquote{enumerated list} environments compatible
-% with \hologo{LaTeX} \emph{tagging} \texttt{PDF} for creating
-% \emph{\enquote{simple exercise sheets}} along with \emph{\enquote{multiple choice questions}},
-% storing the \mymeta{answers} to these in memory using \mypkg{multicol} and
-% \mypkg{scontents} packages and the \mypkg{l3seq} and \mypkg{l3prop} modules.
+% with \hologo{LaTeX} tagging PDF for creating \emph{\enquote{simple
+% exercise sheets}} along with \emph{\enquote{multiple choice questions}},
+% storing the \mymeta{answers} to these in memory using \mypkg{multicol}
+% and \mypkg{scontents} packages and the \mypkg{l3seq} and \mypkg{l3prop}
+% modules.
 % \end{abstract}
 %
 % \tableofcontents
@@ -1365,11 +1366,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{stored content}} by means of the key \mykey{save-ref}
 % (\S\ref{subsec:label-ref}) when the key \mykey{save-ans} (\S\ref{subsec:storage-keys}) is active.
 %
-% \begin{important}*
-% The implementation of  \ics{label} and \ics{ref} together with the
-% \mykey{save-ref} key are compatible with the \mypkg{hyperref}\cite{hyperref}
-% package.
-% \end{important}
+%^^A \begin{important}*
+%^^A The implementation of  \ics{label} and \ics{ref} together with the
+%^^A \mykey{save-ref} key are compatible with the \mypkg{hyperref}\cite{hyperref}
+%^^A package.
+%^^A \end{important}
 %
 % \subsubsection{Support for \cs[no-index]{footnote}}\label{doc:footnote}
 %
@@ -1379,7 +1380,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % produce the expected links, and if the \mykey{mini-env} key is used in
 % \myenv*{enumext} or \myenv*{keyans} environments the output will look
 % like the classic way they are displayed in the environment \myenv{minipage}.
-%
+% \newpage
 % The best way to solve this is to use Jean-François Burnol
 % \mypkg{footnotehyper}\cite{footnotehyper} package, it will support
 % keeping the links if \mypkg{hyperref} is loaded with the
@@ -1688,11 +1689,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% It should be kept in mind that using any \mymeta{key} that sets
-% a \emph{rubber lengths} or \emph{rigid lengths} for vertical or
-% horizontal space on a level will influence the vertical and horizontal
-% space for \emph{inners levels} and \myenv*{keyans}, \myenv*{keyans*} and
-% \myenv*{keyanspic} environments.
+% \begin{important}*
+%  It should be kept in mind that using any \mymeta{key} that sets
+%  a \emph{rubber lengths} or \emph{rigid lengths} for vertical or
+%  horizontal space on a level will influence the vertical and horizontal
+%  space for \emph{inners levels} and \myenv*{keyans}, \myenv*{keyans*} and
+%  \myenv*{keyanspic} environments.
+% \end{important}
 %
 % \subsection{Keys for \texttt{label} and \texttt{ref}}\label{subsec:label-and-ref}
 %
@@ -13328,8 +13331,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       \@@_stop_start_list_tag:
       \@@_minipage:w [ t ]{ \l_@@_joined_width_viii_dim  }
         \tl_use:N \l_@@_after_list_args_viii_tl
-        \dim_set_eq:NN \parindent \l_@@_listparindent_viii_dim
-        \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
         \bool_if:NT \l_@@_item_starred_viii_bool
           {
             \tl_use:N \l_@@_fake_item_indent_viii_tl
@@ -13339,6 +13340,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
             \tl_use:N \l_@@_fake_item_indent_viii_tl
           }
+        \dim_set_eq:NN \parindent \l_@@_listparindent_viii_dim
+        \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
    }
 %    \end{macrocode}
 % \end{macro}
@@ -13383,7 +13386,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   total number of items is divisible by the number of items in the last
 %   row of the environment.
 % \iffalse
-%% Remove extra \parsep in |keyans*|
+%% Remove extra \parsep in |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_remove_extra_parsep_viii:
@@ -13414,7 +13417,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Retrieve a \emph{\enquote{single}} content stored by \ics*{anskey}, \ics*{anspic*}
 %    and \ics*{item*} from \mymeta{prop list} defined by \mykey{save-ans} key.
 % \iffalse
-%% Define |\getkeyans|, need \exp_args:Ne \tl_to_str:e
+%% Define |\getkeyans|.
 % \fi
 %    \begin{macrocode}
 \NewDocumentCommand \getkeyans { m }
@@ -13519,11 +13522,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %
 % \begin{important}*
-% The reason for storing \mymeta{keys} in token lists using
-% \cs{keys_precompile:neN} is because the keys are set via
-% \ics*{setenumext} but are later executed by running the command
-% \ics*{printkeyans} and they are not handled directly by its optional
-% argument, except those related to the first opening level.
+%  The reason for storing \mymeta{keys} in token lists using
+%  \cs{keys_precompile:neN} is because the keys are set via
+%  \ics*{setenumext} but are later executed by running the command
+%  \ics*{printkeyans} and they are not handled directly by its optional
+%  argument, except those related to the first opening level.
 % \end{important}
 %
 % \begin{macro}{\printkeyans}
@@ -13563,7 +13566,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \seq_if_empty:cF { g_@@_#3_seq }
           {
-            %%\seq_show:c { g_@@_#3_seq }
 %    \end{macrocode}
 %    If the starred argument is present we will check that the environment
 %    \myenv*{enumext*} is not saved in the \mymeta{sequence}, then execute the variable
@@ -13666,6 +13668,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % Now define a \emph{\enquote{meta families}} of \mymeta{keys}
 % to access from \ics*{setenumext}.
+%
 % \iffalse
 %% Add keys for |\setenumext|.
 % \fi
@@ -13809,9 +13812,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%   The internal functions \cs{@@_add_meta_key:nnn} and
-%   \cs{@@_def_meta_key:nnn} will check the optional argument and create
-%   the \emph{\enquote{meta-key}}.
+%   The internal functions \cs{@@_add_meta_key:nnn} and \cs{@@_def_meta_key:nnn}
+%   will check the optional argument and create the \emph{\enquote{meta-key}}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_add_meta_key:nnn #1
   {
@@ -13953,7 +13955,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \iffalse
 %% Messages.
 % \fi
-% Message used by package-load for \mypkg{multicol} and \mypkg{hyperref} packages.
+% Message used by package-load for \mypkg{multicol} and \mypkg{hyperref}
+% packages.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { package-load }
   {
@@ -13986,7 +13989,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-% Message used by reserved \myenv*{anskey*} environment by \mypkg*{enumext} package.
+% Message used by reserved \myenv*{anskey*} environment by \mypkg*{enumext}
+% package.
 %    \begin{macrocode}
 \msg_new:nnnn { enumext } { anskey-env-error }
   {
@@ -13999,7 +14003,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-% Message used in the creation of \mymeta{prop list} by \mypkg*{enumext} package.
+% Message used in the creation of \mymeta{prop list} by \mypkg*{enumext}
+% package.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { store-prop }
   {
@@ -14257,7 +14262,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-% Messages used by \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} environment.
+% Messages used by \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
+% environment.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { keyans-nested }
   {
