@@ -6248,7 +6248,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Functions for setting the fake \texttt{itemindent}}\label{key:fake-indent}
 %
-% \begin{macro}[int]{\@@_fake_item:,\@@_keyans_fake_item:,
+% \begin{macro}[int]{\@@_fake_item_indent:,\@@_keyans_fake_item_indent:,
 %                    \@@_fake_item_vii:, \@@_fake_item_viii:,}
 %
 %    The \mykey{itemindent} key does not set the value of |\itemindent|, it only
@@ -6262,7 +6262,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Internal functions for |itemindent| key. |\mode_leave_vertical:| nor
 % \fi
 %    \begin{macrocode}
-\cs_set_protected:Nn \@@_fake_item:
+\cs_set_protected:Nn \@@_fake_item_indent:
   {
     \dim_compare:nNnT
       { \dim_use:c { l_@@_fake_item_indent_ \@@_level: _dim } }
@@ -6278,7 +6278,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
    }
-\cs_set_protected:Nn \@@_keyans_fake_item:
+\cs_set_protected:Nn \@@_keyans_fake_item_indent:
   {
     \dim_compare:nNnT
       { \l_@@_fake_item_indent_v_dim } > { \c_zero_dim }
@@ -10443,7 +10443,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_keyans_default_item:n,}
 %    The function \cs{@@_keyans_default_item:n} executes the original
-%    behavior of the \ics*{item} and \mykey{itemindent} key.
+%    behavior of the \ics*{item} along with the keys \mykey{wrap-label},
+%   \mykey{wrap-label*} and \mykey{itemindent}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_default_item:n #1
   {
@@ -10461,13 +10462,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_keyans_starred_item:n}
-%    The function \cs{@@_keyans_starred_item:n}
-%    which will make a temporary copy of the current \mymeta{label}, execute the
-%    \mykey{show-ans} or \mykey{show-pos} keys using the function
-%    \cs{@@_keyans_show_left:n} and will display the contents
-%    of that item using the internal copy \cs{@@_item_std:w}, this is
-%    necessary to prevent incrementing the current \emph{\enquote{counter}} of the original
-%    \mymeta{label}.
+%    The function \cs{@@_keyans_starred_item:n} which will make a temporary
+%    copy of the current \mymeta{label}, execute the \mykey{show-ans}
+%    or \mykey{show-pos} keys using the function \cs{@@_keyans_show_left:n}
+%    and will display the \mymeta{contents} of that item using the internal
+%    copy \cs{@@_item_std:w}, this is necessary to prevent incrementing
+%    the current \emph{\enquote{counter}} of the original \mymeta{label},
+%    followed by this it will execute function \cs{@@_keyans_show_item_opt:}
+%    handled by \mykey{wrap-opt} key.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_starred_item:n #1
   {
@@ -10478,9 +10480,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_show_item_opt:
 %    \end{macrocode}
 %    Recover the original value of the current \mymeta{label} and \emph{store}
-%    it first in the \mymeta{prop list} (including the optional argument), run the
-%    internal \emph{\enquote{label and ref}} system if the \mykey{save-ref} key is active and
-%    finally \emph{store} it in the \mymeta{sequence}.
+%    it first in the \mymeta{prop list} (including the optional argument),
+%    run the internal \emph{\enquote{label and ref}} system if the
+%    \mykey{save-ref} key is active, \emph{store} it in the \mymeta{sequence}
+%    and finally increments \cs{g_@@_check_starred_cmd_int} for internal
+%    check system.
 %    \begin{macrocode}
     \tl_set_eq:NN \l_@@_label_v_tl \l_@@_store_current_label_tmp_tl
     \@@_keyans_addto_prop:n { #1 }
@@ -10777,7 +10781,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \@@_keyans_redefine_item:
             \@@_keyans_make_label:
             \@@_keyans_ref:
-            \@@_keyans_fake_item:
+            \@@_keyans_fake_item_indent:
             \bool_if:cT { l_@@_show_length_#1_bool }
               {
                 \msg_term:nnnn { enumext } { list-lengths-not-nested } { v } { keyans }
@@ -10787,10 +10791,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \@@_redefine_item:
             \@@_make_label:
             \@@_standar_ref:
-            \@@_fake_item:
+            \@@_fake_item_indent:
             \bool_if:cT { l_@@_show_length_#1_bool }
               {
-                \msg_term:nnne { enumext } { list-lengths } {#1} { \int_use:N \l_@@_level_int }
+                \msg_term:nnne { enumext } { list-lengths } {#1}
+                  { \int_use:N \l_@@_level_int }
               }
           }
       }
@@ -10873,8 +10878,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_set_item_width:
     \@@_after_args_exec:
   }
+%    \end{macrocode}
+%   For compatibility with \emph{tagged} \texttt{PDF}, the closing of the
+%   \myenv{list} environment is executed within the \cs{enumext_multicols_stop:}
+%   function which, along with the rest of the actions, is executed through
+%   the \cs{enumext_second_part:} function.
+%    \begin{macrocode}
   {
-    \@@_after_list:
+    \@@_second_part:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -10918,7 +10929,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \emph{\enquote{true}} only if the environment is not nested and we are
 %    at the \emph{\enquote{first level}}.
 % \iffalse
-%% Safe exec for |enumext|.
+%% Safe exec for |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec:
@@ -10977,7 +10988,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \mymeta{sequence} for the command \ics*{anskey} and the
 %    environment \myenv*{anskey*}.
 % \iffalse
-%% Save level-structure in sequence for |save-ans| key in enumext.
+%% Save level-structure in sequence for |save-ans| key in |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level:
@@ -11159,8 +11170,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_after_list:}
-%    The function \cs{@@_after_list:} first check the state of
+% \begin{macro}{\@@_second_part:}
+%    The function \cs{@@_second_part:} first check the state of
 %    the boolean variable \myvarenv{l__@@_minipage_active_X_bool}, if it is
 %    \enquote{true} a small test will be executed to check if we have
 %    omitted the use of \ics*{miniright} (the \myvarenv*{__@@_mini_page}
@@ -11168,7 +11179,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    and add the \emph{adjusted vertical space} \cs{l_@@_minipage_after_skip},
 %    otherwise we will close the \myenv{multicols} environment.
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_after_list:
+\cs_new_protected:Nn \@@_second_part:
   {
     \bool_if:cTF { l_@@_minipage_active_ \@@_level: _bool }
       {
@@ -11185,10 +11196,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_multicols_stop:
       }
 %    \end{macrocode}
-%   Now we will execute the functions \cs{@@_after_stop_list:} used by the key \mykey{after},
-%   \cs{@@_check_ans_key_hook:} used by the key \mykey{check-ans},
-%   \cs{@@_vspace_below:} used by the keys \mykey{below} and
-%   \mykey{below*}. Finally set \cs{l_@@_standar_bool} to false and call
+%   Now we will execute the functions \cs{@@_after_stop_list:} used by
+%   the key \mykey{after}, \cs{@@_check_ans_key_hook:} used by the key
+%   \mykey{check-ans}, \cs{@@_vspace_below:} used by the keys \mykey{below}
+%   and \mykey{below*}. Finally set \cs{l_@@_standar_bool} to false and call
 %   the function \cs{@@_resume_save_counter:} used by the \mykey{series},
 %   \mykey{resume} and \mykey{resume*} keys.
 %    \begin{macrocode}
@@ -11199,14 +11210,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_resume_save_counter:
   }
 %    \end{macrocode}
-%   As we don't want our check to be executed \mykey{check-ans} by levels but on the
-%   complete list, we will take it out of the \myenv*{enumext}
+%   As we don't want our check to be executed \mykey{check-ans} by levels
+%   but on the complete list, we will take it out of the \myenv*{enumext}
 %   environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
 % \iffalse
-%% Execute |check-ans| key out of |enumext|.
+%% Execute |check-ans| key out of |enumext| environment.
 % \fi
 %    \begin{macrocode}
-\@@_after_env:nn {enumext} { \@@_execute_after_env: }
+\@@_after_env:nn {enumext}
+  {
+    \@@_execute_after_env:
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -11239,7 +11253,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
   {
     \@@_check_starred_cmd:n { item }
-    \@@_after_list_v:
+    \@@_second_part_v:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11317,7 +11331,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_before_list_v:, \@@_keyans_multicols_start:,
-%               \@@_keyans_multicols_stop:, \@@_after_list_v:}
+%               \@@_keyans_multicols_stop:, \@@_second_part_v:}
 %    Same implementation as the one used in the \myenv*{enumext} environment.
 % \iffalse
 %% Iternal functions for |keyans| environment.
@@ -11379,7 +11393,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_stop_list:
       }
   }
-\cs_new_protected:Nn \@@_after_list_v:
+\cs_new_protected:Nn \@@_second_part_v:
   {
     \bool_if:NTF \l_@@_minipage_active_v_bool
       {
@@ -11406,13 +11420,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection{Tagging PDF support for non-standart list environments}\label{ltx:tag-nonestandarlist}
 %
 % The \hologo{LaTeX} release 2022-06-01 brings automatic support for
-% \texttt{tagPDF} in several aspects, including the standart \emph{list environments}
+% \emph{tagged} \texttt{PDF} in several aspects, including the standard \emph{list environments}
 % and the \myenv{list} environment. Unfortunately non-standard \emph{list environments}
 % like \myenv*{keyanspic} or the horizontal list environments
 % \myenv*{enumext*} and \myenv*{keyans*} are not structured in a nice
 % way, i.e. the expected result in the \texttt{PDF} file is the expected
 % one, but the underlying structure is not correct. In simple terms, for
-% \texttt{tagPDF} a list environment is a list environment, no matter
+% \emph{tagged} \texttt{PDF} a \myenv{list} environment is a \myenv{list} environment, no matter
 % what it looks like in the \texttt{PDF} file.
 %
 % \smallskip
@@ -13091,7 +13105,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_after_list_viii:}
-%    The function \cs{@@_after_list:} first call the function \cs{@@_stop_mini_viii:},
+%    The function \cs{@@_after_list_viii:} first call the function \cs{@@_stop_mini_viii:},
 %    then apply the \mymarg{code} handled by the \mykey{after} key
 %    together with the \emph{vertical space} handled by the \mykey{below} key if
 %    they are present.

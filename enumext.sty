@@ -1018,7 +1018,7 @@
   }
   { \__enumext_tmp:nn #1 }
 %% Internal functions for |itemindent| key. |\mode_leave_vertical:| nor
-\cs_set_protected:Nn \__enumext_fake_item:
+\cs_set_protected:Nn \__enumext_fake_item_indent:
   {
     \dim_compare:nNnT
       { \dim_use:c { l__enumext_fake_item_indent_ \__enumext_level: _dim } }
@@ -1034,7 +1034,7 @@
           }
       }
    }
-\cs_set_protected:Nn \__enumext_keyans_fake_item:
+\cs_set_protected:Nn \__enumext_keyans_fake_item_indent:
   {
     \dim_compare:nNnT
       { \l__enumext_fake_item_indent_v_dim } > { \c_zero_dim }
@@ -3603,7 +3603,7 @@
             \__enumext_keyans_redefine_item:
             \__enumext_keyans_make_label:
             \__enumext_keyans_ref:
-            \__enumext_keyans_fake_item:
+            \__enumext_keyans_fake_item_indent:
             \bool_if:cT { l__enumext_show_length_#1_bool }
               {
                 \msg_term:nnnn { enumext } { list-lengths-not-nested } { v } { keyans }
@@ -3613,10 +3613,11 @@
             \__enumext_redefine_item:
             \__enumext_make_label:
             \__enumext_standar_ref:
-            \__enumext_fake_item:
+            \__enumext_fake_item_indent:
             \bool_if:cT { l__enumext_show_length_#1_bool }
               {
-                \msg_term:nnne { enumext } { list-lengths } {#1} { \int_use:N \l__enumext_level_int }
+                \msg_term:nnne { enumext } { list-lengths } {#1}
+                  { \int_use:N \l__enumext_level_int }
               }
           }
       }
@@ -3675,7 +3676,7 @@
     \__enumext_after_args_exec:
   }
   {
-    \__enumext_after_list:
+    \__enumext_second_part:
   }
 %% Set |\itemwidth| for |enumext|.
 \cs_new_protected:Nn \__enumext_set_item_width:
@@ -3695,7 +3696,7 @@
           }
       }
   }
-%% Safe exec for |enumext|.
+%% Safe exec for |enumext| environment.
 \cs_new_protected:Nn \__enumext_safe_exec:
   {
     \__enumext_internal_mini_page:
@@ -3726,7 +3727,7 @@
         \__enumext_store_active_keys:n {#1}
       }
   }
-%% Save level-structure in sequence for |save-ans| key in enumext.
+%% Save level-structure in sequence for |save-ans| key in |enumext| environment.
 \cs_new_protected:Nn \__enumext_start_store_level:
   {
     \bool_lazy_all:nT
@@ -3834,7 +3835,7 @@
         \__enumext_stop_store_level:
       }
   }
-\cs_new_protected:Nn \__enumext_after_list:
+\cs_new_protected:Nn \__enumext_second_part:
   {
     \bool_if:cTF { l__enumext_minipage_active_ \__enumext_level: _bool }
       {
@@ -3856,8 +3857,11 @@
     \bool_set_false:N \l__enumext_standar_bool
     \__enumext_resume_save_counter:
   }
-%% Execute |check-ans| key out of |enumext|.
-\__enumext_after_env:nn {enumext} { \__enumext_execute_after_env: }
+%% Execute |check-ans| key out of |enumext| environment.
+\__enumext_after_env:nn {enumext}
+  {
+    \__enumext_execute_after_env:
+  }
 %% Definition of |keyans| environment.
 \NewDocumentEnvironment{keyans}{ O{} }
   {
@@ -3875,7 +3879,7 @@
   }
   {
     \__enumext_check_starred_cmd:n { item }
-    \__enumext_after_list_v:
+    \__enumext_second_part_v:
   }
 \cs_new_protected:Nn \__enumext_keyans_set_item_width:
   {
@@ -3977,7 +3981,7 @@
         \__enumext_stop_list:
       }
   }
-\cs_new_protected:Nn \__enumext_after_list_v:
+\cs_new_protected:Nn \__enumext_second_part_v:
   {
     \bool_if:NTF \l__enumext_minipage_active_v_bool
       {
