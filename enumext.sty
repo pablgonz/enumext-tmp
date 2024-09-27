@@ -3421,7 +3421,7 @@
         \msg_error:nnnn { enumext } { keyans-unknown-key-value } {#1} {#2}
       }
   }
-%% Add keys |unknown| for |enumext*|.
+%% Add keys |unknown| for |enumext*| environment.
 \keys_define:nn { enumext / enumext* }
   {
     unknown .code:n = { \__enumext_starred_unknown_keys:n {#1} }
@@ -3873,7 +3873,6 @@
   }
   {
     \__enumext_check_starred_cmd:n { item }
-    %%\__enumext_stop_list:
     \__enumext_after_list_v:
   }
 \cs_new_protected:Nn \__enumext_keyans_set_item_width:
@@ -3986,7 +3985,7 @@
             \miniright
           }
         \int_gzero:N \g__enumext_minipage_stat_int
-        \__enumext_unskip_unkern: % remove topsep + [partopsep]
+        \__enumext_unskip_unkern: % remove \topsep + [\partopsep]
         \end__enumext_mini_page
         \par\addvspace{ \l__enumext_minipage_after_skip }
       }
@@ -3997,7 +3996,7 @@
     \__enumext_after_stop_list_v:
     \__enumext_vspace_below_v:
   }
-%% Implement socket for tagging support in |enumext*| and |keyans*|.
+%% Implement socket for tagging support in |enumext*| and |keyans*| environments.
 \socket_new:nn {tagsupport/enumext/starred}{ 1 }
 \socket_new_plug:nnn {tagsupport/enumext/starred} {start-list-tags}
   {
@@ -4047,7 +4046,7 @@
         \socket_use:nn {tagsupport/enumext/starred} {#1}
       } {}
    }
-%% Implement socket for tagging support in |keyanspic|.
+%% Implement socket for tagging support in |keyanspic| environment.
 \socket_new:nn {tagsupport/enumext/keyanspic}{ 0 }
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {start-list-tags}
   {
@@ -4074,7 +4073,7 @@
     \tag_struct_end:n {tag=LI}
     \tag_suspend:n {keyanspic}
   }
-%% Wrap socket in conditional functions for tagging |keyanspic|.
+%% Wrap socket in conditional functions for tagging |keyanspic| environment.
 \cs_new_protected_nopar:Nn \__enumext_anspic_start_list_tag:
   {
     \IfDocumentMetadataTF
@@ -4488,7 +4487,7 @@
         \dim_set_eq:NN \itemwidth \l__enumext_item_width_viii_dim
       }
   }
-%% Start support for |mini-env| key in |enumext*| environment
+%% Start support for |mini-env| key in |enumext*| environment.
 \cs_new_protected:Nn \__enumext_start_mini_vii:
   {
     \dim_compare:nNnT { \l__enumext_minipage_right_vii_dim } > { \c_zero_dim }
@@ -4556,7 +4555,7 @@
     \dim_gzero:N \g__enumext_minipage_right_vii_dim
     \bool_gset_false:N \g__enumext_starred_bool
   }
-%% Start support for |mini-env|, |mini-right| and |mini-right*| key in |keyans*| environment.
+%% Support for |mini-env|, |mini-right| and |mini-right*| key in |keyans*| environment.
 \cs_new_protected:Nn \__enumext_start_mini_viii:
   {
     \dim_compare:nNnT { \l__enumext_minipage_right_viii_dim } > { \c_zero_dim }
@@ -4676,7 +4675,7 @@
     \__enumext_remove_extra_parsep_vii:
     \__enumext_after_list_vii:
   }
-%% Safe exec for |enumext*| (set bool vars for storage system).
+%% Safe exec for |enumext*| environment (set vars for storage system).
 \cs_new_protected:Nn \__enumext_safe_exec_vii:
   {
     \__enumext_internal_mini_page:
@@ -4694,7 +4693,7 @@
     \bool_set_false:N \l__enumext_standar_bool
     \__enumext_is_on_first_level:
   }
-%% Parse |key=val| and store keys for |enumext*|.
+%% Parse |key=val| and store keys for |enumext*| environment.
 \cs_new_protected:Npn \__enumext_parse_keys_vii:n #1
   {
     \tl_if_novalue:nF {#1}
@@ -4742,12 +4741,12 @@
           }
       }
   }
-%% Remove |\labelwidth+\labelsep| on left in first |\item| for |enumext*|
+%% Remove |\labelwidth+\labelsep| on left in first |\item| for |enumext*| environment.
 \cs_new_protected_nopar:Nn \__enumext_first_item_tmp_vii:
   {
     \skip_horizontal:n { -\l__enumext_labelwidth_vii_dim - \l__enumext_labelsep_vii_dim }
   }
-%% Start boxed item's for |enumext*|
+%% Start boxed item's for |enumext*| environment.
 \cs_new_protected_nopar:Nn \__enumext_start_item_tmp_vii:
   {
     \__enumext_stop_item_tmp_vii:
@@ -4755,14 +4754,14 @@
     \int_gincr:N \g__enumext_item_count_all_vii_int
     \__enumext_item_peek_args_vii:
   }
-%% Peek argument for \item()*[][] for |enumext*|
+%% Peek argument for \item()*[][] for |enumext*| environment.
 \cs_new_protected:Nn \__enumext_item_peek_args_vii:
   {
     \peek_meaning:NTF (
       { \__enumext_joined_item_vii:w }
       { \__enumext_joined_item_vii:w (1) }
   }
-%% Joined item's for |enumext*|
+%% Joined item's for |enumext*| environment.
 \cs_new_protected:Npn \__enumext_joined_item_vii:w (#1)
   {
     \__enumext_starred_joined_item_vii:n {#1}
@@ -4770,7 +4769,7 @@
       { \__enumext_starred_item_vii:w  }
       { \__enumext_standar_item_vii:w }
   }
-%% Set \item[opt] for |enumext*|
+%% Set \item[opt] for |enumext*| environment.
 \cs_new_protected:Npn \__enumext_standar_item_vii:w
   {
     \bool_set_false:N \l__enumext_item_starred_vii_bool
@@ -4876,9 +4875,9 @@
       \__enumext_stop_start_list_tag:
       \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_vii_dim  }
         \tl_use:N \l__enumext_after_list_args_vii_tl
+        \tl_use:N \l__enumext_fake_item_indent_vii_tl
         \dim_set_eq:NN \parindent \l__enumext_listparindent_vii_dim
         \skip_set_eq:NN \parskip \l__enumext_parsep_vii_skip
-        \tl_use:N \l__enumext_fake_item_indent_vii_tl
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_item_vii:
   {
@@ -4904,7 +4903,7 @@
         \skip_horizontal:N \l__enumext_columns_sep_vii_dim
       }
   }
-%% Remove extra \parsep in |enumext*|
+%% Remove extra \parsep in |enumext*| environment.
 \cs_new_protected:Nn \__enumext_remove_extra_parsep_vii:
   {
     \int_compare:nNnT
@@ -4921,8 +4920,11 @@
         \int_gzero:N \g__enumext_item_count_all_vii_int
       }
   }
-%% Execute |check-ans| key out of |enumext*|.
-\__enumext_after_env:nn {enumext*} { \__enumext_execute_after_env: }
+%% Execute |check-ans| key out of |enumext*| environment.
+\__enumext_after_env:nn {enumext*}
+  {
+    \__enumext_execute_after_env:
+  }
 %% Define |keyans*| environment.
 \NewDocumentEnvironment{keyans*}{ o }
   {
@@ -4934,6 +4936,7 @@
         \__enumext_list_arg_two_viii:
         \__enumext_before_keys_exec_viii:
       }
+    % Stop tagging
     \IfDocumentMetadataTF { \tag_suspend:n {keyans*} } { }
     \__enumext_starred_columns_set_viii:
     \item[] \scan_stop:
@@ -4942,13 +4945,13 @@
     \ignorespaces
   }
   {
-    \IfDocumentMetadataTF { \tag_struct_end: } { }
+    \IfDocumentMetadataTF { \tag_struct_end:n {tag=text-unit} } { }
     \__enumext_stop_item_tmp_viii:
     \__enumext_remove_extra_parsep_viii:
     \__enumext_check_starred_cmd:n { item }
     \__enumext_after_list_viii:
   }
-%% Test deep-level for |keyans*| and set bool vars.
+%% Test deep-level for |keyans*| environment and set bool vars.
 \cs_new_protected:Nn \__enumext_safe_exec_viii:
   {
     \bool_if:NF \l__enumext_store_active_bool
@@ -4973,7 +4976,7 @@
         \msg_error:nn { enumext } { keyans-wrong-level }
       }
   }
-%% Parse |key=val| and store keys for |keyans*|.
+%% Parse |key=val| and store keys for |keyans*| environment.
 \cs_new_protected:Npn \__enumext_parse_keys_viii:n #1
   {
     \tl_if_novalue:nF {#1}
@@ -4993,12 +4996,12 @@
     \__enumext_after_stop_list_viii:
     \__enumext_vspace_below_viii:
   }
-%% Remove |\labelwidth+\labelsep| on left in first |\item| for |keyans*|
+%% Remove |\labelwidth+\labelsep| on left in first |\item| for |keyans*| environment.
 \cs_new_protected_nopar:Nn \__enumext_first_item_tmp_viii:
   {
     \skip_horizontal:n { -\l__enumext_labelwidth_viii_dim - \l__enumext_labelsep_viii_dim }
   }
-%% Start boxed item's for |keyans*|
+%% Start boxed item's for |keyans*| environment.
 \cs_new_protected_nopar:Nn \__enumext_start_item_tmp_viii:
   {
     \__enumext_stop_item_tmp_viii:
@@ -5013,7 +5016,7 @@
       { \__enumext_joined_item_viii:w }
       { \__enumext_joined_item_viii:w (1) }
   }
-%% Joined item's for |keyans*|
+%% Joined item's for |keyans*| environment.
 \cs_new_protected:Npn \__enumext_joined_item_viii:w (#1)
   {
     \__enumext_starred_joined_item_viii:n {#1}
@@ -5283,7 +5286,6 @@
                   }
                   {
                     \tl_use:N \l__enumext_print_keyans_starred_tl
-                    % \IfDocumentMetadataTF { \tag_tool:n {para/flattened} } { }
                     \begin{enumext*}[#2]
                       \keys_set:nn { enumext / level-1 }{ base-fix }
                       \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }

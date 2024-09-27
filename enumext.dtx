@@ -553,7 +553,7 @@ This work consists of the files enumext.dtx and enumext.sty.
       {
         \makebox[\marginparsep][r]
           {
-            \footnotesize\textcolor{lightgray}{\faIcon{tag}}% tagPDF
+            \scriptsize\textcolor{pkgcolor}{\reflectbox{\faIcon{tag}}}% tagged PDF
           }
       }
     \hskip 0.5\marginparsep
@@ -612,26 +612,27 @@ This work consists of the files enumext.dtx and enumext.sty.
                     },%
 % Other words 2
     keywordstyle  = [2]{\color{blue!75}},%
-    keywords      = [2]{usepackage,section,documentclass,input,listparindent,linewidth, emph, textbf,makesavenoteenv,%
+    keywords      = [2]{usepackage,section,documentclass,input,listparindent,linewidth, emph, textbf,makesavenoteenv, makelabel,%
                     columnseprule, footnote, footnotemark, footnotetext, raggedcolumns, hspace, parindent, removelastskip, %
-                    subsection, list,endlist,leftmargin, itemindent,bfseries,endminipage, minipage, parskip, % item,
-                    labelwidth,labelsep,labelindent,label,ref,topsep,parsep,includegraphics, itemize, description, %
-                    multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, value, noindent,%
-                    itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, %
+                    subsection, list,endlist,leftmargin, itemindent,bfseries,endminipage, minipage, parskip, raisebox,% ,
+                    labelwidth,labelsep,labelindent,label,ref,topsep,parsep,includegraphics, itemize, description, NewCommandCopy, %
+                    multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, value, noindent, makebox,%
+                    itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, cs_new_eq, N, NN,%
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
-                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_space,%
-                    triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean, DocumentMetadata},%
+                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_space, skip_horizontal, %
+                    triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean, DocumentMetadata,%
+                    aux_i, aux_ii, aux_iii, w, },%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
     keywords      = [3]{document,article,setlength,pagestyle,definecolor, chapter,},%
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
-    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidth,enumextmeta, %
+    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidth, enumextmeta, %
                     setenumext,printkeyans,miniright,parleft,labelbx, descitemwd,theenumXi,theenumXii,theenumXiii,%
                     foreachkeyans, theenumXiv,theenumXv, theenumXvii, theenumXviii},%
 % Reserved words 5 (plain TeX or internal)
     keywordstyle  = [5]{\color{red}},%
-    keywords      = [5]{makeatletter,makeatother,let,verb,makebox,def,prevdepth,glue, if@minipage,if@hyper@item,if@noitemarg, %
+    keywords      = [5]{makeatletter,makeatother,let,verb,def,prevdepth,glue, if@minipage,if@hyper@item, if@noitemarg, %
                     splittopskip,showboxdepth,topskip,showoutput,nointerlineskip, ignorespaces, unskip, unkern, lastnodetype,%
                     rightskip, @rightskip, @flushglue, hbadness},%
 % Reserved words 6 (optcolor) KEYS
@@ -731,7 +732,7 @@ This work consists of the files enumext.dtx and enumext.sty.
    pdftitle           = {.:: The enumext package --- \fileinfo{} ::.},
    pdfauthor          = {Pablo González L},
    pdfsubject         = {Documentation for \fileversion{} [\filedate] },
-   pdfkeywords        = {worksheets, multiple choice, expl3, l3prop, l3seq, list, enumerate, store answers},
+   pdfkeywords        = {worksheets, multiple choice, expl3, l3prop, l3seq, list, enumerate, store answers, tagged},
    bookmarksopenlevel = 2,
   }
 % Configuration titleps and titlesec
@@ -784,14 +785,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 \endgroup
 }
 \makeatother
-% thanks
+% \thanks
 \makeatletter
 \renewcommand*{\@fnsymbol}[1]{\ensuremath{\ifcase#1\or \textcolor{pkgcolor}{*}
 \or \textcolor{pkgcolor}{\dagger} \or \ddagger\or \mathsection
 \or \mathparagraph\or \|\or **\or \dagger\dagger
 \or \ddagger\ddagger \else\@ctrerr\fi}}
 \makeatother
-%\usepackage{lua-visual-debug}
+% \usepackage{lua-visual-debug}
 \usepackage[font=small,skip=2pt]{caption}
 % For input samples
 \usepackage{tikzducks}
@@ -808,7 +809,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     \node[square, rounded corners=1pt, inner sep=1pt, draw=none, fill=gray!40] (number) {#1};
   \end{tikzpicture}%
 }
-% for SAT sample
+% For SAT sample
 \newsavebox{\satbox}
 \sbox\satbox{\small\textbf{67}}%
 \NewDocumentCommand \stylesat { m }
@@ -818,17 +819,13 @@ This work consists of the files enumext.dtx and enumext.sty.
     \noindent\colorbox{black}{\textcolor{white}{\makebox[\dimeval{\labelwidth-2\fboxsep}][c]{\small\textbf{\vphantom{67}#1}}}}%
     \colorbox{lightgray}{\phantom{\rule[-\dp\satbox]{\dimeval{\linewidth-2\fboxsep}}{\dimeval{\dp\satbox+\ht\satbox}}}}}%
   }
-% for non-numbered list samples, need % at end (prevent supur spaces)
+% For non-numbered list samples, need ´%´ at end (prevent wrong unwanted spaces)
 \NewDocumentCommand \labelbx { s +m }
   {%
     \IfBooleanTF{#1}
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedright{#2}}}}%
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedleft{#2}}}}%
   }
-% for enumext* samples
-% \Sample is defined to contain some sample text:
-\def\sample{This is some sample text we will use to create a somewhat longer text spanning a few lines.}
-\def\Sample{\sample\ \sample\par\sample}
 \begin{document}
   \DocInput{\jobname.dtx}
 \end{document}
@@ -856,11 +853,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \maketitle
 %
 % \begin{abstract}
-% This package provides \emph{\enquote{enumerated list}} environments
-% compatible with tagging PDF for creating \emph{\enquote{simple exercise sheets}} along with
-% \emph{\enquote{multiple choice questions}}, storing the
-% \mymeta{answers} to these in memory using \mypkg{multicol} and \mypkg{scontents} packages
-% and the \mypkg{l3seq} and \mypkg{l3prop} modules.
+% This package provides \enquote{enumerated list} environments compatible
+% with \hologo{LaTeX} \emph{tagging} \texttt{PDF} for creating
+% \emph{\enquote{simple exercise sheets}} along with \emph{\enquote{multiple choice questions}},
+% storing the \mymeta{answers} to these in memory using \mypkg{multicol} and
+% \mypkg{scontents} packages and the \mypkg{l3seq} and \mypkg{l3prop} modules.
 % \end{abstract}
 %
 % \tableofcontents
@@ -1006,7 +1003,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \begin{enumext}[save-ans=mytest,columns=2,nosep,save-ref=true]
+% \begin{enumext}[save-ans=mytest,columns=2,nosep,save-ref=true,save-sep={ }]
 %   \item First type of questions
 %      \begin{keyans}[columns=2,noitemsep]
 %        \item value
@@ -10323,7 +10320,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}[int]{unknown, \@@_starred_unknown_keys:n, \@@_starred_unknown_keys:nn}
 %    Define and set |unknown| key for  \myenv*{enumext*} environment.
 % \iffalse
-%% Add keys |unknown| for |enumext*|.
+%% Add keys |unknown| for |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \keys_define:nn { enumext / enumext* }
@@ -11185,7 +11182,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
   {
     \@@_check_starred_cmd:n { item }
-    %%\@@_stop_list:
     \@@_after_list_v:
   }
 %    \end{macrocode}
@@ -11336,7 +11332,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \miniright
           }
         \int_gzero:N \g_@@_minipage_stat_int
-        \@@_unskip_unkern: % remove topsep + [partopsep]
+        \@@_unskip_unkern: % remove \topsep + [\partopsep]
         \end@@_mini_page
         \par\addvspace{ \l_@@_minipage_after_skip }
       }
@@ -11364,7 +11360,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \smallskip
 %
-% To maintain a correct list structure when |\DocumentMetadata| is
+% To maintain a correct \myenv{list} structure when |\DocumentMetadata| is
 % active, it is necessary to do some things manually. This implementation
 % is an adaptation of my answer thanks to Ulrike Fischer's comments in
 % \href{https://tex.stackexchange.com/a/725902}{How can I modify my \texttt{\textbackslash item} redefinition to be compatible with \texttt{tagging-pdf}}.
@@ -11377,7 +11373,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    We will first define the necessary \texttt{sockets} and their
 %    behavior for \myenv*{enumext*} and \myenv*{keyans*}.
 % \iffalse
-%% Implement socket for tagging support in |enumext*| and |keyans*|.
+%% Implement socket for tagging support in |enumext*| and |keyans*| environments.
 % \fi
 %    \begin{macrocode}
 \socket_new:nn {tagsupport/enumext/starred}{ 1 }
@@ -11446,7 +11442,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    We will first define the necessary \texttt{sockets} and their
 %    behavior for \myenv*{keyanspic}.
 % \iffalse
-%% Implement socket for tagging support in |keyanspic|.
+%% Implement socket for tagging support in |keyanspic| environment.
 % \fi
 %    \begin{macrocode}
 \socket_new:nn {tagsupport/enumext/keyanspic}{ 0 }
@@ -11479,7 +11475,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   And now we'll wrap them so that they're only active when
 %   |\DocumentMetadata| is present.
 % \iffalse
-%% Wrap socket in conditional functions for tagging |keyanspic|.
+%% Wrap socket in conditional functions for tagging |keyanspic| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_anspic_start_list_tag:
@@ -12179,7 +12175,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   make a global copy of the variable \cs{l_@@_minipage_right_vii_dim} in
 %   the variable \cs{g_@@_minipage_right_vii_dim}.%
 % \iffalse
-%% Start support for |mini-env| key in |enumext*| environment
+%% Start support for |mini-env| key in |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_mini_vii:
@@ -12276,7 +12272,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mykey{mini-right*} keys is identical to the one used in the
 %   \myenv*{enumext*} environment.
 % \iffalse
-%% Start support for |mini-env|, |mini-right| and |mini-right*| key in |keyans*| environment.
+%% Support for |mini-env|, |mini-right| and |mini-right*| key in |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_mini_viii:
@@ -12444,7 +12440,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   true if we are not nested, allowing the \emph{\enquote{storage system}}
 %   to be used.
 % \iffalse
-%% Safe exec for |enumext*| (set bool vars for storage system).
+%% Safe exec for |enumext*| environment (set vars for storage system).
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec_vii:
@@ -12476,7 +12472,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  if the key \mykey{save-key} is not active and finally we call the function
 %  \cs{@@_nested_base_line_fix:} used by the key \mykey{base-fix}.
 % \iffalse
-%% Parse |key=val| and store keys for |enumext*|.
+%% Parse |key=val| and store keys for |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_keys_vii:n #1
@@ -12574,7 +12570,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % where it is equal to the \cs{@@_stop_item_tmp_vii:} function inside the
 % environment body definition.
 % \iffalse
-%% Remove |\labelwidth+\labelsep| on left in first |\item| for |enumext*|
+%% Remove |\labelwidth+\labelsep| on left in first |\item| for |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_first_item_tmp_vii:
@@ -12593,7 +12589,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % function \cs{@@_item_peek_args_vii:} that will handle the
 % arguments passed to \ics*{item}.
 % \iffalse
-%% Start boxed item's for |enumext*|
+%% Start boxed item's for |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_start_item_tmp_vii:
@@ -12607,14 +12603,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_item_peek_args_vii:}
-%
 %    The function \cs{@@_item_peek_args_vii:} will handle the \ics*{item}\myparg{number}.
 %    Look for the argument \enquote{\textcolor{MediumOrchid}{\ttfamily (}}, if it is
 %    present we will call the function \cs{@@_joined_item_vii:w} \myparg{number}, which is in charge of joining the item's
 %    in the same row, in case they are not present we will set the default
 %    value \textcolor{gray}{\ttfamily(\mydim{1})}.
 % \iffalse
-%% Peek argument for \item()*[][] for |enumext*|
+%% Peek argument for \item()*[][] for |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_item_peek_args_vii:
@@ -12627,7 +12622,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_joined_item_vii:w}
-%
 %    The function \cs{@@_joined_item_vii:w} will first call the
 %    function \cs{@@_starred_joined_item_vii:n} in charge of setting the
 %    \emph{width} of the box that will store the content passed to \ics*{item}. Then we
@@ -12635,7 +12629,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    function \cs{@@_starred_item_vii:w} otherwise we will call the
 %    function \cs{@@_standar_item_vii:w}.
 % \iffalse
-%% Joined item's for |enumext*|
+%% Joined item's for |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_joined_item_vii:w (#1)
@@ -12649,21 +12643,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_standar_item_vii:w}
-%
-% The function \cs{@@_standar_item_vii:w} will first look for the
-% argument “|[|”, if present it will set the state of the variable
-% \cs{l_@@_wrap_label_opt_vii_bool} equal to the state of the variable
-% \cs{l_@@_wrap_label_opt_vii_bool} handled by the key
-% \mykey{wrap-label*} and finally execute the \emph{non-enumerated}
-% version \ics*{item}\myoarg{custom} by means of the function
-% \cs{@@_start_item_vii:w}, otherwise we will set the value of the
-% variable \cs{l_@@_wrap_label_vii_bool} handled by the
-% \mykey{wrap-label} key to true and set the switch |\if@noitemarg| to
-% true to execute the enumerated version of \ics*{item} by means of the
-% function \cs{@@_start_item_vii:w} |[| \myvarenv{l__@@_label_vii_tl} |]|.
+%    The function \cs{@@_standar_item_vii:w} will first look for the
+%    argument “|[|”, if present it will set the state of the variable
+%    \cs{l_@@_wrap_label_opt_vii_bool} equal to the state of the variable
+%    \cs{l_@@_wrap_label_opt_vii_bool} handled by the key
+%    \mykey{wrap-label*} and finally execute the \emph{non-enumerated}
+%    version \ics*{item}\myoarg{custom} by means of the function
+%    \cs{@@_start_item_vii:w}, otherwise we will set the value of the
+%    variable \cs{l_@@_wrap_label_vii_bool} handled by the
+%    \mykey{wrap-label} key to true and set the switch |\if@noitemarg| to
+%    true to execute the enumerated version of \ics*{item} by means of the
+%    function \cs{@@_start_item_vii:w} |[| \myvarenv{l__@@_label_vii_tl} |]|.
 %
 % \iffalse
-%% Set \item[opt] for |enumext*|
+%% Set \item[opt] for |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_standar_item_vii:w
@@ -12685,12 +12678,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_starred_item_vii:w, \@@_starred_item_vii_aux_i:w,
 %               \@@_starred_item_vii_aux_ii:w, \@@_starred_item_vii_aux_iii:w,}
-%
-% The function \cs{@@_starred_item_vii:w} together with the specified
-% auxiliary functions |aux_i:w|, |aux_ii:w|, and |aux_iii:w| execute \ics*{item*},
-% \ics*{item*}\myoarg{symbol} and
-% \ics*{item*}\myoarg{symbol}\myoarg{offset}.
-%
+%    The function \cs{@@_starred_item_vii:w} together with the specified
+%    auxiliary functions |aux_i:w|, |aux_ii:w|, and |aux_iii:w| execute \ics*{item*},
+%    \ics*{item*}\myoarg{symbol} and \ics*{item*}\myoarg{symbol}\myoarg{offset}.
 % \iffalse
 %% Set \item*[sym][sep] for |enumext*| environment.
 % \fi
@@ -12728,7 +12718,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_fake_make_label_vii:n}
-%
 %   The \cs{@@_fake_make_label_vii:n} function will be in charge of
 %   handling our definition of |\item|. First we increment the counter
 %   \icounter{enumXvii} for the enumerated items and activate support for
@@ -12787,18 +12776,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-%  \subsubsection{Real definition of \cs{item} in \env{enumext*}}
+% \subsubsection{Real definition of \cs{item} in \env{enumext*}}
 %
-%   The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
-%   \ics*{item} inside the \myenv*{enumext*} environment, unlike
-%   the implementation in \mypkg{shortlst} we will NOT use an extra group
-%   and the plain form of the \myenv{lrbox} environment.
+% The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
+% \ics*{item} inside the \myenv*{enumext*} environment, unlike
+% the implementation in \mypkg{shortlst} we will NOT use an extra group
+% and the plain form of the \myenv{lrbox} environment.
 %
 % \begin{macro}{\@@_start_item_vii:w}
-%    The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to
-%    \cs{@@_stop_item_vii:} which we will define later, after that we will
-%    start capturing |\item| and its \mymeta{contents} in a \emph{horizontal box}
-%    where the width will be |\itemwidth| plus |\labelwidth| plus |\labelsep|.
+%   The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to
+%   \cs{@@_stop_item_vii:} which we will define later, after that we will
+%   start capturing |\item| and its \mymeta{contents} in a \emph{horizontal box}
+%   where the width will be |\itemwidth| plus |\labelwidth| plus |\labelsep|.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_start_item_vii:w [#1]
   {
@@ -12822,22 +12811,23 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
            }
        }
 %    \end{macrocode}
-%   Now we insert our \emph{sockets} for the \texttt{tagPDF} support and print |\item|.
+%   Now we insert our \emph{sockets} for \emph{tagging} \texttt{PDF}
+%   support and print |\item|.
 %    \begin{macrocode}
       \@@_start_list_tag:n {enumext*}
       \@@_fake_make_label_vii:n {#1}
       \@@_stop_start_list_tag:
 %    \end{macrocode}
-%    Finally we open the \myenv{minipage} environment capture the \mymeta{item content}
-%    and execute the \mykey{first} key, \mykey{listparindent} key which will be equal
-%    to |\parindent|, the \mykey{parsep} key which will be equal to |\parskip| and the
-%    \mykey{itemindent} key.
+%   Finally we open the \myenv{minipage} environment capture the \mymeta{item content}
+%   and execute \mykey{first} and \mykey{itemindent} keys, then \mykey{listparindent}
+%   key which will be equal to |\parindent|, then \mykey{parsep} key which will be
+%   equal to |\parskip|.
 %    \begin{macrocode}
       \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
         \tl_use:N \l_@@_after_list_args_vii_tl
+        \tl_use:N \l_@@_fake_item_indent_vii_tl
         \dim_set_eq:NN \parindent \l_@@_listparindent_vii_dim
         \skip_set_eq:NN \parskip \l_@@_parsep_vii_skip
-        \tl_use:N \l_@@_fake_item_indent_vii_tl
    }
 %    \end{macrocode}
 % \end{macro}
@@ -12845,7 +12835,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_stop_item_vii:}
 %   The \cs{@@_stop_item_vii:} function will finish the fetching |\item|
 %   and its \mymeta{content} by closing the \myenv{minipage}
-%   environment, the \emph{sockets} for the \texttt{tagPDF} and the
+%   environment, the \emph{sockets} for \emph{tagging} \texttt{PDF} and the
 %   \emph{horizontal box}.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_stop_item_vii:
@@ -12887,12 +12877,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_remove_extra_parsep_vii:}
 %   Finally we will remove the vertical space equal to |\parsep=\itemsep| when the
 %   total number of items is divisible by the number of items in the last
-%   row of the environment. Here the use of |\unskip| or
-%   |\removelastskip| fails and does not obtain the expected result, using
-%   |\vspace| is the option and in this case, we can use a simplified
-%   version since we are always in \mymeta{vertical mode}.
+%   row of the environment. Here the use of |\unskip| or |\removelastskip|
+%   fails and does not obtain the expected result, using |\vspace| is
+%   the option and in this case, we can use a simplified version since
+%   we are always in \mymeta{vertical mode}.
 % \iffalse
-%% Remove extra \parsep in |enumext*|
+%% Remove extra \parsep in |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_remove_extra_parsep_vii:
@@ -12916,10 +12906,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   complete list, we will take it out of the \myenv*{enumext*}
 %   environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
 % \iffalse
-%% Execute |check-ans| key out of |enumext*|.
+%% Execute |check-ans| key out of |enumext*| environment.
 % \fi
 %    \begin{macrocode}
-\@@_after_env:nn {enumext*} { \@@_execute_after_env: }
+\@@_after_env:nn {enumext*}
+  {
+    \@@_execute_after_env:
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -12946,6 +12939,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_list_arg_two_viii:
         \@@_before_keys_exec_viii:
       }
+    % Stop tagging
     \IfDocumentMetadataTF { \tag_suspend:n {keyans*} } { }
     \@@_starred_columns_set_viii:
     \item[] \scan_stop:
@@ -12954,7 +12948,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \ignorespaces
   }
   {
-    \IfDocumentMetadataTF { \tag_struct_end: } { }
+    \IfDocumentMetadataTF { \tag_struct_end:n {tag=text-unit} } { }
     \@@_stop_item_tmp_viii:
     \@@_remove_extra_parsep_viii:
     \@@_check_starred_cmd:n { item }
@@ -12976,7 +12970,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   check if we are within the appropriate level within the
 %   \myenv*{enumext} environment.
 % \iffalse
-%% Test deep-level for |keyans*| and set bool vars.
+%% Test deep-level for |keyans*| environment and set bool vars.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec_viii:
@@ -13010,7 +13004,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Parse \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 %    for \myenv*{keyans*}.
 % \iffalse
-%% Parse |key=val| and store keys for |keyans*|.
+%% Parse |key=val| and store keys for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_keys_viii:n #1
@@ -13060,20 +13054,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % in the \myenv*{keyans} environment with the difference of the optional
 % argument \myparg{number} which works in the same way as in the \myenv*{enumext*}
 % environment.
+%
 % In simple terms we want to store the \mymeta{label} next to the \myoarg{content} if it is present
 % in the \mymeta{sequence} and \mymeta{prop list} defined by \mykey{save-ans} key for
 % |\item*|, |\item*|\myoarg{content}, |\item|\myparg{number}|*| and
 % |\item|\myparg{number}|*|\myoarg{content} commands.
 %
 % \begin{macro}{\@@_first_item_tmp_viii:}
-%
-% The \cs{@@_first_item_tmp_viii:} function will remove horizontal space
-% equal to |\labelwidth| plus |\labelsep| to the left of the first
-% |\item| in the environment at the point of execution of this function,
-% where it is equal to the \cs{@@_stop_item_tmp_viii:} function inside the
-% environment body definition.
+%   The \cs{@@_first_item_tmp_viii:} function will remove horizontal space
+%   equal to |\labelwidth| plus |\labelsep| to the left of the first
+%   |\item| in the environment at the point of execution of this function,
+%   where it is equal to the \cs{@@_stop_item_tmp_viii:} function inside the
+%   environment body definition.
 % \iffalse
-%% Remove |\labelwidth+\labelsep| on left in first |\item| for |keyans*|
+%% Remove |\labelwidth+\labelsep| on left in first |\item| for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_first_item_tmp_viii:
@@ -13084,16 +13078,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_start_item_tmp_viii:}
-%
-% First we will call the function \cs{@@_stop_item_tmp_viii:} that we
-% will redefine later, we will increment the value of
-% \cs{l_@@_item_column_pos_viii_int} that will count the item's by rows and
-% the value of \cs{g_@@_item_count_all_viii_int} that will count the
-% total of item's in the environment. After that we will call the
-% function \cs{@@_item_peek_args_viii:} that will handle the
-% arguments passed to \ics*{item}.
+%   First we will call the function \cs{@@_stop_item_tmp_viii:} that we
+%   will redefine later, we will increment the value of
+%   \cs{l_@@_item_column_pos_viii_int} that will count the item's by rows and
+%   the value of \cs{g_@@_item_count_all_viii_int} that will count the
+%   total of item's in the environment. After that we will call the
+%   function \cs{@@_item_peek_args_viii:} that will handle the
+%   arguments passed to \ics*{item}.
 % \iffalse
-%% Start boxed item's for |keyans*|
+%% Start boxed item's for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_start_item_tmp_viii:
@@ -13107,7 +13100,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_item_peek_args_viii:}
-%
 %    The function \cs{@@_item_peek_args_viii:} will handle the \ics*{item}\myparg{number}.
 %    Look for the argument \enquote{\textcolor{MediumOrchid}{\ttfamily (}}, if it is
 %    present we will call the function \cs{@@_joined_item_viii:w} \myparg{number}, which is in charge of joining the item's
@@ -13134,7 +13126,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    function \cs{@@_starred_item_viii:w} otherwise we will call the
 %    function \cs{@@_standar_item_viii:w}.
 % \iffalse
-%% Joined item's for |keyans*|
+%% Joined item's for |keyans*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_joined_item_viii:w (#1)
@@ -13182,9 +13174,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_starred_item_viii:w, \@@_starred_item_viii_aux_i:w,
 %               \@@_starred_item_viii_aux_ii:w,}
-% The function \cs{@@_starred_item_viii:w} together with the specified
-% auxiliary functions |aux_i:w| and |aux_ii:w| execute \ics*{item*}
-% and \ics*{item*}\myoarg{content}.
+%   The function \cs{@@_starred_item_viii:w} together with the specified
+%   auxiliary functions |aux_i:w| and |aux_ii:w| execute \ics*{item*}
+%   and \ics*{item*}\myoarg{content}.
 % \iffalse
 %% Set \item*[content] for |keyans*| environment.
 % \fi
@@ -13230,13 +13222,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_starred_item_exec:,}
-% The function \cs{@@_starred_item_exec:} will be in charge of storing
-% the current \mymeta{label} for \ics*{item*} followed by the
-% \myoarg{content} for \ics*{item*}\myoarg{content} if
-% present in the \mymeta{sequence} and \mymeta{prop list} set by the
-% \mykey{save-ans} key. In this same function the keys \mykey{show-ans},
-% \mykey{show-pos} and \mykey{save-ref} are implemented.
-%
+%   The function \cs{@@_starred_item_exec:} will be in charge of storing
+%   the current \mymeta{label} for \ics*{item*} followed by the
+%   \myoarg{content} for \ics*{item*}\myoarg{content} if
+%   present in the \mymeta{sequence} and \mymeta{prop list} set by the
+%   \mykey{save-ans} key. In this same function the keys \mykey{show-ans},
+%   \mykey{show-pos} and \mykey{save-ref} are implemented.
 % \iffalse
 %% Set \item*[content] for |keyans*| environment.
 % \fi
@@ -13306,7 +13297,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
-%
 %
 % \subsubsection{Real definition of \cs{item} in \env{keyans*}}
 %
@@ -13590,7 +13580,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                   }
                   {
                     \tl_use:N \l_@@_print_keyans_starred_tl
-                    % \IfDocumentMetadataTF { \tag_tool:n {para/flattened} } { }
                     \begin{enumext*}[#2]
                       \keys_set:nn { enumext / level-1 }{ base-fix }
                       \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
