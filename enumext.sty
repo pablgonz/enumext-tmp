@@ -175,12 +175,12 @@
   }
 \clist_map_inline:nn { i, ii, iii, iv, vii } { \__enumext_tmp:n {#1} }
 %% Variables used by |\anspic| and |keyanspic|.
-\seq_new:N  \l__enumext_keyans_pic_body_seq
-\dim_new:N  \l__enumext_keyans_pic_width_dim
-\int_new:N  \l__enumext_keyans_pic_above_int
-\int_new:N  \l__enumext_keyans_pic_below_int
+\seq_new:N  \l__enumext_anspic_args_seq
+\dim_new:N  \l__enumext_anspic_mini_width_dim
+\int_new:N  \l__enumext_anspic_above_int
+\int_new:N  \l__enumext_anspic_below_int
 \bool_new:N \l__enumext_keyans_pic_star_bool
-\str_new:N  \l__enumext_keyans_pic_label_pos_str
+\str_new:N  \l__enumext_anspic_mini_pos_str
 \skip_new:N \g__enumext_keyans_pic_parsep_skip
 \box_new:N  \l__enumext_anspic_label_box
 \box_new:N  \l__enumext_anspic_body_box
@@ -4109,10 +4109,10 @@
     \bool_if:nTF { #1 }
       {
         \bool_set_true:N \l__enumext_keyans_pic_star_bool
-        \str_set:Nn \l__enumext_keyans_pic_label_pos_str { t }
+        \str_set:Nn \l__enumext_anspic_mini_pos_str { t }
       }
       {
-        \str_set:Nn \l__enumext_keyans_pic_label_pos_str { b }
+        \str_set:Nn \l__enumext_anspic_mini_pos_str { b }
       }
   }
 \cs_new_protected:Npn \__enumext_keyans_pic_skip_abs:N #1
@@ -4179,9 +4179,9 @@
       } { }
     \tl_if_novalue:nTF { #2 }
       {
-        \__enumext_keyans_pic_do:e { \seq_count:N \l__enumext_keyans_pic_body_seq }
+        \__enumext_anspic_print:e { \seq_count:N \l__enumext_anspic_args_seq }
       }
-      { \__enumext_keyans_pic_do:n { #2 } }
+      { \__enumext_anspic_print:n { #2 } }
     \IfDocumentMetadataTF
       {
         \tag_suspend:n {keyanspic}
@@ -4199,27 +4199,27 @@
       }
     %\bool_set_false:N \l__enumext_store_active_bool
   }
-\cs_new_protected:Nn \__enumext_keyans_pic_do:n
+\cs_new_protected:Nn \__enumext_anspic_print:n
   {
-    \clist_map_function:nN { #1 } \__enumext_keyans_pic_row:n
+    \clist_map_function:nN { #1 } \__enumext_anspic_row:n
   }
-\cs_generate_variant:Nn \__enumext_keyans_pic_do:n { e }
-\cs_new_protected:Nn \__enumext_keyans_pic_row:n
+\cs_generate_variant:Nn \__enumext_anspic_print:n { e }
+\cs_new_protected:Nn \__enumext_anspic_row:n
   {
-    \dim_set:Nn \l__enumext_keyans_pic_width_dim { \linewidth / #1 }
-    \int_set:Nn \l__enumext_keyans_pic_above_int { \l__enumext_keyans_pic_below_int }
-    \int_set:Nn \l__enumext_keyans_pic_below_int { \l__enumext_keyans_pic_above_int + #1 }
+    \dim_set:Nn \l__enumext_anspic_mini_width_dim { \linewidth / #1 }
+    \int_set:Nn \l__enumext_anspic_above_int { \l__enumext_anspic_below_int }
+    \int_set:Nn \l__enumext_anspic_below_int { \l__enumext_anspic_above_int + #1 }
     \int_step_inline:nnn
-      { \l__enumext_keyans_pic_above_int + 1 }
-      { \l__enumext_keyans_pic_below_int }
+      { \l__enumext_anspic_above_int + 1 }
+      { \l__enumext_anspic_below_int }
       {
         \IfDocumentMetadataTF
           {
             \tag_suspend:n {minipage}
           } { }
-        \begin{minipage}[ \l__enumext_keyans_pic_label_pos_str ]{ \l__enumext_keyans_pic_width_dim }
+        \begin{minipage}[ \l__enumext_anspic_mini_pos_str ]{ \l__enumext_anspic_mini_width_dim }
           \centering
-          \seq_item:Nn \l__enumext_keyans_pic_body_seq { ##1 }
+          \seq_item:Nn \l__enumext_anspic_args_seq { ##1 }
         \end{minipage}
         \IfDocumentMetadataTF
           {
@@ -4243,9 +4243,9 @@
       {
         \msg_error:nnnn { enumext } { command-wrong-place }{ anspic }{ keyans }
       }
-    \seq_put_right:Nn \l__enumext_keyans_pic_body_seq
+    \seq_put_right:Nn \l__enumext_anspic_args_seq
       {
-        \__enumext_anspic_code:nnn { #1 } { #2 } { #3 }
+        \__enumext_anspic_args:nnn { #1 } { #2 } { #3 }
       }
   }
 %% Set the height and depth off body arg in dim var for |\anspic|.
@@ -4268,10 +4268,10 @@
           } { }
       }
   }
-%% Process label and [opt] for |\anspic|.
+%% Process and store label and [opt] for |\anspic|.
 \cs_new_protected:Npn \__enumext_anspic_label:nn #1 #2
   {
-    \makebox[ \l__enumext_keyans_pic_width_dim ][ c ]
+    \makebox[ \l__enumext_anspic_mini_width_dim ][ c ]
       {
         \bool_if:nT { #1 }
           {
@@ -4293,9 +4293,8 @@
         \__enumext_keyans_show_item_opt:
       }
   }
-
-%% Internal code for |\anspic|.
-\cs_new_protected:Npn \__enumext_anspic_process:nnn #1 #2 #3
+%% Set position of labels for |\anspic|.
+\cs_new_protected:Npn \__enumext_anspic_label_pos:nnn #1 #2 #3
   {
     \stepcounter { enumXvi }
     \__enumext_anspic_body_dim:n { #3 }
@@ -4319,10 +4318,12 @@
           }
       }
   }
-\cs_new_protected:Nn \__enumext_anspic_code:nnn
+
+%% Process all code for |\anspic| with tagging PDF support.
+\cs_new_protected:Nn \__enumext_anspic_args:nnn
   {
     \__enumext_anspic_start_list_tag:
-    \__enumext_anspic_process:nnn { #1 } { #2 } { #3 }
+    \__enumext_anspic_label_pos:nnn { #1 } { #2 } { #3 }
     \__enumext_anspic_stop_start_list_tag:
     \\ #3
     \__enumext_anspic_stop_list_tag:
