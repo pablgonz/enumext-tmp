@@ -609,6 +609,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywordstyle  = [1]{\color{gray}},%
     keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,strut,smash, newlength, %
                         settowidth, dimeval, dimexpr, IfBooleanTF,footnotehyper, DocumentMetadata, %
+                        IfDocumentMetadataTF, %
                     },%
 % Other words 2
     keywordstyle  = [2]{\color{blue!75}},%
@@ -619,9 +620,9 @@ This work consists of the files enumext.dtx and enumext.sty.
                     multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, value, noindent, makebox,%
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, cs_new_eq, N, NN,%
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
-                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_space, skip_horizontal, %
+                    textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_spaces, skip_horizontal, %
                     triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean,newtheorem, %
-                    aux_i, aux_ii, aux_iii, w, },%
+                    aux_i, aux_ii, aux_iii, w, n},%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
     keywords      = [3]{document,article,setlength,pagestyle,definecolor, chapter,},%
@@ -634,7 +635,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywordstyle  = [5]{\color{red}},%
     keywords      = [5]{makeatletter,makeatother,let,verb,def,prevdepth,glue, if@minipage,if@hyper@item, if@noitemarg, %
                     splittopskip,showboxdepth,topskip,showoutput,nointerlineskip, ignorespaces, unskip, unkern, lastnodetype,%
-                    rightskip, @rightskip, @flushglue, hbadness},%
+                    rightskip, @rightskip, @flushglue, hbadness, hss},%
 % Reserved words 6 (optcolor) KEYS
     keywordstyle  = [6]{\color{optcolor}},%
     keywords      = [6]{save-ans,wrap-ans,save-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
@@ -10198,6 +10199,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_redefine_item:}
 %    The function \cs{@@_redefine_item:} will redefine the |\item|
 %    command in the \myenv*{enumext} environment adding |\item*|.
+%    This function are passed to \myvarenv{__@@_list_arg_two_X:} used
+%    in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext}).
 % \iffalse
 %% Redefinition of |\item| for |\item*[sym][sep]| in |enumext|.
 % \fi
@@ -10216,11 +10219,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
+% \medskip
+%
+% \begin{important}
+%  When \emph{tagged} \texttt{PDF} is active |\makelabel| is redefined as
+%  |\hss #1| and the only way to get the \mykey{align} key to work
+%  correctly is by using |\makebox|. The solution here is to redefine
+%  |\makelabel| conditionally using |\IfDocumentMetadataTF|.
+% \end{important}
+%
 % \begin{macro}{\@@_make_label:,\@@_make_label_std:,\@@_make_label_box:}
 %    The function \cs{@@_make_label:} redefine \ics{makelabel} for the keys \mykey{align}, \mykey{font},
 %    \mykey{wrap-label}, \mykey{wrap-label*} and |\item*| for \myenv*{enumext} environment.
+%    This function are passed to \myvarenv{__@@_list_arg_two_X:} used
+%    in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext}).
 % \iffalse
-%% Redefinition of |\makelabel| for |\item| and |\item*[sym][sep]| in |enumext|.
+%% Redefinition of |\makelabel| for |\item| and |\item*[sym][sep]| in |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_make_label:
@@ -10231,6 +10245,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       { \@@_make_label_std: }
   }
+%    \end{macrocode}
+%   Standard definition when |\DocumentMetadata| is not active.
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_make_label_std:
   {
     \RenewDocumentCommand \makelabel { m }
@@ -10247,6 +10264,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_gclear:N \g_@@_item_symbol_aux_tl
       }
   }
+%    \end{macrocode}
+%   Definition using |\makebox| when |\DocumentMetadata| is active.
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_make_label_box:
   {
     \RenewDocumentCommand \makelabel { m }
@@ -10268,11 +10288,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{important}*
-%  This functions are passed to \myvarenv{__@@_list_arg_two_X:} used
-%  in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext}).
-% \end{important}
 %
 % \subsection{Setting \texttt{item-sym*} and \texttt{item-pos*} keys}\label{key:item-starred}
 %
@@ -10320,7 +10335,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}[int]{unknown, \@@_keyans_unknown_keys:n, \@@_keyans_unknown_keys:nn}
 %    Define and set |unknown| key for  \myenv*{keyans} and \myenv*{keyans*} environments.
 % \iffalse
-%% Add keys |unknown| for |keyans| and |keyans*|.
+%% Add keys |unknown| for |keyans| and |keyans*| environments.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:n #1
@@ -10388,7 +10403,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}[int]{unknown, \@@_standar_unknown_keys:n, \@@_standar_unknown_keys:nn}
 %    Defines and set the key |unknown| for \myenv*{enumext} environment.
 % \iffalse
-%% Add keys |unknown| for |enumext|.
+%% Add keys |unknown| for |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:n #1
@@ -10428,7 +10443,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_keyans_default_item:n,}
 %    The function \cs{@@_keyans_default_item:n} executes the original
-%    behavior of the \ics*{item}.
+%    behavior of the \ics*{item} and \mykey{itemindent} key.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_default_item:n #1
   {
@@ -10459,7 +10474,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \tl_set_eq:NN \l_@@_store_current_label_tmp_tl \l_@@_label_v_tl
     \@@_keyans_show_left:n { #1 }
     \bool_set_true:N \l_@@_wrap_label_v_bool
-    \@@_item_std:w \tl_use:N \l_@@_fake_item_indent_v_tl \@@_keyans_show_item_opt:
+    \@@_item_std:w \tl_use:N \l_@@_fake_item_indent_v_tl
+    \@@_keyans_show_item_opt:
 %    \end{macrocode}
 %    Recover the original value of the current \mymeta{label} and \emph{store}
 %    it first in the \mymeta{prop list} (including the optional argument), run the
@@ -10482,8 +10498,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{keyans} environment. Here we need to use
 %    |\peek_remove_spaces:n| to prevent an unwanted space when using
 %    |\item*| in conjunction with the \mykey{itemindent} key.
+%    This function are passed to \myvarenv{__@@_list_arg_two_v:} used
+%    in the definition of the \myenv*{keyans} environment (\S\ref{ltx:second-arg}).
 % \iffalse
-%% Redefine |\item| for |keyans|.
+%% Redefine |\item| for |keyans| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_redefine_item:
@@ -10509,8 +10527,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_keyans_make_label:} redefine \ics{makelabel}
 %    for the keys \mykey{align}, \mykey{font}, \mykey{wrap-label}, \mykey{wrap-label*} and |\item*|
 %    for \myenv*{keyans} environment.
+%    This function are passed to \myvarenv{__@@_list_arg_two_v:} used
+%    in the definition of the \myenv*{keyans} environment (\S\ref{ltx:second-arg}).
 % \iffalse
-%% Redefine |\makelabel| for |keyans|.
+%% Redefine |\makelabel| for |keyans| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_make_label:
@@ -10521,6 +10541,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
       { \@@_keyans_make_label_std: }
   }
+%    \end{macrocode}
+%   Standard definition when |\DocumentMetadata| is not active.
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_make_label_std:
   {
     \RenewDocumentCommand \makelabel { m }
@@ -10535,6 +10558,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_use:N \l_@@_label_fill_right_v_tl
       }
   }
+%    \end{macrocode}
+%   Definition using |\makebox| when |\DocumentMetadata| is active.
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_make_label_box:
   {
     \RenewDocumentCommand \makelabel { m }
@@ -10552,11 +10578,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{important}*
-%    This functions are passed to \myvarenv{__@@_list_arg_two_v:} used
-%    in the definition of the \myenv*{keyans} environment (\S\ref{ltx:second-arg}).
-% \end{important}
 %
 % \subsection{Second argument of the lists}\label{ltx:second-arg}
 %

@@ -3338,7 +3338,7 @@
           { \__enumext_default_item:n {##2} }
       }
   }
-%% Redefinition of |\makelabel| for |\item| and |\item*[sym][sep]| in |enumext|.
+%% Redefinition of |\makelabel| for |\item| and |\item*[sym][sep]| in |enumext| environment.
 \cs_new_protected:Nn \__enumext_make_label:
   {
     \IfDocumentMetadataTF
@@ -3399,7 +3399,7 @@
     {level-1}{i}, {level-2}{ii}, {level-3}{iii}, {level-4}{iv}, {enumext*}{vii}
   }
   { \__enumext_tmp:nn #1 }
-%% Add keys |unknown| for |keyans| and |keyans*|.
+%% Add keys |unknown| for |keyans| and |keyans*| environments.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \keys_define:nn { enumext / #1 }
@@ -3441,7 +3441,7 @@
         \msg_error:nnnn { enumext } { starred-unknown-key-value } {#1} {#2}
       }
   }
-%% Add keys |unknown| for |enumext|.
+%% Add keys |unknown| for |enumext| environment.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \keys_define:nn { enumext / #1 }
@@ -3481,14 +3481,15 @@
     \tl_set_eq:NN \l__enumext_store_current_label_tmp_tl \l__enumext_label_v_tl
     \__enumext_keyans_show_left:n { #1 }
     \bool_set_true:N \l__enumext_wrap_label_v_bool
-    \__enumext_item_std:w \tl_use:N \l__enumext_fake_item_indent_v_tl \__enumext_keyans_show_item_opt:
+    \__enumext_item_std:w \tl_use:N \l__enumext_fake_item_indent_v_tl
+    \__enumext_keyans_show_item_opt:
     \tl_set_eq:NN \l__enumext_label_v_tl \l__enumext_store_current_label_tmp_tl
     \__enumext_keyans_addto_prop:n { #1 }
     \__enumext_keyans_store_ref:
     \__enumext_keyans_addto_seq:n { #1 }
     \int_gincr:N \g__enumext_check_starred_cmd_int
   }
-%% Redefine |\item| for |keyans|.
+%% Redefine |\item| for |keyans| environment.
 \cs_new_protected:Nn \__enumext_keyans_redefine_item:
   {
     \RenewDocumentCommand \item { s o }
@@ -3505,7 +3506,7 @@
           }
       }
   }
-%% Redefine |\makelabel| for |keyans|.
+%% Redefine |\makelabel| for |keyans| environment.
 \cs_new_protected:Nn \__enumext_keyans_make_label:
   {
     \IfDocumentMetadataTF
