@@ -3659,43 +3659,6 @@
       }
   }
 \clist_map_inline:nn { vii, viii } { \__enumext_tmp:n {#1} }
-%% Definition of |enumext| environment.
-\NewDocumentEnvironment{enumext}{ O{} }
-  {
-    \__enumext_safe_exec:
-    \__enumext_parse_keys:n {#1}
-    \__enumext_before_list:
-    \__enumext_start_store_level:
-    \__enumext_start_list:nn
-      { \tl_use:c { l__enumext_label_ \__enumext_level: _tl } }
-      {
-        \use:c { __enumext_list_arg_two_ \__enumext_level: : }
-        \__enumext_before_keys_exec:
-      }
-    \__enumext_set_item_width:
-    \__enumext_after_args_exec:
-  }
-  {
-    \__enumext_second_part:
-  }
-%% Set |\itemwidth| for |enumext|.
-\cs_new_protected:Nn \__enumext_set_item_width:
-  {
-    \dim_set:Nn \itemwidth
-      {
-        \linewidth
-      }
-    \dim_compare:nT
-      {
-        \dim_use:c { l__enumext_listoffset_ \__enumext_level: _dim } != \c_zero_dim
-      }
-      {
-        \dim_sub:Nn \itemwidth
-          {
-            \dim_use:c { l__enumext_listoffset_ \__enumext_level: _dim }
-          }
-      }
-  }
 %% Safe exec for |enumext| environment.
 \cs_new_protected:Nn \__enumext_safe_exec:
   {
@@ -3708,7 +3671,7 @@
     \bool_set_false:N \l__enumext_starred_bool
     \__enumext_is_on_first_level:
   }
-%% Parse |key=val| for enumext: Set default series and store keys in seq-name for \printkeyans.
+%% Parse |key=val| and set default series and store keys in seq-name for \printkeyans for |enumext| environment.
 \cs_new_protected:Npn \__enumext_parse_keys:n #1
   {
     \tl_if_novalue:nF {#1}
@@ -3727,7 +3690,7 @@
         \__enumext_store_active_keys:n {#1}
       }
   }
-%% Save level-structure in sequence for |save-ans| key in |enumext| environment.
+%% Start save level-structure in sequence for |save-ans| key in |enumext| environment.
 \cs_new_protected:Nn \__enumext_start_store_level:
   {
     \bool_lazy_all:nT
@@ -3757,36 +3720,13 @@
           }
       }
   }
+%% Stop save level-structure in sequence for |save-ans| key in |enumext| environment.
 \cs_new_protected:Nn \__enumext_stop_store_level:
   {
     \bool_if:cT { l__enumext_store_upper_level_ \__enumext_level: _bool }
       {
         \__enumext_store_level_close:
       }
-  }
-\cs_new_protected:Nn \__enumext_before_list:
-  {
-    \__enumext_vspace_above:
-    \__enumext_before_args_exec:
-    \__enumext_check_ans_active:
-%% Set |mini-env| width value.
-    \dim_compare:nNnT
-      { \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } } > { \c_zero_dim }
-      {
-        \dim_set:cn { l__enumext_minipage_left_ \__enumext_level: _dim }
-          {
-            \linewidth
-            - \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim }
-            - \dim_use:c { l__enumext_minipage_hsep_ \__enumext_level: _dim }
-          }
-%% Use internal minipage with |\nointerlineskip| and |\addvspace| here
-        \bool_set_true:c { l__enumext_minipage_active_ \__enumext_level: _bool }
-        \int_gincr:N \g__enumext_minipage_stat_int
-        \__enumext_minipage_add_space:
-        \noindent
-        \__enumext_mini_page{ \dim_use:c { l__enumext_minipage_left_ \__enumext_level: _dim } }
-      }
-    \__enumext_multicols_start:
   }
 \cs_new_protected:Nn \__enumext_multicols_start:
   {
@@ -3835,6 +3775,30 @@
         \__enumext_stop_store_level:
       }
   }
+\cs_new_protected:Nn \__enumext_before_list:
+  {
+    \__enumext_vspace_above:
+    \__enumext_before_args_exec:
+    \__enumext_check_ans_active:
+%% Set |mini-env| width value.
+    \dim_compare:nNnT
+      { \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim } } > { \c_zero_dim }
+      {
+        \dim_set:cn { l__enumext_minipage_left_ \__enumext_level: _dim }
+          {
+            \linewidth
+            - \dim_use:c { l__enumext_minipage_right_ \__enumext_level: _dim }
+            - \dim_use:c { l__enumext_minipage_hsep_ \__enumext_level: _dim }
+          }
+%% Use internal minipage with |\nointerlineskip| and |\addvspace| here
+        \bool_set_true:c { l__enumext_minipage_active_ \__enumext_level: _bool }
+        \int_gincr:N \g__enumext_minipage_stat_int
+        \__enumext_minipage_add_space:
+        \noindent
+        \__enumext_mini_page{ \dim_use:c { l__enumext_minipage_left_ \__enumext_level: _dim } }
+      }
+    \__enumext_multicols_start:
+  }
 \cs_new_protected:Nn \__enumext_second_part:
   {
     \bool_if:cTF { l__enumext_minipage_active_ \__enumext_level: _bool }
@@ -3857,48 +3821,46 @@
     \bool_set_false:N \l__enumext_standar_bool
     \__enumext_resume_save_counter:
   }
+%% Set |\itemwidth| for |enumext| environment.
+\cs_new_protected:Nn \__enumext_set_item_width:
+  {
+    \dim_set:Nn \itemwidth { \linewidth }
+    \dim_compare:nT
+      {
+        \dim_use:c { l__enumext_listoffset_ \__enumext_level: _dim } != \c_zero_dim
+      }
+      {
+        \dim_sub:Nn \itemwidth
+          {
+            \dim_use:c { l__enumext_listoffset_ \__enumext_level: _dim }
+          }
+      }
+  }
+%% Definition of |enumext| environment.
+\NewDocumentEnvironment{enumext}{ O{} }
+  {
+    \__enumext_safe_exec:
+    \__enumext_parse_keys:n {#1}
+    \__enumext_before_list:
+    \__enumext_start_store_level:
+    \__enumext_start_list:nn
+      { \tl_use:c { l__enumext_label_ \__enumext_level: _tl } }
+      {
+        \use:c { __enumext_list_arg_two_ \__enumext_level: : }
+        \__enumext_before_keys_exec:
+      }
+    \__enumext_set_item_width:
+    \__enumext_after_args_exec:
+  }
+  {
+    \__enumext_second_part:
+  }
 %% Execute |check-ans| key out of |enumext| environment.
 \__enumext_after_env:nn {enumext}
   {
     \__enumext_execute_after_env:
   }
-%% Definition of |keyans| environment.
-\NewDocumentEnvironment{keyans}{ O{} }
-  {
-    \__enumext_keyans_safe_exec:
-    \__enumext_keyans_parse_keys:n {#1}
-    \__enumext_before_list_v:
-    \__enumext_start_list:nn
-      { \tl_use:N \l__enumext_label_v_tl }
-      {
-        \__enumext_list_arg_two_v:
-        \__enumext_before_keys_exec_v:
-      }
-    \__enumext_keyans_set_item_width:
-    \__enumext_after_args_exec_v:
-  }
-  {
-    \__enumext_check_starred_cmd:n { item }
-    \__enumext_second_part_v:
-  }
-\cs_new_protected:Nn \__enumext_keyans_set_item_width:
-  {
-    \dim_set:Nn \itemwidth
-      {
-        \linewidth
-      }
-    \dim_compare:nT
-      {
-        \l__enumext_listoffset_v_dim != \c_zero_dim
-      }
-      {
-        \dim_sub:Nn \itemwidth
-          {
-            \l__enumext_listoffset_v_dim
-          }
-      }
-  }
-%% Function for check nested level in |keyans|.
+%% Function for check nested level in |keyans| environment.
 \cs_new_protected:Nn \__enumext_keyans_safe_exec:
   {
     \bool_if:NF \l__enumext_store_active_bool
@@ -3924,7 +3886,7 @@
   {
     \keys_set:nn { enumext / keyans } {#1}
   }
-%% Iternal functions for |keyans| environment.
+%% Internal functions for |keyans| environment.
 \cs_new_protected:Nn \__enumext_before_list_v:
   {
     \__enumext_vspace_above_v:
@@ -4001,6 +3963,37 @@
     \bool_set_false:N \l__enumext_keyans_env_bool
     \__enumext_after_stop_list_v:
     \__enumext_vspace_below_v:
+  }
+%% Set |\itemwidth| for |keyans| environment.
+\cs_new_protected:Nn \__enumext_keyans_set_item_width:
+  {
+    \dim_set:Nn \itemwidth { \linewidth }
+    \dim_compare:nT
+      {
+        \l__enumext_listoffset_v_dim != \c_zero_dim
+      }
+      {
+        \dim_sub:Nn \itemwidth { \l__enumext_listoffset_v_dim }
+      }
+  }
+%% Definition of |keyans| environment.
+\NewDocumentEnvironment{keyans}{ O{} }
+  {
+    \__enumext_keyans_safe_exec:
+    \__enumext_keyans_parse_keys:n {#1}
+    \__enumext_before_list_v:
+    \__enumext_start_list:nn
+      { \tl_use:N \l__enumext_label_v_tl }
+      {
+        \__enumext_list_arg_two_v:
+        \__enumext_before_keys_exec_v:
+      }
+    \__enumext_keyans_set_item_width:
+    \__enumext_after_args_exec_v:
+  }
+  {
+    \__enumext_check_starred_cmd:n { item }
+    \__enumext_second_part_v:
   }
 %% Implement socket for tagging support in |enumext*| and |keyans*| environments.
 \socket_new:nn {tagsupport/enumext/starred}{ 1 }
@@ -4235,7 +4228,7 @@
       }
     \par
   }
-%% Define |\anspic| for |keyanspic|.
+%% Define |\anspic| for |keyanspic| environment.
 \NewDocumentCommand \anspic { s o +m }
   {
     \bool_if:NF \l__enumext_store_active_bool
@@ -4252,11 +4245,11 @@
       }
     \seq_put_right:Nn \l__enumext_keyans_pic_body_seq
       {
-        \__enumext_keyans_anspic_code:nnn { #1 } { #2 } { #3 }
+        \__enumext_anspic_code:nnn { #1 } { #2 } { #3 }
       }
   }
-%% Internal code for |\anspic|.
-\cs_new_protected:Npn \__enumext_anspic_box_set_dim:n #1
+%% Set the height and depth off body arg in dim var for |\anspic|.
+\cs_new_protected:Npn \__enumext_anspic_body_dim:n #1
   {
     \bool_if:NF \l__enumext_keyans_pic_star_bool
       {
@@ -4275,6 +4268,7 @@
           } { }
       }
   }
+%% Process label and [opt] for |\anspic|.
 \cs_new_protected:Npn \__enumext_anspic_label:nn #1 #2
   {
     \makebox[ \l__enumext_keyans_pic_width_dim ][ c ]
@@ -4299,10 +4293,12 @@
         \__enumext_keyans_show_item_opt:
       }
   }
-\cs_new_protected:Npn \__enumext_keyans_anspic_label:nnn #1 #2 #3
+
+%% Internal code for |\anspic|.
+\cs_new_protected:Npn \__enumext_anspic_process:nnn #1 #2 #3
   {
     \stepcounter { enumXvi }
-    \__enumext_anspic_box_set_dim:n { #3 }
+    \__enumext_anspic_body_dim:n { #3 }
     \bool_if:NTF \l__enumext_keyans_pic_star_bool
       {
         \__enumext_anspic_label:nn { #1 } { #2 }
@@ -4323,10 +4319,10 @@
           }
       }
   }
-\cs_new_protected:Nn \__enumext_keyans_anspic_code:nnn
+\cs_new_protected:Nn \__enumext_anspic_code:nnn
   {
     \__enumext_anspic_start_list_tag:
-    \__enumext_keyans_anspic_label:nnn { #1 } { #2 } { #3 }
+    \__enumext_anspic_process:nnn { #1 } { #2 } { #3 }
     \__enumext_anspic_stop_start_list_tag:
     \\ #3
     \__enumext_anspic_stop_list_tag:

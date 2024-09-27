@@ -10856,68 +10856,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The environment \env{enumext}}\label{env:enumext}
 %
-% \begin{macro}{enumext}
-%    We create the \myenv*{enumext} environment based on \myenv{list}
-%    environment by levels.
-% \iffalse
-%% Definition of |enumext| environment.
-% \fi
-%    \begin{macrocode}
-\NewDocumentEnvironment{enumext}{ O{} }
-  {
-    \@@_safe_exec:
-    \@@_parse_keys:n {#1}
-    \@@_before_list:
-    \@@_start_store_level:
-    \@@_start_list:nn
-      { \tl_use:c { l_@@_label_ \@@_level: _tl } }
-      {
-        \use:c { @@_list_arg_two_ \@@_level: : }
-        \@@_before_keys_exec:
-      }
-    \@@_set_item_width:
-    \@@_after_args_exec:
-  }
-%    \end{macrocode}
-%   For compatibility with \emph{tagged} \texttt{PDF}, the closing of the
-%   \myenv{list} environment is executed within the \cs{enumext_multicols_stop:}
-%   function which, along with the rest of the actions, is executed through
-%   the \cs{enumext_second_part:} function.
-%    \begin{macrocode}
-  {
-    \@@_second_part:
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_set_item_width:}\label{dim:item-width-enumext}
-%   The function \cs{@@_set_item_width:} will set the value of |\itemwidth|
-%   taking into account the value established by the \mykey{list-offset}
-%   key for each level of the environment.
-% \iffalse
-%% Set |\itemwidth| for |enumext|.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_set_item_width:
-  {
-    \dim_set:Nn \itemwidth
-      {
-        \linewidth
-      }
-    \dim_compare:nT
-      {
-        \dim_use:c { l_@@_listoffset_ \_@@_level: _dim } != \c_zero_dim
-      }
-      {
-        \dim_sub:Nn \itemwidth
-          {
-            \dim_use:c { l_@@_listoffset_ \_@@_level: _dim }
-          }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\@@_safe_exec:}\label{fun:enumext:safe-exe}
 %   The \cs{@@_safe_exec:} function first call the function \cs{@@_internal_mini_page:} to create
 %   the environment \myvarenv*{__@@_mini_page}, then the function
@@ -10958,7 +10896,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  and reprocess the \mymeta{keys} to pass them to the storage \mymeta{sequence}
 %  if the key \mykey{save-key} is not active.
 % \iffalse
-%% Parse |key=val| for enumext: Set default series and store keys in seq-name for \printkeyans.
+%% Parse |key=val| and set default series and store keys in seq-name for \printkeyans for |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_parse_keys:n #1
@@ -10982,13 +10920,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_start_store_level:, \@@_stop_store_level:}
-%    The \cs{@@_start_store_level:} and \cs{@@_stop_store_level:}
-%    functions activate the level saving mechanism for storage in
-%    \mymeta{sequence} for the command \ics*{anskey} and the
-%    environment \myenv*{anskey*}.
+% \begin{macro}{\@@_start_store_level:}
+%    The \cs{@@_start_store_level:} function activate the level saving
+%    mechanism for \emph{storage} in \mymeta{sequence} for the command
+%   \ics*{anskey} and the environment \myenv*{anskey*}.
 % \iffalse
-%% Save level-structure in sequence for |save-ans| key in |enumext| environment.
+%% Start save level-structure in sequence for |save-ans| key in |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level:
@@ -11025,7 +10962,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%   Close the stored structure.
+% \end{macro}
+%
+% \begin{macro}{\@@_stop_store_level:}
+%    The \cs{@@_stop_store_level:} function stop the level saving
+%    mechanism for \emph{storage} in \mymeta{sequence} for the command
+%    \ics*{anskey} and the environment \myenv*{anskey*}.
+% \iffalse
+%% Stop save level-structure in sequence for |save-ans| key in |enumext| environment.
+% \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_stop_store_level:
   {
@@ -11033,67 +10978,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \@@_store_level_close:
       }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_before_list:}
-%    The function \cs{@@_before_list:} first calls the function
-%    \cs{@@_vspace_above:} used by the keys \mykey{above} and
-%    \mykey{above*}, then calls the function \cs{@@_before_args_exec:}
-%    used by the key \mykey{before*} and finally execute the function
-%    \cs{@@_check_ans_active:} for the check answer mechanism.
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_before_list:
-  {
-    \@@_vspace_above:
-    \@@_before_args_exec:
-    \@@_check_ans_active:
-%    \end{macrocode}
-%    When the \mykey{mini-env} key is active it will set the value of the
-%    \myvarenv{l__@@_minipage_right_X_dim} to be the \emph{width} of the \myvarenv*{__@@_mini_page}
-%    environment on the \emph{\enquote{right side}}, using this value together with the value
-%    of the \myvarenv{l__@@_minipage_hsep_X_dim} set by the \mykey{mini-sep} key,
-%    the value of \myvarenv{l__@@_minipage_left_X_dim} will be set, which will be
-%    the \emph{width} of \myvarenv*{__@@_mini_page} environment on the
-%    \emph{\enquote{left side}}, always having a current \ics{linewidth}
-%    as \emph{maximum width} between them.
-% \iffalse
-%% Set |mini-env| width value.
-% \fi
-%    \begin{macrocode}
-    \dim_compare:nNnT
-      { \dim_use:c { l_@@_minipage_right_ \@@_level: _dim } } > { \c_zero_dim }
-      {
-        \dim_set:cn { l_@@_minipage_left_ \@@_level: _dim }
-          {
-            \linewidth
-            - \dim_use:c { l_@@_minipage_right_ \@@_level: _dim }
-            - \dim_use:c { l_@@_minipage_hsep_ \@@_level: _dim }
-          }
-%    \end{macrocode}
-%    The boolean variable \myvarenv{l__@@_minipage_active_X_bool} will be
-%    activated and the integer variable \cs{g_@@_minipage_stat_int}
-%    used by the \ics*{miniright} command will be incremented, then
-%    the function \cs{@@_minipage_add_space:} is called and the
-%    \myvarenv*{__@@_mini_page} environment on the \emph{\enquote{left
-%    side}} will be initialized followed by the \emph{\enquote{vertical spacing}}
-%    applied to preserve the \emph{\enquote{baseline}} between the \emph{left}
-%    and \emph{right} side environments.
-%    After these actions, the function \cs{@@_multicols_start:} is
-%    called to handle the \myenv{multicols} environment.
-%
-% \iffalse
-%% Use internal minipage with |\nointerlineskip| and |\addvspace| here
-% \fi
-%    \begin{macrocode}
-        \bool_set_true:c { l_@@_minipage_active_ \@@_level: _bool }
-        \int_gincr:N \g_@@_minipage_stat_int
-        \@@_minipage_add_space:
-        \noindent
-        \@@_mini_page{ \dim_use:c { l_@@_minipage_left_ \@@_level: _dim } }
-      }
-    \@@_multicols_start:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11146,9 +11030,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_multicols_stop:}
-%    The function \cs{@@_multicols_stop:} will stop the
-%    \myenv{multicols} environment and apply our
-%    \emph{\enquote{vertical adjust}} spacing.
+%    The function \cs{@@_multicols_stop:} will stop the \myenv{multicols}
+%    environment and apply our \emph{\enquote{vertical adjust}} spacing.
+%    For compatibility with \emph{tagged} \texttt{PDF}, the closing of the
+%    \myenv{list} environment is executed here along with \cs{@@_stop_store_level:}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_multicols_stop:
   {
@@ -11169,6 +11054,67 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\@@_before_list:}
+%    The function \cs{@@_before_list:} first calls the function
+%    \cs{@@_vspace_above:} used by the keys \mykey{above} and
+%    \mykey{above*}, then calls the function \cs{@@_before_args_exec:}
+%    used by the key \mykey{before*} and finally execute the function
+%    \cs{@@_check_ans_active:} for the check answer mechanism.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_before_list:
+  {
+    \@@_vspace_above:
+    \@@_before_args_exec:
+    \@@_check_ans_active:
+%    \end{macrocode}
+%    When the \mykey{mini-env} key is active it will set the value of the
+%    \myvarenv{l__@@_minipage_right_X_dim} to be the \emph{width} of the \myvarenv*{__@@_mini_page}
+%    environment on the \emph{\enquote{right side}}, using this value together with the value
+%    of the \myvarenv{l__@@_minipage_hsep_X_dim} set by the \mykey{mini-sep} key,
+%    the value of \myvarenv{l__@@_minipage_left_X_dim} will be set, which will be
+%    the \emph{width} of \myvarenv*{__@@_mini_page} environment on the
+%    \emph{\enquote{left side}}, always having a current \ics{linewidth}
+%    as \emph{maximum width} between them.
+% \iffalse
+%% Set |mini-env| width value.
+% \fi
+%    \begin{macrocode}
+    \dim_compare:nNnT
+      { \dim_use:c { l_@@_minipage_right_ \@@_level: _dim } } > { \c_zero_dim }
+      {
+        \dim_set:cn { l_@@_minipage_left_ \@@_level: _dim }
+          {
+            \linewidth
+            - \dim_use:c { l_@@_minipage_right_ \@@_level: _dim }
+            - \dim_use:c { l_@@_minipage_hsep_ \@@_level: _dim }
+          }
+%    \end{macrocode}
+%    The boolean variable \myvarenv{l__@@_minipage_active_X_bool} will be
+%    activated and the integer variable \cs{g_@@_minipage_stat_int}
+%    used by the \ics*{miniright} command will be incremented, then
+%    the function \cs{@@_minipage_add_space:} is called and the
+%    \myvarenv*{__@@_mini_page} environment on the \emph{\enquote{left
+%    side}} will be initialized followed by the \emph{\enquote{vertical spacing}}
+%    applied to preserve the \emph{\enquote{baseline}} between the \emph{left}
+%    and \emph{right} side environments.
+%    After these actions, the function \cs{@@_multicols_start:} is
+%    called to handle the \myenv{multicols} environment.
+% \iffalse
+%% Use internal minipage with |\nointerlineskip| and |\addvspace| here
+% \fi
+%    \begin{macrocode}
+        \bool_set_true:c { l_@@_minipage_active_ \@@_level: _bool }
+        \int_gincr:N \g_@@_minipage_stat_int
+        \@@_minipage_add_space:
+        \noindent
+        \@@_mini_page{ \dim_use:c { l_@@_minipage_left_ \@@_level: _dim } }
+      }
+    \@@_multicols_start:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 %
 % \begin{macro}{\@@_second_part:}
 %    The function \cs{@@_second_part:} first check the state of
@@ -11210,6 +11156,59 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_resume_save_counter:
   }
 %    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_set_item_width:}\label{dim:item-width-enumext}
+%   The function \cs{@@_set_item_width:} will set the value of |\itemwidth|
+%   taking into account the value established by the \mykey{list-offset}
+%   key for each level of the environment.
+% \iffalse
+%% Set |\itemwidth| for |enumext| environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_set_item_width:
+  {
+    \dim_set:Nn \itemwidth { \linewidth }
+    \dim_compare:nT
+      {
+        \dim_use:c { l_@@_listoffset_ \_@@_level: _dim } != \c_zero_dim
+      }
+      {
+        \dim_sub:Nn \itemwidth
+          {
+            \dim_use:c { l_@@_listoffset_ \_@@_level: _dim }
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{enumext}
+%    Now create the \myenv*{enumext} environment based on \myenv{list}
+%    environment by levels.
+% \iffalse
+%% Definition of |enumext| environment.
+% \fi
+%    \begin{macrocode}
+\NewDocumentEnvironment{enumext}{ O{} }
+  {
+    \@@_safe_exec:
+    \@@_parse_keys:n {#1}
+    \@@_before_list:
+    \@@_start_store_level:
+    \@@_start_list:nn
+      { \tl_use:c { l_@@_label_ \@@_level: _tl } }
+      {
+        \use:c { @@_list_arg_two_ \@@_level: : }
+        \@@_before_keys_exec:
+      }
+    \@@_set_item_width:
+    \@@_after_args_exec:
+  }
+  {
+    \@@_second_part:
+  }
+%    \end{macrocode}
 %   As we don't want our check to be executed \mykey{check-ans} by levels
 %   but on the complete list, we will take it out of the \myenv*{enumext}
 %   environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
@@ -11231,58 +11230,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \emph{nesting} and the way the \emph{answers} (choice) will be stored and checked, this
 % environment is intended exclusively for \emph{\enquote{multiple choice questions}}.
 %
-% \begin{macro}{keyans}
-%    Now we define the environment \myenv*{keyans} also based on lists.
-% \iffalse
-%% Definition of |keyans| environment.
-% \fi
-%    \begin{macrocode}
-\NewDocumentEnvironment{keyans}{ O{} }
-  {
-    \@@_keyans_safe_exec:
-    \@@_keyans_parse_keys:n {#1}
-    \@@_before_list_v:
-    \@@_start_list:nn
-      { \tl_use:N \l_@@_label_v_tl }
-      {
-        \@@_list_arg_two_v:
-        \@@_before_keys_exec_v:
-      }
-    \@@_keyans_set_item_width:
-    \@@_after_args_exec_v:
-  }
-  {
-    \@@_check_starred_cmd:n { item }
-    \@@_second_part_v:
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_set_item_width:}\label{dim:item-width-keyans}
-%   The function \cs{@@_keyans_set_item_width:} will set the value of |\itemwidth|
-%   taking into account the value established by the \mykey{list-offset}
-%   key.
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_set_item_width:
-  {
-    \dim_set:Nn \itemwidth
-      {
-        \linewidth
-      }
-    \dim_compare:nT
-      {
-        \l_@@_listoffset_v_dim != \c_zero_dim
-      }
-      {
-        \dim_sub:Nn \itemwidth
-          {
-            \l_@@_listoffset_v_dim
-          }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\@@_keyans_safe_exec:}
 %   The \myenv*{keyans} environment will only be available if the
 %   \mykey{save-ans} key is active and can only be used at the
@@ -11290,7 +11237,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   We do not want the environment to be nested, so we will set a maximum at this point.
 %   If the conditions are not met, an error message will be returned.
 % \iffalse
-%% Function for check nested level in |keyans|.
+%% Function for check nested level in |keyans| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_safe_exec:
@@ -11334,7 +11281,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %               \@@_keyans_multicols_stop:, \@@_second_part_v:}
 %    Same implementation as the one used in the \myenv*{enumext} environment.
 % \iffalse
-%% Iternal functions for |keyans| environment.
+%% Internal functions for |keyans| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_list_v:
@@ -11413,6 +11360,55 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_set_false:N \l_@@_keyans_env_bool
     \@@_after_stop_list_v:
     \@@_vspace_below_v:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_keyans_set_item_width:}\label{dim:item-width-keyans}
+%   The function \cs{@@_keyans_set_item_width:} will set the value of |\itemwidth|
+%   taking into account the value established by the \mykey{list-offset}
+%   key.
+% \iffalse
+%% Set |\itemwidth| for |keyans| environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_keyans_set_item_width:
+  {
+    \dim_set:Nn \itemwidth { \linewidth }
+    \dim_compare:nT
+      {
+        \l_@@_listoffset_v_dim != \c_zero_dim
+      }
+      {
+        \dim_sub:Nn \itemwidth { \l_@@_listoffset_v_dim }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{keyans}
+%    Now we define the environment \myenv*{keyans} also based on lists.
+% \iffalse
+%% Definition of |keyans| environment.
+% \fi
+%    \begin{macrocode}
+\NewDocumentEnvironment{keyans}{ O{} }
+  {
+    \@@_keyans_safe_exec:
+    \@@_keyans_parse_keys:n {#1}
+    \@@_before_list_v:
+    \@@_start_list:nn
+      { \tl_use:N \l_@@_label_v_tl }
+      {
+        \@@_list_arg_two_v:
+        \@@_before_keys_exec_v:
+      }
+    \@@_keyans_set_item_width:
+    \@@_after_args_exec_v:
+  }
+  {
+    \@@_check_starred_cmd:n { item }
+    \@@_second_part_v:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11586,10 +11582,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \mymeta{label} underneath, adjusting widths according to the
 % options passed to the environment.
 %
-%^^A Again it is necessary to \enquote{adjust} the spacing, both vertical and
-%^^A horizontal, to obtain an output like the one shown in the figure
-%^^A \ref{fig:keyanspic}.
-%
 % \begin{figure}[ht]
 %   \centering
 %   \begin{tikzpicture}[line cap=round,line join=round,x=0.8cm,y=0.8cm,every node/.style={font=\footnotesize}]
@@ -11739,7 +11731,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   Now we increment the |enumXv| counter of the \myenv*{keyans}
 %   environment and save the total height of our \mymeta{label} in
 %   \cs{l_@@_anspic_label_htdp_dim} and we will adjust the values ​​of
-%   |\parsep| only if the starred argument is NOT present (default version).
+%   |\parsep| only if the \emph{starred argument} is NOT present (default version).
 %    \begin{macrocode}
     \bool_if:NF \l_@@_keyans_pic_star_bool
       {
@@ -11770,6 +11762,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{important}
+%    For compatibility with \emph{tagged} PDF we must use the |\begin{list}|
+%    form and a lot of conditional code using |\IfDocumentMetadataTF|.
+% \end{important}
+%
+% \smallskip
 %
 % \begin{macro}{keyanspic}
 %    Now we define the environment \myenv*{keyanspic} based on list.
@@ -11858,7 +11857,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_keyans_pic_row:n}
 %    The function \cs{@@_keyans_pic_row:n} will set the widths for
 %    the \myenv{minipage} environments and place the content \mymeta{stored}
-%    by \ics*{anspic*} in the \cs{l_@@_keyans_pic_body_seq} sequence inside
+%    by \ics*{anspic} in the \cs{l_@@_keyans_pic_body_seq} sequence inside
 %    them.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_pic_row:n
@@ -11889,25 +11888,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \subsubsection{The command \cs{anspic}}\label{cmd:anspic}
+% The \ics*{anspic} command take three arguments, the
+% starred versions (|*|)  \ics*{anspic*} and \ics*{anspic*}\myoarg{content}
+% store the current \mymeta{label} next to the
+% \myoarg{content} if it is present in the \mymeta{sequence} and \mymeta{prop list}
+% defined by \mykey{save-ans} key. This command is used as a
+% replacement for |\item| in the \myenv*{keyanspic} environment.
 %
 % \begin{macro}{\anspic}
-%    The \ics*{anspic} command take three arguments, the
-%    starred (|*|) versions \ics*{anspic*} and \ics*{anspic*}\myoarg{content}
-%    store the current \mymeta{label} next to the
-%    \myoarg{content} if it is present in the \mymeta{sequence} and \mymeta{prop list}
-%    defined by \mykey{save-ans} key. This command is used as a
-%    replacement for |\item| in the \myenv*{keyanspic} environment.
+%    We check that the command is active in the \myenv*{keyanspic}
+%    environment only if the \mykey{save-ans} key is present, otherwise
+%    we return an error.
+%    The three arguments are handled by the function
+%    \cs{@@_anspic_code:nnn} and stored in the sequence
+%    \cs{l_@@_keyans_pic_body_seq} which is processed by the
+%    \myenv*{keyanspic} environment.
 % \iffalse
-%% Define |\anspic| for |keyanspic|.
+%% Define |\anspic| for |keyanspic| environment.
 % \fi
 %    \begin{macrocode}
 \NewDocumentCommand \anspic { s o +m }
   {
-%    \end{macrocode}
-%    We check that the command is active in the \myenv*{keyanspic}
-%    environment only if the \mykey{save-ans} key is present, otherwise
-%    we return an error.
-%    \begin{macrocode}
     \bool_if:NF \l_@@_store_active_bool
       {
         \msg_error:nnnn { enumext } { wrong-place }{ keyanspic }{ save-ans }
@@ -11920,31 +11921,24 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \msg_error:nnnn { enumext } { command-wrong-place }{ anspic }{ keyans }
       }
-%    \end{macrocode}
-%    The three arguments are handled by the function
-%    \cs{@@_keyans_anspic_code:nnn} and stored in the sequence
-%    \cs{l_@@_keyans_pic_body_seq} which is processed by the
-%    \myenv*{keyanspic} environment.
-%    \begin{macrocode}
     \seq_put_right:Nn \l_@@_keyans_pic_body_seq
       {
-        \@@_keyans_anspic_code:nnn { #1 } { #2 } { #3 }
+        \@@_anspic_code:nnn { #1 } { #2 } { #3 }
       }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_anspic_box_set_dim:n, \@@_keyans_anspic_label:nnn,
-%               \@@_keyans_anspic_code:nnn, }
-%    The function \cs{@@_keyans_anspic_code:nnn} will be in charge of
-%    handling the \emph{\enquote{counter}} and \mymeta{label},
-%    which will have the same configuration as the \myenv*{keyans}
-%    environment.
+% \begin{macro}{\@@_anspic_body_dim:n,}
+%   The \cs{@@_anspic_body_dim:n} function will set the value of
+%   \cs{l_@@_anspic_body_htdp_dim} equal to the height and depth of the
+%   mandatory argument if the \myenv*{keyanspic}|*| environment is used with
+%   the \emph{starred argument}.
 % \iffalse
-%% Internal code for |\anspic|.
+%% Set the height and depth off body arg in dim var for |\anspic|.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_anspic_box_set_dim:n #1
+\cs_new_protected:Npn \@@_anspic_body_dim:n #1
   {
     \bool_if:NF \l_@@_keyans_pic_star_bool
       {
@@ -11963,7 +11957,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           } { }
       }
   }
-% process label
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_anspic_label:nn,}
+%   The \cs{@@_anspic_label:nn} function will process inside |\makebox| the
+%   starred |*| and optional argument passed to the command. Here we will
+%   store our \mymeta{label} and optional argument in \mymeta{prop list}
+%   and \mymeta{sequence} and execute the \mykey{show-ans},
+%   \mykey{show-pos}, \mykey{font}, \mykey{wrap-label} and \mykey{wrap-opt}
+%   keys.
+% \iffalse
+%% Process label and [opt] for |\anspic|.
+% \fi
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_anspic_label:nn #1 #2
   {
     \makebox[ \l_@@_keyans_pic_width_dim ][ c ]
@@ -11988,10 +11995,25 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_keyans_show_item_opt:
       }
   }
-\cs_new_protected:Npn \@@_keyans_anspic_label:nnn #1 #2 #3
+%    \end{macrocode}
+% \end{macro}
+%
+%
+
+% \begin{macro}{\@@_anspic_label:nnn, \@@_anspic_code:nnn, }
+%    The function \cs{@@_anspic_code:nnn} will be in charge of
+%    handling the \emph{\enquote{counter}} and \mymeta{label},
+%    which will have the same configuration as the \myenv*{keyans}
+%    environment.
+% \iffalse
+%% Internal code for |\anspic|.
+% \fi
+%    \begin{macrocode}
+% process label
+\cs_new_protected:Npn \@@_anspic_process:nnn #1 #2 #3
   {
     \stepcounter { enumXvi }
-    \@@_anspic_box_set_dim:n { #3 }
+    \@@_anspic_body_dim:n { #3 }
     \bool_if:NTF \l_@@_keyans_pic_star_bool
       {
         \@@_anspic_label:nn { #1 } { #2 }
@@ -12012,10 +12034,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
   }
-\cs_new_protected:Nn \@@_keyans_anspic_code:nnn
+\cs_new_protected:Nn \@@_anspic_code:nnn
   {
     \@@_anspic_start_list_tag:
-    \@@_keyans_anspic_label:nnn { #1 } { #2 } { #3 }
+    \@@_anspic_process:nnn { #1 } { #2 } { #3 }
     \@@_anspic_stop_start_list_tag:
     \\ #3
     \@@_anspic_stop_list_tag:
