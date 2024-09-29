@@ -1404,7 +1404,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{important}
 %  At the moment the \mypkg{footnotehyper} package is not compatible
-%  with \hologo{LaTeX} \emph{tagged} \texttt{PDF}.
+%  with \emph{tagged} \texttt{PDF}.
 % \end{important}
 %
 % \section{The environments provided}
@@ -1463,11 +1463,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % command and locally using \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 % in the environment.
 %
-% \medskip
+% \smallskip
 %
 % Some considerations to take into account for this environment:
 %
-% \begin{itemize}
+% \begin{itemize}[nosep]
 % \item The environment cannot be nested within itself or in the
 %   environment \myenv*{keyans*}, but it can be nested within
 %   \myenv*{enumext} and vice versa.
@@ -13066,9 +13066,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%   As we don't want our check to be executed \mykey{check-ans} by levels but on the
-%   complete list, we will take it out of the \myenv*{enumext*}
-%   environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
+% \end{macro}
+%
+% As we don't want our check to be executed \mykey{check-ans} by levels
+% but on the complete list, we will take it out of the \myenv*{enumext*}
+% environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
 % \iffalse
 %% Execute |check-ans| key out of |enumext*| environment.
 % \fi
@@ -13078,17 +13080,16 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_execute_after_env:
   }
 %    \end{macrocode}
-% \end{macro}
 %
 % \subsection{The environment \env{keyans*}}\label{env:keyans-starred}
 %
 % \begin{macro}{keyans*}
-%    First we will generate the environment and we will give a
-%    temporary definition to \cs{@@_stop_item_tmp_viii:} equal to
-%    \cs{@@_first_item_tmp_viii:} and next to |\item| equal to \cs{@@_start_item_tmp_viii:}
-%    which we will redefine later. The implementation of this environment
-%    is the same as that used by the \myenv*{enumext*} environment except
-%    for the \cs{@@_check_starred_cmd:n} function added in the second part.
+%   First we will generate the environment and we will give a temporary
+%   definition to \cs{@@_stop_item_tmp_viii:} equal to \cs{@@_first_item_tmp_viii:}
+%   and next to |\item| equal to \cs{@@_start_item_tmp_viii:} which we
+%   will redefine later. The implementation of this environment is the
+%   same as that used by the \myenv*{enumext*} environment except for the
+%   \cs{@@_check_starred_cmd:n} function added in the second part.
 % \iffalse
 %% Define |keyans*| environment.
 % \fi
