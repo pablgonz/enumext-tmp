@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-09-25}
+  {2024-09-28}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -106,7 +106,7 @@
     \dim_new:c  { l__enumext_itemindent_#1_dim      }
   }
 \clist_map_inline:nn { i, ii, iii, iv, v, vi, vii, viii } { \__enumext_tmp:n {#1} }
-%% Variables used by |columns| and |align| keys in |enumext| and |keyans|.
+%% Variables used by |columns| and |align| keys in |enumext| and |keyans| environments.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \skip_new:c  { l__enumext_multicols_above_#1_skip }
@@ -2341,7 +2341,7 @@
       }
   }
 \clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
-%% Add keys |mark-pos|, |show-pos| and |show-ans| for |keyans| and |keyans*|.
+%% Add keys |mark-pos|, |show-pos| and |show-ans| keys for |keyans| and |keyans*| environments.
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \keys_define:nn { enumext / #1 }
@@ -2455,7 +2455,7 @@
     \seq_gput_right:cn { g__enumext_ \l__enumext_store_name_tl _seq } { #1 }
   }
 \cs_generate_variant:Nn \__enumext_store_addto_seq:n { v, V, e }
-%% Function for memorize level execution of |\anskey| on |enumext|.
+%% Function for memorize level execution of |\anskey| on |enumext| environment.
 \cs_new_protected:Nn \__enumext_store_level_open:
   {
     \bool_if:NT \l__enumext_check_answers_bool
@@ -2487,7 +2487,7 @@
         \__enumext_store_addto_seq:n { \end{enumext} }
       }
   }
-%% Function for memorize level execution of |\anskey| and |anskey*| on |enumext*|.
+%% Function for memorize level execution of |\anskey| and |anskey*| on |enumext*| environment.
 \cs_new_protected:Nn \__enumext_store_level_open_vii:
   {
     \bool_if:NT \l__enumext_check_answers_bool
@@ -2637,7 +2637,7 @@
             ( \exp_not:V \l__enumext_store_item_join_int )
           }
        }
-     \bool_if:NTF \l__enumext_store_item_star_bool
+    \bool_if:NTF \l__enumext_store_item_star_bool
       {
         \tl_put_right:Nn \l__enumext_store_anskey_arg_tl { * }
         \tl_if_empty:NF \l__enumext_store_item_symbol_tl
@@ -2809,7 +2809,7 @@
     \cs_undefine:c { __scontents_anskey*_env_begin: }
     \cs_undefine:c { __scontents_anskey*_env_end: }
   }
-%% Hooks for |anskey*| environment out off |enumext| and |enumext*|.
+%% Hooks for |anskey*| environment out off |enumext| and |enumext*| environments.
 \__enumext_before_env:nn { enumext }
   {
     \bool_lazy_and:nnT
@@ -2834,7 +2834,7 @@
           }
       }
   }
-%% Hooks for |anskey*| inside the keyans, keyans* and keyanspic, math-mode ans not number |\item|.
+%% Hooks for |anskey*| inside the |keyans|, |keyans*| and |keyanspic| environments, math-mode ans not number |\item|.
 \__enumext_before_env:nn { anskey* }
   {
     \int_compare:nNnT { \l__enumext_keyans_level_int } = { 1 }
@@ -3065,7 +3065,7 @@
         \__enumext_reset_global_vars:
       }
   }
-%% Function for storing in prop list for |keyans| and |keyanspic|.
+%% Function for storing in prop list for |keyans| and |keyanspic| environments.
 \cs_new_protected:Npn \__enumext_keyans_addto_prop:n #1
   {
     \tl_clear:N \l__enumext_store_current_label_tl
@@ -3087,7 +3087,7 @@
       }
     \__enumext_store_addto_prop:V \l__enumext_store_current_label_tl
   }
-%% Internal label and ref function for |keyans|, |keyans*| and |keyanspic|.
+%% Internal label and ref function for |keyans|, |keyans*| and |keyanspic| environments.
 \cs_new_protected:Nn \__enumext_keyans_store_ref:
   {
     \bool_if:NT \l__enumext_store_ref_key_bool
@@ -3141,7 +3141,7 @@
       }
     \l__enumext_write_aux_file_tl
   }
-%% Function for storing in sequence for |keyans| and |keyanspic|.
+%% Function for storing in sequence for |keyans| and |keyanspic| environments.
 \cs_new_protected:Npn \__enumext_keyans_addto_seq:n #1
   {
     \tl_clear:N \l__enumext_store_current_label_tl
@@ -3186,7 +3186,7 @@
         \int_gincr:N \g__enumext_item_anskey_int
       }
   }
-%% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic|.
+%% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic| environments.
 \cs_new_protected:Npn \__enumext_keyans_show_left:n #1
   {
     \tl_if_novalue:nF { #1 }
@@ -3267,7 +3267,7 @@
           \l__enumext_labelwidth_i_dim \l__enumext_labelsep_i_dim
       }
   }
-%% Internal function for |\item| whit check-answer mechanism in |enumext|.
+%% Internal function for |\item| whit check-answer mechanism in |enumext| environment.
 \cs_new_protected:Npn \__enumext_default_item:n #1
   {
     \tl_if_novalue:nTF {#1}
@@ -3287,7 +3287,7 @@
         \__enumext_item_std:w [#1] \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
       }
   }
-%% Internal function for |\item*[symb][sep]| whit check-answer mechanism in |enumext|.
+%% Internal function for |\item*[symb][sep]| whit check-answer mechanism in |enumext| environment.
 \cs_new_protected:Npn \__enumext_starred_item:nn #1 #2
   {
     \tl_if_novalue:nTF {#1}
@@ -3315,7 +3315,7 @@
     \bool_set_true:c { l__enumext_wrap_label_ \__enumext_level: _bool }
     \__enumext_item_std:w \tl_use:c { l__enumext_fake_item_indent_ \__enumext_level: _tl }
   }
-%% Function for |\item*[sym][sep]| in |\makelabel| for enumext.
+%% Function for |\item*[sym][sep]| in |\makelabel| for |enumext| environment.
 \cs_new_protected:Nn \__enumext_item_star_exec:
   {
     \tl_if_empty:cF { l__enumext_item_symbol_ \__enumext_level: _tl }
@@ -3326,7 +3326,7 @@
         \skip_horizontal:n { \dim_use:c { l__enumext_item_symbol_sep_ \__enumext_level: _dim } }
       }
   }
-%% Redefinition of |\item| for |\item*[sym][sep]| in |enumext|.
+%% Redefinition of |\item| for |\item*[sym][sep]| in |enumext| environment.
 \cs_new_protected:Nn \__enumext_redefine_item:
   {
     \RenewDocumentCommand \item { s o o }
@@ -4020,7 +4020,7 @@
     \tag_struct_end:n {tag=LI}
     \tag_suspend:n {#1}
   }
-%% Wrap socket in conditional functions for tagging |enumext*| and |keyans*|.
+%% Wrap socket in conditional functions for tagging |enumext*| and |keyans*| environments.
 \cs_new_protected_nopar:Npn \__enumext_start_list_tag:n #1
   {
     \IfDocumentMetadataTF
@@ -4318,7 +4318,6 @@
           }
       }
   }
-
 %% Process all code for |\anspic| with tagging PDF support.
 \cs_new_protected:Nn \__enumext_anspic_args:nnn
   {
@@ -4328,7 +4327,7 @@
     \\ #3
     \__enumext_anspic_stop_list_tag:
   }
-%% Define default item width (columns width) for |enumext*| and |keyans*|.
+%% Define default item width (columns width) for |enumext*| and |keyans*| environments.
 \cs_new_protected:Nn \__enumext_starred_columns_set_vii:
   {
     \dim_compare:nNnT { \l__enumext_columns_sep_vii_dim } = { \c_zero_dim }
@@ -4391,7 +4390,7 @@
           }
       }
   }
-%% Set width for joined item's for |enumext*| and |keyans*|.
+%% Set width for joined item's for |enumext*| and |keyans*| environments.
 \cs_new_protected:Npn \__enumext_starred_joined_item_vii:n #1
   {
     \int_set:Nn \l__enumext_joined_item_vii_int {#1}

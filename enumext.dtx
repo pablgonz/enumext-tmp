@@ -625,7 +625,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     aux_i, aux_ii, aux_iii, w, n, if@noitemarg, if, noitemarg, skip_vertical, },%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
-    keywords      = [3]{document,article,setlength,pagestyle,definecolor, chapter,},%, 
+    keywords      = [3]{document,article,setlength,pagestyle,definecolor, chapter,},%,
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
     keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidth, enumextmeta, %
@@ -4235,13 +4235,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection{Initial set up}
 %
 % Start the \pkg{DocStrip} guards.
-%
 %    \begin{macrocode}
 %<*package>
 %    \end{macrocode}
-%
-% Identify the internal prefix (\LaTeX3 \pkg{DocStrip} convention) for \pkg{l3doc} class.
-%
+% Identify the internal prefix (\LaTeX3 \pkg{DocStrip} convention) for
+% \pkg{l3doc} class.
 %    \begin{macrocode}
 %<@@=enumext>
 %    \end{macrocode}
@@ -4250,21 +4248,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % First we will make sure we have a minimum (super updated) version of
 % \hologo{LaTeX} to work correctly.
-%
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 %    \end{macrocode}
-%
 % Now declare the \mypkg*{enumext} package.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-09-25}
+  {2024-09-28}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
-%
-% Finally check if the \mypkg{multicol} and \mypkg{scontents} packages are loaded, if not we load it.
+% Finally check if the \mypkg{multicol} and \mypkg{scontents} packages
+% are loaded, if not we load it.
 %    \begin{macrocode}
 \hook_gput_code:nnn {begindocument} {enumext}
   {
@@ -4318,11 +4314,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \g_@@_envir_name_tl, \l_@@_envir_name_tl}
 %   Internal variables used by functions \cs{@@_is_not_nested:},
 %   \cs{@@_is_on_first_level:} and \cs{@@_keyans_name_and_start:} (\S\ref{fun:utilities}).
-%
-%^^A    The boolean variables \myvarenv{g__@@_starred_bool} and
-%^^A    \myvarenv{g__@@_standar_bool} will be set to \emph{\enquote{true}} when the
-%^^A    \myenv*{enumext} and \myenv*{enumext*} environments are not nested with
-%^^A    each other.
 % \iffalse
 %% Internal vars for levels and nesting off all environments.
 % \fi
@@ -4346,19 +4337,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \l_@@_counter_v_tl,\l_@@_counter_vi_tl,
 %                       \l_@@_counter_vii_tl,\l_@@_counter_viii_tl}
 %
-%    Variables to store the \emph{\enquote{name of the counters}}
-%    \icounter{enumXi}, \icounter{enumXii}, \icounter{enumXiii} and
-%    \icounter{enumXiv} for \myenv*{enumext}  environment,
-%    \icounter{enumXv} for \myenv*{keyans} environment and
-%    \icounter{enumXvi} for the \myenv*{keyanspic} environment.
-%    The counters \icounter{enumXvii} and \icounter{enumXviii} are used
-%    by \myenv*{enumext*} and \myenv*{keyans*} environments.
+%   Variables to store the \emph{\enquote{name of the counters}}
+%   \icounter{enumXi}, \icounter{enumXii}, \icounter{enumXiii} and
+%   \icounter{enumXiv} for \myenv*{enumext}  environment,
+%   \icounter{enumXv} for \myenv*{keyans} environment and
+%   \icounter{enumXvi} for the \myenv*{keyanspic} environment.
+%   The counters \icounter{enumXvii} and \icounter{enumXviii} are used
+%   by \myenv*{enumext*} and \myenv*{keyans*} environments.
 %
 % \smallskip
 %
-%    The initial values of these variables are set by the function
-%    \cs{@@_define_counters:Nn} (\S\ref{int:counters}) and then modified by the function
-%    \cs{@@_label_style:Nnn} used by \mykey{label} key (\S\ref{key:label-ref}).
+%   The initial values of these variables are set by the function
+%   \cs{@@_define_counters:Nn} (\S\ref{int:counters}) and then modified by the function
+%   \cs{@@_label_style:Nnn} used by \mykey{label} key (\S\ref{key:label-ref}).
 % \iffalse
 %% Variable for counters
 % \fi
@@ -4374,7 +4365,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{variable}[int]{\c_@@_counter_style_tl, \l_@@_ref_key_arg_tl,
 %                       \l_@@_ref_the_count_tl, \l_@@_the_counter_X_tl,
 %                       \l_@@_renew_the_count_X_tl, }
-%    Internal variables used by \mykey{ref} key (\S\ref{key:label-ref}).
+%   Internal variables used by \mykey{ref} key (\S\ref{key:label-ref}).
 % \iffalse
 %% Variables used by |ref| key.
 % \fi
@@ -4397,8 +4388,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                  \l_@@_resume_active_bool, \g_@@_starred_series_tl,
 %                  \g_@@_standar_series_tl,}
 %
-%    Internal variables used by \mykey{resume}, \mykey{resume*} and
-%    \mykey{series} keys (\S\ref{key:series}).
+%   Internal variables used by \mykey{resume}, \mykey{resume*} and
+%   \mykey{series} keys (\S\ref{key:series}).
 % \iffalse
 %% Variables used by |series|, |resume| and |resume*| keys implementation.
 % \fi
@@ -4414,11 +4405,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{\l_@@_current_widest_dim, \g_@@_counter_styles_tl,
 %                       \g_@@_widest_label_tl, \l_@@_label_width_by_box}
-%    The variable \cs{l_@@_current_widest_dim} stores the current
-%    label width, the variable \cs{g_@@_counter_styles_tl} stores
-%    the default \mymeta{label style} and the variable
-%    \cs{g_@@_widest_label_tl} the label width. These variables are
-%    used by \mykey{widest} (\S\ref{key:start-widest}) and \mykey{label} (\S\ref{key:label}) keys.
+%   The variable \cs{l_@@_current_widest_dim} stores the current
+%   label width, the variable \cs{g_@@_counter_styles_tl} stores
+%   the default \mymeta{label style} and the variable
+%   \cs{g_@@_widest_label_tl} the label width. These variables are
+%   used by \mykey{widest} (\S\ref{key:start-widest}) and \mykey{label} (\S\ref{key:label}) keys.
 % \iffalse
 %% Variables used by |label|, |ref| and |widest| keys.
 % \fi
@@ -4432,14 +4423,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{\l_@@_leftmargin_tmp_X_bool, \l_@@_leftmargin_tmp_X_dim,
 %                       \l_@@_leftmargin_X_dim, \l_@@_itemindent_X_dim,}
-%
-%    The boolean variable \myvarenv{l__@@_leftmargin_tmp_X_bool} and the
-%    dimensional variable \myvarenv{l__@@_leftmargin_tmp_X_dim}
-%    are used by the \mykey{list-indent} key (\S\ref{key:list-indent}).
-%    The variables \myvarenv{l__@@_leftmargin_X_dim} and
-%    \myvarenv{l__@@_itemindent_X_dim} are used and set by the function
-%    \myvarenv{__@@_calc_hspace:NNNNNNNNNNNN} (\S\ref{int:leftmargin}).
-%
+%   The boolean variable \myvarenv{l__@@_leftmargin_tmp_X_bool} and the
+%   dimensional variable \myvarenv{l__@@_leftmargin_tmp_X_dim}
+%   are used by the \mykey{list-indent} key (\S\ref{key:list-indent}).
+%   The variables \myvarenv{l__@@_leftmargin_X_dim} and
+%   \myvarenv{l__@@_itemindent_X_dim} are used and set by the function
+%   \myvarenv{__@@_calc_hspace:NNNNNNNNNNNN} (\S\ref{int:leftmargin}).
 % \iffalse
 %% Add \l__enumext_leftmargin_tmp_X_bool, \l__enumext_leftmargin_tmp_X_dim,
 %% \l__enumext_leftmargin_X_dim, \l__enumext_itemindent_X_dim used by the
@@ -4459,10 +4448,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{ \l_@@_multicols_above_X_skip, \l_@@_multicols_below_X_skip,
 %                        \g_@@_multicols_right_X_skip, \l_@@_align_label_pos_X_str,}
-%    Internal variables used by \mykey{columns} key (\S\ref{vspace:multi})
-%    and \mykey{align} key (\S\ref{key:label}).
+%   Internal variables used by \mykey{columns} key (\S\ref{vspace:multi})
+%   and \mykey{align} key (\S\ref{key:label}).
 % \iffalse
-%% Variables used by |columns| and |align| keys in |enumext| and |keyans|.
+%% Variables used by |columns| and |align| keys in |enumext| and |keyans| environments.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:n #1
@@ -4481,9 +4470,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \l_@@_minipage_after_skip, \g_@@_minipage_right_skip,
 %                       \g_@@_minipage_after_skip, \l_@@_minipage_left_X_dim,
 %                       \l_@@_minipage_active_X_bool,}
-%    Internal variables used by \ics*{miniright} command (\S\ref{cmd:miniright})
-%    and the keys \mykey{mini-right}, \mykey{mini-right*}, \mykey{mini-env}
-%    and \mykey{mini-sep} (\S\ref{key:mini-multi}, \S\ref{vspace:minipage}).
+%   Internal variables used by \ics*{miniright} command (\S\ref{cmd:miniright})
+%   and the keys \mykey{mini-right}, \mykey{mini-right*}, \mykey{mini-env}
+%   and \mykey{mini-sep} (\S\ref{key:mini-multi}, \S\ref{vspace:minipage}).
 % \iffalse
 %% Variables used by |miniright|, |mini-env|, |mini-sep| and |\miniright|.
 % \fi
@@ -4508,16 +4497,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \l_@@_start_X_int, \l_@@_fake_item_indent_X_tl, \l_@@_label_fill_left_X_tl,
 %                       \l_@@_label_fill_right_X_tl, \l_@@_vspace_a_star_X_bool,
 %                       \l_@@_vspace_b_star_X_bool,}
-%    The bool vars \myvarenv{l__@@_wrap_label_X_bool} and
-%    \myvarenv{l__@@_wrap_label_opt_X_bool} are used by \mykey{wrap-label}
-%    and \mykey{wrap-label*} keys (\S\ref{key:label}), the integer
-%    \myvarenv{l__@@_start_X_int} are used by the \mykey{start} and \mykey{start*} keys (\S\ref{key:start-widest}),
-%    the token list \myvarenv{l__@@_fake_item_indent_X_tl } is used by \mykey{itemindent} key (\S\ref{key:fake-indent}),
-%    the variables \myvarenv{l__@@_label_fill_left_X_tl} and \myvarenv{l__@@_label_fill_left_X_tl} are used by the
-%    \mykey{align} key (\S\ref{key:label}). The boolean vars \myvarenv{l__@@_vspace_a_star_X_bool},
-%    \myvarenv{l__@@_vspace_b_star_X_bool} are used by \mykey{above},
-%    \mykey{above*}, \mykey{below} and \mykey{below*} keys (\S\ref{key:before}).
-%
+%   The bool vars \myvarenv{l__@@_wrap_label_X_bool} and
+%   \myvarenv{l__@@_wrap_label_opt_X_bool} are used by \mykey{wrap-label}
+%   and \mykey{wrap-label*} keys (\S\ref{key:label}), the integer
+%   \myvarenv{l__@@_start_X_int} are used by the \mykey{start} and \mykey{start*} keys (\S\ref{key:start-widest}),
+%   the token list \myvarenv{l__@@_fake_item_indent_X_tl } is used by \mykey{itemindent} key (\S\ref{key:fake-indent}),
+%   the variables \myvarenv{l__@@_label_fill_left_X_tl} and \myvarenv{l__@@_label_fill_left_X_tl} are used by the
+%   \mykey{align} key (\S\ref{key:label}). The boolean vars \myvarenv{l__@@_vspace_a_star_X_bool},
+%   \myvarenv{l__@@_vspace_b_star_X_bool} are used by \mykey{above},
+%   \mykey{above*}, \mykey{below} and \mykey{below*} keys (\S\ref{key:before}).
 % \iffalse
 %% Internal variables used by |wrap-label|, |start*|, |start|, |align|, |above| and |below| keys.
 % \fi
@@ -4543,37 +4531,37 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %                       \l_@@_store_current_label_tl, \l_@@_store_current_opt_arg_tl,
 %                       \l_@@_store_current_label_tmp_tl,}
 %
-%    The variable \cs{l_@@_store_active_bool} setting by
-%    \mykey{save-ans} key (\S\ref{key:save-ans}) activates all the
-%    mechanism related to \ics*{anskey}, \myenv*{anskey*}, \myenv*{keyans},
-%    \myenv*{keyans*} and \myenv*{keyanspic} environments.
+%   The variable \cs{l_@@_store_active_bool} setting by
+%   \mykey{save-ans} key (\S\ref{key:save-ans}) activates all the
+%   mechanism related to \ics*{anskey}, \myenv*{anskey*}, \myenv*{keyans},
+%   \myenv*{keyans*} and \myenv*{keyanspic} environments.
 %
-%    \smallskip
+%   \smallskip
 %
-%    The variable \cs{l_@@_store_name_tl} saves the \mymarg{store name}
-%    set by the \mykey{save-ans} key of the \emph{sequence} and \emph{prop
-%    list} in which we will store, the variable \cs{g_@@_store_name_tl}
-%    it's just a global copy of \mymarg{store name} used by different functions.
+%   The variable \cs{l_@@_store_name_tl} saves the \mymarg{store name}
+%   set by the \mykey{save-ans} key of the \emph{sequence} and \emph{prop
+%   list} in which we will store, the variable \cs{g_@@_store_name_tl}
+%   it's just a global copy of \mymarg{store name} used by different functions.
 %
-%    \smallskip
+%   \smallskip
 %
-%    The variable \cs{l_@@_store_anskey_arg_tl} save the
-%    \emph{argument} of \ics*{anskey} (\S\ref{cmd:anskey}) and the variables
-%    \cs{l_@@_store_anskey_env_tl} and \cs{l_@@_store_anskey_opt_tl} save the
-%    \mymeta{body} and the \mymeta{keys} of the environment \myenv*{anskey*} (\S\ref{env:anskey}).
+%   The variable \cs{l_@@_store_anskey_arg_tl} save the
+%   \emph{argument} of \ics*{anskey} (\S\ref{cmd:anskey}) and the variables
+%   \cs{l_@@_store_anskey_env_tl} and \cs{l_@@_store_anskey_opt_tl} save the
+%   \mymeta{body} and the \mymeta{keys} of the environment \myenv*{anskey*} (\S\ref{env:anskey}).
 %
-%    \smallskip
+%   \smallskip
 %
-%    The variables \cs{l_@@_store_current_label_tl} and
-%    \cs{l_@@_store_current_opt_arg_tl} save the \emph{current label} and
-%    \emph{optional argument} of \ics*{item*} (\S\ref{cmd:item-starred}) and \ics*{anspic*}
-%    (\S\ref{cmd:anspic}) for the \myenv*{keyans}, \myenv*{keyans*} and
-%    \myenv*{keyanspic} environments.
+%   The variables \cs{l_@@_store_current_label_tl} and
+%   \cs{l_@@_store_current_opt_arg_tl} save the \emph{current label} and
+%   \emph{optional argument} of \ics*{item*} (\S\ref{cmd:item-starred}) and \ics*{anspic*}
+%   (\S\ref{cmd:anspic}) for the \myenv*{keyans}, \myenv*{keyans*} and
+%   \myenv*{keyanspic} environments.
 %
-%    \smallskip
+%   \smallskip
 %
-%    The variable \cs{l_@@_store_current_label_tmp_tl} is a temporary variable used
-%    by \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} at various points.
+%   The variable \cs{l_@@_store_current_label_tmp_tl} is a temporary variable used
+%   by \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} at various points.
 % \iffalse
 %% Variables used by |save-ans| key.
 % \fi
@@ -4593,7 +4581,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{variable}[int]{\l_@@_setkey_tmpa_tl, \l_@@_setkey_tmpb_tl,
 %                       \l_@@_setkey_tmpa_int, \l_@@_setkey_tmpa_seq,
 %                       \l_@@_setkey_tmpb_seq,}
-%    Internal variables used by the command \ics*{setenumext} (\S\ref{cmd:setenumext}).
+%   Internal variables used by the command \ics*{setenumext} (\S\ref{cmd:setenumext}).
 % \iffalse
 %% Variables used by |\setenumext|.
 % \fi
@@ -4608,8 +4596,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{variable}[int]{\l_@@_meta_path_tl, \l_@@_foreach_print_seq,
 %                       \l_@@_foreach_name_prop_tl, \g_@@_foreach_default_keys_tl,}
-%    Internal variables used by the |\printkeyans| command (\S\ref{cmd:printkeyans})
-%    and |\foreachkeyans| command (\S\ref{cmd:foreachkeyans}).
+%   Internal variables used by the |\printkeyans| command (\S\ref{cmd:printkeyans})
+%   and |\foreachkeyans| command (\S\ref{cmd:foreachkeyans}).
 %    \begin{macrocode}
 \tl_new:N  \l_@@_meta_path_tl
 \seq_new:N \l_@@_foreach_print_seq
@@ -6851,9 +6839,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 %    \smallskip
 %
-%   First we will set the value of \cs{l_@@_minipage_right_skip} equal to
-%   |\topsep|, then we will see if \hologo{TeX} is in \mymeta{vertical mode} and we
-%   will add |\partopsep|, followed by that we set the value of \cs{l_@@_minipage_after_skip}.
+%    First we will set the value of \cs{l_@@_minipage_right_skip} equal to
+%    |\topsep|, then we will see if \hologo{TeX} is in \mymeta{vertical mode} and we
+%    will add |\partopsep|, followed by that we set the value of \cs{l_@@_minipage_after_skip}.
 % \iffalse
 %% Adjustment of vertical spacing for |minipage| in |enumext| environment.
 % \fi
@@ -8043,12 +8031,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Internal functions for \texttt{save-ans} key}
 %
 % \begin{macro}{\@@_start_save_ans_msg:, \@@_stop_save_ans_msg:,}
-%   The functions \cs{@@_start_save_ans_msg:} and
-%   \cs{@@_stop_save_ans_msg:} will display in the terminal and |.log| file
-%   the environment in which the \mykey{save-ans} key was executed along
-%   with the line at the beginning and end of it. The function
-%   \cs{@@_start_save_ans_msg:} will be passed to \cs{@@_storing_set:n} and
-%   the function \cs{@@_stop_save_ans_msg:} will be passed to the function
+%   The functions \cs{@@_start_save_ans_msg:} and \cs{@@_stop_save_ans_msg:}
+%   will display in the terminal and |.log| file the environment in which
+%   the \mykey{save-ans} key was executed along with the line at the
+%   beginning and end of it. The function \cs{@@_start_save_ans_msg:} will
+%   be passed to \cs{@@_storing_set:n} and the function
+%   \cs{@@_stop_save_ans_msg:} will be passed to the function
 %   \cs{@@_execute_after_env:}.
 % \iffalse
 %% Print/write start and stop environment with |save-ans| key active.
@@ -8186,16 +8174,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \item If the list has \emph{nested levels}, for each level of nesting we need to
 %    decrementing by one (for the |\item| or |\item*| that opens the nest) so that the account
 %    remains the same.
-%
 %^^A   \item If there is the option \mykey{no-store} we must add the items within this
 %^^A    level plus one to maintain the equality.
 % \end{enumerate}
 %
-% With \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} it is enough to increase
-% in one the integer of \ics*{anskey}. The integers created must be global
-% if they are not lost in the interior levels of nesting and to execute
-% the test we will use a \emph{\enquote{hook}} function after closing the
-% first level of the environment.
+% With \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} it is
+% enough to increase in one the integer of \ics*{anskey}. The integers
+% created must be global if they are not lost in the interior levels of
+% nesting and to execute the test we will use a \emph{\enquote{hook}}
+% function after closing the \emph{first level} of the environment.
 %
 % \subsubsection{Setting \texttt{check-ans} and \texttt{no-store} keys}\label{key:check-ans}
 %
@@ -8370,8 +8357,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   function \cs{@@_execute_after_env:} when the key \mykey{check-ans} is
 %   active, that is, when \cs{g_@@_check_ans_key_bool} is \emph{\enquote{true}}
 %   and will return the appropriate message according to the value of
-%   \cs{g_@@_item_answer_diff_int} set by the function
-%   \cs{@@_item_answer_diff:}.
+%   \cs{g_@@_item_answer_diff_int} set by the function \cs{@@_item_answer_diff:}.
 % \iffalse
 %% Function to print |check-ans| key.
 % \fi
@@ -8476,11 +8462,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection{Keys and functions associated with storage}\label{int:storage-system}
 %
 % \begin{macro}[int]{wrap-ans, wrap-opt, save-sep,mark-ans, mark-pos, show-ans, mark-ref, save-ref}
-%    We add the keys \mykey{wrap-ans}, \mykey{wrap-opt}, \mykey{save-sep}, \mykey{mark-ans}, \mykey{mark-pos},
-%    \mykey{show-ans}, \mykey{show-pos}, \mykey{mark-ref} and \mykey{save-ref}
-%    related to the \emph{\enquote{storage system}} and internal
-%    mechanism of \emph{\enquote{label and ref}} only at the \emph{first
-%    level} of \myenv*{enumext} and \myenv*{enumext*}.
+%   We add the keys \mykey{wrap-ans}, \mykey{wrap-opt}, \mykey{save-sep},
+%   \mykey{mark-ans}, \mykey{mark-pos}, \mykey{show-ans}, \mykey{show-pos},
+%   \mykey{mark-ref} and \mykey{save-ref} related to the \emph{\enquote{storage system}}
+%    and internal mechanism of \emph{\enquote{label and ref}} only at
+%    the \emph{first level} of \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
 %% Add keys associated with storage on first level of |enumext| and |enumext*|.
 % \fi
@@ -8531,10 +8517,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}[int]{mark-pos, show-ans, show-pos}
-%    For the \myenv*{keyans} and \myenv*{keyans*} environments we will only add the keys
-%    \mykey{mark-pos}, \mykey{show-ans} and \mykey{show-pos}.
+%    For the \myenv*{keyans} and \myenv*{keyans*} environments we will
+%    only add the keys \mykey{mark-pos}, \mykey{show-ans} and \mykey{show-pos}.
 % \iffalse
-%% Add keys |mark-pos|, |show-pos| and |show-ans| for |keyans| and |keyans*|.
+%% Add keys |mark-pos|, |show-pos| and |show-ans| keys for |keyans| and |keyans*| environments.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:n #1
@@ -8560,10 +8546,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Store optional arguments of the environments}
 %
-% The idea behind \emph{\enquote{storing}} in the \mymeta{sequence} is to have a copy of the
-% structure of the environment in which the key \mykey{save-ans} is being
-% executed so we must capture the optional arguments passed to the levels
-% of the environment in which it is executed and \emph{\enquote{storing}} them.
+% The idea behind \emph{\enquote{storing}} in the \mymeta{sequence} is
+% to have a copy of the structure of the environment in which the key
+% \mykey{save-ans} is being executed so we must capture the optional
+% arguments passed to the levels of the environment in which it is
+% executed and \emph{\enquote{storing}} them.
 %
 % \begin{macro}{\@@_store_active_keys:n, \@@_store_active_keys_vii:n,}
 %   The functions \cs{@@_store_active_keys:n} and
@@ -8722,18 +8709,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Function for storing content in prop list}
 %
 % \begin{macro}{\@@_store_addto_prop:n, \@@_store_addto_prop:V}
-%    The function \cs{@@_store_addto_prop:n} stores the content in
-%    \mymeta{prop list} defined by \mykey{save-ans} key. The \emph{\enquote{stored
-%    content}} is retrieved by means of the \ics*{getkeyans} command.
+%   The function \cs{@@_store_addto_prop:n} stores the content in
+%   \mymeta{prop list} defined by \mykey{save-ans} key. The \emph{\enquote{stored
+%   content}} is retrieved by means of the \ics*{getkeyans} command.
 %
 %    \smallskip
 %
-%    The form in which the content is \emph{\enquote{stored}} in the \mymeta{prop list}
-%    is \mymarg{position}\mymarg{content}. This
-%    function is used by \ics*{anskey} in \myenv*{enumext} and
-%    \myenv*{enumext*} environments, \ics*{item*} in \myenv*{keyans}
-%    and \myenv*{keyans*} environments and \ics*{anspic*} in \myenv*{keyanspic}
-%    environment.
+%   The form in which the content is \emph{\enquote{stored}} in the
+%   \mymeta{prop list} is \mymarg{position}\mymarg{content}. This
+%   function is used by \ics*{anskey} in \myenv*{enumext} and \myenv*{enumext*}
+%   environments, \ics*{item*} in \myenv*{keyans} and \myenv*{keyans*}
+%   environments and \ics*{anspic*} in \myenv*{keyanspic} environment.
 % \iffalse
 %% Function for store content to prop list.
 % \fi
@@ -8753,17 +8739,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Function for storing content in sequence}
 %
 % \begin{macro}{\@@_store_addto_seq:n, \@@_store_addto_seq:v, \@@_store_addto_seq:V}
-%    The function \cs{@@_store_addto_seq:n} stores the content in
-%    \mymeta{sequence} defined by \mykey{save-ans} key. This function is used by \ics*{anskey} in
-%    \myenv*{enumext}, \ics*{item*} in \myenv*{keyans} and
-%    \ics*{anspic} in \myenv*{keyanspic}.
+%   The function \cs{@@_store_addto_seq:n} stores the content in
+%   \mymeta{sequence} defined by \mykey{save-ans} key. This function
+%   is used by \ics*{anskey} in \myenv*{enumext}, \ics*{item*} in
+%   \myenv*{keyans} and \ics*{anspic} in \myenv*{keyanspic}.
 %
-%    The form in which the content is stored in \mymeta{sequence} is in
-%    a internal \myenv*{enumext} or \myenv*{enumext*} environments with the \emph{same structure}
-%    in which the command was executed.
+%   The form in which the content is stored in \mymeta{sequence} is in
+%   a internal \myenv*{enumext} or \myenv*{enumext*} environments with
+%   the \emph{same structure} in which the command was executed.
 %
-%    The \emph{\enquote{stored content}} is retrieved by means of the \ics*{printkeyans}
-%    command.
+%   The \emph{\enquote{stored content}} is retrieved by means of the
+%   \ics*{printkeyans} command.
 % \iffalse
 %% Function for store content to sequence.
 % \fi
@@ -8783,7 +8769,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \cs{@@_store_level_open:} and \cs{@@_store_level_close:} which are
 %    executed per level within the \myenv*{enumext} environment.
 % \iffalse
-%% Function for memorize level execution of |\anskey| on |enumext|.
+%% Function for memorize level execution of |\anskey| on |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open:
@@ -8821,12 +8807,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_store_level_open_vii:, \@@_store_level_close_vii:,}
-%    The memorization structure of the list is handled by the functions
-%    \cs{@@_store_level_open_vii:} and \cs{@@_store_level_close_vii:} which are
-%    executed in the \myenv*{enumext*} environment.
+%   The memorization structure of the list is handled by the functions
+%   \cs{@@_store_level_open_vii:} and \cs{@@_store_level_close_vii:}
+%   which are executed in the \myenv*{enumext*} environment.
 %
 % \iffalse
-%% Function for memorize level execution of |\anskey| and |anskey*| on |enumext*|.
+%% Function for memorize level execution of |\anskey| and |anskey*| on |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open_vii:
@@ -8867,10 +8853,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_print_keyans_box:NN, \@@_print_keyans_box:cc }
 %   The function \cs{@@_print_keyans_box:NN} print a box in the left
-%   margin with \cs{l_@@_mark_answer_sym_tl} used by the \mykey{wrap-ans}, \mykey{show-ans} and
-%   \mykey{show-pos} keys. The function takes two arguments:
+%   margin with \cs{l_@@_mark_answer_sym_tl} used by the \mykey{wrap-ans},
+%   \mykey{show-ans} and \mykey{show-pos} keys. The function takes two
+%   arguments:
 %
-%  \smallskip
+%   \smallskip
 %
 % \begin{arguments}
 %   \item \myvarenv{l__@@_labelwidth_X_dim}
@@ -8900,16 +8887,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The internal label and ref}\label{fun:internal-label-ref}
 %
-%  The function \cs{@@_store_internal_ref:} handles the internal
-%    \emph{\enquote{label and ref}} system used by the \mykey{save-ref} and
-%    \mykey{mark-ref} keys for \ics*{anskey} will allow to execute
-%    \ics{ref}\mymarg{store name \textnormal{\textcolor{red}{:}} position} and
-%    will return |1||.(a)||.i||.A|.
+% The function \cs{@@_store_internal_ref:} handles the internal
+% \emph{\enquote{label and ref}} system used by the \mykey{save-ref} and
+% \mykey{mark-ref} keys for \ics*{anskey} will allow to execute
+% \ics{ref}\mymarg{store name \textnormal{\textcolor{red}{:}} position} and
+% will return |1||.(a)||.i||.A|.
+%
 % \begin{macro}{\@@_store_internal_ref:}
-%    First we will remove the dots \enquote{\textcolor{red}{.}} from
-%    the current \mymeta{labels}, we do not want to get double
-%    dots in our references, then we will place this in the variable
-%    \cs{l_@@_newlabel_arg_two_tl}.
+%   First we will remove the dots \enquote{\textcolor{red}{.}} from
+%   the current \mymeta{labels}, we do not want to get double dots in
+%   our references, then we will place this in the variable
+%   \cs{l_@@_newlabel_arg_two_tl}.
 % \iffalse
 %% Internal label and ref function for |\anskey| and |anskey*|.
 % \fi
@@ -8955,9 +8943,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
 %    \end{macrocode}
-%   If started with \myenv*{enumext} and if \ics*{anskey} or
-%   \myenv*{anskey*} is running alone in it or if it is running in a nested
-%   \myenv*{enumext*} environment within the starting environment.
+%   If started with \myenv*{enumext} and if \ics*{anskey} or \myenv*{anskey*}
+%   is running alone in it or if it is running in a nested \myenv*{enumext*}
+%   environment within the starting environment.
 %    \begin{macrocode}
     \bool_lazy_all:nT
       {
@@ -8988,8 +8976,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
 %    \end{macrocode}
-%    Now we set the variable \cs{l_@@_newlabel_arg_one_tl} which will
-%    contain \mymarg{store name \textnormal{\textcolor{red}{:}} position}.
+%   Now we set the variable \cs{l_@@_newlabel_arg_one_tl} which will
+%   contain \mymarg{store name \textnormal{\textcolor{red}{:}} position}.
 %    \begin{macrocode}
     \tl_put_right:Ne \l_@@_newlabel_arg_one_tl
       {
@@ -8997,9 +8985,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \int_eval:n { \prop_count:c { g_@@_ \l_@@_store_name_tl _prop } }
       }
 %    \end{macrocode}
-%    Now execute the function \cs{@@_newlabel:nn} and save the
-%    result in the variable \cs{l_@@_write_aux_file_tl} and
-%    finally we write in the |.aux| file.
+%   Now execute the function \cs{@@_newlabel:nn} and save the result in
+%   the variable \cs{l_@@_write_aux_file_tl} and finally we write in the
+%   |.aux| file.
 %    \begin{macrocode}
     \tl_put_right:Ne \l_@@_write_aux_file_tl
       {
@@ -9071,7 +9059,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \mykeycmd{item-pos*} and pass them to \cs{l_@@_store_anskey_arg_tl}
 %   along with the \mymeta{argument} for |\anskey| or \mymeta{body} for |anskey*|.
 %    \begin{macrocode}
-     \bool_if:NTF \l_@@_store_item_star_bool
+    \bool_if:NTF \l_@@_store_item_star_bool
       {
         \tl_put_right:Nn \l_@@_store_anskey_arg_tl { * }
         \tl_if_empty:NF \l_@@_store_item_symbol_tl
@@ -9097,10 +9085,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_put_right:Nn \l_@@_store_anskey_arg_tl {#1}
       }
 %    \end{macrocode}
-%    Finally we check if the \mykey{save-ref} key are active along with the
-%    \mypkg{hyperref} package load, if both conditions are met, it will
-%    create the \ics{hyperlink} with \emph{symbol} set by
-%    \mykey{mark-ref} key and then store in \mymeta{sequence}.
+%   Finally we check if the \mykey{save-ref} key are active along with the
+%   \mypkg{hyperref} package load, if both conditions are met, it will
+%   create the \ics{hyperlink} with \emph{symbol} set by \mykey{mark-ref}
+%   key and then store in \mymeta{sequence}.
 %    \begin{macrocode}
     \bool_lazy_and:nnT
       { \bool_if_p:N \l_@@_store_ref_key_bool }
@@ -9118,9 +9106,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_anskey_show_wrap_arg:n,}
-%    The function \cs{@@_anskey_show_wrap_arg:n}
-%    \emph{\enquote{wraps}} the \mymeta{argument} passed to \ics*{anskey}
-%    and the \mymeta{body} for \myenv*{anskey*} when using the \mykey{wrap-ans} key.
+%   The function \cs{@@_anskey_show_wrap_arg:n} \emph{\enquote{wraps}}
+%   the \mymeta{argument} passed to \ics*{anskey} and the \mymeta{body}
+%   for \myenv*{anskey*} when using the \mykey{wrap-ans} key.
 % \iffalse
 %% Internal |wrap-ans| implementation for |\anskey| and |anskey*|.
 % \fi
@@ -9143,12 +9131,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{ \@@_anskey_show_wrap_left:n }
-%    The function \cs{@@_anskey_show_wrap_left:n} will show the \emph{\enquote{mark}}
-%    defined by the \mykey{mark-ans} key or the \emph{\enquote{position}} of the content
-%    stored in the \mymeta{prop list} when using the \mykey{show-pos} key on
-%    the left margin next to the \emph{\enquote{wraps}} \mymeta{argument}
-%    passed to \ics*{anskey} and the \mymeta{body} in \myenv*{anskey*}
-%    on the right side when using the \mykey{show-ans} key.
+%   The function \cs{@@_anskey_show_wrap_left:n} will show the
+%   \emph{\enquote{mark}} defined by the \mykey{mark-ans} key or the
+%   \emph{\enquote{position}} of the content stored in the \mymeta{prop list}
+%   when using the \mykey{show-pos} key on the left margin next to the
+%   \emph{\enquote{wraps}} \mymeta{argument} passed to \ics*{anskey} and
+%   the \mymeta{body} in \myenv*{anskey*} on the right side when using
+%   the \mykey{show-ans} key.
 % \iffalse
 %% Internal |show-ans| and |show-pos| implementation for |\anskey| and |anskey*|.
 % \fi
@@ -9188,9 +9177,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \smallskip
 %
 % The \ics*{anskey} command will cover this point and give it similar
-% behaviour to that of |\item| in the \myenv*{enumext} and
-% \myenv*{enumext*} environments executed as follows
-% \ics*{anskey}\myoarg{key \textnormal{\textcolor{gray}{=}} val}\mymarg{content}.
+% behaviour to that of |\item| in the \myenv*{enumext} and \myenv*{enumext*}
+% environments executed as follows \ics*{anskey}\myoarg{key \textnormal{\textcolor{gray}{=}} val}\mymarg{content}.
 %
 % \begin{macro}{\@@_anskey_unknown:n, \@@_anskey_unknown:nn}
 %    First we'll add the keys \mykeycmd{break-col}, \mykeycmd{item-join},
@@ -9216,8 +9204,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     unknown   .code:n     = { \@@_anskey_unknown:n {#1} },
   }
 %    \end{macrocode}
-%   The \mymeta{keys} are stored in \cs{l_keys_key_str} and the value (if any) is passed as an
-%   argument to the function \cs{@@_anskey_unknown:n}.
+%   The \mymeta{keys} are stored in \cs{l_keys_key_str} and the value
+%   (if any) is passed as an argument to the function \cs{@@_anskey_unknown:n}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_anskey_unknown:n #1
   {
@@ -9311,8 +9299,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The \cs{@@_anskey_safe_inner:} function will first check if the
-%   command is nested, if preceded by a not numbered |\item| or if it is in
-%  \emph{math mode} returning the appropriate messages.
+%   command is nested, if preceded by a not numbered |\item| or if it is
+%   in \emph{math mode} returning the appropriate messages.
 % \iffalse
 %% Internal function for msg when |\anskey| is inner and arg is empty.
 % \fi
@@ -9363,10 +9351,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{itemize}
 %
 % \begin{macro}[int]{\@@_undefine_anskey_env:,}
-%   The function \cs{@@_undefine_anskey_env:} will undefine the environment
-%   \myenv*{anskey*} and will be passed to the function
-%   \cs{@@_execute_after_env:} (\S\ref{fun:exec-after-env}) which is
-%   executed after the environment in which the key \mykey{save-ans} is active.
+%    The function \cs{@@_undefine_anskey_env:} will undefine the environment
+%    \myenv*{anskey*} and will be passed to the function
+%    \cs{@@_execute_after_env:} (\S\ref{fun:exec-after-env}) which is
+%    executed after the environment in which the key \mykey{save-ans} is active.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_undefine_anskey_env:
   {
@@ -9379,7 +9367,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    Detection of the \myenv*{anskey*} environment outside the
 %    \myenv*{enumext} and \myenv*{enumext*} environments.
 % \iffalse
-%% Hooks for |anskey*| environment out off |enumext| and |enumext*|.
+%% Hooks for |anskey*| environment out off |enumext| and |enumext*| environments.
 % \fi
 %    \begin{macrocode}
 \@@_before_env:nn { enumext }
@@ -9412,7 +9400,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    environments, if preceded by a not numbered |\item| or if it is in
 %    \emph{math mode} returning the appropriate messages.
 % \iffalse
-%% Hooks for |anskey*| inside the keyans, keyans* and keyanspic, math-mode ans not number |\item|.
+%% Hooks for |anskey*| inside the |keyans|, |keyans*| and |keyanspic| environments, math-mode ans not number |\item|.
 % \fi
 %    \begin{macrocode}
 \@@_before_env:nn { anskey* }
@@ -9717,8 +9705,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \group_end:
   }
 %    \end{macrocode}
-%   The function \cs{@@_anskey_env_clean_vars:} will return the global variables
-%   used by the \mymeta{keys} to their initial state.
+%   The function \cs{@@_anskey_env_clean_vars:} will return the global
+%   variables used by the \mymeta{keys} to their initial state.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_env_clean_vars:
   {
@@ -9793,7 +9781,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    variable, which will be passed to the \mymeta{prop list} defined by the
 %    \mykey{save-ans} key using the \cs{@@_store_addto_prop:V}.
 % \iffalse
-%% Function for storing in prop list for |keyans| and |keyanspic|.
+%% Function for storing in prop list for |keyans| and |keyanspic| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_addto_prop:n #1
@@ -9831,15 +9819,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % will return |1.(A)|.
 %
 % \begin{macro}{\@@_keyans_store_ref:, \@@_keyans_store_ref_aux_i:,\@@_keyans_store_ref_aux_ii:}
-%    The function \cs{@@_keyans_store_ref:} handles the internal \emph{\enquote{label and ref}}
-%    system used by the \mykey{save-ref} key for \ics*{item*} and \ics*{anspic*}
-%    commands.
-%    First we will create copies of the current \mymeta{labels} and remove
-%    the dots \enquote{\textcolor{red}{\texttt{.}}} from them, we do not
-%    want to get double dots in our references.
+%   The function \cs{@@_keyans_store_ref:} handles the internal \emph{\enquote{label and ref}}
+%   system used by the \mykey{save-ref} key for \ics*{item*} and \ics*{anspic*}
+%   commands.
+%   First we will create copies of the current \mymeta{labels} and remove
+%   the dots \enquote{\textcolor{red}{\texttt{.}}} from them, we do not
+%   want to get double dots in our references.
 %
 % \iffalse
-%% Internal label and ref function for |keyans|, |keyans*| and |keyanspic|.
+%% Internal label and ref function for |keyans|, |keyans*| and |keyanspic| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_store_ref:
@@ -9858,11 +9846,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
    }
 %    \end{macrocode}
-%    The auxiliary function \cs{@@_keyans_store_ref_aux_i:} set the
-%    variable \cs{l_@@_newlabel_arg_one_tl} which will
-%    contain \mymarg{store name \textcolor{red}{:} position}
-%    analyzing whether the environment in which they are executed is
-%    \myenv*{enumext*} or \myenv*{enumext}.
+%   The auxiliary function \cs{@@_keyans_store_ref_aux_i:} set the
+%   variable \cs{l_@@_newlabel_arg_one_tl} which will
+%   contain \mymarg{store name \textcolor{red}{:} position}
+%   analyzing whether the environment in which they are executed is
+%   \myenv*{enumext*} or \myenv*{enumext}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_store_ref_aux_i:
   {
@@ -9893,9 +9881,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_store_ref_aux_ii:
   }
 %    \end{macrocode}
-%    Now auxiliary function \cs{@@_keyans_store_ref_aux_ii:} save the
-%    result in the variable \cs{l_@@_write_aux_file_tl} and
-%    finally we write in the |.aux| file.
+%   Now auxiliary function \cs{@@_keyans_store_ref_aux_ii:} save the
+%   result in the variable \cs{l_@@_write_aux_file_tl} and
+%   finally we write in the |.aux| file.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_store_ref_aux_ii:
   {
@@ -9913,14 +9901,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Storing content in sequence}
 %
 % \begin{macro}{\@@_keyans_addto_seq:n, \@@_keyans_addto_seq_link:}
-%    The function \cs{@@_keyans_addto_seq:n} will pass the
-%    contents of the current \mymeta{label} \cs{l_@@_label_v_tl} for the
-%    \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} for the \myenv*{keyanspic} environment when using
-%    \ics*{item*} and \ics*{anspic*}, followed by the \mymeta{contents} of the
-%    optional argument of both commands to the \cs{l_@@_store_current_label_tl}
-%    variable to the sequence defined by the \mykey{save-ans} key.
+%   The function \cs{@@_keyans_addto_seq:n} will pass the
+%   contents of the current \mymeta{label} \cs{l_@@_label_v_tl} for the
+%   \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} for the \myenv*{keyanspic} environment when using
+%   \ics*{item*} and \ics*{anspic*}, followed by the \mymeta{contents} of the
+%   optional argument of both commands to the \cs{l_@@_store_current_label_tl}
+%   variable to the sequence defined by the \mykey{save-ans} key.
 % \iffalse
-%% Function for storing in sequence for |keyans| and |keyanspic|.
+%% Function for storing in sequence for |keyans| and |keyanspic| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_addto_seq:n #1
@@ -9947,15 +9935,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_addto_seq_link:
   }
 %    \end{macrocode}
-%    Checks if the \mykey{save-ref} key is active along with the
-%    \mypkg{hyperref} package load, if both conditions are met, it will
-%    create the \ics{hyperlink} and then store using the
-%    \cs{@@_store_addto_seq:V} function.
-%    Finally, copy the contents of the variable \cs{l_@@_store_current_label_tl}
-%    into the global variable \cs{g_@@_check_ans_item_tl} to be used
-%    by the function \cs{@@_check_starred_cmd:n} and increment
-%    the value of the integer variable \cs{g_@@_item_anskey_int} handled
-%    by the \mykey{check-ans} key.
+%   Checks if the \mykey{save-ref} key is active along with the
+%   \mypkg{hyperref} package load, if both conditions are met, it will
+%   create the \ics{hyperlink} and then store using the
+%   \cs{@@_store_addto_seq:V} function.
+%   Finally, copy the contents of the variable \cs{l_@@_store_current_label_tl}
+%   into the global variable \cs{g_@@_check_ans_item_tl} to be used
+%   by the function \cs{@@_check_starred_cmd:n} and increment
+%   the value of the integer variable \cs{g_@@_item_anskey_int} handled
+%   by the \mykey{check-ans} key.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_addto_seq_link:
   {
@@ -9987,11 +9975,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % the order of the operations the counter off \mymeta{label} are incorrect.
 %
 % \begin{macro}{\@@_keyans_show_left:n,\@@_keyans_show_ans:, \@@_keyans_show_pos:, \@@_keyans_show_item_opt:,}
-%    Common function to show \emph{starred commands} |\item*| and \mymeta{position} of
-%    stored content in \mymeta{prop list} for \myenv*{keyans} and
-%    \myenv*{keyanspic}. Need add |1| to \myvarenv{g__@@_\mymeta[cf=gray]{store name}_prop} for \mykey{show-pos} key.
+%   Common function to show \emph{starred commands} |\item*| and \mymeta{position} of
+%   stored content in \mymeta{prop list} for \myenv*{keyans} and
+%   \myenv*{keyanspic}. Need add |1| to \myvarenv{g__@@_\mymeta[cf=gray]{store name}_prop} for \mykey{show-pos} key.
 % \iffalse
-%% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic|.
+%% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_show_left:n #1
@@ -10101,7 +10089,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   by the key \mykey{wrap-label*} and execute \cs{@@_item_std:w} with
 %   the optional argument and the key \mykey{itemindent}.
 % \iffalse
-%% Internal function for |\item| whit check-answer mechanism in |enumext|.
+%% Internal function for |\item| whit check-answer mechanism in |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_default_item:n #1
@@ -10147,7 +10135,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true} for the key \mykey{wrap-label}
 %   and execute \cs{@@_item_std:w} and the key \mykey{itemindent}.
 % \iffalse
-%% Internal function for |\item*[symb][sep]| whit check-answer mechanism in |enumext|.
+%% Internal function for |\item*[symb][sep]| whit check-answer mechanism in |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_item:nn #1 #2
@@ -10181,7 +10169,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The function \cs{@@_item_star_exec:} will be responsible for
 %    executing |\item*| for the \myenv*{enumext} environment.
 % \iffalse
-%% Function for |\item*[sym][sep]| in |\makelabel| for enumext.
+%% Function for |\item*[sym][sep]| in |\makelabel| for |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_item_star_exec:
@@ -10198,12 +10186,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_redefine_item:}
-%    The function \cs{@@_redefine_item:} will redefine the |\item|
-%    command in the \myenv*{enumext} environment adding |\item*|.
-%    This function are passed to \myvarenv{__@@_list_arg_two_X:} used
-%    in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext}).
+%   The function \cs{@@_redefine_item:} will redefine the |\item|
+%   command in the \myenv*{enumext} environment adding |\item*|.
+%   This function are passed to \myvarenv{__@@_list_arg_two_X:} used
+%   in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext}).
 % \iffalse
-%% Redefinition of |\item| for |\item*[sym][sep]| in |enumext|.
+%% Redefinition of |\item| for |\item*[sym][sep]| in |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_redefine_item:
@@ -10230,10 +10218,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{important}
 %
 % \begin{macro}{\@@_make_label:,\@@_make_label_std:,\@@_make_label_box:}
-%    The function \cs{@@_make_label:} redefine \ics{makelabel} for the keys \mykey{align}, \mykey{font},
-%    \mykey{wrap-label}, \mykey{wrap-label*} and |\item*| for \myenv*{enumext} environment.
-%    This function are passed to \myvarenv{__@@_list_arg_two_X:} used
-%    in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext}).
+%   The function \cs{@@_make_label:} redefine \ics{makelabel} for the keys \mykey{align}, \mykey{font},
+%   \mykey{wrap-label}, \mykey{wrap-label*} and |\item*| for \myenv*{enumext} environment.
+%   This function are passed to \myvarenv{__@@_list_arg_two_X:} used
+%   in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext}).
 % \iffalse
 %% Redefinition of |\makelabel| for |\item| and |\item*[sym][sep]| in |enumext| environment.
 % \fi
@@ -10298,8 +10286,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \mymeta{symbol} and its \mymeta{offset}.
 %
 % \begin{macro}[int]{item-sym*, item-pos*}
-%    Define and set \mykey{item-sym*} and \mykey{item-pos*} keys
-%    for \myenv*{enumext} and \myenv*{enumext*}.
+%   Define and set \mykey{item-sym*} and \mykey{item-pos*} keys for
+%   \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
 %% Add |item-sym*| and |item-sep*| keys.
 % \fi
@@ -10334,7 +10322,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Handling unknown keys for \env{keyans} and \env{keyans*}}\label{key:unknown-keys-keyans}
 %
 % \begin{macro}[int]{unknown, \@@_keyans_unknown_keys:n, \@@_keyans_unknown_keys:nn}
-%    Define and set |unknown| key for  \myenv*{keyans} and \myenv*{keyans*} environments.
+%   Define and set |unknown| key for  \myenv*{keyans} and \myenv*{keyans*}
+%   environments.
 % \iffalse
 %% Add keys |unknown| for |keyans| and |keyans*| environments.
 % \fi
@@ -10370,7 +10359,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Handling unknown keys for \env{enumext*}}\label{key:unknown-keys-starred}
 %
 % \begin{macro}[int]{unknown, \@@_starred_unknown_keys:n, \@@_starred_unknown_keys:nn}
-%    Define and set |unknown| key for  \myenv*{enumext*} environment.
+%   Define and set |unknown| key for  \myenv*{enumext*} environment.
 % \iffalse
 %% Add keys |unknown| for |enumext*| environment.
 % \fi
@@ -10380,7 +10369,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     unknown .code:n = { \@@_starred_unknown_keys:n {#1} }
   }
 %    \end{macrocode}
-%  Internal functions for handling |unknown| key.
+%   Internal functions for handling |unknown| key.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_unknown_keys:n #1
   {
@@ -10402,7 +10391,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Handling unknown keys for \env{enumext}}\label{key:unknown-keys-standar}
 %
 % \begin{macro}[int]{unknown, \@@_standar_unknown_keys:n, \@@_standar_unknown_keys:nn}
-%    Defines and set the key |unknown| for \myenv*{enumext} environment.
+%   Defines and set the key |unknown| for \myenv*{enumext} environment.
 % \iffalse
 %% Add keys |unknown| for |enumext| environment.
 % \fi
@@ -10416,7 +10405,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \clist_map_inline:nn { level-1,level-2,level-3,level-4 } { \@@_tmp:n {#1} }
 %    \end{macrocode}
-%  Internal functions for handling |unknown| key.
+%   Internal functions for handling |unknown| key.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_standar_unknown_keys:n #1
   {
@@ -10443,8 +10432,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % in the \mymeta{sequence} and \mymeta{prop list} defined by \mykey{save-ans} key.
 %
 % \begin{macro}{\@@_keyans_default_item:n,}
-%    The function \cs{@@_keyans_default_item:n} executes the original
-%    behavior of the \ics*{item} along with the keys \mykey{wrap-label},
+%   The function \cs{@@_keyans_default_item:n} executes the original
+%   behavior of the \ics*{item} along with the keys \mykey{wrap-label},
 %   \mykey{wrap-label*} and \mykey{itemindent}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_default_item:n #1
@@ -10922,8 +10911,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_start_store_level:}
-%    The \cs{@@_start_store_level:} function activate the level saving
-%    mechanism for \emph{storage} in \mymeta{sequence} for the command
+%   The \cs{@@_start_store_level:} function activate the level saving
+%   mechanism for \emph{storage} in \mymeta{sequence} for the command
 %   \ics*{anskey} and the environment \myenv*{anskey*}.
 % \iffalse
 %% Start save level-structure in sequence for |save-ans| key in |enumext| environment.
@@ -10945,8 +10934,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
 %    \end{macrocode}
-%    If \myenv*{enumext} are nested in \myenv*{enumext*} add \cs{@@_store_level_open:}
-%    to preserve the stored structure.
+%   If \myenv*{enumext} are nested in \myenv*{enumext*} add \cs{@@_store_level_open:}
+%   to preserve the stored structure.
 %    \begin{macrocode}
     \bool_lazy_all:nT
       {
@@ -10966,9 +10955,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_stop_store_level:}
-%    The \cs{@@_stop_store_level:} function stop the level saving
-%    mechanism for \emph{storage} in \mymeta{sequence} for the command
-%    \ics*{anskey} and the environment \myenv*{anskey*}.
+%   The \cs{@@_stop_store_level:} function stop the level saving
+%   mechanism for \emph{storage} in \mymeta{sequence} for the command
+%   \ics*{anskey} and the environment \myenv*{anskey*}.
 % \iffalse
 %% Stop save level-structure in sequence for |save-ans| key in |enumext| environment.
 % \fi
@@ -10984,12 +10973,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_multicols_start:}
-%    The function \cs{@@_multicols_start:} will start the
-%    \myenv{multicols} environment according to the value passed by the
-%    \mykey{columns} key, then set the default value for
-%    \ics{columnsep} when \mykey{columns-sep}=\mydim{0pt} and set the
-%    value of \ics{multicolsep} equal to zero and leave \ics{columnseprule}
-%    equal to zero for inner levels.
+%   The function \cs{@@_multicols_start:} will start the
+%   \myenv{multicols} environment according to the value passed by the
+%   \mykey{columns} key, then set the default value for
+%   \ics{columnsep} when \mykey{columns-sep}=\mydim{0pt} and set the
+%   value of \ics{multicolsep} equal to zero and leave \ics{columnseprule}
+%   equal to zero for inner levels.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_multicols_start:
   {
@@ -11013,10 +11002,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \dim_zero:N \columnseprule
           }
 %    \end{macrocode}
-%    We will calculate the \emph{vertical spacing} settings for the
-%    \myenv{multicols} environment using the function \cs{@@_multi_addvspace:},
-%    apply our \emph{\enquote{vertical adjust spacing}}, then start the
-%    \myenv{multicols} environment.
+%   We will calculate the \emph{vertical spacing} settings for the
+%   \myenv{multicols} environment using the function \cs{@@_multi_addvspace:},
+%   apply our \emph{\enquote{vertical adjust spacing}}, then start the
+%   \myenv{multicols} environment.
 %    \begin{macrocode}
         \bool_if:cF { l_@@_minipage_active_ \@@_level: _bool }
           {
@@ -11031,10 +11020,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_multicols_stop:}
-%    The function \cs{@@_multicols_stop:} will stop the \myenv{multicols}
-%    environment and apply our \emph{\enquote{vertical adjust}} spacing.
-%    For compatibility with \emph{tagged} \texttt{PDF}, the closing of the
-%    \myenv{list} environment is executed here along with \cs{@@_stop_store_level:}.
+%   The function \cs{@@_multicols_stop:} will stop the \myenv{multicols}
+%   environment and apply our \emph{\enquote{vertical adjust}} spacing.
+%   For compatibility with \emph{tagged} \texttt{PDF}, the closing of the
+%   \myenv{list} environment is executed here along with \cs{@@_stop_store_level:}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_multicols_stop:
   {
@@ -11057,11 +11046,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_before_list:}
-%    The function \cs{@@_before_list:} first calls the function
-%    \cs{@@_vspace_above:} used by the keys \mykey{above} and
-%    \mykey{above*}, then calls the function \cs{@@_before_args_exec:}
-%    used by the key \mykey{before*} and finally execute the function
-%    \cs{@@_check_ans_active:} for the check answer mechanism.
+%   The function \cs{@@_before_list:} first calls the function
+%   \cs{@@_vspace_above:} used by the keys \mykey{above} and
+%   \mykey{above*}, then calls the function \cs{@@_before_args_exec:}
+%   used by the key \mykey{before*} and finally execute the function
+%   \cs{@@_check_ans_active:} for the check answer mechanism.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_before_list:
   {
@@ -11069,14 +11058,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_before_args_exec:
     \@@_check_ans_active:
 %    \end{macrocode}
-%    When the \mykey{mini-env} key is active it will set the value of the
-%    \myvarenv{l__@@_minipage_right_X_dim} to be the \emph{width} of the \myvarenv*{__@@_mini_page}
-%    environment on the \emph{\enquote{right side}}, using this value together with the value
-%    of the \myvarenv{l__@@_minipage_hsep_X_dim} set by the \mykey{mini-sep} key,
-%    the value of \myvarenv{l__@@_minipage_left_X_dim} will be set, which will be
-%    the \emph{width} of \myvarenv*{__@@_mini_page} environment on the
-%    \emph{\enquote{left side}}, always having a current \ics{linewidth}
-%    as \emph{maximum width} between them.
+%   When the \mykey{mini-env} key is active it will set the value of the
+%   \myvarenv{l__@@_minipage_right_X_dim} to be the \emph{width} of the \myvarenv*{__@@_mini_page}
+%   environment on the \emph{\enquote{right side}}, using this value together with the value
+%   of the \myvarenv{l__@@_minipage_hsep_X_dim} set by the \mykey{mini-sep} key,
+%   the value of \myvarenv{l__@@_minipage_left_X_dim} will be set, which will be
+%   the \emph{width} of \myvarenv*{__@@_mini_page} environment on the
+%   \emph{\enquote{left side}}, always having a current \ics{linewidth}
+%   as \emph{maximum width} between them.
 % \iffalse
 %% Set |mini-env| width value.
 % \fi
@@ -11116,15 +11105,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-%
 % \begin{macro}{\@@_second_part:}
-%    The function \cs{@@_second_part:} first check the state of
-%    the boolean variable \myvarenv{l__@@_minipage_active_X_bool}, if it is
-%    \enquote{true} a small test will be executed to check if we have
-%    omitted the use of \ics*{miniright} (the \myvarenv*{__@@_mini_page}
-%    environment has not been closed), then close \myvarenv*{__@@_mini_page}
-%    and add the \emph{adjusted vertical space} \cs{l_@@_minipage_after_skip},
-%    otherwise we will close the \myenv{multicols} environment.
+%   The function \cs{@@_second_part:} first check the state of
+%   the boolean variable \myvarenv{l__@@_minipage_active_X_bool}, if it is
+%   \enquote{true} a small test will be executed to check if we have
+%   omitted the use of \ics*{miniright} (the \myvarenv*{__@@_mini_page}
+%   environment has not been closed), then close \myvarenv*{__@@_mini_page}
+%   and add the \emph{adjusted vertical space} \cs{l_@@_minipage_after_skip},
+%   otherwise we will close the \myenv{multicols} environment.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_second_part:
   {
@@ -11185,8 +11173,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{enumext}
-%    Now create the \myenv*{enumext} environment based on \myenv{list}
-%    environment by levels.
+%   Now create the \myenv*{enumext} environment based on \myenv{list}
+%   environment by levels.
 % \iffalse
 %% Definition of |enumext| environment.
 % \fi
@@ -11388,7 +11376,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{keyans}
-%    Now we define the environment \myenv*{keyans} also based on lists.
+%   Now we define the environment \myenv*{keyans} also based on lists.
 % \iffalse
 %% Definition of |keyans| environment.
 % \fi
@@ -11438,8 +11426,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}[int]{start-list-tags, stop-start-tags, stop-list-tags,
 %                    \@@_start_list_tag:n,\@@_stop_start_list_tag:,
 %                    \@@_stop_list_tag:n}
-%    We will first define the necessary \texttt{sockets} and their
-%    behavior for \myenv*{enumext*} and \myenv*{keyans*}.
+%   We will first define the necessary \texttt{sockets} and their
+%   behavior for \myenv*{enumext*} and \myenv*{keyans*}.
 % \iffalse
 %% Implement socket for tagging support in |enumext*| and |keyans*| environments.
 % \fi
@@ -11472,7 +11460,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % And now we'll wrap them so that they're only active when |\DocumentMetadata| is present.
 % \iffalse
-%% Wrap socket in conditional functions for tagging |enumext*| and |keyans*|.
+%% Wrap socket in conditional functions for tagging |enumext*| and |keyans*| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_start_list_tag:n #1
@@ -11507,8 +11495,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}[int]{start-list-tags, stop-start-tags, stop-list-tags,
 %                    \@@_anspic_start_list_tag:,\@@_anspic_stop_start_list_tag:,
 %                    \@@_anspic_stop_list_tag:}
-%    We will first define the necessary \texttt{sockets} and their
-%    behavior for \myenv*{keyanspic}.
+%   We will first define the necessary \texttt{sockets} and their
+%   behavior for \myenv*{keyanspic} environment.
 % \iffalse
 %% Implement socket for tagging support in |keyanspic| environment.
 % \fi
@@ -11654,8 +11642,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \label{fig:keyanspic}
 % \end{figure}
 %
-%  This implementation is adapted from the answer given by Enrico Gregorio
-%  in \href{https://tex.stackexchange.com/a/577705/7832}{How to process the body of an environment and divide it by a \textbackslash macro?}.
+% This implementation is adapted from the answer given by Enrico Gregorio
+% (texttt{@egreg}) in \href{https://tex.stackexchange.com/a/577705/7832}{How to process the body of an environment and divide it by a \textbackslash macro?}.
 %
 % \subsubsection{The environment \env{keyanspic}}\label{env:keyanspic}
 %
@@ -11667,11 +11655,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % or inline when present or not.
 %
 % \begin{macro}{\@@_keyans_pic_safe_exec:n}
-%    The function \cs{@@_keyans_pic_safe_exec:n} check the starred argument
-%    and nested level position inside the \myenv*{enumext} environment.
-%    We will set the state of the variable \cs{l_@@_keyans_pic_star_bool}
-%    along with the value of the variable \cs{l_@@_anspic_mini_pos_str}
-%    according to the presence of the starred argument.
+%   The function \cs{@@_keyans_pic_safe_exec:n} check the starred argument
+%   and nested level position inside the \myenv*{enumext} environment.
+%   We will set the state of the variable \cs{l_@@_keyans_pic_star_bool}
+%   along with the value of the variable \cs{l_@@_anspic_mini_pos_str}
+%   according to the presence of the starred argument.
 % \iffalse
 %% Internal check code for |keyanspic| environment.
 % \fi
@@ -11697,8 +11685,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_keyans_pic_skip_abs:N}
-%    The function \cs{@@_keyans_pic_skip_abs:N} will return a positive
-%    value \ics{parsep}.
+%   The function \cs{@@_keyans_pic_skip_abs:N} will return a positive
+%   value \ics{parsep}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_pic_skip_abs:N #1
   {
@@ -11711,17 +11699,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_keyans_pic_arg_two:}
-%    The \cs{@@_keyans_pic_arg_two:} function will be used in the second
-%    argument of the list environment that defines the \myenv*{keyanspic}
-%    environment, with this we will take the configuration of the spaces and
-%    the keys \mykey{label} and \mykey{wrap-label} from the \myenv*{keyans}
-%    environment.
+%   The \cs{@@_keyans_pic_arg_two:} function will be used in the second
+%   argument of the list environment that defines the \myenv*{keyanspic}
+%   environment, with this we will take the configuration of the spaces and
+%   the keys \mykey{label} and \mykey{wrap-label} from the \myenv*{keyans}
+%   environment.
 %
-%    The first thing we need to do is set the boolean variable
-%    \cs{l_@@_leftmargin_tmp_v_bool} handled by the \mykey{list-indent} key
-%    to false, then copy the definition of the second list argument from the
-%    \myenv*{keyans} environment and make sure that |\parsep| does not have a
-%    negative value.
+%   The first thing we need to do is set the boolean variable
+%   \cs{l_@@_leftmargin_tmp_v_bool} handled by the \mykey{list-indent} key
+%   to false, then copy the definition of the second list argument from the
+%   \myenv*{keyans} environment and make sure that |\parsep| does not have a
+%   negative value.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_pic_arg_two:
   {
@@ -11765,19 +11753,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{important}
-%    For compatibility with \emph{tagged} PDF we must use the |\begin{list}|
-%    form and a lot of conditional code using |\IfDocumentMetadataTF|.
+%   For compatibility with \emph{tagged} PDF we must use the |\begin{list}|
+%   form and a lot of conditional code using |\IfDocumentMetadataTF|.
 % \end{important}
 %
 % \smallskip
 %
 % \begin{macro}{keyanspic}
-%    Now we define the environment \myenv*{keyanspic} based on list.
-%    The starred argument will determine whether the \mymeta{labels}
-%    will be displayed \emph{\enquote{above}} or \emph{\enquote{below}} the
-%    drawing or tabular. The second optional argument \myoarg{number above,
-%    number below} will determine the number of \myenv{minipage} environments that
-%    will be above and below separated by \ics{parsep} within it.
+%   Now we define the environment \myenv*{keyanspic} based on list.
+%   The \emph{starred argument} |*| will determine whether the \mymeta{labels}
+%   will be displayed \emph{\enquote{above}} or \emph{\enquote{below}} the
+%   drawing or tabular. The second optional argument \myoarg{number above,
+%   number below} will determine the number of \myenv{minipage} environments that
+%   will be above and below separated by \ics{parsep} within it.
 % \iffalse
 %% Define |keyanspic| environment.
 % \fi
@@ -11804,12 +11792,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       } { }
   }
 %    \end{macrocode}
-%    If the optional argument is not present, the number of times the
-%    \ics*{anspic} command appears will be counted from
-%    \cs{l_@@_anspic_args_seq} and placed in \myenv{minipage}
-%    environments on a single line. Finally we check if \ics*{anspic*}
-%    has been used, set the counter to zero and apply our
-%    \enquote{adjusted} vertical space below the environment.
+%   If the optional argument is not present, the number of times the
+%   \ics*{anspic} command appears will be counted from
+%   \cs{l_@@_anspic_args_seq} and placed in \myenv{minipage}
+%   environments on a single line. Finally we check if \ics*{anspic*}
+%   has been used, set the counter to zero and apply our
+%   \enquote{adjusted} vertical space below the environment.
 %    \begin{macrocode}
   {
     \IfDocumentMetadataTF
@@ -11843,9 +11831,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_anspic_print:n, \@@_anspic_print:e}
-%    The optional argument is split by comma and is handled directly by
-%    the function \cs{@@_anspic_print:n} and passed to the function
-%    \cs{@@_anspic_row:n}.
+%   The optional argument is split by comma and is handled directly by
+%   the function \cs{@@_anspic_print:n} and passed to the function
+%   \cs{@@_anspic_row:n}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anspic_print:n
   {
@@ -11856,10 +11844,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_anspic_row:n}
-%    The function \cs{@@_anspic_row:n} will set the widths for
-%    the \myenv{minipage} environments and place the content \mymeta{stored}
-%    by \ics*{anspic} in the \cs{l_@@_anspic_args_seq} sequence inside
-%    them.
+%   The function \cs{@@_anspic_row:n} will set the widths for the
+%   \myenv{minipage} environments and place the content \mymeta{stored}
+%   by \ics*{anspic} in the \cs{l_@@_anspic_args_seq} sequence inside them.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anspic_row:n
   {
@@ -11889,21 +11876,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \subsubsection{The command \cs{anspic}}\label{cmd:anspic}
-% The \ics*{anspic} command take three arguments, the
-% starred versions (|*|)  \ics*{anspic*} and \ics*{anspic*}\myoarg{content}
+% The \ics*{anspic} command take three arguments, the \emph{starred versions} |*|  \ics*{anspic*} and \ics*{anspic*}\myoarg{content}
 % store the current \mymeta{label} next to the
 % \myoarg{content} if it is present in the \mymeta{sequence} and \mymeta{prop list}
 % defined by \mykey{save-ans} key. This command is used as a
 % replacement for |\item| in the \myenv*{keyanspic} environment.
 %
 % \begin{macro}{\anspic}
-%    We check that the command is active in the \myenv*{keyanspic}
-%    environment only if the \mykey{save-ans} key is present, otherwise
-%    we return an error.
-%    The three arguments are handled by the function
-%    \cs{@@_anspic_args:nnn} and stored in the sequence
-%    \cs{l_@@_anspic_args_seq} which is processed by the
-%    \myenv*{keyanspic} environment.
+%   We check that the command is active in the \myenv*{keyanspic}
+%   environment only if the \mykey{save-ans} key is present, otherwise
+%   we return an error.
+%   The three arguments are handled by the function \cs{@@_anspic_args:nnn}
+%   and stored in the sequence \cs{l_@@_anspic_args_seq} which is processed
+%   by the \myenv*{keyanspic} environment.
 % \iffalse
 %% Define |\anspic| for |keyanspic| environment.
 % \fi
@@ -12013,10 +11998,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_anspic_label_pos:nnn, }
-%    The function \cs{@@_anspic_args:nnn} will be in charge of
-%    handling the \emph{\enquote{counter}} and \mymeta{label},
-%    which will have the same configuration as the \myenv*{keyans}
-%    environment.
+%   The function \cs{@@_anspic_args:nnn} will be in charge of
+%   handling the \emph{\enquote{counter}} and \mymeta{label},
+%   which will have the same configuration as the \myenv*{keyans}
+%   environment.
 % \iffalse
 %% Set position of labels for |\anspic|.
 % \fi
@@ -12046,15 +12031,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
   }
-
+%
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@@_anspic_args:nnn, }
-%    The function \cs{@@_anspic_args:nnn} will be in charge of
-%    handling the \emph{\enquote{counter}} and \mymeta{label},
-%    which will have the same configuration as the \myenv*{keyans}
-%    environment.
+%   The function \cs{@@_anspic_args:nnn} will be in charge of
+%   handling the \emph{\enquote{counter}} and \mymeta{label},
+%   which will have the same configuration as the \myenv*{keyans}
+%   environment.
 % \iffalse
 %% Process all code for |\anspic| with tagging PDF support.
 % \fi
@@ -12088,10 +12073,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % adding an optional first argument \myparg{number}.
 %
 % \begin{macro}{\@@_starred_columns_set_vii:, \@@_starred_columns_set_viii:,}
-%    We set the default value for the \emph{width of the box} containing the
-%    \mymeta{content} of the items for \myenv*{enumext*} environment.
+%   We set the default value for the \emph{width of the box} containing the
+%   \mymeta{content} of the items for \myenv*{enumext*} environment.
 % \iffalse
-%% Define default item width (columns width) for |enumext*| and |keyans*|.
+%% Define default item width (columns width) for |enumext*| and |keyans*| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_starred_columns_set_vii:
@@ -12168,11 +12153,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Functions for join item columns}
 %
 % \begin{macro}{\@@_starred_joined_item_vii:n, \@@_starred_joined_item_viii:n,}
-%    The functions \cs{@@_starred_joined_item_vii:n} and \cs{@@_starred_joined_item_viii:n}
-%    will set the \emph{width} of the box in which the \mymeta{content} passed to \ics*{item}\myparg{columns} will be
-%    stored together with the value of |\itemwidth| for the \myenv*{enumext*} environment.
+%   The functions \cs{@@_starred_joined_item_vii:n} and \cs{@@_starred_joined_item_viii:n}
+%   will set the \emph{width} of the box in which the \mymeta{content}
+%   passed to \ics*{item}\myparg{columns} will be stored together with
+%   the value of |\itemwidth| for the \myenv*{enumext*} environment.
 % \iffalse
-%% Set width for joined item's for |enumext*| and |keyans*|.
+%% Set width for joined item's for |enumext*| and |keyans*| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_joined_item_vii:n #1
@@ -12225,7 +12211,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%  Same implementation for the \myenv*{keyans*} environment.
+%   Same implementation for the \myenv*{keyans*} environment.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_starred_joined_item_viii:n #1
   {
@@ -12281,8 +12267,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Functions for \texttt{mini-env}, \texttt{mini-right} and \texttt{mini-right*} keys}
 %
-% To have compatibility with the \texttt{tagPDF} we close the environment
-% according to the presence or not of the \mykey{mini-right} key.
+% To have compatibility with the \emph{tagged} \texttt{PDF} we close
+% the environment according to the presence or not of the \mykey{mini-right} key.
 %
 % \begin{macro}{\@@_start_mini_vii:, \@@_stop_mini_vii:}
 %   The implementation of the \mykey{mini-env} key support is almost
