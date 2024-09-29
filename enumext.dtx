@@ -11563,13 +11563,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The environment \env{keyanspic} and \cs{anspic}}
 %
-% The \myenv*{keyanspic} environment is a list-based environment that
+% The \myenv*{keyanspic} environment is a \myenv{list} based environment that
 % uses the same configuration for \emph{\enquote{spacing}} and \mymeta{label}
 % as the \myenv*{keyans} environment, but it does not use |\item|.
-% The \mymeta{contents} are passed to the environment by means of the \ics*{anspic}
-% command and are placed inside \myenv{minipage} environments, with the
-% \mymeta{label} underneath, adjusting widths according to the
-% options passed to the environment.
+% The \mymeta{contents} are passed to the environment by means of the
+% \ics*{anspic} command as replacement for |\item| command and placed
+% inside \myenv{minipage} environments, with the \mymeta{label}
+% \emph{\enquote{above}} or \emph{\enquote{below}}, adjusting
+% \emph{widths} and \emph{position} according to the options passed to
+% the environment.
 %
 % \begin{figure}[ht]
 %   \centering
@@ -11642,24 +11644,44 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \label{fig:keyanspic}
 % \end{figure}
 %
-% This implementation is adapted from the answer given by Enrico Gregorio
-% (\texttt{@egreg}) in \href{https://tex.stackexchange.com/a/577705/7832}{How to process the body of an environment and divide it by a \textbackslash macro?}.
+% The environment \myenv*{keyanspic} will take two optional arguments, the first
+% \emph{starred argument} |*| will set the position of the \mymeta{label}
+% processed by the command |\anspic| which will be \emph{\enquote{above}}
+% if present and \emph{\enquote{below}} otherwise, the second optional
+% argument will take two values ​​separated by comma \myoarg{n° above, n°
+% below} and will determine the number of \myenv{minipage} environments
+% in which the mandatory argument of |\anspic| (drawing or tabular) will
+% be printed at the \enquote{top} and \enquote{bottom} within the
+% environment, if not present these will be printed on a single line.
+%
+% \smallskip
+%
+% \begin{important}
+% One of the complications here to make the \myenv*{keyanspic}
+% environment compatible with \emph{tagged} PDF is the position of
+% \mymeta{label}, the \ics*{anspic} command processes the arguments in
+% order, where |#1| and |#2| correspond to \mymeta{label} and |#3| to the
+% mandatory argument and puts all this inside a \myenv{minipage}
+% environment. If |#1| and |#2|, that is \mymeta{label}, is above |#3|
+% there are no problems with \emph{tagged} PDF, but if |#3| comes first
+% the list created with \emph{tagged} PDF will not be correct.
+% \end{important}
 %
 % \subsubsection{The environment \env{keyanspic}}\label{env:keyanspic}
 %
-% The environment we wish to build will be based on the \myenv{list}
-% environment and will take two optional arguments, the \emph{starred argument}
-% |*| will set the position of the \mymeta{label} to the top if present
-% and bottom otherwise, the second optional argument will process the
-% number of \emph{drawing} or \emph{tabular} that will be on top, bottom
-% or inline when present or not.
+% In order for the \myenv*{keyanspic} environment and the |\anspic|
+% command to work correctly, we need to set and export some variables in
+% the first part of the environment definition and pass them to |\anspic|
+% which is executed in the second part of the environment. This
+% implementation is adapted from the answer given by Enrico Gregorio
+% (\texttt{@egreg}) in \href{https://tex.stackexchange.com/a/577705/7832}{How to process the body of an environment and divide it by a \textbackslash macro?}.
 %
 % \begin{macro}{\@@_keyans_pic_safe_exec:n}
-%   The function \cs{@@_keyans_pic_safe_exec:n} check the starred argument
+%   The function \cs{@@_keyans_pic_safe_exec:n} check the \emph{starred argument} |*|
 %   and nested level position inside the \myenv*{enumext} environment.
 %   We will set the state of the variable \cs{l_@@_keyans_pic_star_bool}
-%   along with the value of the variable \cs{l_@@_anspic_mini_pos_str}
-%   according to the presence of the starred argument.
+%   along with the value of the variable \cs{l_@@_anspic_mini_pos_str} using by |\anspic|
+%   according to the presence of the \emph{starred argument}.
 % \iffalse
 %% Internal check code for |keyanspic| environment.
 % \fi
@@ -11699,16 +11721,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_keyans_pic_arg_two:}
-%   The \cs{@@_keyans_pic_arg_two:} function will be used in the second
-%   argument of the list environment that defines the \myenv*{keyanspic}
-%   environment, with this we will take the configuration of the spaces and
-%   the keys \mykey{label} and \mykey{wrap-label} from the \myenv*{keyans}
+%   The \cs{@@_keyans_pic_arg_two:} function will be used in the
+%   \emph{second argument} of the \myenv{list} environment that defines
+%   the \myenv*{keyanspic}  environment, with this we will take the
+%   configuration of the \emph{\enquote{spaces}} and the \mymeta{keys}
+%   \mykey{label} and \mykey{wrap-label} from the \myenv*{keyans} 
 %   environment.
 %
 %   The first thing we need to do is set the boolean variable
 %   \cs{l_@@_leftmargin_tmp_v_bool} handled by the \mykey{list-indent} key
-%   to false, then copy the definition of the second list argument from the
-%   \myenv*{keyans} environment and make sure that |\parsep| does not have a
+%   to \enquote{false}, then copy the definition of the second list argument from the
+%   \myenv*{keyans} environment definition and make sure that |\parsep| does not have a
 %   negative value.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_pic_arg_two:
@@ -11718,9 +11741,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_pic_skip_abs:N \parsep
 %    \end{macrocode}
 %   Now we increment the |enumXv| counter of the \myenv*{keyans}
-%   environment and save the total height of our \mymeta{label} in
-%   \cs{l_@@_anspic_label_htdp_dim} and we will adjust the values ​​of
-%   |\parsep| only if the \emph{starred argument} is NOT present (default version).
+%   environment and save the \emph{total height} of the \mymeta{label} in
+%   \cs{l_@@_anspic_label_htdp_dim} used by |\anspic| and we will adjust
+%   the values ​​of |\parsep| only if the \emph{starred argument} is NOT present.
 %    \begin{macrocode}
     \bool_if:NF \l_@@_keyans_pic_star_bool
       {
@@ -11739,7 +11762,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   Finally we adjust the value of |\leftmargin| and |\topsep| then set
 %   |\labelwidth|, |\labelsep|, |\partopsep| and |\itemsep| to zero so that
-%   the horizontal and vertical space is not affected.
+%   the \emph{horizontal} and \emph{vertical} space is not affected.
 %    \begin{macrocode}
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \skip_add:Nn \topsep { 0.5\box_dp:N \strutbox }
@@ -11752,20 +11775,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{important}
-%   For compatibility with \emph{tagged} PDF we must use the |\begin{list}|
-%   form and a lot of conditional code using |\IfDocumentMetadataTF|.
-% \end{important}
-%
-% \smallskip
-%
 % \begin{macro}{keyanspic}
-%   Now we define the environment \myenv*{keyanspic} based on list.
-%   The \emph{starred argument} |*| will determine whether the \mymeta{labels}
-%   will be displayed \emph{\enquote{above}} or \emph{\enquote{below}} the
-%   drawing or tabular. The second optional argument \myoarg{number above,
-%   number below} will determine the number of \myenv{minipage} environments that
-%   will be above and below separated by \ics{parsep} within it.
+%   Now we define the environment \myenv*{keyanspic}. For compatibility
+%   with \emph{tagged} \texttt{PDF} we must use the |\begin|\myenv{list}
+%   form and a lot of conditional code using |\IfDocumentMetadataTF|.
 % \iffalse
 %% Define |keyanspic| environment.
 % \fi
@@ -11791,20 +11804,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tag_suspend:n {keyanspic}
       } { }
   }
-%    \end{macrocode}
-%   If the optional argument is not present, the number of times the
-%   \ics*{anspic} command appears will be counted from
-%   \cs{l_@@_anspic_args_seq} and placed in \myenv{minipage}
-%   environments on a single line. Finally we check if \ics*{anspic*}
-%   has been used, set the counter to zero and apply our
-%   \enquote{adjusted} vertical space below the environment.
-%    \begin{macrocode}
   {
     \IfDocumentMetadataTF
       {
         \tag_resume:n {keyanspic}
         \tag_struct_begin:n {tag=L,attribute=enumerate}
       } { }
+%    \end{macrocode}
+%   Now we process the command |\anspic|, if the optional argument is not
+%   present, the number of times the \ics*{anspic} command appears will
+%   be counted from \cs{l_@@_anspic_args_seq} and placed a single line. 
+%    \begin{macrocode}
     \tl_if_novalue:nTF { #2 }
       {
         \@@_anspic_print:e { \seq_count:N \l_@@_anspic_args_seq }
@@ -11815,7 +11825,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tag_suspend:n {keyanspic}
       } { }
     \end{list}
-    \IfDocumentMetadataTF { \tag_struct_end: \tag_struct_end: } { }
+    \IfDocumentMetadataTF
+      {
+        \tag_struct_end:
+        \tag_struct_end:
+      } { }
+%    \end{macrocode}
+%   Finally we check if \ics*{anspic*} has been used, set the counter
+%   to zero and apply our \enquote{adjusted} vertical space below the environment.
+%    \begin{macrocode}    
     \@@_check_starred_cmd:n { anspic }
     \setcounter { enumXvi } { 0 }
     \bool_if:NTF \l_@@_keyans_pic_star_bool
@@ -11830,57 +11848,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_anspic_print:n, \@@_anspic_print:e}
-%   The optional argument is split by comma and is handled directly by
-%   the function \cs{@@_anspic_print:n} and passed to the function
-%   \cs{@@_anspic_row:n}.
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_anspic_print:n
-  {
-    \clist_map_function:nN { #1 } \@@_anspic_row:n
-  }
-\cs_generate_variant:Nn \@@_anspic_print:n { e }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_anspic_row:n}
-%   The function \cs{@@_anspic_row:n} will set the widths for the
-%   \myenv{minipage} environments and place the content \mymeta{stored}
-%   by \ics*{anspic} in the \cs{l_@@_anspic_args_seq} sequence inside them.
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_anspic_row:n
-  {
-    \dim_set:Nn \l_@@_anspic_mini_width_dim { \linewidth / #1 }
-    \int_set:Nn \l_@@_anspic_above_int { \l_@@_anspic_below_int }
-    \int_set:Nn \l_@@_anspic_below_int { \l_@@_anspic_above_int + #1 }
-    \int_step_inline:nnn
-      { \l_@@_anspic_above_int + 1 }
-      { \l_@@_anspic_below_int }
-      {
-        \IfDocumentMetadataTF
-          {
-            \tag_suspend:n {minipage}
-          } { }
-        \begin{minipage}[ \l_@@_anspic_mini_pos_str ]{ \l_@@_anspic_mini_width_dim }
-          \centering
-          \seq_item:Nn \l_@@_anspic_args_seq { ##1 }
-        \end{minipage}
-        \IfDocumentMetadataTF
-          {
-            \tag_resume:n {minipage}
-          } { }
-      }
-    \par
-  }
-%    \end{macrocode}
-% \end{macro}
-%
 % \subsubsection{The command \cs{anspic}}\label{cmd:anspic}
-% The \ics*{anspic} command take three arguments, the \emph{starred versions} |*|  \ics*{anspic*} and \ics*{anspic*}\myoarg{content}
-% store the current \mymeta{label} next to the
-% \myoarg{content} if it is present in the \mymeta{sequence} and \mymeta{prop list}
-% defined by \mykey{save-ans} key. This command is used as a
-% replacement for |\item| in the \myenv*{keyanspic} environment.
+% The \ics*{anspic} command take three arguments, the \emph{starred versions} \ics*{anspic*}\myoarg{content}
+% \emph{store} the current \mymeta{label} next to the
+% \myoarg{content} (if it is present) in the \mymeta{sequence} and \mymeta{prop list}
+% defined by \mykey{save-ans} key. The third (mandatory) argument
+% \emph{\enquote{drawing or tabular}} is NOT \emph{stored} in the \mymeta{sequence} or
+% \mymeta{prop list}.
 %
 % \begin{macro}{\anspic}
 %   We check that the command is active in the \myenv*{keyanspic}
@@ -11916,17 +11890,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \smallskip
-%
-% \begin{important}
-% One of the complications here to make the \myenv*{keyanspic}
-% environment compatible with \emph{tagged} PDF is the position of
-% \mymeta{label}, the \ics*{anspic} command processes the arguments in
-% order, where |#1| and |#2| correspond to \mymeta{label} and |#3| to the
-% mandatory argument and puts all this inside a \myenv{minipage}
-% environment. If |#1| and |#2|, that is \mymeta{label}, is above |#3|
-% there are no problems with \emph{tagged} PDF, but if |#3| comes first
-% the list created with \emph{tagged} PDF will not be correct.
-% \end{important}
 %
 % \begin{macro}{\@@_anspic_body_dim:n,}
 %   The \cs{@@_anspic_body_dim:n} function will set the value of
@@ -12050,6 +12013,49 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_anspic_stop_start_list_tag:
     \\ #3
     \@@_anspic_stop_list_tag:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_anspic_print:n, \@@_anspic_print:e, \@@_anspic_row:n,}
+%   The optional argument \myoarg{n° above, n° below} passed to the
+%   \myenv*{keyanspic} environment is split by comma and is handled
+%   directly by the function \cs{@@_anspic_print:n} and passed to the
+%   function \cs{@@_anspic_row:n}.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_anspic_print:n
+  {
+    \clist_map_function:nN { #1 } \@@_anspic_row:n
+  }
+\cs_generate_variant:Nn \@@_anspic_print:n { e }
+%    \end{macrocode}
+%   The function \cs{@@_anspic_row:n} will set the \emph{widths} for the
+%   \myenv{minipage} environments and place all arguments passed to |\anspic|
+%   \emph{saved} in the \cs{l_@@_anspic_args_seq} sequence inside them.
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_anspic_row:n
+  {
+    \dim_set:Nn \l_@@_anspic_mini_width_dim { \linewidth / #1 }
+    \int_set:Nn \l_@@_anspic_above_int { \l_@@_anspic_below_int }
+    \int_set:Nn \l_@@_anspic_below_int { \l_@@_anspic_above_int + #1 }
+    \int_step_inline:nnn
+      { \l_@@_anspic_above_int + 1 }
+      { \l_@@_anspic_below_int }
+      {
+        \IfDocumentMetadataTF
+          {
+            \tag_suspend:n {minipage}
+          } { }
+        \begin{minipage}[ \l_@@_anspic_mini_pos_str ]{ \l_@@_anspic_mini_width_dim }
+          \centering
+          \seq_item:Nn \l_@@_anspic_args_seq { ##1 }
+        \end{minipage}
+        \IfDocumentMetadataTF
+          {
+            \tag_resume:n {minipage}
+          } { }
+      }
+    \par
   }
 %    \end{macrocode}
 % \end{macro}
