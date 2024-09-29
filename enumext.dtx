@@ -4071,6 +4071,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % presentation, that said handling that using \emph{nested lists} is quite
 % complicated so I do not classify to be implemented.
 %
+% \subsubsection*{Why has it taken so long?}
+%
+% One of the setbacks, beyond my laziness, was including compatibility
+% with \emph{tagged} \texttt{PDF}. To be honest, it's something I never
+% considered at any point, but I firmly believe that being able to create
+% \emph{accessible documents} provides a great opportunity in the world of
+% mathematics education. From my perspective as a \emph{high school} teacher,
+% beyond theorems and deep mathematics, the use of exercise lists is one
+% of the most common things. Being able to open the way to work in
+% parallel with those who have different abilities is really important
+% and I regret not having looked into this in the past. I hope that
+% \mypkg*{enumext} serves this purpose and inspires more users and
+% authors to follow this path.
+%
 % \let\stdsection\section
 % \def\section*#1{\stdsection{#1}}
 %
@@ -4255,7 +4269,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-09-28}
+  {2024-09-29}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -12082,7 +12096,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % A side effect is the limitation of using |\item| in this way \emph{without}
 % using |\RenewDocumentCommand|, which loses the original definition and
-% affects the base \emph{standar list environments} provided by \hologo{LaTeX}
+% affects the \emph{standard list environments} provided by \hologo{LaTeX}
 % and any environment defined using base \myenv{list} environment, including:
 % \myenv{itemize}, \myenv{enumerate}, \myenv{description}, \myenv{quote},
 % \myenv{quotation}, \myenv{verse}, \myenv{center}, \myenv{flushleft},
