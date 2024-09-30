@@ -1510,7 +1510,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %    \ics*{item*}\myoarg{symbol}\myoarg{offset} works like
 %    the numbered |\item|, but placing a \mymeta{symbol} to the \emph{\enquote{left}} of the
 %    \mymeta{label} separated from it by the \mymeta{offset} set by the
-%    the second optional argument. The default values for \mymeta{symbol} and
+%    the second \emph{optional argument}. The default values for \mymeta{symbol} and
 %    \mymeta{offset} are |$\star$| ‘$\star$’ and the value set by
 %    \mykey{labelsep} key.
 %
@@ -1621,9 +1621,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% The \mymeta{keys} set in the optional arguments of environments and
+% The \mymeta{keys} set in the \emph{optional argument} of environments and
 % commands have the \emph{highest precedence}, overriding both
-% options passed by \ics*{setenumext}. If the optional argument is not
+% options passed by \ics*{setenumext}. If the \emph{optional argument} is not
 % passed, the first level of the environment \myenv*{enumext} will be
 % taken by default.
 %
@@ -1632,7 +1632,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \begin{important}*
 % The key \mykey{save-ans} that activate the \emph{\enquote{storage
 % system}} must NOT be passed through this command and must be passed
-% directly in the optional argument of the \emph{\enquote{first level}}
+% directly in the \emph{optional argument} of the \emph{\enquote{first level}}
 % of the environment in which they are executed.
 % \end{important}
 %
@@ -2121,7 +2121,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \newpage
 %
 % \keyexamp{series}{series name}{not used}
-% Stores the \emph{keys} of the optional argument of the \emph{\enquote{first level}}
+% Stores the \emph{keys} of the \emph{optional argument} of the \emph{\enquote{first level}}
 % of the environment in which it is executed in \mymarg{series
 % name} which is used as an argument in the key \mykey{resume}. The \mymeta{keys}
 % stored in \mymarg{series name} are not cumulative and are overwritten
@@ -2315,7 +2315,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % By executing the key \mykey{save-ans}|=|\mymarg{store name} the entire
 % structure of the environment (excluding the first level) including the
-% optional arguments passed to the inner levels or the environment nested
+% \emph{optional arguments} passed to the inner levels or the environment nested
 % in it, along with the content passed to \ics*{anskey}, the current
 % \mymeta{labels} for \ics*{item*} and \ics*{anspic}|*| in the environments
 % \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} will be stored
@@ -2324,7 +2324,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% The optional arguments of the inner levels or the nested environment
+% The \emph{optional argument} of the inner levels or the nested environment
 % are filtered by excluding all \mymeta{keys} related to the \emph{\enquote{stored
 % system}} along with the keys \mykey{series}, \mykey{resume} and
 % \mykey{resume*} when storing in \mymeta{sequence}.
@@ -2335,7 +2335,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The only \mymeta{keys} available for all levels of the \myenv*{enumext}
 % environment and the \myenv*{enumext*} environment are \mykey{no-store}
 % and \mykey{save-key}, the rest of the \mymeta{keys} described in this
-% section must be passed directly in the optional argument of the
+% section must be passed directly in the \emph{optional argument} of the
 % \emph{\enquote{first level}} of the environment in which the key
 % \mykey{save-ans} is executed. The key \mykey{save-ans} should NOT be passed
 % with the command \ics*{setenumext}.
@@ -2355,7 +2355,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{save-key}{key list}{not set}
 % This key \emph{overrides} the default \emph{\enquote{stored keys}} of the
-% optional arguments of the inner levels or nested environment that will
+% \emph{optional argument} of the inner levels or nested environment that will
 % be passed to the \mymeta{sequence}. The \mymeta{key list} passed to
 % this key ignores any \mymeta{keys} in the \emph{\enquote{stored
 % system}} and must be passed between braces. For example, if we
@@ -2446,8 +2446,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{show-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Displays the \emph{argument} passed to the \ics*{anskey}, the
 % \emph{body} for \myenv*{anskey*} environment, the \mymeta{label}
-% for \ics*{item*} and \ics*{anspic}|*| at the place where it is executed. If the optional
-% argument is present in \ics*{item*} or \ics*{anspic}|*| it will
+% for \ics*{item*} and \ics*{anspic}|*| at the place where it is executed.
+% If the \emph{optional argument} is present in \ics*{item*} or \ics*{anspic}|*| it will
 % be shown using \mykey{wrap-opt} key.
 %
 % \smallskip
@@ -2784,11 +2784,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</example>
 % \fi
 %
-% The \mymeta{keys} set in the optional argument of the environment are the same
+% The \mymeta{keys} set in the \emph{optional argument} of the environment are the same
 % (almost) as those of the \myenv*{enumext} and \myenv*{enumext*} environments and have higher
 % precedence than those set by \ics*{setenumext}\myoarg{keyans}\mymarg{key \textnormal{\textcolor{gray}{=}} val} or
 % \ics*{setenumext}\myoarg{keyans\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}}\mymarg{key \textnormal{\textcolor{gray}{=}} val}.
-% If the optional argument is not passed or the \mymeta{keys} are not set by
+% If the \emph{optional argument} is not passed or the \mymeta{keys} are not set by
 % \ics*{setenumext}, the default values will be the same as the second
 % level of the \myenv*{enumext} environment with the difference in the
 % \mymeta{label} which will be set to \mykey{label}=\ilabel{Alph*)}.
@@ -2810,7 +2810,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \end{function}
 %
 % The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
-% from the command, i.e. \ics*{item*} and the optional argument does \emph{\enquote{not support}} verbatim
+% from the command, i.e. \ics*{item*} and the \emph{optional argument} does \emph{\enquote{not support}} verbatim
 % content. By design it is assumed that the |\item*| will only
 % appear \emph{\enquote{once}} within the environment.
 %
@@ -2969,7 +2969,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % The \emph{optional argument} determines the number drawings or
 % tabular placed at \emph{upper and lower} in the environment.
-% If the optional argument or the \mymeta{nº lower} is
+% If the \emph{optional argument} or the \mymeta{nº lower} is
 % omitted the drawings or tabular will be put on a \emph{single line}.
 % The vertical separation between \emph{\enquote{upper}}
 % and \emph{\enquote{lower}} part is controlled by the values set
@@ -3169,12 +3169,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \item If we execute |\printkeyans*|\mymarg{store name} and the \emph{sequence}
 %   \mymarg{store name} contains any \myenv*{enumext} environments, they
 %   will start with the \mymeta{keys} set for the first level unless they
-%   are set in the optional argument or \mykey{save-key} is used to modify it.
+%   are set in the \emph{optional argument} or \mykey{save-key} is used to modify it.
 %
 % \item If we execute |\printkeyans|\mymarg{store name} and the \emph{sequence}
 %    \mymarg{store name} contains any environment \myenv*{enumext*}, they
 %    will start with the \mymeta{keys} set by default unless they are set
-%    in the optional argument or \mykey{save-key} is used to modify it.
+%    in the \emph{optional argument} or \mykey{save-key} is used to modify it.
 %\end{itemize}
 %
 % The default values ​​for the \emph{\enquote{first level}} of |\printkeyans| commands and
@@ -7600,7 +7600,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % The \mykey{series} key is responsible for the whole process of the
 % \mykey{resume} and \mykey{resume*} keys. The idea behind this is to be
-% able to absorb the \mymeta{keys} passed to the optional argument of the
+% able to absorb the \mymeta{keys} passed to the \emph{optional argument} of the
 % \emph{\enquote{first level}} of the environments \myenv*{enumext} and \myenv*{enumext*}, but, discarding some specific
 % \mymeta{keys}. This implementation is adapted directly from the code
 % provided by Jonathan P. Spratte \texttt(@Skillmon) in \href{https://chat.stackexchange.com/transcript/41?m=65647962#65647962}{chat-TeX-SX}
@@ -7632,8 +7632,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_filter_series:n, \@@_filter_series_key:n, \@@_filter_series_pair:nn}
 %   The function \cs{@@_filter_series:n} will be in charge of filtering the
-%   \mymeta{keys} we want to store where |{#1}| represents the optional
-%   value passed to the environment.
+%   \mymeta{keys} we want to store where |{#1}| represents the \emph{optional argument} passed to the environment.
 % \iffalse
 %% Internal function for filter keys.
 % \fi
@@ -8577,15 +8576,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % The idea behind \emph{\enquote{storing}} in the \mymeta{sequence} is
 % to have a copy of the structure of the environment in which the key
-% \mykey{save-ans} is being executed so we must capture the optional
-% arguments passed to the levels of the environment in which it is
+% \mykey{save-ans} is being executed so we must capture the \emph{optional 
+% argument} passed to the levels of the environment in which it is
 % executed and \emph{\enquote{storing}} them.
 %
 % \begin{macro}{\@@_store_active_keys:n, \@@_store_active_keys_vii:n,}
 %   The functions \cs{@@_store_active_keys:n} and
 %   \cs{@@_store_active_keys_vii:n} will be responsible for
-%   \emph{\enquote{storing}} the \mymeta{keys} filtered from the optional
-%   arguments of the environment in which the key \mykey{save-ans} is
+%   \emph{\enquote{storing}} the \mymeta{keys} filtered from the \emph{optional
+%   argument} of the environment in which the key \mykey{save-ans} is
 %   executed and the levels within this for the \myenv*{enumext} and
 %   \myenv*{enumext*} environments. We will execute this function only if
 %   the variable \cs{l_@@_store_save_key_X_bool} is false, that is, the key
@@ -8621,11 +8620,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % Since this list structure will be stored in the \mymeta{sequence}
 % established by the \mykey{save-ans} key when executing \ics*{anskey},
 % we will not be able to modify it. The best thing here is to have a key
-% that allows you to modify the optional argument of the list stored in
+% that allows you to modify the \emph{optional argument} of the list stored in
 % the \mymeta{sequence}.
 %
 % \begin{macro}[int]{save-key}
-%    The values ​​set by this key passed in the optional arguments of the
+%    The values ​​set by this key passed in the \emph{optional argument} of the
 %    \myenv*{enumext} and \myenv*{enumext*} environments will override the
 %    values ​​of the \cs{l_@@_store_save_key_X_tl} variable set by the
 %    functions \cs{@@_store_active_keys:n} and \cs{@@_store_active_keys_vii:n}.
@@ -8684,8 +8683,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_filter_save_key:n, \@@_filter_save_key_key:n, \@@_filter_save_key_pair:nn}
 %   The function \cs{@@_filter_save_key:n} will be in charge of filtering the
-%   \mymeta{keys} we want to \emph{store} in \mymeta{sequence} where |{#1}| represents the optional
-%   value passed to the environment.
+%   \mymeta{keys} we want to \emph{store} in \mymeta{sequence} where |{#1}| represents the \emph{optional argument} passed to the environment.
 % \iffalse
 %% Internal function for filter keys for |save-key| key.
 % \fi
@@ -9806,7 +9804,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \myenv*{keyans} environment and the current \mymeta{label} \cs{l_@@_label_vi_tl}
 %    for the \myenv*{keyanspic} environment when using
 %    \ics*{item*} and \ics*{anspic*}, followed by the \emph{contents} of the
-%    optional argument of both commands to the \cs{l_@@_store_current_label_tl}
+%    \emph{optional argument} of both commands to the \cs{l_@@_store_current_label_tl}
 %    variable, which will be passed to the \mymeta{prop list} defined by the
 %    \mykey{save-ans} key using the \cs{@@_store_addto_prop:V}.
 % \iffalse
@@ -9934,7 +9932,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   contents of the current \mymeta{label} \cs{l_@@_label_v_tl} for the
 %   \myenv*{keyans} environment and the \cs{l_@@_label_vi_tl} for the \myenv*{keyanspic} environment when using
 %   \ics*{item*} and \ics*{anspic*}, followed by the \mymeta{contents} of the
-%   optional argument of both commands to the \cs{l_@@_store_current_label_tl}
+%   \emph{optional argument} of both commands to the \cs{l_@@_store_current_label_tl}
 %   variable to the sequence defined by the \mykey{save-ans} key.
 % \iffalse
 %% Function for storing in sequence for |keyans| and |keyanspic| environments.
@@ -10109,14 +10107,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \ics*{item*}\myoarg{symbol}\myoarg{offset}.
 %
 % \begin{macro}[int]{\@@_default_item:n}
-%   First we will see if the optional argument is present, if it is NOT
+%   First we will see if the \emph{optional argument} is present, if it is NOT
 %   present we will check the state of the variable \cs{l_@@_check_answers_bool}
 %   set by the key \mykey{no-store}, set the boolean variable
 %   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true} for the key \mykey{wrap-label}
 %   and execute \cs{@@_item_std:w} and the key \mykey{itemindent}, otherwise we will check the state
 %   of the boolean variable \myvarenv{l__@@_wrap_label_opt_X_bool} set
 %   by the key \mykey{wrap-label*} and execute \cs{@@_item_std:w} with
-%   the optional argument and the key \mykey{itemindent}.
+%   the \emph{optional argument} and the key \mykey{itemindent}.
 % \iffalse
 %% Internal function for |\item| whit check-answer mechanism in |enumext| environment.
 % \fi
@@ -10147,7 +10145,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The \ics*{item*}, \ics*{item*}\myoarg{symbol} and \ics*{item*}\myoarg{symbol}\myoarg{offset}
 %    works like the \emph{numbered} |\item|, but placing a \mymeta{symbol}
 %    to the \emph{\enquote{left}} of the \mymeta{label} separated from
-%    it by the value the second optional argument \mymeta{offset}.
+%    it by the value the second \emph{optional argument} \mymeta{offset}.
 %
 % \begin{arguments}
 %   \item \myvarenv{l__@@_item_symbol_X_tl}
@@ -10155,10 +10153,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{arguments}
 %
 %   First we will make a copy of \myvarenv{l__@@_item_symbol_X_tl} which is
-%   set by the key \mykey{item-sym*} or passed as \emph{\enquote{first}} optional argument in
+%   set by the key \mykey{item-sym*} or passed as \emph{\enquote{first}} \emph{optional argument} in
 %   the global variable \cs{g_@@_item_symbol_aux_tl}, followed by setting the
 %   variable \myvarenv{l__@@_item_symbol_sep_X_dim} set by the key
-%   \mykey{item-pos*} or by the \emph{\enquote{second}} optional argument,
+%   \mykey{item-pos*} or by the \emph{\enquote{second}} \emph{optional argument},
 %   then we will see the state of the variable \cs{l_@@_check_answers_bool}
 %   set by the key \mykey{no-store}, set the boolean variable
 %   \myvarenv{l__@@_wrap_label_X_bool} to \enquote{true} for the key \mykey{wrap-label}
@@ -10499,7 +10497,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_show_item_opt:
 %    \end{macrocode}
 %    Recover the original value of the current \mymeta{label} and \emph{store}
-%    it first in the \mymeta{prop list} (including the optional argument),
+%    it first in the \mymeta{prop list} (including the \emph{optional argument}),
 %    run the internal \emph{\enquote{label and ref}} system if the
 %    \mykey{save-ref} key is active, \emph{store} it in the \mymeta{sequence}
 %    and finally increments \cs{g_@@_check_starred_cmd_int} for internal
@@ -10516,7 +10514,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\item*,\@@_keyans_redefine_item:}
 %    The function \cs{@@_keyans_redefine_item:} is responsible for adding
-%    the \emph{starred} and \emph{optional} argument by the
+%    the \emph{starred argument} and \emph{optional argument} by the
 %    \cs{@@_list_arg_two_v:} function in the definition of the
 %    \myenv*{keyans} environment. Here we need to use
 %    |\peek_remove_spaces:n| to prevent an unwanted space when using
@@ -11840,7 +11838,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tag_struct_begin:n {tag=L,attribute=enumerate}
       } { }
 %    \end{macrocode}
-%   Now we process the command |\anspic|, if the optional argument is not
+%   Now we process the command |\anspic|, if the \emph{optional argument} is not
 %   present, the number of times the \ics*{anspic} command appears will
 %   be counted from \cs{l_@@_anspic_args_seq} and placed a single line.
 %    \begin{macrocode}
