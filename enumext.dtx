@@ -1510,18 +1510,18 @@ This work consists of the files enumext.dtx and enumext.sty.
 %    \ics*{item*}\myoarg{symbol}\myoarg{offset} works like
 %    the numbered |\item|, but placing a \mymeta{symbol} to the \emph{\enquote{left}} of the
 %    \mymeta{label} separated from it by the \mymeta{offset} set by the
-%    the second \emph{optional argument}. The default values for \mymeta{symbol} and
+%    the \emph{second optional argument}. The default values for \mymeta{symbol} and
 %    \mymeta{offset} are |$\star$| ‘$\star$’ and the value set by
 %    \mykey{labelsep} key.
 %
 %    \smallskip
 %
-%    The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
-%    from the command, i.e. \ics*{item*} and the first optional
-%    argument does \emph{\enquote{not support}} verbatim
-%    content. Can be configure with the keys \mykey{item-sym*} and
-%    \mykey{item-pos*} locally in the environment or globally using
-%    \ics*{setenumext} command (\S\ref{sec:setenumext}).
+%    The \emph{starred argument} ‘|*|’ cannot be separated by spaces
+%    ‘\verb*| |’ from the command, i.e. \ics*{item*} and the
+%    \emph{first optional argument} does \enquote{NOT} support
+%    \emph{verbatim content}. Can be configure with the keys
+%    \mykey{item-sym*} and \mykey{item-pos*} locally in the environment
+%    or globally using \ics*{setenumext} command (\S\ref{sec:setenumext}).
 % \end{function}
 %
 % \smallskip
@@ -1552,7 +1552,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{The command \cs[no-index]{item} in \texttt{enumext*}}
 %
 % The \ics*{item} command for the \myenv*{enumext*} environment provides
-% an optional \emph{\enquote{first argument}} \ics*{item}\myparg{columns} which \emph{\enquote{joins items}}
+% an \emph{\enquote{first optional argument}} \ics*{item}\myparg{columns} which \emph{\enquote{joins items}}
 % between columns. Let's consider the following examples adapted directly from
 % the \mypkg{task} package:
 %
@@ -1653,11 +1653,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% The command \ics*{setenumextmeta} adds a new \emph{\enquote{meta-key}} for the
-% environments \myenv*{enumext} and \myenv*{enumext*}, the \mymarg{key name} must
-% be different from those defined by the package. If the optional
-% argument is not passed, the new \emph{\enquote{meta-key}} will be created for the
-% first level of the environment \myenv*{enumext}.
+% The command \ics*{setenumextmeta} adds a new \emph{\enquote{meta-key}}
+% for the environments \myenv*{enumext} and \myenv*{enumext*}, the
+% \mymarg{key name} must be different from those defined by the package.
+% If the \emph{optional argument} is not passed, the new \emph{\enquote{meta-key}}
+% will be created for the \emph{\enquote{first level}} of the environment
+% \myenv*{enumext}.
 %
 % \smallskip
 %
@@ -2803,16 +2804,17 @@ This work consists of the files enumext.dtx and enumext.sty.
 %     \ics*{item*}\myoarg{content}
 %   \end{syntax}
 %    The \ics*{item*} and \ics*{item*}\myoarg{content} command \emph{\enquote{store}}
-%    the current \mymeta{label} set by \mykey{label} key next to the \mymeta{content} (if it is present)
+%    the current \mymeta{label} set by \mykey{label} key next to the \emph{optional argument} \mymeta{content}
 %    in \emph{sequence} and \emph{prop list} \mymarg{store name} set by
 %    \mykey{save-ans} key in the \emph{\enquote{first level}} of the
 %    \myenv*{enumext} or \myenv*{enumext*} environments.
 % \end{function}
 %
 % The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
-% from the command, i.e. \ics*{item*} and the \emph{optional argument} does \emph{\enquote{not support}} verbatim
-% content. By design it is assumed that the |\item*| will only
-% appear \emph{\enquote{once}} within the environment.
+% from the command, i.e. \ics*{item*} and the \emph{optional argument}
+% does \enquote{NOT} support \emph{verbatim content}. By design it is
+% assumed that the |\item*| will only appear \emph{\enquote{once}}
+% within the environment.
 %
 % \smallskip
 %
@@ -5476,11 +5478,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % to use them in the \mykey{label} key.
 %
 % \begin{macro}{\@@_register_counter_style:Nn}
-%    These \mymeta{counters} will be used as default
-%    \mymeta{labels} if the \mykey{label} key is not used for
-%    the different levels of the \myenv*{enumext} environment and the
-%    \myenv*{keyans} environment, so it is necessary to get a default
-%    value for \mykey{labelwidth} from these \mymeta{labels} at the same time.
+%   These \mymeta{counters} will be used as default \mymeta{labels} if
+%   the \mykey{label} key is not used for the different levels of the
+%   \myenv*{enumext}, \myenv*{enumext*}, \myenv*{keyans} and \myenv*{keyans*}
+%   environments, so it is necessary to get a default value for \mykey{labelwidth}
+%   from these \mymeta{labels} at the same time.
 % \iffalse
 %% Register of counters style.
 % \fi
@@ -5515,15 +5517,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_label_style:Nnn, \@@_label_style:cvn}
-%     The function \cs{@@_label_style:Nnn} is used by the \mykey{label}
-%     key to creates the variables containing the \mymeta{label style}
-%     and will allow to use \ilabel{arabic*}, \ilabel{Alph*}, \ilabel{alph*},
-%     \ilabel{Roman*} and \ilabel{roman*} as arguments.
+%   The function \cs{@@_label_style:Nnn} is used by the \mykey{label}
+%   key to creates the variables containing the \mymeta{label style}
+%   and will allow to use \ilabel{arabic*}, \ilabel{Alph*}, \ilabel{alph*},
+%   \ilabel{Roman*} and \ilabel{roman*} as arguments.
 %
-%     It loops through the defined counter styles in \cs{g_@@_counter_styles_tl}
-%     (\ics{arabic}, \ics{alph}, \ics{Alph}, \ics{roman}, and \ics{Roman}) for example,
-%     looking for \ilabel{roman*} and replacing that by \ics{roman}\mymarg{counter},
-%     and doing the same for the \cs{g_@@_widest_label_tl} to keep both in sync.
+%   It loops through the defined counter styles in \cs{g_@@_counter_styles_tl}
+%   (\ics{arabic}, \ics{alph}, \ics{Alph}, \ics{roman}, and \ics{Roman}) for example,
+%   looking for \ilabel{roman*} and replacing that by \ics{roman}\mymarg{counter},
+%   and doing the same for the \cs{g_@@_widest_label_tl} to keep both in sync.
 % \iffalse
 %% Function to support |*| in |label| key.
 % \fi
@@ -5550,9 +5552,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection{Setting keys associated with label}\label{key:label}
 %
 % \begin{macro}[int]{font, labelsep, labelwidth, wrap-label,wrap-label*}
-%    Definition of keys \mykey{font}, \mykey{labelsep},
-%    \mykey{labelwidth}, \mykey{wrap-label} and \mykey{wrap-label*} keys for
-%    \myenv*{enumext} and \myenv*{keyans} environments.
+%   Definition of keys \mykey{font}, \mykey{labelsep}, \mykey{labelwidth},
+%   \mykey{wrap-label} and \mykey{wrap-label*} keys for \myenv*{enumext}
+%   and \myenv*{keyans} environments.
 % \iffalse
 %% Add |font|, |labelsep|, |labelwidth|, |wrap-label| and |wrap-label*| keys.
 % \fi
@@ -12104,7 +12106,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % |\item|, we will also add the \emph{optional argument} \myparg{number} to |\item|
 % to be able to \emph{join columns} horizontally, in simple terms, we want
 % |\item| to behave in the same way as in the \myenv*{enumext} environment but
-% adding an optional first argument \myparg{number}.
+% adding an \emph{first optional argument} \myparg{number}.
 %
 % \smallskip
 %
@@ -13230,8 +13232,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{The command \cs{item} in \env{keyans*}}\label{cmd:item-boxed-viii}
 %
 % The idea here is to make the |\item| command behave in the same way as
-% in the \myenv*{keyans} environment with the difference of the optional
-% argument \myparg{number} which works in the same way as in the \myenv*{enumext*}
+% in the \myenv*{keyans} environment with the difference of the \emph{optional argument}
+% \myparg{number} which works in the same way as in the \myenv*{enumext*}
 % environment.
 %
 % In simple terms we want to store the \mymeta{label} next to the \myoarg{content} if it is present
@@ -13369,9 +13371,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \@@_starred_item_viii_aux_ii:w }
   }
 %    \end{macrocode}
-%   The function \cs{@@_starred_item_viii_aux_i:w} will save the optional
-%   argument to |\item*| in \cs{l_@@_store_current_opt_arg_tl} and will save this
-%   argument along with the spacing set by the key \mykey{save-sep} in
+%   The function \cs{@@_starred_item_viii_aux_i:w} will save the
+%   \emph{optional argument} to |\item*| in \cs{l_@@_store_current_opt_arg_tl}
+%   and will save this argument along with the spacing set by the key \mykey{save-sep} in
 %   variable \cs{l_@@_store_current_label_tl} if present, then call the
 %   function \cs{@@_starred_item_viii_aux_ii:w}.
 %    \begin{macrocode}
@@ -13701,8 +13703,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  The reason for storing \mymeta{keys} in token lists using
 %  \cs{keys_precompile:neN} is because the keys are set via
 %  \ics*{setenumext} but are later executed by running the command
-%  \ics*{printkeyans} and they are not handled directly by its optional
-%  argument, except those related to the first opening level.
+%  \ics*{printkeyans} and they are not handled directly by its
+%  \emph{optional argument}, except those related to the \emph{first}
+%  opening level.
 % \end{important}
 %
 % \begin{macro}{\printkeyans}
@@ -13766,7 +13769,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
               }
 %    \end{macrocode}
 %    Otherwise it will open the environment \myenv*{enumext} passing
-%    the optional argument to the \emph{\enquote{first level}}, set the
+%    the \emph{optional argument} to the \emph{\enquote{first level}}, set the
 %    key \mykey{base-fix} and then map the \mymeta{sequence}.
 %    \begin{macrocode}
               {
@@ -13956,7 +13959,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %               \@@_add_meta_key:nnn, \@@_def_meta_key:nnn,
 %               \@@_def_meta_key:Vnn }
 %   First we will create a prop list \cs{c_@@_meta_paths_prop} to
-%   handle the optional argument.
+%   handle the \emph{optional argument}.
 % \iffalse
 %% Define |\setenumextmeta|.
 % \fi
@@ -13989,7 +13992,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The internal functions \cs{@@_add_meta_key:nnn} and \cs{@@_def_meta_key:nnn}
-%   will check the optional argument and create the \emph{\enquote{meta-key}}.
+%   will check the \emph{optional argument} and create the \emph{\enquote{meta-key}}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_add_meta_key:nnn #1
   {
