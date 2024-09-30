@@ -3096,33 +3096,33 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \label{sec:optcmdforeach}
 %
 % \keyexampcmd{sep}{code}{empty}[foreachkeyans]
-% Establishes the separation between \emph{each} content stored in \emph{prop list} \mymarg{store name}.
+% Establishes the \emph{separation} between \emph{\enquote{each}} \mymarg{content} stored in \emph{prop list} \mymarg{store name}.
 % For example, you can use \mykeycmd[foreachkeyans]{sep}|={\\[10pt]}| for vertical separation of stored
 % contents.
 %
 % \keyexampcmd{step}{integer}{\mydim{1}}[foreachkeyans]
-% Sets the increment (\mymeta{step}) applied to the value set by key \mykeycmd[foreachkeyans]{start}
-% for each element stored in \emph{prop list} \mymarg{store name}. The value must be a
+% Sets the \emph{step} (increment) applied to the value set by key \mykeycmd[foreachkeyans]{start}
+% for each \mymarg{content} stored in \emph{prop list} \mymarg{store name}. The value must be a
 % \mymeta{positive integer}.
 %
 % \keyexampcmd{start}{integer}{\mydim{1}}[foreachkeyans]
-% Sets the \mymeta{position} of the \emph{prop list} \mymarg{store name} from which execution
+% Sets the \emph{position} of the \emph{prop list} \mymarg{store name} from which execution
 % will start. The value must be a \mymeta{positive integer}.
 %
 % \keyexampcmd{stop}{integer}{\mydim{0}}[foreachkeyans]
-% Sets the \mymeta{position} of the \emph{prop list} \mymarg{store name} from which execution
+% Sets the \emph{position} of the \emph{prop list} \mymarg{store name} from which execution
 % it will finish executing. The value must be a \mymeta{positive integer}.
 %
 % \keyexampcmd{before}{code}{empty}[foreachkeyans]
-% Sets the \mymarg[type=tt]{code} that will be executed \mymeta{before} each content stored
+% Sets the \mymarg[type=tt]{code} that will be executed \mymeta{before} each \mymarg{content} stored
 % in \emph{prop list} \mymarg{store name}. The \mymarg[type=tt]{code} must be passed between braces.
 %
 % \keyexampcmd{after}{code}{empty}[foreachkeyans]
-% Sets the \mymarg[type=tt]{code} that will be executed \mymeta{after} each content stored
+% Sets the \mymarg[type=tt]{code} that will be executed \mymeta{after} each \mymarg{content} stored
 % in \emph{prop list} \mymarg{store name}. The \mymarg{code} must be passed between braces.
 %
 % \keyexampcmd{wrapper}{code{} \space\usebox{\hashbox} more code}{empty}[foreachkeyans]
-% Wraps the content stored in \emph{prop list} \mymarg{store name} referenced by |{#1}|.
+% Wraps the \mymarg{content} stored in \emph{prop list} \mymarg{store name} referenced by |{#1}|.
 % The \mymarg{code} must be passed between braces. For example
 % |\foreachkeyans[wrapper={\makebox[1em][l]{#1}}]|\mymarg{store name}.
 %
@@ -5191,41 +5191,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %</example>
 % \fi
 %
-% As a precaution we copy them using \cs{@@_at_begin_document:n} in
-% case any package redefines the \myenv{list} environment or a related
-% command.
-%
-% \smallskip
-%
-% \begin{important}
-% For compatibility with \hologo{LaTeX} \emph{tagged} \texttt{PDF} we
-% should use |\NewCommandCopy| and not |\cs_new_eq:NN|. When
-% \emph{tagged} \texttt{PDF} is active |\item| is redefined using
-% \mypkg{ltcmd} (see \texttt{latex-lab-block}).
-% \end{important}
-%
-% \smallskip
-%
-% \begin{macro}{\@@_start_list:nn, \@@_stop_list:, \@@_item_std:w,}
-%    The functions \cs{@@_start_list:nn}, \cs{@@_stop_list:} and
-%    \cs{@@_item_std:w} correspond to copies of |\list|, |\endlist|
-%    and |\item| from plain definition of \myenv{list} environment.
-% \iffalse
-%% Copy |list| environment and |\item| command.
-% \fi
-%    \begin{macrocode}
-\@@_at_begin_document:n
-  {
-    \cs_new_eq:NN   \@@_start_list:nn \list
-    \cs_new_eq:NN   \@@_stop_list: \endlist
-    \NewCommandCopy \@@_item_std:w \item
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \smallskip
-%
-% The \myenv{minipage} environment provided by \hologo{LaTeX} has the
+% And \myenv{minipage} environment provided by \hologo{LaTeX} has the
 % following (simplified) plain form:
 %
 % \iffalse
@@ -5240,16 +5206,40 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %</example>
 % \fi
 %
+% As a precaution we copy them using \cs{@@_at_begin_document:n} in
+% case any package redefines the \myenv{list} environment or a related
+% command.
+%
 % \smallskip
 %
-% As a precaution we copy them using \cs{@@_at_begin_document:n} in
-% case any package redefines the \myenv{minipage} environment or a
-% related command.
+% \begin{important}
+%  For compatibility with \emph{tagged} \texttt{PDF} we should use
+%  |\NewCommandCopy| and not |\cs_new_eq:NN| for |\item|. When
+%  \emph{tagged} \texttt{PDF} is active |\item| is redefined using
+%  \mypkg{ltcmd} (see \texttt{latex-lab-block}).
+% \end{important}
 %
-% \begin{macro}{\@@_minipage:w, \@@_endminipage:}
-%   The functions \cs{@@_minipage:w}, \cs{@@_endminipage:} and
-%   correspond to copies of |\minipage|, |\endminipage|
-%   from plain definition of \myenv{minipage} environment.
+% \smallskip
+%
+% \begin{macro}{\@@_start_list:nn, \@@_stop_list:, \@@_item_std:w,
+%              \@@_minipage:w, \@@_endminipage:,}
+%   The functions \cs{@@_start_list:nn} and \cs{@@_stop_list:} correspond
+%   to copies of |\list| and |\endlist| from plain definition of \myenv{list}, 
+%   the function \cs{@@_item_std:w} is a copy of the |\item| command.
+% \iffalse
+%% Copy |list| environment and |\item| command.
+% \fi
+%    \begin{macrocode}
+\@@_at_begin_document:n
+  {
+    \cs_new_eq:NN   \@@_start_list:nn \list
+    \cs_new_eq:NN   \@@_stop_list: \endlist
+    \NewCommandCopy \@@_item_std:w \item
+  }
+%    \end{macrocode}
+%   The functions \cs{@@_minipage:w} and \cs{@@_endminipage:} correspond
+%   to copies of |\minipage| and |\endminipage| from plain definition of
+%   \myenv{minipage} environment.
 % \iffalse
 %% Copy |minipage| environment.
 % \fi
