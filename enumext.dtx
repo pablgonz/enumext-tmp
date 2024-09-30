@@ -1723,11 +1723,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % This key is intended to give the basic structure with which the
 % \mymeta{label} will be displayed, and the form in which it is
 % used by standard \emph{\enquote{label and ref}} and the
-% \emph{\enquote{internal reference}} system with the
+% \emph{\enquote{internal label and ref}} system with the
 % \mykey{save-ref} key. You cannot use commands with \mymeta{label} as an
 % argument, for example |\emph|\mymarg{\textnormal{\ilabel{alph*}}} will return an
-% error. For full customization of how \mymeta{label} is displayed use the \mykey{font}
-% or \mykey{wrap-label} keys.
+% error. For full customization of how \mymeta{label} is displayed use
+% the \mykey{font}, \mykey{wrap-label} and/or \mykey{wrap-label*} keys.
 % \end{important}
 %
 % \smallskip
@@ -2797,13 +2797,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \fi
 %
 % The \mymeta{keys} set in the \emph{optional argument} of the environment are the same
-% (almost) as those of the \myenv*{enumext} and \myenv*{enumext*} environments and have higher
-% precedence than those set by \ics*{setenumext}\myoarg{keyans}\mymarg{key \textnormal{\textcolor{gray}{=}} val} or
+% (almost) as those of the \myenv*{enumext} and \myenv*{enumext*}
+% environments and have \emph{higher precedence} than those set by
+% \ics*{setenumext}\myoarg{keyans}\mymarg{key \textnormal{\textcolor{gray}{=}} val} or
 % \ics*{setenumext}\myoarg{keyans\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}}\mymarg{key \textnormal{\textcolor{gray}{=}} val}.
-% If the \emph{optional argument} is not passed or the \mymeta{keys} are not set by
-% \ics*{setenumext}, the default values will be the same as the second
-% level of the \myenv*{enumext} environment with the difference in the
-% \mymeta{label} which will be set to \mykey{label}=\ilabel{Alph*)}.
+% If the \emph{optional argument} is not passed or the \mymeta{keys}
+% are not set by \ics*{setenumext}, the default values will be the same
+% as the \emph{\enquote{second level}} of the \myenv*{enumext} environment
+% with the difference in the \mymeta{label} which will be set to \mykey{label}=\ilabel{Alph*)}.
 %
 % \subsubsection[The \texttt{\textbackslash item*} in \texttt{keyans}]{The \cs[no-index]{item*} in \texttt{keyans} and \texttt{keyans*}}
 %
