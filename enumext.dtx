@@ -2316,20 +2316,24 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \fi
 %
 % By executing the key \mykey{save-ans}|=|\mymarg{store name} the entire
-% structure of the environment (excluding the first level) including the
-% \emph{optional arguments} passed to the inner levels or the environment nested
-% in it, along with the content passed to \ics*{anskey}, the current
+% \emph{\enquote{structure}} of the environment (excluding the \emph{first level}) including the
+% \emph{optional argument} passed to the inner levels or the environment nested
+% in it, along with the \mymeta{content} passed to \ics*{anskey} or \myenv*{anskey*}, the current
 % \mymeta{labels} for \ics*{item*} and \ics*{anspic}|*| in the environments
-% \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} will be stored
-% in a \mymeta{sequence} and at the same time will be stored (without the
-% environment structure or optional arguments) in a \mymeta{prop list}.
+% \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} will be \emph{\enquote{stored}}
+% in a \emph{sequence} \mymarg{store name} and at the same time will be \emph{\enquote{stored}} (without the
+% \emph{\enquote{structure}} or \emph{optional argument}) in a \emph{prop list} \mymarg{store name}.
 %
 % \smallskip
 %
-% The \emph{optional argument} of the inner levels or the nested environment
-% are filtered by excluding all \mymeta{keys} related to the \emph{\enquote{stored
-% system}} along with the keys \mykey{series}, \mykey{resume} and
-% \mykey{resume*} when storing in \mymeta{sequence}.
+% \begin{important}*
+%  For security reasons the \emph{optional argument} of the inner levels
+%  or the nested environment are \emph{filtered} by excluding all \mymeta{keys}
+%  related to the \emph{\enquote{storage system}} (\S\ref{subsec:storage-keys})
+%  along with the \mymeta{keys} \mykey{mini-env}, \mykey{mini-sep}, \mykey{mini-right},
+%  \mykey{mini-right*}, \mykey{series}, \mykey{resume} and \mykey{resume*}
+%  when storing in \emph{sequence} \mymarg{store name} set by \mykey{save-ans} key.
+% \end{important}
 %
 % \subsection{Keys for storage system}\label{subsec:storage-keys}
 %
@@ -2346,21 +2350,23 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{save-ans}{store name}{not set}
-% Sets the \emph{name} of the \mymeta{sequence} and
-% \mymeta{prop list} in which the contents will be \emph{\enquote{stored}} by
-% \ics*{anskey} and \myenv*{anskey*} in \myenv*{enumext} and \myenv*{enumext*} environments, \ics*{item*} in
-% \myenv*{keyans} and \myenv*{keyans*} environments and \ics*{anspic}|*| in \myenv*{keyanspic}
-% environment. If the \mymeta{sequence} or \mymeta{prop list} does not
-% exist, it will be created globally and will not be overwritten if the key is used again.
+% Sets the \emph{name} of the \emph{sequence} and \emph{prop list} in
+% which the \mymarg{contents} will be \emph{\enquote{stored}} by \ics*{anskey}
+% and \myenv*{anskey*} in \myenv*{enumext} and \myenv*{enumext*}
+% environments and the current \mymeta{labels} for \ics*{item*} and
+% \ics*{anspic}|*| in the environments \myenv*{keyans}, \myenv*{keyans*}
+% and \myenv*{keyanspic}. If the \emph{sequence} or \emph{prop list}
+% \mymarg{store name} does not exist, it will be created globally and
+% will not be \emph{overwritten} if the key is used again.
 %
 % \smallskip
 %
 % \keyexamp{save-key}{key list}{not set}
 % This key \emph{overrides} the default \emph{\enquote{stored keys}} of the
 % \emph{optional argument} of the inner levels or nested environment that will
-% be passed to the \mymeta{sequence}. The \mymeta{key list} passed to
+% be passed to the \emph{sequence}. The \mymeta{key list} passed to
 % this key ignores any \mymeta{keys} in the \emph{\enquote{stored
-% system}} and must be passed between braces. For example, if we
+% structure}} and must be passed between braces. For example, if we
 % execute at a second level:
 %
 % \iffalse
@@ -2379,18 +2385,20 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</example>
 % \fi
 %
-% The \mymeta{keys} that will be stored by default in the \mymeta{sequence} would
-% be |nosep, columns=2|, but using the key \mykey{save-key}|={columns=3}|
-% will overwrite this and store it in the \mymeta{sequence} only the key
-% |columns=3| ignoring all the others.
+% The \emph{\enquote{stored keys}} by default in the \emph{sequence}
+% \mymarg{store name} would be |nosep, columns=2|, but using the key
+% \mykey{save-key}|={columns=3}| will overwrite and the
+% \emph{\enquote{stored key}} in the \emph{sequence} \mymarg{store name}
+% are only |columns=3| ignoring all the others.
 %
 % \smallskip
-%
+%   
 % \keyexamp{save-sep}{text symbol}{\{, \}}
-% Sets the \emph{text symbol} that will separate the current
-% \mymeta{label} to the \emph{optional argument} passed to the
-% \ics*{item*} and \ics*{anspic}|*| in the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
-% environments and storing them in the \mymeta{store name} defined by the \mykey{save-ans} key.
+% Sets the \emph{text symbol} that will separate the current \mymeta{label}
+% to the \emph{optional argument} passed to the \ics*{item*} and \ics*{anspic}|*|
+% in the environments \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
+% and storing them in the \emph{sequence} and \emph{prop list} \mymarg{store name}
+% set by \mykey{save-ans} key.
 % The \mymarg{text symbol} must always be passed between
 % braces, whitespace ‘\verb*+ +’ is preserved within the braces and only
 % affects the \emph{\enquote{stored content}} and not what is displayed
@@ -2400,14 +2408,16 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{save-ref}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Activates the \emph{\enquote{internal label and ref}} mechanism for
-% referencing \emph{\enquote{stored content}} in \mymeta{store name} set by \mykey{save-ans} key. To reference the location
-% of the \emph{\enquote{stored content}} within the environment you must
-% use |\ref|\mymarg{store name \textnormal{\textcolor{red}{:}} position},
+% referencing \emph{\enquote{stored content}} in \emph{prop list}
+% \mymarg{store name} set by \mykey{save-ans} key. To reference the
+% location of the \emph{\enquote{stored content}} within the environment
+% you must use |\ref|\mymarg{store name \textnormal{\textcolor{red}{:}} position},
 % where \mymeta{position} corresponds to the position occupied by the
-% \emph{\enquote{stored content}} in the \mymeta{store name} returned by the \mykey{show-pos} key.
-% For example |\ref{test:4}| will return |3.(b)| which corresponds to the
-% location of the \emph{\enquote{stored content}} at position |4| within
-% the environment in which the key \mykey{save-ans}|=test| was set.
+% \emph{\enquote{stored content}} in the \emph{prop list} \mymarg{store name}
+% returned by the \mykey{show-pos} key. For example |\ref{test:4}| will
+% return |3.(b)| which corresponds to the location of the \emph{\enquote{stored content}}
+% at position |4| in \emph{prop list} |test| within the environment in
+% which the key \mykey{save-ans}|=test| was set.
 %
 % \smallskip
 %
