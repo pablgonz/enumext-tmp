@@ -808,7 +808,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \usetikzlibrary{shapes.geometric}
 \newcommand*{\mySquared}[1]{%
   \begin{tikzpicture}[baseline=(number.base),square/.style={regular polygon,regular polygon sides=4}]
-    \node[square, rounded corners=1pt, inner sep=1pt, draw=none, fill=gray!40] (number) {#1};
+    \node[square, rounded corners=1pt, inner sep=1pt, draw=none, fill=gray!40] (number) {\makebox[\height]{#1}};
   \end{tikzpicture}%
 }
 % For SAT sample
@@ -3408,7 +3408,7 @@ $ pdfdetach -saveall enumext.pdf
 \usepackage{enumext}
 \newcommand*{\mySquared}[1]{%
   \begin{tikzpicture}[baseline=(number.base),square/.style={regular polygon,regular polygon sides=4}]
-    \node[square, rounded corners=1pt, inner sep=1pt, draw=none, fill=gray!40] (number) {#1};
+    \node[square, rounded corners=1pt, inner sep=1pt, draw=none, fill=gray!40] (number) {\makebox[\height]{#1}};
   \end{tikzpicture}%
 }
 \pagestyle{empty}
