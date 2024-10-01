@@ -8090,14 +8090,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_storing_set:n, \@@_storing_exec:,}
 %    The function \cs{@@_storing_set:n} first pass the value of the
 %    \mykey{save-ans} key to the variable \cs{l_@@_store_name_tl}
-%    which will contain the \emph{“store name”} of the \mymeta{sequence}
-%    and \mymeta{prop list} we will use. If \cs{l_@@_store_name_tl} is
+%    which will contain the \mymarg{store name} of the \emph{sequence}
+%    and \emph{prop list} we will use. If \cs{l_@@_store_name_tl} is
 %    \emph{empty} we return an error message, otherwise will return the
 %    appropriate message \cs{@@_start_save_ans_msg:} and proceed to execute
 %    the function \cs{@@_storing_exec:} for \myenv*{enumext} and
 %    \myenv*{enumext*} environments.
 % \iffalse
-%% Function to activate ALL "storing" (and |check-ans|, |no-store|, |resume|) used by |save-ans| key.
+%% Function to activate ALL "storing" (and |check-ans|, |no-store|, |resume|, |anskey*|) used by |save-ans| key.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_storing_set:n #1
@@ -8123,20 +8123,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   The function \cs{@@_storing_exec:} will set to true the variable
 %   \cs{l_@@_store_active_bool} which activates the use of the
-%   \ics*{anskey} command and the \myenv*{keyans}, \myenv*{keyans*} and
-%   \myenv*{keyanspic} environments and will set to true the variable
-%   \cs{l_@@_check_answers_bool} used for checking answers by the
-%   \mykey{check-ans} and \mykey{no-store} keys, copy \mymarg{store
-%   name} into the global variable \cs{g_@@_store_name_tl} and execute the
-%   function \cs{@@_anskey_env_make:V} creating the environment
+%   \ics*{anskey} command and the \myenv*{anskey*}, \myenv*{keyans},
+%   \myenv*{keyans*} and \myenv*{keyanspic} environments and will set
+%   to \enquote{true} the variable \cs{l_@@_check_answers_bool} used for
+%   intenal checking answers mechanism set by the \mykey{check-ans} and \mykey{no-store}
+%   keys, copy \mymarg{store name} into the variable \cs{g_@@_store_name_tl}
+%   and execute the function \cs{@@_anskey_env_make:V} creating the environment
 %   \myenv*{anskey*} (\S\ref{env:anskey}).
-%   The \mymeta{prop list} \myvarenv{g__@@_series_\mymeta[cf=gray]{store
-%   name}_prop} and the \mymeta{sequence}
-%   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_seq} will be
-%   created globally to \emph{\enquote{store content}} in case they do not
-%   exist together with the integer variable
-%   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_int} used by the keys
-%   \mykey{resume} and \mykey{resume*}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_storing_exec:
   {
@@ -8144,6 +8137,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \bool_set_true:N \l_@@_check_answers_bool
     \tl_gset:NV \g_@@_store_name_tl \l_@@_store_name_tl
     \@@_anskey_env_make:V \l_@@_store_name_tl
+%    \end{macrocode}
+%   The \emph{prop list} \myvarenv{g__@@_series_\mymeta[cf=gray]{store
+%   name}_prop} and the \emph{sequence} \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_seq}
+%   will be created globally to \emph{\enquote{store content}} in case
+%   they do not exist together with the integer variable
+%   \myvarenv{g__@@_series_\mymeta[cf=gray]{store name}_int} used by the keys
+%   \mykey{resume} and \mykey{resume*}.
+%    \begin{macrocode}
     \prop_if_exist:cF { g_@@_ \l_@@_store_name_tl _prop }
       {
         \msg_log:nnV { enumext } { store-prop } \l_@@_store_name_tl
@@ -8165,7 +8166,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{The check answer mechanism}\label{int:check-answer}
 %
-% The mechanism for checking that all questions are answered follows this
+% The internal mechanism for \emph{\enquote{checking answers}} follows this
 % logic:
 %
 % \begin{quote}
@@ -8257,7 +8258,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   will execute the function \cs{@@_check_ans_level:} only if
 %   \emph{\enquote{true}}, i.e. the key \mykey{no-store} is not active.
 % \iffalse
-%% Internal function for checking answer mechanism in |enumext| and |enumext|.
+%% Internal function for checking answer mechanism in |enumext| and |enumext*| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_check_ans_active:
@@ -8271,12 +8272,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
   }
 %    \end{macrocode}
-%   The function \cs{@@_check_ans_level:} will decrement by
-%   \emph{\enquote{one}} the value of the variable
-%   \cs{g_@@_item_number_int} which keeps track of the executions of
-%   |\item| and |\item*| for each level of nesting of the environment
-%   \myenv*{enumext}, taking into account whether it is nested within
-%   \myenv*{enumext*} or the opposite and set \cs{l_@@_item_number_bool}
+%   The function \cs{@@_check_ans_level:} will decrement by \emph{\enquote{one}}
+%   the value of the variable \cs{g_@@_item_number_int} which keeps track
+%   of the executions of |\item| and |\item*| for each level of nesting
+%   of the environment \myenv*{enumext}, taking into account whether it
+%   is nested within \myenv*{enumext*} or the opposite and set \cs{l_@@_item_number_bool}
 %   to \emph{\enquote{false}} .
 % \iffalse
 %% Decrementing \g_@@_item_number_int for nested level.
@@ -8311,9 +8311,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
              }
       }
 %    \end{macrocode}
-%   We should only execute this if \myenv*{enumext*} is nested in the first
-%   level of \myenv*{enumext}, for the rest of the cases the value of
-%   \cs{g_@@_item_number_int} is already decreased.
+%   We should only execute this if \myenv*{enumext*} is nested in the
+%   \emph{\enquote{first level}} of \myenv*{enumext}, for the rest of the
+%   cases the value of \cs{g_@@_item_number_int} is already decreased.
 %    \begin{macrocode}
     \int_case:nn { \l_@@_level_h_int }
       {
@@ -8334,12 +8334,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_check_ans_key_hook:}
-%    The function \cs{@@_check_ans_key_hook:} will \emph{export} the status of the
-%    local variable \cs{l_@@_check_ans_key_bool} to the global variable
-%    \cs{g_@@_check_ans_key_bool} only if the key \mykey{check-ans} is active.
-%^^A  The function \cs{@@_check_ans_key_hook:} will count the number of
-%^^A  times the |\item| and |\item*| commands appears per level within the
-%^^A  \myenv*{enumext} environment.
+%   The function \cs{@@_check_ans_key_hook:} will \emph{export} the status
+%   of the local variable \cs{l_@@_check_ans_key_bool} to the global variable
+%   \cs{g_@@_check_ans_key_bool} only if the key \mykey{check-ans} is active.
 % \iffalse
 %% Function to export \l_@@_check_ans_key_bool for |check-ans| key.
 % \fi
@@ -8462,13 +8459,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Check for \cs{item*} and \cs{anspic*} commands}
 %
 % \begin{macro}{\@@_check_starred_cmd:n,}
-%    The function \cs{@@_check_starred_cmd:n} performs an extra
-%    check for the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} environments.
-%    Unlike the check executed by \mykey{check-ans} key this one is not
-%    controlled by any key, it is intended to prevent the forgetting of
-%    \ics*{item*} or \ics*{anspic*} in these environments.
+%    The function \cs{@@_check_starred_cmd:n} performs an \emph{extra check}
+%    for the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} environments.
+%    Unlike the \emph{check} executed by \mykey{check-ans} key this one
+%    is not controlled by any key, it is intended to prevent the forgetting
+%    of \ics*{item*} or \ics*{anspic*} in these environments.
 % \iffalse
-%% Function for check \item* and \anspic* commands.
+%% Function for check |\item*| and |\anspic*| commands.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_check_starred_cmd:n #1
@@ -8578,18 +8575,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Store optional arguments of the environments}
 %
-% The idea behind \emph{\enquote{storing}} in the \mymeta{sequence} is
-% to have a copy of the structure of the environment in which the key
+% The idea behind \emph{\enquote{storing structure}} in the \emph{sequence} is
+% to have a copy of the \emph{structure of the environment} in which the key
 % \mykey{save-ans} is being executed so we must capture the \emph{optional
 % argument} passed to the levels of the environment in which it is
-% executed and \emph{\enquote{storing}} them.
+% executed and \emph{\enquote{storing}} this in the \emph{sequence}.
 %
 % \begin{macro}{\@@_store_active_keys:n, \@@_store_active_keys_vii:n,}
-%   The functions \cs{@@_store_active_keys:n} and
-%   \cs{@@_store_active_keys_vii:n} will be responsible for
-%   \emph{\enquote{storing}} the \mymeta{keys} filtered from the \emph{optional
-%   argument} of the environment in which the key \mykey{save-ans} is
-%   executed and the levels within this for the \myenv*{enumext} and
+%   The functions \cs{@@_store_active_keys:n} and \cs{@@_store_active_keys_vii:n}
+%   will be responsible for the \emph{\enquote{storing keys}} filtered
+%   from the \emph{optional argument} of the environment in which the
+%   key \mykey{save-ans} is executed and the levels within this for the \myenv*{enumext} and
 %   \myenv*{enumext*} environments. We will execute this function only if
 %   the variable \cs{l_@@_store_save_key_X_bool} is false, that is, the key
 %   \mykey{store-key} is not active, establishing the variable
@@ -8621,23 +8617,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Setting \texttt{save-key} key}\label{key:save-key}
 %
-% Since this list structure will be stored in the \mymeta{sequence}
-% established by the \mykey{save-ans} key when executing \ics*{anskey},
+% Since this \emph{\enquote{storing structure}} in the \emph{sequence}
+% established by the \mykey{save-ans} key when executing \ics*{anskey} or \myenv*{anskey*},
 % we will not be able to modify it. The best thing here is to have a key
-% that allows you to modify the \emph{optional argument} of the list stored in
-% the \mymeta{sequence}.
+% that allows you to modify the \emph{optional argument} of the \emph{\enquote{storing structure}} in
+% the \emph{sequence}.
 %
 % \begin{macro}[int]{save-key}
-%    The values ​​set by this key passed in the \emph{optional argument} of the
-%    \myenv*{enumext} and \myenv*{enumext*} environments will override the
-%    values ​​of the \cs{l_@@_store_save_key_X_tl} variable set by the
-%    functions \cs{@@_store_active_keys:n} and \cs{@@_store_active_keys_vii:n}.
-%
-% \smallskip
-%
-%    Define the key \mykey{save-key} for all levels of \myenv*{enumext} and \myenv*{enumext*} environments.
+%   The values ​​set by this key passed in the \emph{optional argument} of the
+%   \myenv*{enumext} and \myenv*{enumext*} environments will override the
+%   values ​​of the \cs{l_@@_store_save_key_X_tl} variable set by the
+%   functions \cs{@@_store_active_keys:n} and \cs{@@_store_active_keys_vii:n}.
+%   Now define the key \mykey{save-key} for all levels of
+%   \myenv*{enumext} and \myenv*{enumext*} environments.
 % \iffalse
-%% Add |save-key| key.
+%% Add |save-key| key for |enumext| and |enumext*| environments.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:n #1
@@ -8658,10 +8652,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_parse_save_key:n, \@@_parse_save_key_vii:n,}
-%   The functions \cs{@@_parse_save_key:n} and
-%   \cs{@@_parse_save_key_vii:n} will be responsible for storing the
-%   filtered \mymeta{keys} in the variable \myvarenv{l__@@_store_save_key_X_tl}
-%   for \myenv*{enumext} and \myenv*{enumext*}.
+%   The functions \cs{@@_parse_save_key:n} and \cs{@@_parse_save_key_vii:n}
+%   will be responsible for \emph{\enquote{storing keys}} in the variable
+%   \myvarenv{l__@@_store_save_key_X_tl} for \myenv*{enumext} and \myenv*{enumext*}.
 % \iffalse
 %% Internal function for |save-key| key.
 % \fi
@@ -8686,10 +8679,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Internal functions to store optional arguments}
 %
 % \begin{macro}{\@@_filter_save_key:n, \@@_filter_save_key_key:n, \@@_filter_save_key_pair:nn}
-%   The function \cs{@@_filter_save_key:n} will be in charge of filtering the
-%   \mymeta{keys} we want to \emph{store} in \mymeta{sequence} where |{#1}| represents the \emph{optional argument} passed to the environment.
+%   The function \cs{@@_filter_save_key:n} will be in charge of
+%   \emph{\enquote{filtering keys}} we want to \emph{stored} in
+%   \emph{sequence} where |{#1}| represents the \emph{optional argument}
+%   passed to the environment.
 % \iffalse
-%% Internal function for filter keys for |save-key| key.
+%% Internal function for "filter keys" for |save-key| key.
 % \fi
 %    \begin{macrocode}
 \cs_new:Npn \@@_filter_save_key:n #1
@@ -8703,7 +8698,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The function \cs{@@_filter_save_key_key:n} will be responsible for
-%   filtering the \mymeta{keys} that are passed \emph{\enquote{without value}} by
+%   \emph{\enquote{filtering keys}} that are passed \emph{\enquote{without value}} by
 %   excluding the \mykey{resume}, \mykey{resume*}, \mykey{no-store} and \mykey{base-fix} keys.
 %    \begin{macrocode}
 \cs_new:Npn \@@_filter_save_key_key:n #1
@@ -8716,7 +8711,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   The function \cs{@@_filter_save_key_pair:nn} will be responsible for
-%   filtering the \mymeta{keys} that are passed \emph{\enquote{with value}} by
+%   \emph{\enquote{filtering keys}} that are passed \emph{\enquote{with value}} by
 %   excluding the \mykey{series}, \mykey{resume}, \mykey{save-ans}, \mykey{save-ref}, \mykey{check-ans},
 %   \mykey{show-ans}, \mykey{save-pos}, \mykey{wrap-ans}, \mykey{mark-ans},
 %   \mykey{wrap-opt}, \mykey{save-sep}, \mykey{mark-ref}, \mykey{mini-env}, \mykey{mini-sep},
@@ -8740,13 +8735,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Function for storing content in prop list}
 %
 % \begin{macro}{\@@_store_addto_prop:n, \@@_store_addto_prop:V}
-%   The function \cs{@@_store_addto_prop:n} stores the content in
+%   The function \cs{@@_store_addto_prop:n} stores the \mymarg{content} in
 %   \mymeta{prop list} defined by \mykey{save-ans} key. The \emph{\enquote{stored
 %   content}} is retrieved by means of the \ics*{getkeyans} command.
 %
 %    \smallskip
 %
-%   The form in which the content is \emph{\enquote{stored}} in the
+%   The form in which the \mymarg{content} is \emph{\enquote{stored}} in the
 %   \mymeta{prop list} is \mymarg{position}\mymarg{content}. This
 %   function is used by \ics*{anskey} in \myenv*{enumext} and \myenv*{enumext*}
 %   environments, \ics*{item*} in \myenv*{keyans} and \myenv*{keyans*}
@@ -8770,14 +8765,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Function for storing content in sequence}
 %
 % \begin{macro}{\@@_store_addto_seq:n, \@@_store_addto_seq:v, \@@_store_addto_seq:V}
-%   The function \cs{@@_store_addto_seq:n} stores the content in
-%   \mymeta{sequence} defined by \mykey{save-ans} key. This function
+%   The function \cs{@@_store_addto_seq:n} stores the \mymarg{content} in
+%   \emph{sequence} defined by \mykey{save-ans} key. This function
 %   is used by \ics*{anskey} in \myenv*{enumext}, \ics*{item*} in
 %   \myenv*{keyans} and \ics*{anspic} in \myenv*{keyanspic}.
 %
-%   The form in which the content is stored in \mymeta{sequence} is in
+%   The form in which the \mymarg{content} is stored in \emph{sequence} is in
 %   a internal \myenv*{enumext} or \myenv*{enumext*} environments with
-%   the \emph{same structure} in which the command was executed.
+%   the \emph{\enquote{same structure}} in which the command was executed.
 %
 %   The \emph{\enquote{stored content}} is retrieved by means of the
 %   \ics*{printkeyans} command.
@@ -8796,11 +8791,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Functions for storing the list structure in the sequence}
 %
 % \begin{macro}{\@@_store_level_open:, \@@_store_level_close:,}
-%    The memorization structure of the list is handled by the functions
+%    The \emph{\enquote{storing structure}} is handled by the functions
 %    \cs{@@_store_level_open:} and \cs{@@_store_level_close:} which are
 %    executed per level within the \myenv*{enumext} environment.
 % \iffalse
-%% Function for memorize level execution of |\anskey| on |enumext| environment.
+%% Function for storing structure level execution of |\anskey| on |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open:
@@ -8838,12 +8833,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_store_level_open_vii:, \@@_store_level_close_vii:,}
-%   The memorization structure of the list is handled by the functions
+%   The \emph{\enquote{storing structure}} is handled by the functions
 %   \cs{@@_store_level_open_vii:} and \cs{@@_store_level_close_vii:}
 %   which are executed in the \myenv*{enumext*} environment.
 %
 % \iffalse
-%% Function for memorize level execution of |\anskey| and |anskey*| on |enumext*| environment.
+%% Function storing structure level execution of |\anskey| and |anskey*| on |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_store_level_open_vii:
@@ -8918,9 +8913,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The internal label and ref}\label{fun:internal-label-ref}
 %
-% The function \cs{@@_store_internal_ref:} handles the internal
-% \emph{\enquote{label and ref}} system used by the \mykey{save-ref} and
-% \mykey{mark-ref} keys for \ics*{anskey} will allow to execute
+% The function \cs{@@_store_internal_ref:} handles the
+% \emph{\enquote{internal label and ref}} system used by the \mykey{save-ref}
+% and \mykey{mark-ref} keys for \ics*{anskey} will allow to execute
 % \ics{ref}\mymarg{store name \textnormal{\textcolor{red}{:}} position} and
 % will return |1||.(a)||.i||.A|.
 %
@@ -9035,13 +9030,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_store_anskey_code:n}
 %   The internal function \cs{@@_store_anskey_code:n} first we pass the
-%   \mymeta{argument} to the \mymeta{prop list}, then checks the
+%   \mymarg{argument} to the \mymeta{prop list}, then checks the
 %   state of the variable \cs{l_@@_store_ref_key_bool} handled by the
-%   \mykey{save-ref} key and will call the function
-%   \cs{@@_store_internal_ref:} for the internal \emph{\enquote{label
-%   and ref}} system. Followed by this if the \mykey{show-ans} or
-%   \mykey{show-pos} keys are active we will show the
-%   \emph{\enquote{wrapped}} \mymeta{argument}.
+%   \mykey{save-ref} key and will call the function \cs{@@_store_internal_ref:}
+%   for the \emph{\enquote{internal label and ref}} system. Followed by
+%   this if the \mykey{show-ans} or \mykey{show-pos} keys are active we
+%   will show the \emph{\enquote{wrapped}} \mymarg{argument}.
 % \iffalse
 %% Internal function of |\anskey| for store content.
 % \fi
@@ -9058,7 +9052,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   Now we start processing the \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 %   passed to the command to build our |\item| in the variable \cs{l_@@_store_anskey_arg_tl}
-%   which we will \emph{\enquote{store}} in the \mymeta{sequence}.
+%   which we will \emph{\enquote{store}} in the \emph{sequence}.
 %   First we clear the variable \cs{l_@@_store_anskey_arg_tl} and process
 %   the \mymeta{keys}, if the \mykeycmd{break-col} key is present and
 %   the command is running under \myenv*{enumext} (not in \myenv*{enumext*})
@@ -9088,7 +9082,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   And now we will review the keys \mykeycmd{item-star}, \mykeycmd{item-sym*} and
 %   \mykeycmd{item-pos*} and pass them to \cs{l_@@_store_anskey_arg_tl}
-%   along with the \mymeta{argument} for |\anskey| or \mymeta{body} for |anskey*|.
+%   along with the \mymarg{argument} for |\anskey| or \mymeta{body} for |anskey*|.
 %    \begin{macrocode}
     \bool_if:NTF \l_@@_store_item_star_bool
       {
@@ -9118,8 +9112,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 %   Finally we check if the \mykey{save-ref} key are active along with the
 %   \mypkg{hyperref} package load, if both conditions are met, it will
-%   create the \ics{hyperlink} with \emph{symbol} set by \mykey{mark-ref}
-%   key and then store in \mymeta{sequence}.
+%   create the \ics{hyperlink} with \emph{\enquote{symbol}} set by \mykey{mark-ref}
+%   key and then store in \emph{sequence}.
 %    \begin{macrocode}
     \bool_lazy_and:nnT
       { \bool_if_p:N \l_@@_store_ref_key_bool }
@@ -9138,7 +9132,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_anskey_show_wrap_arg:n,}
 %   The function \cs{@@_anskey_show_wrap_arg:n} \emph{\enquote{wraps}}
-%   the \mymeta{argument} passed to \ics*{anskey} and the \mymeta{body}
+%   the \mymarg{argument} passed to \ics*{anskey} and the \mymeta{body}
 %   for \myenv*{anskey*} when using the \mykey{wrap-ans} key.
 % \iffalse
 %% Internal |wrap-ans| implementation for |\anskey| and |anskey*|.
@@ -9149,7 +9143,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \par
     \bool_if:NTF \l_@@_starred_bool
       {
-        \@@_print_keyans_box:NN \l_@@_labelwidth_vii_dim  \l_@@_labelsep_vii_dim
+        \@@_print_keyans_box:NN
+          \l_@@_labelwidth_vii_dim  \l_@@_labelsep_vii_dim
       }
       {
         \@@_print_keyans_box:cc
@@ -9164,9 +9159,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{ \@@_anskey_show_wrap_left:n }
 %   The function \cs{@@_anskey_show_wrap_left:n} will show the
 %   \emph{\enquote{mark}} defined by the \mykey{mark-ans} key or the
-%   \emph{\enquote{position}} of the content stored in the \mymeta{prop list}
+%   \emph{\enquote{position}} of the \mymarg{content} stored in the \emph{prop list}
 %   when using the \mykey{show-pos} key on the left margin next to the
-%   \emph{\enquote{wraps}} \mymeta{argument} passed to \ics*{anskey} and
+%   \emph{\enquote{wraps}} \mymarg{argument} passed to \ics*{anskey} and
 %   the \mymeta{body} in \myenv*{anskey*} on the right side when using
 %   the \mykey{show-ans} key.
 % \iffalse
@@ -9200,8 +9195,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The command \cs{anskey}}\label{cmd:anskey}
 %
-% Since we will be \emph{\enquote{storing content}} in a list environment
-% within \mymeta{sequences} and can (more or less) manage the options
+% Since we will be \emph{\enquote{storing content}} in a \myenv{list} environment
+% within \emph{sequences} and can (more or less) manage the options
 % passed to each level, it is necessary that we have a little more
 % control over |\item| when storing.
 %
@@ -9333,7 +9328,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   command is nested, if preceded by a not numbered |\item| or if it is
 %   in \emph{math mode} returning the appropriate messages.
 % \iffalse
-%% Internal function for msg when |\anskey| is inner and arg is empty.
+%% Internal function for msg when |\anskey| is inner, math-mode or arg is empty.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anskey_safe_inner:
