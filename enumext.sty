@@ -2786,7 +2786,7 @@
         \msg_error:nnnn { enumext } { command-wrong-place }{ anskey }{ keyanspic }
       }
   }
-%% Internal function for msg when |\anskey| is inner and arg is empty.
+%% Internal function for msg when |\anskey| is inner, math-mode or arg is empty.
 \cs_new_protected:Nn \__enumext_anskey_safe_inner:
   {
     \int_incr:N \l__enumext_anskey_level_int
@@ -3079,10 +3079,12 @@
       }
     \tl_if_novalue:nF { #1 }
       {
-        % Set save-sep
         \tl_if_empty:NF \l__enumext_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l__enumext_store_current_label_tl { \l__enumext_store_keyans_item_opt_sep_tl }
+            \tl_put_right:Ne \l__enumext_store_current_label_tl
+              {
+                \l__enumext_store_keyans_item_opt_sep_tl
+              }
           }
         \tl_put_right:Ne \l__enumext_store_current_label_tl { #1 }
       }

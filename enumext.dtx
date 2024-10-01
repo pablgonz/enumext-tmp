@@ -9798,14 +9798,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Storing content in prop list}
 %
 % \begin{macro}{\@@_keyans_addto_prop:n}
-%    The function \cs{@@_keyans_addto_prop:n} will pass the
-%    contents of the current \mymeta{label} \cs{l_@@_label_v_tl} for the
-%    \myenv*{keyans} environment and the current \mymeta{label} \cs{l_@@_label_vi_tl}
-%    for the \myenv*{keyanspic} environment when using
-%    \ics*{item*} and \ics*{anspic*}, followed by the \emph{contents} of the
-%    \emph{optional argument} of both commands to the \cs{l_@@_store_current_label_tl}
-%    variable, which will be passed to the \mymeta{prop list} defined by the
-%    \mykey{save-ans} key using the \cs{@@_store_addto_prop:V}.
+%   The function \cs{@@_keyans_addto_prop:n} will pass the the current \mymeta{label} for |\item*|
+%   in \myenv*{keyans} environment and the current \mymeta{label} for
+%   |\anspic*| in \myenv*{keyanspic} environment followed by the
+%   \mymeta{contents} of the \emph{optional argument} of both commands
+%   to the \cs{l_@@_store_current_label_tl} variable, which will be stored
+%   to the \emph{prop list} defined by the \mykey{save-ans} key using the
+%   function \cs{@@_store_addto_prop:V}.
 % \iffalse
 %% Function for storing in prop list for |keyans| and |keyanspic| environments.
 % \fi
@@ -9820,12 +9819,18 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       {
         \tl_put_right:Ne \l_@@_store_current_label_tl { \l_@@_label_v_tl }
       }
+%    \end{macrocode}
+%   If the \emph{optional argument} is present and the \mykey{save-sep}
+%   key is not empty, we save it.
+%    \begin{macrocode}
     \tl_if_novalue:nF { #1 }
       {
-        % Set save-sep
         \tl_if_empty:NF \l_@@_store_keyans_item_opt_sep_tl
           {
-            \tl_put_right:Ne \l_@@_store_current_label_tl { \l_@@_store_keyans_item_opt_sep_tl }
+            \tl_put_right:Ne \l_@@_store_current_label_tl
+              {
+                \l_@@_store_keyans_item_opt_sep_tl
+              }
           }
         \tl_put_right:Ne \l_@@_store_current_label_tl { #1 }
       }
@@ -9836,21 +9841,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{The \texttt{save-ref} key for \env{keyans}, \env{keyans*} and \env{keyanspic}}\label{fun:save-ref-keyans}
 %
-% The \emph{\enquote{internal label and ref}} system for the \myenv*{keyans}, \myenv*{keyans*} and
-% \myenv*{keyanspic} environments has slight differences with the one
-% implemented for the \ics*{anskey} command, basically because in this
-% environments we are interested in the current \mymeta{label}. The
-% mechanism defined here will allow to execute
-% \ics{ref}\mymarg{store name \textcolor{red}{:} position} and
+% The \emph{\enquote{internal label and ref}} system for the \myenv*{keyans},
+% \myenv*{keyans*} and \myenv*{keyanspic} environments has \emph{slight differences}
+% with the one implemented for \ics*{anskey} basically because in this
+% environments the interest is in the current \mymeta{label} for |\item*|
+% and |\anspic*| with the \mymeta{contents} of the \emph{optional argument}. The mechanism
+% defined here will allow to execute \ics{ref}\mymarg{store name \textcolor{red}{:} position} and
 % will return |1.(A)|.
 %
 % \begin{macro}{\@@_keyans_store_ref:, \@@_keyans_store_ref_aux_i:,\@@_keyans_store_ref_aux_ii:}
-%   The function \cs{@@_keyans_store_ref:} handles the internal \emph{\enquote{label and ref}}
+%   The function \cs{@@_keyans_store_ref:} handles the \emph{\enquote{internal label and ref}}
 %   system used by the \mykey{save-ref} key for \ics*{item*} and \ics*{anspic*}
 %   commands.
 %   First we will create copies of the current \mymeta{labels} and remove
 %   the dots \enquote{\textcolor{red}{\texttt{.}}} from them, we do not
-%   want to get double dots in our references.
+%   want to get double dots in references.
 %
 % \iffalse
 %% Internal label and ref function for |keyans|, |keyans*| and |keyanspic| environments.
