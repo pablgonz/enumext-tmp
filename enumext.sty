@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-09-29}
+  {2024-10-02}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -162,10 +162,11 @@
 \seq_new:N \l__enumext_foreach_print_seq
 \tl_new:N  \l__enumext_foreach_name_prop_tl
 \tl_new:N  \g__enumext_foreach_default_keys_tl
-%% Variables used by|\printkeyans|, |mark-pos|, |item-sym*|, |save-key| and  store level in |enumext| and |enumext*|.
-\tl_new:N  \l__enumext_print_keyans_starred_tl
-\str_new:N \l__enumext_mark_position_str
-\tl_new:N  \g__enumext_item_symbol_aux_tl
+%% Variables used by |\printkeyans|, |mark-pos|, |item-sym*|, |save-key| and  storing structure in |enumext| and |enumext*|.
+\tl_new:N   \l__enumext_print_keyans_starred_tl
+\bool_new:N \l__enumext_print_keyans_star_bool
+\str_new:N  \l__enumext_mark_position_str
+\tl_new:N   \g__enumext_item_symbol_aux_tl
 \cs_set_protected:Npn \__enumext_tmp:n #1
   {
     \tl_new:c   { l__enumext_print_keyans_#1_tl        }
@@ -295,27 +296,6 @@
              {
                % \typeout{KERN} \typeout{\the\lastkern}
                \unkern
-             }
-      }
-  }
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\cs_new_protected:Nn \__enumext_unskip_unkern_new:
-  {
-    \int_case:nnT { \lastnodetype }
-      {
-        { 11 }
-             {
-               \typeout{SKIPPPPPPPPPPPPPPPP} \typeout{\the\lastskip}
-               \unskip
-             }
-        { 12 }
-             {
-               \typeout{KERNNNNNNNNNNNNNNNN} \typeout{\the\lastkern}
-               \unkern
-             }
-        { 13 }
-             {
-               \typeout{penaltyyyyyyyyyyyyyyyy}
              }
       }
   }
@@ -962,19 +942,21 @@
     base-fix .value_forbidden:n = true,
   }
 %% Internal function for |base-fix| key in |enumext| environment.
-\bool_new:N \l__enumext_print_keyans_star_bool
 \cs_new_protected:Nn \__enumext_nested_base_line_fix:
   {
     \mode_leave_vertical:
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_starred_first_bool }
-      { \bool_not_p:n { \l__enumext_print_keyans_star_bool } } % only for pdflatex-dev (not tagged PDF)
+    \bool_lazy_all:nT
       {
-        \vspace{-\dimeval{\baselineskip + \parsep}}
+        { \bool_if_p:N \l__enumext_starred_first_bool }
+        { \bool_if_p:N \l__enumext_base_line_fix_bool }
+        { \bool_not_p:n { \l__enumext_print_keyans_star_bool } }
+      }
+      {
+        \vspace { -\dim_eval:n { \baselineskip + \parsep } }
       }
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_starred_first_bool }
-      { \bool_if_p:N \l__enumext_print_keyans_star_bool } % for tagged PDF
+      { \bool_if_p:N \l__enumext_print_keyans_star_bool }
       {
         \skip_vertical:n { -\baselineskip }
         \skip_vertical:N \c_zero_skip
@@ -4964,7 +4946,6 @@
         \__enumext_list_arg_two_viii:
         \__enumext_before_keys_exec_viii:
       }
-    % Stop tagging
     \IfDocumentMetadataTF { \tag_suspend:n {keyans*} } { }
     \__enumext_starred_columns_set_viii:
     \item[] \scan_stop:

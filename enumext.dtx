@@ -622,7 +622,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
                     textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_spaces, skip_horizontal, %
                     triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean,newtheorem, %
-                    aux_i, aux_ii, aux_iii, w, n, N, if@noitemarg, if, noitemarg, skip_vertical, },%
+                    aux_i, aux_ii, aux_iii, w, n, N, if@noitemarg, if, if@hyper@item, hyper, noitemarg, skip_vertical, },%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
     keywords      = [3]{document,article,setlength,pagestyle,definecolor, chapter,},%,
@@ -1920,12 +1920,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp*{base-fix}{value forbidden}{not used}
 % This is a \emph{\enquote{meta-key}} that does not receive an
-% argument available only for the \emph{first level} of environment
-% \myenv*{enumext} and environment \myenv*{enumext*}. Fix the \emph{baseline}
-% when an environment \myenv*{enumext} is nested  in \myenv*{enumext*} or
-% vice versa and there is no material between the |\item| and the start
-% of the environment for example |\item \begin{enumext*}| within the
-% environment \myenv*{enumext}. Internally sets the keys \mykey{topsep},
+% argument available \emph{only} for the \emph{first level} of environment
+% \myenv*{enumext}. Fix the \emph{baseline} when an environment \myenv*{enumext}
+% is nested  in \myenv*{enumext*} and there is no material between the
+% |\item| and the start of the environment for example |\item \begin{enumext}|
+% within the environment \myenv*{enumext*}. Internally sets the keys \mykey{topsep},
 % \mykey{above} and \mykey{above}|*| at \mydim{0pt}.
 %
 % \smallskip
@@ -4298,7 +4297,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-09-29}
+  {2024-10-02}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -4650,21 +4649,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{variable}
 %
 %
-% \begin{variable}[int]{\l_@@_print_keyans_starred_tl, \l_@@_mark_position_str,
-%                       \g_@@_item_symbol_aux_tl, \l_@@_print_keyans_X_tl,
-%                       \l_@@_store_save_key_X_tl, \l_@@_store_save_key_X_bool,
-%                       \l_@@_store_upper_level_X_bool,}
+% \begin{variable}[int]{\l_@@_print_keyans_starred_tl, \l_@@_print_keyans_star_bool,
+%                       \l_@@_mark_position_str, \g_@@_item_symbol_aux_tl,
+%                       \l_@@_print_keyans_X_tl, \l_@@_store_save_key_X_tl,
+%                       \l_@@_store_save_key_X_bool, \l_@@_store_upper_level_X_bool,}
 %    Internal variables used by command \ics*{printkeyans}
 %    (\S\ref{cmd:printkeyans}), \mykey{show-pos} key (\S\ref{int:storage-system}),
 %    \mykey{item-sym*} key (\S\ref{key:item-starred}), \mykey{save-key} key
-%    (\S\ref{key:save-key}) and \emph{“storage level system”}.
+%    (\S\ref{key:save-key}) and \emph{\enquote{storing structure}}.
 % \iffalse
-%% Variables used by|\printkeyans|, |mark-pos|, |item-sym*|, |save-key| and  store level in |enumext| and |enumext*|.
+%% Variables used by |\printkeyans|, |mark-pos|, |item-sym*|, |save-key| and  storing structure in |enumext| and |enumext*|.
 % \fi
 %    \begin{macrocode}
-\tl_new:N  \l_@@_print_keyans_starred_tl
-\str_new:N \l_@@_mark_position_str
-\tl_new:N  \g_@@_item_symbol_aux_tl
+\tl_new:N   \l_@@_print_keyans_starred_tl
+\bool_new:N \l_@@_print_keyans_star_bool
+\str_new:N  \l_@@_mark_position_str
+\tl_new:N   \g_@@_item_symbol_aux_tl
 \cs_set_protected:Npn \@@_tmp:n #1
   {
     \tl_new:c   { l_@@_print_keyans_#1_tl        }
@@ -4965,27 +4965,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
              {
                % \typeout{KERN} \typeout{\the\lastkern}
                \unkern
-             }
-      }
-  }
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\cs_new_protected:Nn \@@_unskip_unkern_new:
-  {
-    \int_case:nnT { \lastnodetype }
-      {
-        { 11 }
-             {
-               \typeout{SKIPPPPPPPPPPPPPPPP} \typeout{\the\lastskip}
-               \unskip
-             }
-        { 12 }
-             {
-               \typeout{KERNNNNNNNNNNNNNNNN} \typeout{\the\lastkern}
-               \unkern
-             }
-        { 13 }
-             {
-               \typeout{penaltyyyyyyyyyyyyyyyy}
              }
       }
   }
@@ -6162,7 +6141,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % and then apply |\vspace{-\baselineskip}| and set |topsep=|\mydim{0pt} for
 % the \emph{\enquote{first level}} of the nested \myenv*{enumext} environment.
 %
-% \begin{macro}[int]{base-fix, \@@_nested_base_line_fix:}
+% \begin{macro}[int]{base-fix}
 %     We define the key \mykey{base-fix} only for the \emph{\enquote{first level}}
 %     of \myenv*{enumext} environment.
 % \iffalse
@@ -6176,33 +6155,34 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     base-fix .value_forbidden:n = true,
   }
 %    \end{macrocode}
-%   The function \cs{@@_nested_base_line_fix:} will be in charge of
-%   applying the baseline correction and adjusting the \mymeta{keys}.
-%   This function is passed to the function \cs{@@_parse_keys:n}
-%   in the \myenv*{enumext} environment definition (\S\ref{env:enumext})
-%   and to the function \cs{@@_parse_keys_vii:n} in the \myenv*{enumext*}
-%   environment definition (\S\ref{env:starred})
-%   \begin{important}*
-%    This key is enabled by default in the command |\printkeyans|
-%    (\S\ref{cmd:printkeyans}).
-%   \end{important}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_nested_base_line_fix:}
+%   The function \cs{@@_nested_base_line_fix:} will be responsible for
+%   applying the \emph{baseline correction} and adjusting the \mymeta{keys}
+%   for the \myenv*{enumext} environment and the |\printkeyans| with \emph{starred argument} ‘|*|’
+%   (\S\ref{cmd:printkeyans}). This function is passed to the
+%   \cs{@@_parse_keys:n} function in the definition of the \myenv*{enumext}
+%   environment (\S\ref{env:enumext}).
 % \iffalse
 %% Internal function for |base-fix| key in |enumext| environment.
 % \fi
 %    \begin{macrocode}
-\bool_new:N \l_@@_print_keyans_star_bool
 \cs_new_protected:Nn \@@_nested_base_line_fix:
   {
     \mode_leave_vertical:
-    \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_starred_first_bool }
-      { \bool_not_p:n { \l_@@_print_keyans_star_bool } } % only for pdflatex-dev (not tagged PDF)
+    \bool_lazy_all:nT
       {
-        \vspace{-\dimeval{\baselineskip + \parsep}}
+        { \bool_if_p:N \l_@@_starred_first_bool }
+        { \bool_if_p:N \l_@@_base_line_fix_bool }
+        { \bool_not_p:n { \l_@@_print_keyans_star_bool } }
+      }
+      {
+        \vspace { -\dim_eval:n { \baselineskip + \parsep } }
       }
     \bool_lazy_and:nnT
       { \bool_if_p:N \l_@@_starred_first_bool }
-      { \bool_if_p:N \l_@@_print_keyans_star_bool } % for tagged PDF
+      { \bool_if_p:N \l_@@_print_keyans_star_bool }
       {
         \skip_vertical:n { -\baselineskip }
         \skip_vertical:N \c_zero_skip
@@ -12928,6 +12908,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{important}
 %   For compatibility with \emph{tagged} \texttt{PDF} and \mypkg{hyperref}
+%   when an environment \myenv*{enumext} is nested in \myenv*{enumext*}
 %   need setting the |\if@hyper@item| switch to \emph{\enquote{true}}. The
 %   explanation for this is given by the master Heiko Oberdiek on
 %   \href{https://tex.stackexchange.com/a/404911}{\textbackslash
@@ -13152,7 +13133,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_list_arg_two_viii:
         \@@_before_keys_exec_viii:
       }
-    % Stop tagging
     \IfDocumentMetadataTF { \tag_suspend:n {keyans*} } { }
     \@@_starred_columns_set_viii:
     \item[] \scan_stop:
