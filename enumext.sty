@@ -282,7 +282,7 @@
       = ~ \use:c { #1_use:c } { l__enumext_#2_#3_#1 } \\
   }
 %% Remove last skip or kern.
-\cs_new_protected:Npn \__enumext_unskip_unkern:
+\cs_new_protected:Nn \__enumext_unskip_unkern:
   {
     \int_case:nnT { \lastnodetype }
       {
@@ -295,6 +295,27 @@
              {
                % \typeout{KERN} \typeout{\the\lastkern}
                \unkern
+             }
+      }
+  }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new_protected:Nn \__enumext_unskip_unkern_new:
+  {
+    \int_case:nnT { \lastnodetype }
+      {
+        { 11 }
+             {
+               \typeout{SKIPPPPPPPPPPPPPPPP} \typeout{\the\lastskip}
+               \unskip
+             }
+        { 12 }
+             {
+               \typeout{KERNNNNNNNNNNNNNNNN} \typeout{\the\lastkern}
+               \unkern
+             }
+        { 13 }
+             {
+               \typeout{penaltyyyyyyyyyyyyyyyy}
              }
       }
   }
@@ -933,41 +954,34 @@
 \__enumext_tmp:nnnnnn { keyans* } { viii } { 4.0pt plus 2.0pt minus 1.0pt }
   { 2.0pt plus 1.0pt minus 1.0pt } { 2.0pt plus 1.0pt minus 1.0pt }
   { 2.0pt plus 1.0pt minus 1.0pt }
-%% Add |base-fix| key only on first level off |enumext| and |enumext*|.
-\cs_set_protected:Npn \__enumext_tmp:n #1
+%% Add |base-fix| key only on first level off |enumext| environment.
+\keys_define:nn { enumext /  level-1 }
   {
-    \keys_define:nn { enumext / #1 }
-      {
-        base-fix .bool_set:N = \l__enumext_base_line_fix_bool,
-        base-fix .initial:n  = false,
-        base-fix .value_forbidden:n = true,
-      }
+    base-fix .bool_set:N = \l__enumext_base_line_fix_bool,
+    base-fix .initial:n  = false,
+    base-fix .value_forbidden:n = true,
   }
-\clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
-%% Internal function for |base-fix| key.
+%% Internal function for |base-fix| key in |enumext| environment.
+\bool_new:N \l__enumext_print_keyans_star_bool
 \cs_new_protected:Nn \__enumext_nested_base_line_fix:
   {
+    \mode_leave_vertical:
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l__enumext_standar_first_bool }
-      { \bool_if_p:N \l__enumext_base_line_fix_bool }
+      { \bool_if_p:N \l__enumext_starred_first_bool }
+      { \bool_not_p:n { \l__enumext_print_keyans_star_bool } } % only for pdflatex-dev (not tagged PDF)
       {
-        \mode_leave_vertical:
-        \vspace { -\baselineskip }
-        \keys_set:nn { enumext / level-1 }
-          {
-            topsep = 0pt, above = 0pt, above* = 0pt,
-          }
+        \vspace{-\dimeval{\baselineskip + \parsep}}
       }
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_starred_first_bool }
-      { \bool_if_p:N \l__enumext_base_line_fix_bool }
+      { \bool_if_p:N \l__enumext_print_keyans_star_bool } % for tagged PDF
       {
-        \mode_leave_vertical:
-        \vspace { -\baselineskip }
-        \keys_set:nn { enumext / enumext* }
-          {
-            topsep = 0pt, above = 0pt, above* = 0pt,
-          }
+        \skip_vertical:n { -\baselineskip }
+        \skip_vertical:N \c_zero_skip
+      }
+    \keys_set:nn { enumext / level-1 }
+      {
+        topsep = 0pt, above = 0pt, above* = 0pt,
       }
     \bool_set_false:N \l__enumext_base_line_fix_bool
   }
@@ -1261,7 +1275,7 @@
             \skip_use:c { l__enumext_partopsep_ \__enumext_level: _skip }
           }
       }
-    \__enumext_unskip_unkern: % revisar
+    %% \__enumext_unskip_unkern: % remove for pdflatex-dev
     \par\nopagebreak
     \addvspace{ \skip_use:c { l__enumext_multicols_above_ \__enumext_level: _skip } }
   }
@@ -1291,7 +1305,7 @@
             \skip_use:N \l__enumext_partopsep_v_skip
           }
       }
-    \__enumext_unskip_unkern:
+    %% \__enumext_unskip_unkern: % remove for pdflatex-dev
     \par\nopagebreak
     \addvspace{ \l__enumext_multicols_above_v_skip }
   }
@@ -4670,7 +4684,6 @@
         \__enumext_list_arg_two_vii:
         \__enumext_before_keys_exec_vii:
       }
-    % Stop tagging
     \IfDocumentMetadataTF { \tag_suspend:n {enumext*} } { }
     \__enumext_starred_columns_set_vii:
     \item[] \scan_stop:
@@ -4711,7 +4724,6 @@
         \keys_set:nn { enumext / enumext* } {#1}
         \__enumext_parse_series:n {#1}
         \__enumext_store_active_keys_vii:n {#1}
-        \__enumext_nested_base_line_fix:
       }
   }
 \cs_new_protected:Nn \__enumext_before_list_vii:
@@ -4823,7 +4835,7 @@
     \legacy_if_set_true:n { @noitemarg }
     \__enumext_start_item_vii:w [ \l__enumext_label_vii_tl ]
   }
-%% Fake \makelabel definition for |enumext*|
+%% Fake \makelabel definition for |enumext*| environment.
 \cs_new_protected_nopar:Npn \__enumext_fake_make_label_vii:n #1
   {
     \legacy_if:nT { @noitemarg }
@@ -4831,6 +4843,13 @@
         \legacy_if_set_false:n { @noitemarg }
         \legacy_if:nT { @nmbrlist }
           {
+            \IfDocumentMetadataTF
+              {
+                \bool_if:NT \l__enumext_hyperref_bool
+                  {
+                    \legacy_if_set_true:n { @hyper@item }
+                  }
+              } { }
             \refstepcounter{enumXvii}
             \bool_if:NT \l__enumext_check_answers_bool
               {
@@ -4861,7 +4880,7 @@
           }
           { #1 }
       }
-    \skip_horizontal:N \l__enumext_labelsep_vii_dim
+    \skip_horizontal:N \l__enumext_labelsep_vii_dim \ignorespaces
   }
 \cs_new_protected_nopar:Npn \__enumext_start_item_vii:w [#1]
   {
@@ -5132,7 +5151,7 @@
           }
           { #1 }
       }
-    \skip_horizontal:N \l__enumext_labelsep_viii_dim
+    \skip_horizontal:N \l__enumext_labelsep_viii_dim \ignorespaces
   }
 %% Real |\item| definition for |keyans*| environment.
 \cs_new_protected_nopar:Npn \__enumext_start_item_viii:w [#1]
@@ -5294,15 +5313,15 @@
                   }
                   {
                     \tl_use:N \l__enumext_print_keyans_starred_tl
+                    \bool_set_true:N \l__enumext_base_line_fix_bool
+                    \bool_set_true:N \l__enumext_print_keyans_star_bool
                     \begin{enumext*}[#2]
-                      \keys_set:nn { enumext / level-1 }{ base-fix }
                       \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }
                     \end{enumext*}
                   }
               }
               {
                 \begin{enumext}[#2]
-                  \keys_set:nn { enumext / enumext* }{ base-fix }
                   \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }
                 \end{enumext}
               }

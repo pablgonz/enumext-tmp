@@ -1,16 +1,21 @@
 \DocumentMetadata{lang=en-US, pdfversion=2.0, pdfstandard=ua-2, testphase={phase-III,math,table,title,firstaid}, uncompress}
 \documentclass{article}
-%\usepackage[svgnames]{xcolor}
-\usepackage{graphicx}% tagpdf-debug
+\usepackage{enumext}
 \begin{document}
 
-\begin{enumerate}
-\item Text
-  \begin{minipage}[t]{5cm}
-    \begin{enumerate} \item In minipage \end{enumerate}
-  \end{minipage}
+\begin{enumext*}[columns=2]
+\item In starred
+\item In starred
+
+\item \begin{enumext}[nosep]
+    \item \begin{enumext}%[]
+    \item In starred II
+  \end{enumext}
+
+    
+  \end{enumext}
   
-\end{enumerate}
+\end{enumext*}
 
 \end{document}
 
@@ -31,7 +36,7 @@
 \cs_set_protected:Npn \_@@_tmp:w #1
   {
     \cs_new_protected:cn { @@_#2_args_exec_#1: }
-      {
+      {	
         \tl_use:c { l_@@_#2_starred_key_#1_tl }
       }
     \cs_new_protected:cn { @@_#2_key_exec_#1: }

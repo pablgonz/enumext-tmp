@@ -622,7 +622,7 @@ This work consists of the files enumext.dtx and enumext.sty.
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
                     textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_spaces, skip_horizontal, %
                     triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean,newtheorem, %
-                    aux_i, aux_ii, aux_iii, w, n, if@noitemarg, if, noitemarg, skip_vertical, },%
+                    aux_i, aux_ii, aux_iii, w, n, N, if@noitemarg, if, noitemarg, skip_vertical, },%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
     keywords      = [3]{document,article,setlength,pagestyle,definecolor, chapter,},%,
@@ -4952,7 +4952,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %% Remove last skip or kern.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_unskip_unkern:
+\cs_new_protected:Nn \@@_unskip_unkern:
   {
     \int_case:nnT { \lastnodetype }
       {
@@ -4965,6 +4965,27 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
              {
                % \typeout{KERN} \typeout{\the\lastkern}
                \unkern
+             }
+      }
+  }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new_protected:Nn \@@_unskip_unkern_new:
+  {
+    \int_case:nnT { \lastnodetype }
+      {
+        { 11 }
+             {
+               \typeout{SKIPPPPPPPPPPPPPPPP} \typeout{\the\lastskip}
+               \unskip
+             }
+        { 12 }
+             {
+               \typeout{KERNNNNNNNNNNNNNNNN} \typeout{\the\lastkern}
+               \unkern
+             }
+        { 13 }
+             {
+               \typeout{penaltyyyyyyyyyyyyyyyy}
              }
       }
   }
@@ -6138,27 +6159,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % When nesting starting right after |\item| (without material between them) there
 % is a problem with the alignment of the baseline between the two environments.
 % One way to get around this problem is to place |\mode_leave_vertical:|
-% and then apply |\vspace{-\baselineskip}| and set  |topsep=|\mydim{0pt} for
-% the \emph{\enquote{first level}} of the nested \myenv*{enumext} or
-% \myenv*{enumext*} environments.
+% and then apply |\vspace{-\baselineskip}| and set |topsep=|\mydim{0pt} for
+% the \emph{\enquote{first level}} of the nested \myenv*{enumext} environment.
 %
 % \begin{macro}[int]{base-fix, \@@_nested_base_line_fix:}
 %     We define the key \mykey{base-fix} only for the \emph{\enquote{first level}}
-%     of \myenv*{enumext} and \myenv*{enumext*}.
+%     of \myenv*{enumext} environment.
 % \iffalse
-%% Add |base-fix| key only on first level off |enumext| and |enumext*|.
+%% Add |base-fix| key only on first level off |enumext| environment.
 % \fi
 %    \begin{macrocode}
-\cs_set_protected:Npn \@@_tmp:n #1
+\keys_define:nn { enumext /  level-1 }
   {
-    \keys_define:nn { enumext / #1 }
-      {
-        base-fix .bool_set:N = \l_@@_base_line_fix_bool,
-        base-fix .initial:n  = false,
-        base-fix .value_forbidden:n = true,
-      }
+    base-fix .bool_set:N = \l_@@_base_line_fix_bool,
+    base-fix .initial:n  = false,
+    base-fix .value_forbidden:n = true,
   }
-\clist_map_inline:nn { level-1, enumext* } { \@@_tmp:n {#1} }
 %    \end{macrocode}
 %   The function \cs{@@_nested_base_line_fix:} will be in charge of
 %   applying the baseline correction and adjusting the \mymeta{keys}.
@@ -6171,32 +6187,29 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    (\S\ref{cmd:printkeyans}).
 %   \end{important}
 % \iffalse
-%% Internal function for |base-fix| key.
+%% Internal function for |base-fix| key in |enumext| environment.
 % \fi
 %    \begin{macrocode}
+\bool_new:N \l_@@_print_keyans_star_bool
 \cs_new_protected:Nn \@@_nested_base_line_fix:
   {
+    \mode_leave_vertical:
     \bool_lazy_and:nnT
-      { \bool_if_p:N \l_@@_standar_first_bool }
-      { \bool_if_p:N \l_@@_base_line_fix_bool }
+      { \bool_if_p:N \l_@@_starred_first_bool }
+      { \bool_not_p:n { \l_@@_print_keyans_star_bool } } % only for pdflatex-dev (not tagged PDF)
       {
-        \mode_leave_vertical:
-        \vspace { -\baselineskip }
-        \keys_set:nn { enumext / level-1 }
-          {
-            topsep = 0pt, above = 0pt, above* = 0pt,
-          }
+        \vspace{-\dimeval{\baselineskip + \parsep}}
       }
     \bool_lazy_and:nnT
       { \bool_if_p:N \l_@@_starred_first_bool }
-      { \bool_if_p:N \l_@@_base_line_fix_bool }
+      { \bool_if_p:N \l_@@_print_keyans_star_bool } % for tagged PDF
       {
-        \mode_leave_vertical:
-        \vspace { -\baselineskip }
-        \keys_set:nn { enumext / enumext* }
-          {
-            topsep = 0pt, above = 0pt, above* = 0pt,
-          }
+        \skip_vertical:n { -\baselineskip }
+        \skip_vertical:N \c_zero_skip
+      }
+    \keys_set:nn { enumext / level-1 }
+      {
+        topsep = 0pt, above = 0pt, above* = 0pt,
       }
     \bool_set_false:N \l_@@_base_line_fix_bool
   }
@@ -6740,7 +6753,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \skip_use:c { l_@@_partopsep_ \@@_level: _skip }
           }
       }
-    \@@_unskip_unkern: % revisar
+    %% \@@_unskip_unkern: % remove for pdflatex-dev
     \par\nopagebreak
     \addvspace{ \skip_use:c { l_@@_multicols_above_ \@@_level: _skip } }
   }
@@ -6784,7 +6797,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \skip_use:N \l_@@_partopsep_v_skip
           }
       }
-    \@@_unskip_unkern:
+    %% \@@_unskip_unkern: % remove for pdflatex-dev
     \par\nopagebreak
     \addvspace{ \l_@@_multicols_above_v_skip }
   }
@@ -9849,14 +9862,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % defined here will allow to execute \ics{ref}\mymarg{store name \textcolor{red}{:} position} and
 % will return |1.(A)|.
 %
-% \begin{macro}{\@@_keyans_store_ref:, \@@_keyans_store_ref_aux_i:,\@@_keyans_store_ref_aux_ii:}
-%   The function \cs{@@_keyans_store_ref:} handles the \emph{\enquote{internal label and ref}}
-%   system used by the \mykey{save-ref} key for \ics*{item*} and \ics*{anspic*}
-%   commands.
+% \begin{macro}{\@@_keyans_store_ref:, \@@_keyans_store_ref_aux_i:,
+%               \@@_keyans_store_ref_aux_ii:,}
+%   The function \cs{@@_keyans_store_ref:} handles the
+%   \emph{\enquote{internal label and ref}} system used by the
+%   \mykey{save-ref} key for \ics*{item*} and \ics*{anspic*} commands.
 %   First we will create copies of the current \mymeta{labels} and remove
 %   the dots \enquote{\textcolor{red}{\texttt{.}}} from them, we do not
 %   want to get double dots in references.
-%
 % \iffalse
 %% Internal label and ref function for |keyans|, |keyans*| and |keyanspic| environments.
 % \fi
@@ -9878,10 +9891,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
    }
 %    \end{macrocode}
 %   The auxiliary function \cs{@@_keyans_store_ref_aux_i:} set the
-%   variable \cs{l_@@_newlabel_arg_one_tl} which will
-%   contain \mymarg{store name \textcolor{red}{:} position}
-%   analyzing whether the environment in which they are executed is
-%   \myenv*{enumext*} or \myenv*{enumext}.
+%   variable \cs{l_@@_newlabel_arg_one_tl} which will  contain
+%   \mymarg{store name \textcolor{red}{:} position} analyzing whether
+%   the environment in which they are executed is \myenv*{enumext*} or
+%   \myenv*{enumext}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_store_ref_aux_i:
   {
@@ -9913,8 +9926,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %   Now auxiliary function \cs{@@_keyans_store_ref_aux_ii:} save the
-%   result in the variable \cs{l_@@_write_aux_file_tl} and
-%   finally we write in the |.aux| file.
+%   result in the variable \cs{l_@@_write_aux_file_tl} and finally we
+%   write in the |.aux| file.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_store_ref_aux_ii:
   {
@@ -12593,7 +12606,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_list_arg_two_vii:
         \@@_before_keys_exec_vii:
       }
-    % Stop tagging
     \IfDocumentMetadataTF { \tag_suspend:n {enumext*} } { }
     \@@_starred_columns_set_vii:
     \item[] \scan_stop:
@@ -12649,9 +12661,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  \mykey{series}, process the environment \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 %  and execute the function \cs{@@_parse_series:n} and used by the key
 %  \mykey{series}, then we execute the function \cs{@@_store_active_keys_vii:n}
-%  and reprocess the \mymeta{keys} to pass them to the storage \mymeta{sequence}
-%  if the key \mykey{save-key} is not active and finally we call the function
-%  \cs{@@_nested_base_line_fix:} used by the key \mykey{base-fix}.
+%  and reprocess the \mymeta{keys} to pass them to the storage \emph{sequence}
+%  if the key \mykey{save-key} is not active.
+%^^A  and finally we call the function
+%^^A  \cs{@@_nested_base_line_fix:} used by the key \mykey{base-fix}.
 % \iffalse
 %% Parse |key=val| and store keys for |enumext*| environment.
 % \fi
@@ -12664,7 +12677,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \keys_set:nn { enumext / enumext* } {#1}
         \@@_parse_series:n {#1}
         \@@_store_active_keys_vii:n {#1}
-        \@@_nested_base_line_fix:
       }
   }
 %    \end{macrocode}
@@ -12910,10 +12922,21 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   position by the \mykey{align} key, inside the argument of this we will
 %   execute the \mykey{font} key together with the function defined by the
 %   \mykey{wrap-label} or \mykey{wrap-label*} keys. Finally we execute the
-%   \mykey{labelsep} key applying a \emph{horizontal space}.
+%   \mykey{labelsep} key applying a |\skip_horizontal:N| and |\ignorespaces|.
+%
+%   \smallskip
+%
+% \begin{important}
+%   For compatibility with \emph{tagged} \texttt{PDF} and \mypkg{hyperref}
+%   need setting the |\if@hyper@item| switch to \emph{\enquote{true}}. The
+%   explanation for this is given by the master Heiko Oberdiek on
+%   \href{https://tex.stackexchange.com/a/404911}{\textbackslash
+%   refstepcounter\{enumi\} twice (or more) creates destination with the
+%   same identifier}. 
+% \end{important}
 %
 % \iffalse
-%% Fake \makelabel definition for |enumext*|
+%% Fake \makelabel definition for |enumext*| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_fake_make_label_vii:n #1
@@ -12923,6 +12946,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \legacy_if_set_false:n { @noitemarg }
         \legacy_if:nT { @nmbrlist }
           {
+            \IfDocumentMetadataTF
+              {
+                \bool_if:NT \l_@@_hyperref_bool
+                  {
+                    \legacy_if_set_true:n { @hyper@item }
+                  }
+              } { }
             \refstepcounter{enumXvii}
             \bool_if:NT \l_@@_check_answers_bool
               {
@@ -12953,7 +12983,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
           { #1 }
       }
-    \skip_horizontal:N \l_@@_labelsep_vii_dim
+    \skip_horizontal:N \l_@@_labelsep_vii_dim \ignorespaces
   }
 %    \end{macrocode}
 % \end{macro}
@@ -13476,7 +13506,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
           { #1 }
       }
-    \skip_horizontal:N \l_@@_labelsep_viii_dim
+    \skip_horizontal:N \l_@@_labelsep_viii_dim \ignorespaces
   }
 %    \end{macrocode}
 % \end{macro}
@@ -13753,7 +13783,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \cs{l_@@_print_keyans_starred_tl} that contains the default \mymeta{keys} for
 %    the environment \myenv*{enumext*}, it will open the environment
 %    \myenv*{enumext*} passing the \emph{optional argument} to the \emph{\enquote{first level}},
-%    set the key \mykey{base-fix} and then will map the \mymeta{sequence}.
+%    set the key \mykey{base-fix} and then will map the \emph{sequence}.
 %    \begin{macrocode}
             \bool_if:nTF {#1}
               {
@@ -13763,20 +13793,20 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                   }
                   {
                     \tl_use:N \l_@@_print_keyans_starred_tl
+                    \bool_set_true:N \l_@@_base_line_fix_bool
+                    \bool_set_true:N \l_@@_print_keyans_star_bool
                     \begin{enumext*}[#2]
-                      \keys_set:nn { enumext / level-1 }{ base-fix }
                       \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
                     \end{enumext*}
                   }
               }
 %    \end{macrocode}
-%    Otherwise it will open the environment \myenv*{enumext} passing
-%    the \emph{optional argument} to the \emph{\enquote{first level}}, set the
-%    key \mykey{base-fix} and then map the \mymeta{sequence}.
+%   Otherwise it will open the environment \myenv*{enumext} passing
+%   the \emph{optional argument} to the \emph{\enquote{first level}}
+%   then map the \emph{sequence}.
 %    \begin{macrocode}
               {
                 \begin{enumext}[#2]
-                  \keys_set:nn { enumext / enumext* }{ base-fix }
                   \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
                 \end{enumext}
               }
