@@ -5141,7 +5141,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{macro}{\@@_log_global_vars:, \@@_log_answer_vars:}
 %   The function \cs{@@_log_global_vars:} will be passed to the function
 %   \cs{@@_execute_after_env:} and write to the |.log| file the number of
-%   elements saved in the \mymeta{prop list} and \mymeta{sequence} created by the
+%   elements saved in the \emph{prop list} and \emph{sequence} created by the
 %   \mykey{save-ans} key along with the value of the integer variable
 %   created for the \mykey{resume} key.
 % \iffalse
@@ -6734,7 +6734,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \skip_use:c { l_@@_partopsep_ \@@_level: _skip }
           }
       }
-    %% \@@_unskip_unkern: % remove for pdflatex-dev
     \par\nopagebreak
     \addvspace{ \skip_use:c { l_@@_multicols_above_ \@@_level: _skip } }
   }
@@ -6778,7 +6777,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \skip_use:N \l_@@_partopsep_v_skip
           }
       }
-    %% \@@_unskip_unkern: % remove for pdflatex-dev
     \par\nopagebreak
     \addvspace{ \l_@@_multicols_above_v_skip }
   }
@@ -7725,9 +7723,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   \emph{not used} and will save them in the variable \myvarenv{g__@@_standar_series_tl} for the
 %   \myenv*{enumext} environment and in the variable \myvarenv{g__@@_starred_series_tl}
 %   for the \myenv*{enumext*} environment.
-%   Here we must use |\bool_lazy_all:nT| to make sure that the default
-%   values are not overwritten when the environment is nested and the
-%   \mykey{series} key is not being used.
 % \iffalse
 %% Save keys for last environment without |series|, |resume| and |resume*| keys active.
 % \fi
@@ -8730,13 +8725,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_store_addto_prop:n, \@@_store_addto_prop:V}
 %   The function \cs{@@_store_addto_prop:n} stores the \mymarg{content} in
-%   \mymeta{prop list} defined by \mykey{save-ans} key. The \emph{\enquote{stored
+%   \emph{prop list} defined by \mykey{save-ans} key. The \emph{\enquote{stored
 %   content}} is retrieved by means of the \ics*{getkeyans} command.
 %
 %    \smallskip
 %
 %   The form in which the \mymarg{content} is \emph{\enquote{stored}} in the
-%   \mymeta{prop list} is \mymarg{position}\mymarg{content}. This
+%   \emph{prop list} is \mymarg{position}\mymarg{content}. This
 %   function is used by \ics*{anskey} in \myenv*{enumext} and \myenv*{enumext*}
 %   environments, \ics*{item*} in \myenv*{keyans} and \myenv*{keyans*}
 %   environments and \ics*{anspic*} in \myenv*{keyanspic} environment.
@@ -8764,6 +8759,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   is used by \ics*{anskey} in \myenv*{enumext}, \ics*{item*} in
 %   \myenv*{keyans} and \ics*{anspic} in \myenv*{keyanspic}.
 %
+%    \smallskip
+%
 %   The form in which the \mymarg{content} is stored in \emph{sequence} is in
 %   a internal \myenv*{enumext} or \myenv*{enumext*} environments with
 %   the \emph{\enquote{same structure}} in which the command was executed.
@@ -8782,7 +8779,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Functions for storing the list structure in the sequence}
+% \subsubsection{Functions for storing structure in the sequence}
 %
 % \begin{macro}{\@@_store_level_open:, \@@_store_level_close:,}
 %    The \emph{\enquote{storing structure}} is handled by the functions
@@ -9024,7 +9021,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_store_anskey_code:n}
 %   The internal function \cs{@@_store_anskey_code:n} first we pass the
-%   \mymarg{argument} to the \mymeta{prop list}, then checks the
+%   \mymarg{argument} to the \emph{prop list}, then checks the
 %   state of the variable \cs{l_@@_store_ref_key_bool} handled by the
 %   \mykey{save-ref} key and will call the function \cs{@@_store_internal_ref:}
 %   for the \emph{\enquote{internal label and ref}} system. Followed by
@@ -10001,7 +9998,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_keyans_show_left:n,\@@_keyans_show_ans:, \@@_keyans_show_pos:, \@@_keyans_show_item_opt:,}
 %   Common function to show \emph{starred commands} |\item*| and \mymeta{position} of
-%   stored content in \mymeta{prop list} for \myenv*{keyans} and
+%   stored content in \emph{prop list} for \myenv*{keyans} and
 %   \myenv*{keyanspic}. Need add |1| to \myvarenv{g__@@_\mymeta[cf=gray]{store name}_prop} for \mykey{show-pos} key.
 % \iffalse
 %% Function for |show-ans| and |show-pos| keys for |keyans| and |keyanspic| environments.
@@ -10454,7 +10451,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % The \ics*{item} and \ics*{item}\myoarg{custom} commands work in the
 % usual way in \myenv*{keyans}, but the \ics*{item*} and \ics*{item*}\myoarg{content} commands \emph{store}
 % the current \mymeta{label} next to the \mymeta{content} if it is present
-% in the \mymeta{sequence} and \mymeta{prop list} defined by \mykey{save-ans} key.
+% in the \emph{sequence} and \emph{prop list} defined by \mykey{save-ans} key.
 %
 % \begin{macro}{\@@_keyans_default_item:n,}
 %   The function \cs{@@_keyans_default_item:n} executes the original
@@ -10495,9 +10492,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_keyans_show_item_opt:
 %    \end{macrocode}
 %    Recover the original value of the current \mymeta{label} and \emph{store}
-%    it first in the \mymeta{prop list} (including the \emph{optional argument}),
+%    it first in the \emph{prop list} (including the \emph{optional argument}),
 %    run the internal \emph{\enquote{label and ref}} system if the
-%    \mykey{save-ref} key is active, \emph{store} it in the \mymeta{sequence}
+%    \mykey{save-ref} key is active, \emph{store} it in the \emph{sequence}
 %    and finally increments \cs{g_@@_check_starred_cmd_int} for internal
 %    check system.
 %    \begin{macrocode}
@@ -11876,11 +11873,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{The command \cs{anspic}}\label{cmd:anspic}
 % The \ics*{anspic} command take three arguments, the \emph{starred versions} \ics*{anspic*}\myoarg{content}
-% \emph{store} the current \mymeta{label} next to the
-% \myoarg{content} (if it is present) in the \mymeta{sequence} and \mymeta{prop list}
-% defined by \mykey{save-ans} key. The third (mandatory) argument
-% \emph{\enquote{drawing or tabular}} is NOT \emph{stored} in the \mymeta{sequence} or
-% \mymeta{prop list}.
+% \emph{store} the current \mymeta{label} next to the \emph{optional argument}
+% \myoarg{content} in the \emph{sequence} and \emph{prop list}
+% defined by \mykey{save-ans} key. The third \emph{mandatory argument}
+% \mymarg{drawing or tabular} is NOT \emph{stored} in the \emph{sequence} or
+% \emph{prop list}.
 %
 % \begin{macro}{\anspic}
 %   We check that the command is active in the \myenv*{keyanspic}
@@ -11952,7 +11949,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   The \cs{@@_anspic_label:nn} function will process inside |\makebox| the
 %   \emph{starred argument} ‘|*|’ and \emph{optional argument} passed
 %   to the command. Here we will store the \mymeta{label} and
-%   \emph{optional argument} in \mymeta{prop list} and \mymeta{sequence}
+%   \emph{optional argument} in \emph{prop list} and \emph{sequence}
 %   and execute the \mykey{show-ans}, \mykey{show-pos}, \mykey{font},
 %   \mykey{wrap-label} and \mykey{wrap-opt} keys.
 % \iffalse
@@ -12374,7 +12371,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   the \myenv{minipage} on the \emph{\enquote{right side}}. At this point
 %   we will execute the \cs{@@_stop_list:} and \cs{@@_stop_store_level_vii:}
 %   functions stopping the \myenv{list} environment and the level saving
-%   mechanism for storage in \mymeta{sequence} of the |\anskey| command
+%   mechanism for storage in \emph{sequence} of the |\anskey| command
 %   and |anskey*| environment. This function is passed to the
 %   \cs{@@_after_list_vii:} function in the second part of the \myenv*{enumext*}
 %   environment definition (\S\ref{env:starred}).
@@ -12709,7 +12706,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_start_store_level_vii:, \@@_stop_store_level_vii:}
 %    The \cs{@@_start_store_level_vii:} and \cs{@@_stop_store_level_vii:}
-%    functions activate the level saving mechanism for storage in \mymeta{sequence} of
+%    functions activate the level saving mechanism for storage in \emph{sequence} of
 %    the \ics*{anskey} command and \myenv*{anskey*} environment if
 %    \myenv*{enumext*} are nested in \myenv*{enumext}.
 %    \begin{macrocode}
@@ -13251,7 +13248,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % environment.
 %
 % In simple terms we want to store the \mymeta{label} next to the \myoarg{content} if it is present
-% in the \mymeta{sequence} and \mymeta{prop list} defined by \mykey{save-ans} key for
+% in the \emph{sequence} and \emph{prop list} defined by \mykey{save-ans} key for
 % |\item*|, |\item*|\myoarg{content}, |\item|\myparg{number}|*| and
 % |\item|\myparg{number}|*|\myoarg{content} commands.
 %
@@ -13420,7 +13417,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   The function \cs{@@_starred_item_exec:} will be in charge of storing
 %   the current \mymeta{label} for \ics*{item*} followed by the
 %   \myoarg{content} for \ics*{item*}\myoarg{content} if
-%   present in the \mymeta{sequence} and \mymeta{prop list} set by the
+%   present in the \emph{sequence} and \emph{prop list} set by the
 %   \mykey{save-ans} key. In this same function the keys \mykey{show-ans},
 %   \mykey{show-pos} and \mykey{save-ref} are implemented.
 % \iffalse
@@ -13607,7 +13604,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    The \ics*{getkeyans} command takes a mandatory argument of the
 %    form \mymarg{store name \textcolor{red}{:} position}.
 %    Retrieve a \emph{\enquote{single}} content stored by \ics*{anskey}, \ics*{anspic*}
-%    and \ics*{item*} from \mymeta{prop list} defined by \mykey{save-ans} key.
+%    and \ics*{item*} from \emph{prop list} defined by \mykey{save-ans} key.
 % \iffalse
 %% Define |\getkeyans|.
 % \fi
@@ -13643,9 +13640,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_getkeyans:nn}
 %    The internal function \cs{@@_getkeyans:nn} will check for the existence
-%    of the \mymeta{prop list}, if it does not exist it will return an error
+%    of the \emph{prop list}, if it does not exist it will return an error
 %    message, then it will fetch the content specified by the second
-%    \mymeta{argument} from \mymeta{prop list}.
+%    \mymeta{argument} from \emph{prop list}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_getkeyans:nn #1 #2
   {
@@ -13663,7 +13660,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection{The command \cs{printkeyans}}\label{cmd:printkeyans}
 %
 % The \ics*{printkeyans} command prints \emph{\enquote{all stored
-% content}} in the \mymeta{sequence} defined by the \mykey{save-ans} key.
+% content}} in the \emph{sequence} defined by the \mykey{save-ans} key.
 %
 % The first thing we will do is define a set of \mymeta{filtered keys} with
 % which we will control the options of the different nesting levels for
@@ -13675,7 +13672,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % The variable \cs{l_@@_print_keyans_starred_tl} will have the default \mymeta{keys}
 % for \ics*{printkeyans*} and will be set by |\setenumext|\myoarg{print\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}}
 % and the variable \cs{l__@@_print_keyans_vii_tl} will have the default
-% keys for the environment \myenv*{enumext*} nested within the \mymeta{sequence}
+% keys for the environment \myenv*{enumext*} nested within the \emph{sequence}
 % and will be set by |\setenumext|\myoarg{print \textnormal{\textcolor{gray}{,}}\textnormal{\textcolor{MediumOrchid}{\texttt{*}}}},
 % the rest of the variables will be for the environment \myenv*{enumext} and will be set
 % by |\setenumext|\myoarg{print \textnormal{\textcolor{gray}{,}} level}.
@@ -13724,7 +13721,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\printkeyans}
 %    Create a user command to print \emph{\enquote{all stored content}}
-%    in \mymeta{sequence} for \ics*{anskey}, \myenv*{anskey*}, \ics*{item*} and \ics*{anspic*}.
+%    in \emph{sequence} for \ics*{anskey}, \myenv*{anskey*}, \ics*{item*} and \ics*{anspic*}.
 %    Within a group we will run our \emph{\enquote{precompiled keys}} and
 %    then call the internal function \cs{@@_printkeyans:nnn}.
 % \iffalse
@@ -13747,7 +13744,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \begin{macro}{\@@_printkeyans:nnn}
 %    The internal function \cs{@@_printkeyans:nnn} will check
-%    for the existence of the \mymeta{sequence}, if it does not exist
+%    for the existence of the \emph{sequence}, if it does not exist
 %    it will return an error message, then it will check if not empty.
 % \iffalse
 %% Internal function for |\printkeyans|.
@@ -13761,7 +13758,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           {
 %    \end{macrocode}
 %    If the \emph{starred argument} ‘|*|’ is present we will check that the environment
-%    \myenv*{enumext*} is not saved in the \mymeta{sequence}, then execute the variable
+%    \myenv*{enumext*} is not saved in the \emph{sequence}, then execute the variable
 %    \cs{l_@@_print_keyans_starred_tl} that contains the default \mymeta{keys} for
 %    the environment \myenv*{enumext*}, it will open the environment
 %    \myenv*{enumext*} passing the \emph{optional argument} to the \emph{\enquote{first level}},
@@ -14042,7 +14039,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The command \cs{foreachkeyans}}\label{cmd:foreachkeyans}
 %
-% The command \ics*{foreachkeyans} will execute a \emph{loop} over the \mymeta{prop list} and return its contents.
+% The command \ics*{foreachkeyans} will execute a \emph{loop} over the \emph{prop list} and return its contents.
 % The implementation code is adapted from the answer provided by Enrico Gregorio \texttt{(@egreg)} in
 % \href{https://tex.stackexchange.com/a/721130}{Expand a \texttt{.cs} defined by key inside the function}.
 %
@@ -14198,7 +14195,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 %    \end{macrocode}
 %
-% Message used in the creation of \mymeta{prop list} by \mypkg*{enumext}
+% Message used in the creation of \emph{prop list} by \mypkg*{enumext}
 % package.
 %    \begin{macrocode}
 \msg_new:nnn { enumext } { store-prop }
