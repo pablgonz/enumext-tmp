@@ -855,10 +855,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \maketitle
 %
 % \begin{abstract}
-% This package provides \enquote{enumerated list} environments compatible
+% This package provides enumerated list environments compatible
 % with \hologo{LaTeX} tagging PDF for creating \emph{\enquote{simple
 % exercise sheets}} along with \emph{\enquote{multiple choice questions}},
-% storing the \mymeta{answers} to these in memory using \mypkg{multicol}
+% storing the \emph{\enquote{answers}} to these in memory using \mypkg{multicol}
 % and \mypkg{scontents} packages and the \mypkg{l3seq} and \mypkg{l3prop}
 % modules.
 % \end{abstract}
@@ -1701,6 +1701,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  \myenv*{keyanspic} environments.
 % \end{important}
 %
+% \smallskip
+%
 % \subsection{Keys for \texttt{label} and \texttt{ref}}\label{subsec:label-and-ref}
 %
 % \keyexamp{label}
@@ -1710,6 +1712,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 %         \textcolor{lightgray}{\textbar} \ilabel{roman*}
 %         \textcolor{lightgray}{\textbar} \ilabel{Roman*}}
 %   }{by levels}
+%
+% \smallskip
+%
 % Sets the \mymeta{label} that will be printed at the \emph{current
 % level}. The default value for the first level of the environments
 % \myenv*{enumext} and \myenv*{enumext*} are \ilabel{arabic*.}, for
@@ -1732,43 +1737,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \newsavebox{\refboxsample}
-% \begin{lrbox}{\refboxsample}
-% \small\textcolor{gray}{\ttfamily\{}\textnormal{\small\ilabel{alph*}\textcolor{lightgray}{\textbar} \ilabel{Alph*}\textcolor{lightgray}{\textbar} \ilabel{arabic*}\textcolor{lightgray}{\textbar} \ilabel{roman*}\textcolor{lightgray}{\textbar} \ilabel{Roman*}}\textcolor{gray}{\ttfamily\}}
-% \end{lrbox}
-% \keyexamp{ref}{code{} \space\usebox{\refboxsample} more code}{empty}
-%
-% Modifies the way \emph{cross references} are displayed. The
-% \mykey{label} key sets the default form of the \emph{cross references}, by using this key
-% you can define a different format, for example: \mykey{ref}|=\emph|\mymarg{\textnormal{\ilabel{alph*}}} is valid.
-%
-% \smallskip
-%
-% Internally it renews the command associated with each counter when it
-% is executed, i.e., in the environment \myenv*{enumext} the command |\theenumXi|
-% is modified when the key is executed at the first level, |\theenumXii|
-% when it is executed at the second level and |\theenumXiii| together
-% with |\theenumXiv| when it is executed at the
-% third and fourth levels.
-%
-% \smallskip
-%
-% \begin{important}*
-% This must be kept in mind, since the values set by the \mykey{label} and
-% \mykey{ref} keys are not cumulative by levels, so if you have used the \mykey{ref}
-% key in the first level and then want to associate the counter with
-% \mykey{label} or \mykey{ref} in the second level you must use the direct commands,
-% i.e. |\arabic{eunumXi}| to indicate the count of the first level
-% instead of using |\theenumXi|.
-% \end{important}
-%
-% \smallskip
-%
 % \keyexamp{labelsep}{rigid length}{\mydim{0.3333}em}
 % Sets the \emph{horizontal space} between the box containing the
 % current \mymeta{label} defined by \mykey{label} key and the text of an
 % item on the first line. Internally sets the value of \ics{labelsep} for
 % the current level.
+%
+% \smallskip
 %
 % \keyexamp{labelwidth}{rigid length}{by label}
 % Sets the \emph{width} of the box containing the current \mymeta{label} set
@@ -1808,6 +1783,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \end{lrbox}
 %
 % \keyexamp{wrap-label}{code{} \space\usebox{\hashbox} more code}{empty}
+%
+% \smallskip
+%
 % Wraps the \emph{current} \mymeta{label} defined by \mykey{label} key referenced by |{#1}|.
 % The \mymarg{code} must be passed between braces.
 % This key does not modify the value set by the \mykey{labelwidth} key
@@ -1837,6 +1815,58 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \keyexamp{wrap-label\textcolor{MediumOrchid}{*}}{code{} \space\usebox{\hashbox} more code}{empty}
 % The same as the \mykey{wrap-label} key but also applies on \ics*{item}\myoarg{custom}.
+%
+% \smallskip
+%
+% \begin{important}*
+%  By default all the \mymeta{keys} described above are executed inside
+%  |\makebox| in the \myenv*{enumext*} and \myenv*{keyans*} environments.
+% \end{important}
+%
+% \smallskip
+%
+% \begin{important}
+%  For compatibility with \emph{tagged} PDF all \mymeta{keys} described
+%  above are executed inside |\makebox| in the \myenv*{enumext} and
+%  \myenv*{keyans} environments, this means that the document output may
+%  \emph{not look} the same when |\DocumentMetadata| is active. If you use
+%  the \mykey{wrap-label} or \mykey{wrap-label*} keys you can add
+%  conditional code using |\IfDocumentMetadataTF|.
+% \end{important}
+%
+% \smallskip
+%
+% \newsavebox{\refboxsample}
+% \begin{lrbox}{\refboxsample}
+% \small\textcolor{gray}{\ttfamily\{}\textnormal{\small\ilabel{alph*}\textcolor{lightgray}{\textbar} \ilabel{Alph*}\textcolor{lightgray}{\textbar} \ilabel{arabic*}\textcolor{lightgray}{\textbar} \ilabel{roman*}\textcolor{lightgray}{\textbar} \ilabel{Roman*}}\textcolor{gray}{\ttfamily\}}
+% \end{lrbox}
+% \keyexamp{ref}{code{} \space\usebox{\refboxsample} more code}{empty}
+%
+% \smallskip
+%
+% Modifies the way \emph{cross references} are displayed. The
+% \mykey{label} key sets the default form of the \emph{cross references}, by using this key
+% you can define a different format, for example: \mykey{ref}|=\emph|\mymarg{\textnormal{\ilabel{alph*}}} is valid.
+%
+% \smallskip
+%
+% Internally it renews the command associated with each counter when it
+% is executed, i.e., in the environment \myenv*{enumext} the command |\theenumXi|
+% is modified when the key is executed at the first level, |\theenumXii|
+% when it is executed at the second level and |\theenumXiii| together
+% with |\theenumXiv| when it is executed at the
+% third and fourth levels.
+%
+% \smallskip
+%
+% \begin{important}*
+% This must be kept in mind, since the values set by the \mykey{label} and
+% \mykey{ref} keys are not cumulative by levels, so if you have used the \mykey{ref}
+% key in the first level and then want to associate the counter with
+% \mykey{label} or \mykey{ref} in the second level you must use the direct commands,
+% i.e. |\arabic{eunumXi}| to indicate the count of the first level
+% instead of using |\theenumXi|.
+% \end{important}
 %
 % \subsection{Keys for spaces}
 %
@@ -12912,7 +12942,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %   explanation for this is given by the master Heiko Oberdiek on
 %   \href{https://tex.stackexchange.com/a/404911}{\textbackslash
 %   refstepcounter\{enumi\} twice (or more) creates destination with the
-%   same identifier}. 
+%   same identifier}.
 % \end{important}
 %
 % \iffalse
