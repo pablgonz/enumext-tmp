@@ -944,7 +944,6 @@
 %% Internal function for |base-fix| key in |enumext| environment.
 \cs_new_protected:Nn \__enumext_nested_base_line_fix:
   {
-    \mode_leave_vertical:
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \l__enumext_starred_first_bool }
@@ -952,12 +951,14 @@
         { \bool_not_p:n { \l__enumext_print_keyans_star_bool } }
       }
       {
+        \mode_leave_vertical:
         \vspace { -\dim_eval:n { \baselineskip + \parsep } }
       }
     \bool_lazy_and:nnT
       { \bool_if_p:N \l__enumext_starred_first_bool }
       { \bool_if_p:N \l__enumext_print_keyans_star_bool }
       {
+        \mode_leave_vertical:
         \skip_vertical:n { -\baselineskip }
         \skip_vertical:N \c_zero_skip
       }
@@ -1043,7 +1044,7 @@
           }
       }
    }
-\cs_set_protected:Nn \__enumext_fake_item_vii:
+\cs_set_protected:Nn \__enumext_fake_item_indent_vii:
   {
     \dim_compare:nNnT
       { \l__enumext_fake_item_indent_vii_dim } > { \c_zero_dim }
@@ -1056,7 +1057,7 @@
           }
       }
    }
-\cs_set_protected:Nn \__enumext_fake_item_viii:
+\cs_set_protected:Nn \__enumext_fake_item_indent_viii:
   {
     \dim_compare:nNnT
       { \l__enumext_fake_item_indent_viii_dim } > { \c_zero_dim }
@@ -3646,12 +3647,12 @@
         \__enumext_starred_ref:
         \str_if_eq:nnTF {#1} { vii }
           {
-            \__enumext_fake_item_vii:
+            \__enumext_fake_item_indent_vii:
             \bool_if:cT { l__enumext_show_length_vii_bool }
               { \msg_term:nnnn { enumext } { list-lengths-not-nested } { vii } { enumext* } }
           }
           {
-            \__enumext_fake_item_viii:
+            \__enumext_fake_item_indent_viii:
             \bool_if:cT { l__enumext_show_length_#1_bool }
               { \msg_term:nnnn { enumext } { list-lengths-not-nested } { #1 } { keyans* } }
           }
@@ -3689,7 +3690,7 @@
         \__enumext_store_active_keys:n {#1}
       }
   }
-%% Start save level-structure in sequence for |save-ans| key in |enumext| environment.
+%% Start storing structure in sequence for |save-ans| key in |enumext| environment.
 \cs_new_protected:Nn \__enumext_start_store_level:
   {
     \bool_lazy_all:nT
@@ -3719,7 +3720,7 @@
           }
       }
   }
-%% Stop save level-structure in sequence for |save-ans| key in |enumext| environment.
+%% Stop storing structure in sequence for |save-ans| key in |enumext| environment.
 \cs_new_protected:Nn \__enumext_stop_store_level:
   {
     \bool_if:cT { l__enumext_store_upper_level_ \__enumext_level: _bool }
@@ -5299,6 +5300,8 @@
                     \begin{enumext*}[#2]
                       \seq_map_inline:cn { g__enumext_#3_seq } { ##1 }
                     \end{enumext*}
+                    \bool_set_false:N \l__enumext_base_line_fix_bool
+                    \bool_set_false:N \l__enumext_print_keyans_star_bool
                   }
               }
               {

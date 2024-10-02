@@ -6170,7 +6170,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_nested_base_line_fix:
   {
-    \mode_leave_vertical:
     \bool_lazy_all:nT
       {
         { \bool_if_p:N \l_@@_starred_first_bool }
@@ -6178,12 +6177,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         { \bool_not_p:n { \l_@@_print_keyans_star_bool } }
       }
       {
+        \mode_leave_vertical:
         \vspace { -\dim_eval:n { \baselineskip + \parsep } }
       }
     \bool_lazy_and:nnT
       { \bool_if_p:N \l_@@_starred_first_bool }
       { \bool_if_p:N \l_@@_print_keyans_star_bool }
       {
+        \mode_leave_vertical:
         \skip_vertical:n { -\baselineskip }
         \skip_vertical:N \c_zero_skip
       }
@@ -6264,7 +6265,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsubsection{Functions for setting the fake \texttt{itemindent}}\label{key:fake-indent}
 %
 % \begin{macro}[int]{\@@_fake_item_indent:,\@@_keyans_fake_item_indent:,
-%                    \@@_fake_item_vii:, \@@_fake_item_viii:,}
+%                    \@@_fake_item_indent_vii:, \@@_fake_item_indent_viii:,}
 %
 %    The \mykey{itemindent} key does not set the value of |\itemindent|, it only
 %    sets the value of the \emph{horizontal space} applied using |\skip_horizontal:N|. We will
@@ -6306,7 +6307,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
    }
-\cs_set_protected:Nn \@@_fake_item_vii:
+\cs_set_protected:Nn \@@_fake_item_indent_vii:
   {
     \dim_compare:nNnT
       { \l_@@_fake_item_indent_vii_dim } > { \c_zero_dim }
@@ -6319,7 +6320,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
    }
-\cs_set_protected:Nn \@@_fake_item_viii:
+\cs_set_protected:Nn \@@_fake_item_indent_viii:
   {
     \dim_compare:nNnT
       { \l_@@_fake_item_indent_viii_dim } > { \c_zero_dim }
@@ -10853,12 +10854,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \@@_starred_ref:
         \str_if_eq:nnTF {#1} { vii }
           {
-            \@@_fake_item_vii:
+            \@@_fake_item_indent_vii:
             \bool_if:cT { l_@@_show_length_vii_bool }
               { \msg_term:nnnn { enumext } { list-lengths-not-nested } { vii } { enumext* } }
           }
           {
-            \@@_fake_item_viii:
+            \@@_fake_item_indent_viii:
             \bool_if:cT { l_@@_show_length_#1_bool }
               { \msg_term:nnnn { enumext } { list-lengths-not-nested } { #1 } { keyans* } }
           }
@@ -10907,7 +10908,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  function \cs{@@_nested_base_line_fix:} used by the key
 %  \mykey{base-fix}, otherwise we will pass the \mymeta{keys} to the inner
 %  levels of the environment then we execute the function \cs{@@_store_active_keys:n}
-%  and reprocess the \mymeta{keys} to pass them to the storage \mymeta{sequence}
+%  and reprocess the \mymeta{keys} to pass them to the \emph{sequence}
 %  if the key \mykey{save-key} is not active.
 % \iffalse
 %% Parse |key=val| and set default series and store keys in seq-name for \printkeyans for |enumext| environment.
@@ -10935,11 +10936,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_start_store_level:}
-%   The \cs{@@_start_store_level:} function activate the level saving
-%   mechanism for \emph{storage} in \mymeta{sequence} for the command
+%   The \cs{@@_start_store_level:} function activate the \emph{\enquote{storing structure}}
+%   mechanism in the \emph{sequence} for the command
 %   \ics*{anskey} and the environment \myenv*{anskey*}.
 % \iffalse
-%% Start save level-structure in sequence for |save-ans| key in |enumext| environment.
+%% Start storing structure in sequence for |save-ans| key in |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level:
@@ -10959,7 +10960,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
 %    \end{macrocode}
 %   If \myenv*{enumext} are nested in \myenv*{enumext*} add \cs{@@_store_level_open:}
-%   to preserve the stored structure.
+%   to preserve the \emph{\enquote{storing structure}}.
 %    \begin{macrocode}
     \bool_lazy_all:nT
       {
@@ -10979,11 +10980,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_stop_store_level:}
-%   The \cs{@@_stop_store_level:} function stop the level saving
-%   mechanism for \emph{storage} in \mymeta{sequence} for the command
+%   The \cs{@@_stop_store_level:} function stop the \emph{\enquote{storing structure}}
+%   mechanism in the \emph{sequence} for the command
 %   \ics*{anskey} and the environment \myenv*{anskey*}.
 % \iffalse
-%% Stop save level-structure in sequence for |save-ans| key in |enumext| environment.
+%% Stop storing structure in sequence for |save-ans| key in |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_stop_store_level:
@@ -11222,9 +11223,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_second_part:
   }
 %    \end{macrocode}
-%   As we don't want our check to be executed \mykey{check-ans} by levels
-%   but on the complete list, we will take it out of the \myenv*{enumext}
-%   environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
+% \end{macro}
+%
+% As we don't want our check to be executed \mykey{check-ans} by levels
+% but on the complete list, we will take it out of the \myenv*{enumext}
+% environment using the \emph{\enquote{hook}} function \cs{@@_after_env:nn}.
 % \iffalse
 %% Execute |check-ans| key out of |enumext| environment.
 % \fi
@@ -11234,7 +11237,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \@@_execute_after_env:
   }
 %    \end{macrocode}
-% \end{macro}
 %
 % \subsection{The environment \env{keyans}}\label{env:keyans}
 %
@@ -13778,6 +13780,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
                     \begin{enumext*}[#2]
                       \seq_map_inline:cn { g_@@_#3_seq } { ##1 }
                     \end{enumext*}
+                    \bool_set_false:N \l_@@_base_line_fix_bool
+                    \bool_set_false:N \l_@@_print_keyans_star_bool
                   }
               }
 %    \end{macrocode}
