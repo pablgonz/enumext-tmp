@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 % arara: lualatex: { branch: developer, draft: true }
-% arara: lualatex: { branch: developer }
+% arara: lualatex: { branch: developer, shell: true }
 % arara: clean: { extensions: [ aux, log, out, glo, gls, hd, ind, ilg, idx, toc, atfi ] }
 % arara: clean: { files: [ userdoc.idx, userdoc.ilg, userdoc.ind ] }
 % arara: halt
@@ -124,6 +124,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \usepackage{adjustbox,multicol,listings,accsupp,titletoc}
 \usepackage{imakeidx,tikz,enumext} % main
 \usepackage{scontents}
+\usepackage{shellesc}
 \usepackage[contents]{colordoc}
 % \show\docCodelineNo
 \def\textnew#1{\color{color-def}#1\/}
@@ -3945,11 +3946,58 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % simplify the time of Matthew Bertucci (\texttt{@mbertucci}) when he sees this
 % excellent package and adds it to \href{https://github.com/latex3/tagging-project}{The LaTeX Tagged PDF repository}.
 %
+% \iffalse
+%<*example>
+% \fi
+\begin{filecontents*}[overwrite]{enumext-01.tex}
+% arara: lualatex: { branch: developer }
+% arara: clean: { extensions: [ aux, log] }
+\DocumentMetadata
+  {
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    testphase={phase-III,math,title,table,firstaid},
+    uncompress,
+  }
+\documentclass{article}
+\usepackage{unicode-math}
+\usepackage{enumext}
+\begin{document}
+\section{only enumext}
+\begin{enumext}
+  \item This text is in the first level.
+    \begin{enumext}
+      \item This text is in the second level.
+        \begin{enumext}
+          \item This text is in the third level.
+            \begin{enumext}
+              \item This text is in the fourth level.
+            \end{enumext}
+        \end{enumext}
+    \end{enumext}
+  \item[X] This text is in the first level.
+  \item* This text is in the first level.
+\end{enumext}
+
+\section{only enumext*}
+\begin{enumext}[columns=2]
+  \item This text is in the first level.
+  \item[X] This text is in the first level.
+  \item* This text is in the first level.
+  \item This text is in the first level.
+\end{enumext}
+\end{document}
+\end{filecontents*}
+\IfFileExists{enumext-01.pdf}{}{\ShellEscape{arara enumext-01.tex}}
+% \iffalse
+%</example>
+% \fi
 % \section{The way of non-enumerated lists}
 %
 % It is possible to use (or abuse) the \myenv*{enumext} environment to
-% mimic \emph{non-enumerated} list environments such as |itemize| and
-% |description|, clearly the \mymeta{keys} to \emph{\enquote{store answers}},
+% mimic \emph{non-enumerated} list environments such as \myenv{itemize} and
+% \myenv{description}, clearly the \mymeta{keys} to \emph{\enquote{store answers}},
 % the \myenv*{keyans} and \myenv*{keyanspic} environments lose their
 % sense and it is not the focus of the main of this package, but, why not
 % to do it?.
@@ -4103,10 +4151,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection*{Description with multi-line labels}
 %
 % The \mykey{label} key does not accept \emph{multiline material}, this
-% is where the \mykey{wrap-label*} key comes into play. Unlike the
-% \mypkg{enumitem} package, the \mykey{align} key only supports three
-% options, so what we will do is create a command in the style |\parleft|
-% of \mypkg{enumitem} that allows us to place \emph{multiline labels}
+% is where the \mykey{wrap-label} and \mykey{wrap-label*} keys comes into
+% play. Unlike the \mypkg{enumitem} package, the \mykey{align} key only
+% supports three options, so what we will do is create a command in the
+% style |\parleft| of \mypkg{enumitem} that allows us to place \emph{multiline labels}
 % using |\parbox|.
 %
 % \iffalse
