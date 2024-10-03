@@ -5215,6 +5215,7 @@
     \exp_args:Ne \__enumext_getkeyans_aux:n
       { \tl_to_str:e { \text_expand:n {#1} } }
   }
+%% Internal functions for |\getkeyans|.
 \cs_new_protected:Npn \__enumext_getkeyans_aux:n #1
   {
     \str_if_in:nnTF {#1} { : }

@@ -6231,9 +6231,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \subsection{Setting \texttt{base-fix} key}\label{key:base-fix}
 %
 % When nesting starting right after |\item| (without material between them) there
-% is a problem with the alignment of the baseline between the two environments.
+% is a problem with the alignment of the \emph{baseline} between the two environments.
 % One way to get around this problem is to place |\mode_leave_vertical:|
-% and then apply |\vspace{-\baselineskip}| and set |topsep=|\mydim{0pt} for
+% apply |\vspace{-\baselineskip}| and set |\topsep=|\mydim{0pt} for
 % the \emph{\enquote{first level}} of the nested \myenv*{enumext} environment.
 %
 % \begin{macro}[int]{base-fix}
@@ -6253,12 +6253,17 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_nested_base_line_fix:}
-%   The function \cs{@@_nested_base_line_fix:} will be responsible for
-%   applying the \emph{baseline correction} and adjusting the \mymeta{keys}
-%   for the \myenv*{enumext} environment and the |\printkeyans| with \emph{starred argument} ‘|*|’
-%   (\S\ref{cmd:printkeyans}). This function is passed to the
-%   \cs{@@_parse_keys:n} function in the definition of the \myenv*{enumext}
-%   environment (\S\ref{env:enumext}).
+%   The function \cs{@@_nested_base_line_fix:} passed to the \cs{@@_parse_keys:n}
+%   function in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext})
+%   will be responsible for applying the \emph{baseline correction} and
+%   adjusting the \mymeta{keys} for the \myenv*{enumext} environment and
+%   the |\printkeyans| with \emph{starred argument} ‘|*|’ (\S\ref{cmd:printkeyans}).
+%
+%   We will first implement the function code from the user side of the
+%   \mykey{base-fix} key, that is, only the user knows when it is necessary
+%   to apply it within the document in which case the variable
+%   \cs{l_@@_print_keyans_star_bool} set by the |\printkeyans| command is
+%   false and the variable \cs{l_@@_base_line_fix_bool} is true.
 % \iffalse
 %% Internal function for |base-fix| key in |enumext| environment.
 % \fi
@@ -6275,6 +6280,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \mode_leave_vertical:
         \vspace { -\dim_eval:n { \baselineskip + \parsep } }
       }
+%    \end{macrocode}
+%   When we are running the |\printkeyans| command with the \emph{starred
+%   argument} ‘|*|’ the variable \cs{l_@@_print_keyans_star_bool} is true
+%   and we can run a simplified version of |\vspace| using |\skip_vertical:n|.
+%    \begin{macrocode}
     \bool_lazy_and:nnT
       { \bool_if_p:N \l_@@_starred_first_bool }
       { \bool_if_p:N \l_@@_print_keyans_star_bool }
@@ -6283,6 +6293,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \skip_vertical:n { -\baselineskip }
         \skip_vertical:N \c_zero_skip
       }
+%    \end{macrocode}
+%   Finally we set the values ​​of the keys \mykey{topsep}, \mykey{above}
+%   and \mykey{above*} for the \emph{\enquote{first level}} of \myenv*{enumext}
+%   environment equal to \mydim{0pt} and set the variable \cs{l_@@_base_line_fix_bool}
+%   to false.
+%    \begin{macrocode}
     \keys_set:nn { enumext / level-1 }
       {
         topsep = 0pt, above = 0pt, above* = 0pt,
@@ -12800,10 +12816,10 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_start_store_level_vii:, \@@_stop_store_level_vii:}
-%    The \cs{@@_start_store_level_vii:} and \cs{@@_stop_store_level_vii:}
-%    functions activate the level saving mechanism for storage in \emph{sequence} of
-%    the \ics*{anskey} command and \myenv*{anskey*} environment if
-%    \myenv*{enumext*} are nested in \myenv*{enumext}.
+%   The \cs{@@_start_store_level_vii:} and \cs{@@_stop_store_level_vii:}
+%   functions activate the \emph{\enquote{storing structure}} mechanism
+%   in \emph{sequence} for \ics*{anskey} command and \myenv*{anskey*}
+%   environment if \myenv*{enumext*} are nested in \myenv*{enumext}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_start_store_level_vii:
   {
@@ -13070,7 +13086,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % the implementation in \mypkg{shortlst} we will NOT use an extra group
 % and the plain form of the \myenv{lrbox} environment.
 %
-% \begin{macro}{\@@_start_item_vii:w}
+% \begin{macro}{\@@_start_item_vii:w, \@@_stop_item_vii:}
 %   The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to
 %   \cs{@@_stop_item_vii:} which we will define later, after that we will
 %   start capturing |\item| and its \mymeta{contents} in a \emph{horizontal box}
@@ -13117,9 +13133,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \skip_set_eq:NN \parskip \l_@@_parsep_vii_skip
    }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_stop_item_vii:}
 %   The \cs{@@_stop_item_vii:} function will finish the fetching |\item|
 %   and its \mymeta{content} by closing the \myenv{minipage}
 %   environment, the \emph{sockets} for \emph{tagging} \texttt{PDF} and the
@@ -13695,11 +13708,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsection{The command \cs{getkeyans}}\label{cmd:getkeyans}
 %
-% \begin{macro}{\getkeyans}
-%    The \ics*{getkeyans} command takes a mandatory argument of the
+% \begin{macro}{\getkeyans, \@@_getkeyans_aux:n, \@@_getkeyans:nn}
+%    The \ics*{getkeyans} command takes a \emph{mandatory argument} of the
 %    form \mymarg{store name \textcolor{red}{:} position}.
-%    Retrieve a \emph{\enquote{single}} content stored by \ics*{anskey}, \ics*{anspic*}
-%    and \ics*{item*} from \emph{prop list} defined by \mykey{save-ans} key.
+%    Retrieve a \emph{\enquote{single content}}  stored by \ics*{anskey}, \ics*{anspic*}
+%    and \ics*{item*} and \myenv*{anskey*} from \emph{prop list} defined by \mykey{save-ans} key.
 % \iffalse
 %% Define |\getkeyans|.
 % \fi
@@ -13710,12 +13723,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \tl_to_str:e { \text_expand:n {#1} } }
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_getkeyans_aux:n}
 %    The internal function \cs{@@_getkeyans_aux:n} is in charge of
-%    \emph{splitting} the \mymeta{argument} using \enquote{\textcolor{red}{:}}.
+%    \emph{splitting} the \emph{mandatory argument} using \enquote{\textcolor{red}{:}}.
 %    If \enquote{\textcolor{red}{:}} is omitted it will return an error.
+% \iffalse
+%% Internal functions for |\getkeyans|.
+% \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_getkeyans_aux:n #1
   {
@@ -13731,9 +13744,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       { \msg_error:nnn { enumext } { missing-colon } {#1} }
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_getkeyans:nn}
 %    The internal function \cs{@@_getkeyans:nn} will check for the existence
 %    of the \emph{prop list}, if it does not exist it will return an error
 %    message, then it will fetch the content specified by the second
@@ -13814,7 +13824,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %  opening level.
 % \end{important}
 %
-% \begin{macro}{\printkeyans}
+% \begin{macro}{\printkeyans, \@@_printkeyans:nnn}
 %    Create a user command to print \emph{\enquote{all stored content}}
 %    in \emph{sequence} for \ics*{anskey}, \myenv*{anskey*}, \ics*{item*} and \ics*{anspic*}.
 %    Within a group we will run our \emph{\enquote{precompiled keys}} and
@@ -13835,9 +13845,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \group_end:
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_printkeyans:nnn}
 %    The internal function \cs{@@_printkeyans:nnn} will check
 %    for the existence of the \emph{sequence}, if it does not exist
 %    it will return an error message, then it will check if not empty.
@@ -13852,12 +13859,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \seq_if_empty:cF { g_@@_#3_seq }
           {
 %    \end{macrocode}
-%    If the \emph{starred argument} ‘|*|’ is present we will check that the environment
-%    \myenv*{enumext*} is not saved in the \emph{sequence}, then execute the variable
-%    \cs{l_@@_print_keyans_starred_tl} that contains the default \mymeta{keys} for
-%    the environment \myenv*{enumext*}, it will open the environment
-%    \myenv*{enumext*} passing the \emph{optional argument} to the \emph{\enquote{first level}},
-%    set the key \mykey{base-fix} and then will map the \emph{sequence}.
+%   If the \emph{starred argument} ‘|*|’ is present we will check that
+%   the environment \myenv*{enumext*} is not saved in the \emph{sequence},
+%   then execute the variable \cs{l_@@_print_keyans_starred_tl} that
+%   contains the default \mymeta{keys} for the environment \myenv*{enumext*},
+%   we set \cs{l_@@_base_line_fix_bool} and \cs{l_@@_print_keyans_star_bool}
+%   to true for \emph{baseline correction}, open the \myenv*{enumext*}
+%   environment passing the \emph{optional argument} and map the \emph{sequence},
+%   then set \cs{l_@@_base_line_fix_bool} and \cs{l_@@_print_keyans_star_bool}
+%   to false.
 %    \begin{macrocode}
             \bool_if:nTF {#1}
               {
