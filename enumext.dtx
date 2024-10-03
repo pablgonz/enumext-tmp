@@ -3951,7 +3951,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \fi
 \begin{filecontents*}[overwrite]{enumext-01.tex}
 % arara: lualatex: { branch: developer }
-% arara: clean: { extensions: [ aux, log] }
+% arara: lualatex: { branch: developer }
+% arara: clean: { extensions: [ aux, log, out] }
 \DocumentMetadata
   {
     lang=en-US,
@@ -3961,12 +3962,22 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     uncompress,
   }
 \documentclass{article}
+\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}
 \usepackage{unicode-math}
+\usepackage{hyperref}
+\hypersetup
+  {
+     colorlinks = true,
+     pdftitle   = {Test tagged PDF for enumext package},
+     pdfauthor  = {Pablo González L},
+  }
 \usepackage{enumext}
 \begin{document}
 \section{only enumext}
-\begin{enumext}
-  \item This text is in the first level.
+Some text here
+
+\begin{enumext}[labelwidth=1cm,labelsep=0.25cm,align=left, wrap-label=\textbf{(#1}, label=\arabic*.)]
+  \item This text is in the first level.\label{A}
     \begin{enumext}
       \item This text is in the second level.
         \begin{enumext}
@@ -3980,19 +3991,306 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   \item* This text is in the first level.
 \end{enumext}
 
+Some ref here \ref{A}
+
 \section{only enumext*}
-\begin{enumext}[columns=2]
-  \item This text is in the first level.
+
+Some text here
+
+\begin{enumext}[columns=2,labelwidth=1cm,labelsep=0.25cm,align=left, wrap-label=\textbf{#1)}, label=(\arabic*.]
+  \item This text is in the first level.\label{B}
   \item[X] This text is in the first level.
   \item* This text is in the first level.
   \item This text is in the first level.
 \end{enumext}
+
+Some ref here \ref{B}
+
+\section{enumext nested in enumext*}
+
+Some text here
+
+\begin{enumext}
+  \item This text is in the first level.\label{C}
+  \item \begin{enumext}
+              \item This text is in nested enumext.\label{D}
+              \item This text is in nested enumext.
+         \end{enumext}
+  \item This text is in the first level.
+\end{enumext}
+
+Some refs here \ref{C} and \ref{D}
+
+\section{enumext* nested in enumext}
+
+\begin{enumext}
+  \item This text is in the first level. \label{E}
+  \item \begin{enumext*}[label=\roman*.]
+              \item This text is in nested enumext*.\label{F}
+              \item This text is in nested enumext*.
+         \end{enumext*}
+  \item This text is in the first level.
+\end{enumext}
+
+Some refs here \ref{E} and \ref{F}
+
+\section{Custom ref}
+
+\begin{enumext}[ref={enumext-level-\arabic*}]
+  \item This text is in the first level. \label{G}
+  \item \begin{enumext*}[label=\roman*., ref={nested-\arabic{enumXi}.\roman*}]
+              \item This text is in nested enumext*.\label{H}
+              \item This text is in nested enumext*.
+         \end{enumext*}
+  \item This text is in the first level.
+\end{enumext}
+
+Some refs here \ref{G} and \ref{H}
 \end{document}
 \end{filecontents*}
 \IfFileExists{enumext-01.pdf}{}{\ShellEscape{arara enumext-01.tex}}
 % \iffalse
 %</example>
 % \fi
+%
+% \iffalse
+%<*example>
+% \fi
+\begin{filecontents*}[overwrite]{enumext-02.tex}
+% arara: lualatex: { branch: developer }
+% arara: clean: { extensions: [ aux, log, out] }
+\DocumentMetadata
+  {
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    testphase={phase-III,math,title,table,firstaid},
+    uncompress,
+  }
+\documentclass{article}
+\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}
+\usepackage{unicode-math}
+\usepackage{hyperref}
+\hypersetup
+  {
+     colorlinks = true,
+     pdftitle   = {Test tagged PDF for enumext package},
+     pdfauthor  = {Pablo González L},
+  }
+\usepackage{enumext}
+\begin{document}
+\section{enumext + multicols}
+Some text here
+
+\begin{enumext}[columns=2, labelwidth=1cm,labelsep=0.25cm,align=left, wrap-label=\textbf{(#1}, label=\arabic*.),partopsep=0.5cm]
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \item[X] This text is in the first level.
+  \item* This text is in the first level.
+\end{enumext}
+
+Some text here
+
+\section{enumext + minipage}
+
+Some text here
+
+\begin{enumext}[labelwidth=1cm,labelsep=0.25cm,align=left,partopsep=0.5cm,mini-env=0.4\linewidth]
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \miniright
+    This text is in minipage.
+\end{enumext}
+
+\section{enumext + minipage + multicols}
+
+Some text here
+
+\begin{enumext}[columns=2,labelwidth=1cm,labelsep=0.25cm,align=left,partopsep=0.5cm,mini-env=0.4\linewidth]
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \miniright
+    This text is in minipage.
+\end{enumext}
+
+Some text here
+
+\section{enumext* + minipage}
+
+Some text here
+
+\begin{enumext*}[columns=2,labelwidth=1cm,labelsep=0.25cm,align=left,partopsep=0.5cm,mini-env=0.4\linewidth, mini-right = {This text is in minipage.}]
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \item This text is in the first level.
+  \item This text is in the first level.
+\end{enumext*}
+\end{document}
+\end{filecontents*}
+\IfFileExists{enumext-02.pdf}{}{\ShellEscape{arara enumext-02.tex}}
+% \iffalse
+%</example>
+% \fi
+%
+% \iffalse
+%<*example>
+% \fi
+\begin{filecontents*}[overwrite]{enumext-03.tex}
+% arara: lualatex: { branch: developer }
+% arara: lualatex: { branch: developer }
+% arara: clean: { extensions: [ aux, log, out] }
+\DocumentMetadata
+  {
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    testphase={phase-III,math,title,table,firstaid},
+    uncompress,
+  }
+\documentclass{article}
+\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}
+\usepackage{unicode-math}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup
+  {
+     colorlinks = true,
+     pdftitle   = {Test tagged PDF for enumext package},
+     pdfauthor  = {Pablo González L},
+  }
+\usepackage{enumext}
+\setlength{\parindent}{0pt}
+\begin{document}
+\section{enumext+keyanspic}
+
+Some text here
+
+\begin{enumext}[save-ans=test,save-sep={ },save-ref = true]
+  \item Question with images.
+    \begin{keyanspic}[3,2]
+      \anspic{\includegraphics[scale=0.30, alt={Un pato de color amarillo}]{example-image-duck}}
+      \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula A}]{example-image-a}}
+      \anspic*{\includegraphics[scale=0.15, alt={Una letra mayuscula B}]{example-image-b}}
+      \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula C}]{example-image-c}}
+      \anspic{\includegraphics[scale=0.15, alt={La palabra Image}]{example-image}}
+    \end{keyanspic}
+   \item Question with images.\label{dos}
+    \begin{keyanspic}*[3,2]
+      \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula A}]{example-image-a}}
+      \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula B}]{example-image-b}}
+      \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula C}]{example-image-c}}
+      \anspic{\includegraphics[scale=0.15, alt={La palabra Image}]{example-image}}
+      \anspic*[A duck]{\includegraphics[scale=0.30, alt={Un pato de color amarillo}]{example-image-duck}}
+    \end{keyanspic}
+   \item Question with images.
+    \begin{keyanspic}
+      \anspic*[La letra A]{\includegraphics[scale=0.15, alt={Una letra mayuscula A}]{example-image-a}}
+      \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula B}]{example-image-b}}
+      \anspic{\includegraphics[scale=0.30, alt={Un pato de color amarillo}]{example-image-duck}}
+      \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula C}]{example-image-c}}
+      \anspic{\includegraphics[scale=0.15, alt={La palabra Image}]{example-image}}
+    \end{keyanspic}
+   \item Question with images.
+    \begin{keyanspic}*
+      \anspic{\includegraphics[scale=0.30, alt={Un pato de color amarillo}]{example-image-duck}}
+      \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula A}]{example-image-a}}
+      \anspic*{\includegraphics[scale=0.15, alt={Una letra mayuscula B}]{example-image-b}}
+      \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula C}]{example-image-c}}
+      \anspic{\includegraphics[scale=0.15, alt={La palabra Image}]{example-image}}
+    \end{keyanspic}
+\end{enumext}
+
+The answer to question \ref{dos} is \getkeyans{test:2}
+
+\printkeyans*{test}
+\end{document}
+\end{filecontents*}
+\IfFileExists{enumext-03.pdf}{}{\ShellEscape{arara enumext-03.tex}}
+% \iffalse
+%</example>
+% \fi
+%
+% \iffalse
+%<*example>
+% \fi
+\begin{filecontents*}[overwrite]{enumext-04.tex}
+% arara: lualatex: { branch: developer }
+% arara: lualatex: { branch: developer }
+% arara: clean: { extensions: [ aux, log, out] }
+\DocumentMetadata
+  {
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    testphase={phase-III,math,title,table,firstaid},
+    uncompress,
+  }
+\documentclass{article}
+\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}
+\usepackage{unicode-math}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup
+  {
+     colorlinks = true,
+     pdftitle   = {Test tagged PDF for enumext package},
+     pdfauthor  = {Pablo González L},
+  }
+\usepackage{enumext}
+\setlength{\parindent}{0pt}
+\begin{document}
+\section{enumext + anskey + anskey*}
+
+Some text here
+
+\begin{enumext}[save-ans=test,save-sep={ },save-ref = true]
+  \item Question A. \anskey{Answer A}
+  \item Question B. \anskey{Answer B}
+  \item Question C.
+    \begin{anskey*}
+    Answer whit \verb+code+ and more
+      \begin{verbatim}
+        Some code here
+      \end{verbatim}
+    And text
+    \end{anskey*}
+\end{enumext}
+
+The answer to question \ref{test:2} is \getkeyans{test:2}
+
+\printkeyans*{test}
+
+\section{enumext* + anskey + anskey*}
+
+Some text here
+
+\begin{enumext*}[save-ans=test-2,save-sep={ },save-ref = true]
+  \item Question A. \anskey{Answer A}
+  \item Question B. \anskey{Answer B}
+  \item Question C.
+    \begin{anskey*}
+    Answer whit \verb+code+ and more
+      \begin{verbatim}
+        Some code here
+      \end{verbatim}
+    And text
+    \end{anskey*}
+\end{enumext*}
+
+\printkeyans{test-2}
+\end{document}
+\end{filecontents*}
+\IfFileExists{enumext-04.pdf}{}{\ShellEscape{arara enumext-04.tex}}
+% \iffalse
+%</example>
+% \fi
+%
 % \section{The way of non-enumerated lists}
 %
 % It is possible to use (or abuse) the \myenv*{enumext} environment to
@@ -4440,7 +4738,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-10-02}
+  {2024-10-03}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -5883,8 +6181,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           \l_@@_ref_the_count_tl { l_@@_the_counter_ \@@_level: _tl }
         \tl_put_right:ce { l_@@_renew_the_count_ \@@_level: _tl }
           {
-            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
-              { \exp_not:V \l_@@_ref_key_arg_tl }
+            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl } { \exp_not:V \l_@@_ref_key_arg_tl }
           }
       }
   }
@@ -5959,8 +6256,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_vii_tl
             \tl_put_right:Ne \l_@@_renew_the_count_vii_tl
               {
-                \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
-                  { \exp_not:V \l_@@_ref_key_arg_tl }
+                \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl } { \exp_not:V \l_@@_ref_key_arg_tl }
               }
           }
       }
@@ -5976,8 +6272,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
             \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_viii_tl
             \tl_put_right:Ne \l_@@_renew_the_count_viii_tl
               {
-                \exp_not:N \renewcommand  { \exp_not:V \l_@@_ref_the_count_tl }
-                  { \exp_not:V \l_@@_ref_key_arg_tl }
+                \exp_not:N \renewcommand  { \exp_not:V \l_@@_ref_the_count_tl } { \exp_not:V \l_@@_ref_key_arg_tl }
               }
           }
       }
@@ -6064,8 +6359,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \tl_set_eq:NN \l_@@_ref_the_count_tl \l_@@_the_counter_v_tl
         \tl_put_right:Ne \l_@@_renew_the_count_v_tl
           {
-            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl }
-              { \exp_not:V \l_@@_ref_key_arg_tl }
+            \exp_not:N \renewcommand { \exp_not:V \l_@@_ref_the_count_tl } { \exp_not:V \l_@@_ref_key_arg_tl }
           }
       }
   }
@@ -11943,14 +12237,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       }
 %    \end{macrocode}
 %   Finally we adjust the value of |\leftmargin| and |\topsep| then set
-%   |\labelwidth|, |\labelsep|, |\partopsep| and |\itemsep| to zero so that
+%   |\listparindent|, |\partopsep| and |\itemsep| to zero so that
 %   the \emph{horizontal} and \emph{vertical} space is not affected.
 %    \begin{macrocode}
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \skip_add:Nn \topsep { 0.5\box_dp:N \strutbox }
-    \dim_zero:N  \labelwidth
     \dim_zero:N  \listparindent
-    \dim_zero:N  \labelsep
     \skip_zero:N \partopsep
     \skip_zero:N \itemsep
   }

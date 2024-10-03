@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
 \ProvidesExplPackage
   {enumext}
-  {2024-10-02}
+  {2024-10-03}
   {1.0}
   {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
@@ -689,8 +689,7 @@
           \l__enumext_ref_the_count_tl { l__enumext_the_counter_ \__enumext_level: _tl }
         \tl_put_right:ce { l__enumext_renew_the_count_ \__enumext_level: _tl }
           {
-            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
-              { \exp_not:V \l__enumext_ref_key_arg_tl }
+            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl } { \exp_not:V \l__enumext_ref_key_arg_tl }
           }
       }
   }
@@ -737,8 +736,7 @@
             \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_vii_tl
             \tl_put_right:Ne \l__enumext_renew_the_count_vii_tl
               {
-                \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
-                  { \exp_not:V \l__enumext_ref_key_arg_tl }
+                \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl } { \exp_not:V \l__enumext_ref_key_arg_tl }
               }
           }
       }
@@ -754,8 +752,7 @@
             \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_viii_tl
             \tl_put_right:Ne \l__enumext_renew_the_count_viii_tl
               {
-                \exp_not:N \renewcommand  { \exp_not:V \l__enumext_ref_the_count_tl }
-                  { \exp_not:V \l__enumext_ref_key_arg_tl }
+                \exp_not:N \renewcommand  { \exp_not:V \l__enumext_ref_the_count_tl } { \exp_not:V \l__enumext_ref_key_arg_tl }
               }
           }
       }
@@ -810,8 +807,7 @@
         \tl_set_eq:NN \l__enumext_ref_the_count_tl \l__enumext_the_counter_v_tl
         \tl_put_right:Ne \l__enumext_renew_the_count_v_tl
           {
-            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl }
-              { \exp_not:V \l__enumext_ref_key_arg_tl }
+            \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_the_count_tl } { \exp_not:V \l__enumext_ref_key_arg_tl }
           }
       }
   }
@@ -4141,9 +4137,7 @@
       }
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \skip_add:Nn \topsep { 0.5\box_dp:N \strutbox }
-    \dim_zero:N  \labelwidth
     \dim_zero:N  \listparindent
-    \dim_zero:N  \labelsep
     \skip_zero:N \partopsep
     \skip_zero:N \itemsep
   }
