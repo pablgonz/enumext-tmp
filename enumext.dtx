@@ -1472,19 +1472,20 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   environment \myenv*{keyans*}, but it can be nested within
 %   \myenv*{enumext} and vice versa.
 %
-% \item Each \emph{\enquote{item}} in the environment is placed within a \myenv{minipage}
-%   environment whose \emph{width} is stored in the dimension |\itemwidth|
-%   that NOT includes \mykey{labelwith}, \mykey{labelsep}, only the \emph{width of the content}.
+% \item Each \emph{\enquote{item content}} in the environment is placed
+%   within a \myenv{minipage} environment whose \emph{width} is stored
+%   in the dimension |\itemwidth| that NOT includes \mykey{labelwith},
+%   \mykey{labelsep}, only the \emph{width of the content}.
 %
 % \item You cannot have floating environments like \myenv{figure} or
-%  \myenv{table} but \ics{footnote} with \mypkg{hyperref} support is
-%  supported if the \mypkg{footnotehyper} package is loaded.
+%   \myenv{table} but \ics{footnote} with \mypkg{hyperref} support is
+%   supported if the \mypkg{footnotehyper} package is loaded.
 %
 % \item You cannot have any standard list environments like \myenv{itemize},
-%  \myenv{enumerate}, \myenv{description}, \myenv{quote}, \myenv{quotation},
-%  \myenv{verse}, \myenv{center}, \myenv{flushleft}, \myenv{flushright},
-%  \myenv{verbatim}, \myenv{tabbing}, \myenv{trivlist}, \myenv{list}
-%  and all environments created with |\newtheorem|.
+%   \myenv{enumerate}, \myenv{description}, \myenv{quote}, \myenv{quotation},
+%   \myenv{verse}, \myenv{center}, \myenv{flushleft}, \myenv{flushright},
+%   \myenv{verbatim}, \myenv{tabbing}, \myenv{trivlist}, \myenv{list}
+%   and all environments created with |\newtheorem|.
 % \end{itemize}
 %
 % \subsubsection*{Example with \texttt{columns=2}}
@@ -1842,13 +1843,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \end{lrbox}
 % \keyexamp{ref}{code{} \space\usebox{\refboxsample} more code}{empty}
 %
-% \smallskip
-%
 % Modifies the way \emph{cross references} are displayed. The
 % \mykey{label} key sets the default form of the \emph{cross references}, by using this key
 % you can define a different format, for example: \mykey{ref}|=\emph|\mymarg{\textnormal{\ilabel{alph*}}} is valid.
-%
-% \smallskip
 %
 % Internally it renews the command associated with each counter when it
 % is executed, i.e., in the environment \myenv*{enumext} the command |\theenumXi|
@@ -1886,8 +1883,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % fourth level are \mydim{2.0pt plus 1.0pt minus 1.0pt}. For \myenv*{keyans}
 % and \myenv*{keyans*} environments the default value is \mydim{4.0pt plus 2.0pt minus 1.0pt}.
 %
-% \smallskip
-%
 % \keyexamp{parsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
 % Set the \emph{vertical space} between paragraphs within an item.
 % Internally sets the value of \ics{parsep} for the current level.
@@ -1897,9 +1892,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 % fourth level are \mydim{0pt}. For \myenv*{keyans} and \myenv*{keyans*}
 % environments the default value is \mydim{2.0pt plus 1.0pt minus 1.0pt}.
 %
-% \smallskip
+% \begin{important}*
+%  In the \myenv*{enumext*} and \myenv*{keyans*} environments this value
+%  is passed to |\parskip| within the \myenv{minipage} environment where
+%  \emph{\enquote{item content}} is placed.
+% \end{important}
 %
 % \keyexamp{partopsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
+%
 % Set the \emph{vertical space} added, beyond \mykey{topsep}, to the \enquote{top} and \enquote{bottom}
 % of the entire environment if the environment instance is preceded by a \emph{\enquote{blank
 % line}} or |\par| command. Internally sets the value of \ics{partopsep} for the current level.
@@ -1911,8 +1911,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \myenv*{enumext*} environments it is available but \emph{without}
 % effect.
 %
-% \smallskip
-%
 % \begin{important}*
 % The value of this parameter also affects the \emph{inner levels} and the
 % environments \myenv*{keyans}, \myenv*{keyanspic} and \myenv*{keyans*}.
@@ -1923,8 +1921,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % environment or nested level.
 % \end{important}
 %
-% \smallskip
-%
 % \keyexamp{itemsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
 % Set the \emph{vertical space} between items, beyond the \mykey{parsep}.
 % Internally sets the value of \ics{itemsep} for the current level.
@@ -1933,6 +1929,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 % for the rest of the levels are \mydim{2.0pt plus 1.0pt minus 1.0pt}.
 % For \myenv*{keyans} and \myenv*{keyans*} environments the default
 % value is \mydim{4.0pt plus 2.0pt minus 1.0pt}.
+%
+% \smallskip
+%
+% \begin{important}*
+%   In the \myenv*{enumext*} and \myenv*{keyans*} environments this value
+%   corresponds to the separation between rows.
+% \end{important}
 %
 % \smallskip
 %
@@ -1949,8 +1952,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp*{base-fix}{value forbidden}{not used}
+%
+% \smallskip
+%
 % This is a \emph{\enquote{meta-key}} that does not receive an
-% argument available \emph{only} for the \emph{first level} of environment
+% argument available \emph{only} for the \emph{\enquote{first level}} of environment
 % \myenv*{enumext}. Fix the \emph{baseline} when an environment \myenv*{enumext}
 % is nested  in \myenv*{enumext*} and there is no material between the
 % |\item| and the start of the environment for example |\item \begin{enumext}|
@@ -1975,17 +1981,17 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{above}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{not used}
 % Set the \emph{extra vertical space} added, beyond \mykey{topsep}, to
 % the top of the entire level of environment. This key is intended to
-% give a \emph{\enquote{fine adjustment}} of the vertical space on the
+% give a \emph{\enquote{fine adjustment}} of the vertical space
 % \emph{\enquote{above}} the environment without hindering the value of
 % the \mykey{topsep} key. The space is added with |\vspace| so is
 % \emph{\enquote{discardable}}.
 %
-% \smallskip
+% \newpage
 %
 % \keyexamp{above\textcolor{MediumOrchid}{*}}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{not used}
 % Set the \emph{extra vertical space} added, beyond \mykey{topsep}, to
 % the top of the entire level of environment. This key is intended to
-% give a \emph{\enquote{fine adjustment}} of the vertical space on the
+% give a \emph{\enquote{fine adjustment}} of the vertical space
 % \emph{\enquote{above}} the environment without hindering the value of
 % the \mykey{topsep} key. The space is added with |\vspace*| so is
 % \emph{\enquote{not discardable}}.
@@ -2113,7 +2119,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Keep in mind that the code set in this key will affect the entire
 % \emph{\enquote{body}} of the environment and therefore the inner levels
 % of the list and the \myenv*{keyans} environment. It is recommended to
-% set this key per level.
+% set this key per level. In the \myenv*{enumext*} and \myenv*{keyans*}
+% environments this key is executed within the \myenv{minipage} environment
+% in which \emph{\enquote{item content}} is placed.
 % \end{important}
 %
 % \smallskip
@@ -2149,7 +2157,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % within each other.
 %^^A \end{important}
 %
-% \newpage
+%^^A \newpage
 %
 % \keyexamp{series}{series name}{not used}
 % Stores the \emph{keys} of the \emph{optional argument} of the \emph{\enquote{first level}}
@@ -2584,22 +2592,34 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexampcmd*{break-col}{value forbidden}{not used}
+%
+% \smallskip
+%
 % Stores \mymarg{content} in the \emph{sequence} \mymarg{store name} of
 % the form \ics{columnbreak} |\item| \mymeta{content}.
 %
 % \smallskip
 %
 % \keyexampcmd{item-join}{columns}{not set}
+%
+% \smallskip
+%
 % Set the \emph{number of columns} to be used for |\item|\myparg{columns} and stores \mymarg{content} in the \emph{sequence}
 % \mymarg{store name} of the form |\item|\myparg{columns} \mymeta{content}.
 %
 % \smallskip
 %
 % \keyexampcmd*{item-star}{value forbidden}{not used}
+%
+% \smallskip
+%
 % Stores \mymarg{content} in the \emph{sequence} \mymarg{store name} of
 % the form |\item*| \mymeta{content}.
 %
 % \keyexampcmd{item-sym\textcolor{MediumOrchid}{*}}{symbol}{\$\textbackslash{}star\$}
+%
+% \smallskip
+%
 % Sets the \emph{symbol} for |\item*| when using the key
 % \mykeycmd{item-star} and stores \mymarg{content} in the \emph{sequence}
 % \mymarg{store name} of the form |\item*|\myoarg{symbol} \mymeta{content}.
@@ -2698,12 +2718,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexampenv{write-env}{file.ext}{not used}
+%
+% \smallskip
+%
 % Sets the name of the \mymeta{external file} in which the \mymeta{contents} of
 % the environment will be written. The \mymeta{file.ext} will be created
 % in the working directory, relative or absolute paths are not supported. If \mymeta{file.ext}
 % does not exist, it will be created or overwritten if the \mykey{overwrite} key is used.
-%
-%^^A \smallskip
 %
 % \keyexampenv{overwrite}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Sets whether the \mymeta{file.ext} generated by \mykey{write-env}
@@ -3032,6 +3053,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  argument} ‘|*|’ store the current \mymeta{label} next to the
 %  \emph{optional argument} \mymeta{content} in \emph{sequence} and
 %  \emph{prop list} \mymarg{store name} set by \mykey{save-ans} key.
+% \end{function}
 %
 %  \smallskip
 %
@@ -3041,8 +3063,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  is assumed that the \emph{starred argument} ‘|*|’ will only
 %  appear \emph{\enquote{once}} within the environment.
 %
-% \end{function}
-%
 % \subsubsection*{Example}
 %
 % \iffalse
@@ -3051,7 +3071,28 @@ This work consists of the files enumext.dtx and enumext.sty.
 \begin{examplecode}[frame=single]
 \begin{enumext}[save-ans=test,show-ans,nosep]
   \item Question with images.
+
     \begin{keyanspic}[3,2]
+      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+      \anspic{\includegraphics[scale=0.15]{example-image-b}}
+      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
+    \end{keyanspic}
+
+  \item Question with images.
+
+    \begin{keyanspic}*[3,2]
+      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+      \anspic{\includegraphics[scale=0.15]{example-image-b}}
+      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
+    \end{keyanspic}
+
+  \item Question with images.
+
+    \begin{keyanspic}
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
       \anspic{\includegraphics[scale=0.15]{example-image-b}}
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3067,6 +3108,22 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \begin{enumext}[save-ans=test,show-ans=true,nosep, before= {\setenumext[keyans]{nosep,parsep=3mm} }]
 % \item Question with images.
 %    \begin{keyanspic}[3,2]
+%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+%      \anspic{\includegraphics[scale=0.15]{example-image-b}}
+%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+%      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
+%    \end{keyanspic}
+% \item Question with images.
+%    \begin{keyanspic}*[3,2]
+%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+%      \anspic{\includegraphics[scale=0.15]{example-image-b}}
+%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+%      \anspic{\includegraphics[scale=0.15]{example-image-a}}
+%      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
+%    \end{keyanspic}
+% \item Question with images.
+%    \begin{keyanspic}
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-b}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3215,9 +3272,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   are set in the \emph{optional argument} or \mykey{save-key} is used to modify it.
 %
 % \item If we execute |\printkeyans|\mymarg{store name} and the \emph{sequence}
-%    \mymarg{store name} contains any environment \myenv*{enumext*}, they
-%    will start with the \mymeta{keys} set by default unless they are set
-%    in the \emph{optional argument} or \mykey{save-key} is used to modify it.
+%   \mymarg{store name} contains any environment \myenv*{enumext*}, they
+%   will start with the \mymeta{keys} set by default unless they are set
+%   in the \emph{optional argument} or \mykey{save-key} is used to modify it.
 %\end{itemize}
 %
 % The default values ​​for the \emph{\enquote{first level}} of |\printkeyans| commands and
@@ -3241,7 +3298,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %<*example>
 % \fi
 \begin{examplecode}[frame=single]
-\begin{enumext}[save-ans=sample,columns=2,show-pos=true,nosep,save-ref=true]
+\begin{enumext}[save-ans=sample,columns=1,show-pos=true,nosep,save-ref=true]
   \item Factor $3x+3y+3z$. \anskey{$3(x+y+z)$}
   \item True False
 
@@ -3270,7 +3327,7 @@ all the worksheets are as follows:
 %</example>
 % \fi
 %
-% \begin{enumext}[save-ans=sampleXX,columns=2,show-pos=true,nosep,save-ref=true]
+% \begin{enumext}[save-ans=sampleXX,columns=1,show-pos=true,nosep,save-ref=true]
 %  \item Factor $3x+3y+3z$. \anskey{$3(x+y+z)$}
 %  \item True False
 %    \begin{enumext}[nosep]
@@ -3504,7 +3561,7 @@ $ pdfdetach -saveall enumext.pdf
 % Adapted from the response given by Florent Rougon in \href{https://tex.stackexchange.com/q/529034/7832}{Multiple choice questions with proposed answers in random order — addition of automatic correction (cross mark)}
 % \textattachfile[color=red,print=false]{enumext-exa-2.tex}{\faFile*[regular]}.
 % \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\mySquared{##1}}}
-% \begin{enumext}[columns=1,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,save-ref=true,show-ans=true,itemsep=0pt]
+% \begin{enumext}[columns=2,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,save-ref=true,show-ans=true,itemsep=0pt]
 % \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
 %   \begin{keyans}
 %     \item \SI{36}{km/h}.
@@ -3544,7 +3601,7 @@ $ pdfdetach -saveall enumext.pdf
 %   \end{keyans}
 % \end{enumext}
 %
-% \printkeyans[columns=1]{sabastiano2}
+% \printkeyans*[columns=2]{sabastiano2}
 %
 % \subsubsection*{Example 3}
 %
@@ -3640,12 +3697,12 @@ Test keys
 % \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
 % \begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
 %   \item First type of questions
-%      \begin{keyans}[columns=1,noitemsep]
+%      \begin{keyans*}[columns=2,noitemsep]
 %        \item value
 %        \item*[$x=5$] correct
 %        \item value
 %        \item value
-%      \end{keyans}
+%      \end{keyans*}
 %   \item Second type of questions
 %      \begin{enumext}[no-store,label=\Roman*.,nosep]
 %        \item $2\alpha+2\delta=90^{\circ}$
@@ -3673,7 +3730,7 @@ Test keys
 %    \end{keyans}
 %
 % \item Question with image and label below:
-%  \begin{keyanspic}[3,2]
+%  \begin{keyanspic}
 %    \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %    \anspic{\includegraphics[scale=0.15]{example-image-b}}
 %    \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3879,6 +3936,14 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{enumext}
 %
 % \printkeyans[columns=4]{stylesat}
+%
+% \section{Tagged PDF examples}
+%
+% This section is just to show the compatibility of \mypkg*{enumext} with
+% \emph{tagged} \texttt{PDF} using |lualatex|. The attached files here
+% are just for testing and are intended as examples and, in a way, to
+% simplify the time of Matthew Bertucci (\texttt{@mbertucci}) when he sees this
+% excellent package and adds it to \href{https://github.com/latex3/tagging-project}{The LaTeX Tagged PDF repository}.
 %
 % \section{The way of non-enumerated lists}
 %
