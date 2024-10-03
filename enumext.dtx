@@ -13019,11 +13019,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \begin{important}
 %   For compatibility with \emph{tagged} \texttt{PDF} and \mypkg{hyperref}
 %   when an environment \myenv*{enumext} is nested in \myenv*{enumext*}
-%   need setting the |\if@hyper@item| switch to \emph{\enquote{true}}. The
-%   explanation for this is given by the master Heiko Oberdiek on
-%   \href{https://tex.stackexchange.com/a/404911}{\textbackslash
+%   and the key \mykey{save-ans} is not active need setting the |\if@hyper@item|
+%   switch to \emph{\enquote{true}}. The explanation for this is given
+%   by the master Heiko Oberdiek on \href{https://tex.stackexchange.com/a/404911}{\textbackslash
 %   refstepcounter\{enumi\} twice (or more) creates destination with the
 %   same identifier}.
+%   This patch is only needed if you are running |pdflatex| and not if
+%   you are running |lualatex|
 % \end{important}
 %
 % \iffalse
@@ -13081,15 +13083,15 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Real definition of \cs{item} in \env{enumext*}}
 %
-% The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing the true definition of
-% \ics*{item} inside the \myenv*{enumext*} environment, unlike
+% The functions \cs{@@_start_item_vii:w} and \cs{@@_stop_item_vii:} executing
+% the true definition of \ics*{item} inside the \myenv*{enumext*} environment, unlike
 % the implementation in \mypkg{shortlst} we will NOT use an extra group
 % and the plain form of the \myenv{lrbox} environment.
 %
 % \begin{macro}{\@@_start_item_vii:w, \@@_stop_item_vii:}
 %   The first thing we will do is set the value of \cs{@@_stop_item_tmp_vii:} equal to
 %   \cs{@@_stop_item_vii:} which we will define later, after that we will
-%   start capturing |\item| and its \mymeta{contents} in a \emph{horizontal box}
+%   start capturing |\item| and \emph{\enquote{item content}} in a \emph{horizontal box}
 %   where the width will be |\itemwidth| plus |\labelwidth| plus |\labelsep|.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_start_item_vii:w [#1]
@@ -13115,13 +13117,13 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
        }
 %    \end{macrocode}
 %   Now we insert our \emph{sockets} for \emph{tagging} \texttt{PDF}
-%   support and print |\item|.
+%   support and run |\item|.
 %    \begin{macrocode}
       \@@_start_list_tag:n {enumext*}
       \@@_fake_make_label_vii:n {#1}
       \@@_stop_start_list_tag:
 %    \end{macrocode}
-%   Finally we open the \myenv{minipage} environment capture the \mymeta{item content}
+%   Finally we open the \myenv{minipage} environment, capture the \emph{\enquote{item content}}
 %   and execute \mykey{first} and \mykey{itemindent} keys, then \mykey{listparindent}
 %   key which will be equal to |\parindent|, then \mykey{parsep} key which will be
 %   equal to |\parskip|.
@@ -13134,7 +13136,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
    }
 %    \end{macrocode}
 %   The \cs{@@_stop_item_vii:} function will finish the fetching |\item|
-%   and its \mymeta{content} by closing the \myenv{minipage}
+%   and \emph{\enquote{item content}} by closing the \myenv{minipage}
 %   environment, the \emph{sockets} for \emph{tagging} \texttt{PDF} and the
 %   \emph{horizontal box}.
 %    \begin{macrocode}
@@ -13145,8 +13147,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
     \hbox_set_end:
 %    \end{macrocode}
 %   Here we will reduce the \emph{warnings} a bit by setting the value
-%   of |\hbadness| to \mydim{10000}, print the \mymeta{contents} of the
-%   \emph{box} along with |\footnote|.
+%   of |\hbadness| to \mydim{10000}, print |\item| and \emph{\enquote{item content}}
+%   from the \emph{horizontal box} and \emph{footnotes} if it was redefined.
 %    \begin{macrocode}
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_vii_box
@@ -13158,8 +13160,9 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
           }
       }
 %    \end{macrocode}
-%   Finally set the \emph{vertical} and \emph{horizontal} spaces between
-%   rows and columns.
+%   Finally apply the \emph{vertical space} between rows set by \mykey{itemsep}
+%   key passed to |\parsep| using |\par\noindent| and \emph{horizontal space}
+%   between columns set by \mykey{columns-sep} key using |\skip_horizontal:N|.
 %    \begin{macrocode}
     \int_compare:nNnTF
       { \l_@@_item_column_pos_vii_int } = { \l_@@_columns_vii_int }
@@ -13175,8 +13178,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_remove_extra_parsep_vii:}
-%   Remove the \emph{vertical space} equal to |\parsep=\itemsep| when the
-%   total number of items is divisible by the number of items in the last
+%   Remove the extra \emph{vertical space} equal to |\parsep=\itemsep| when the
+%   total number of |\item| is divisible by the number of |\item| in the last
 %   row of the environment. Here the use of |\unskip| or |\removelastskip|
 %   fails and does not obtain the expected result, using |\vspace| is
 %   the option and in this case, we can use a simplified version since
@@ -13600,7 +13603,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % \subsubsection{Real definition of \cs{item} in \env{keyans*}}
 %
-% \begin{macro}{\@@_start_item_viii:w}
+% \begin{macro}{\@@_start_item_viii:w, \@@_stop_item_viii:}
 %    The implementation at this is very similar to that of the
 %    \myenv*{enumext*} environment.
 % \iffalse
@@ -13628,11 +13631,19 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
       \@@_stop_start_list_tag:
       \@@_minipage:w [ t ]{ \l_@@_joined_width_viii_dim  }
         \tl_use:N \l_@@_after_list_args_viii_tl
+%    \end{macrocode}
+%   The implementation of |\item*|\myoarg{content} with the \mykey{itemindent}
+%   and \mykey{wrap-opt} keys calls the function \cs{@@_keyans_show_item_opt:}
+%   which shifts \mykey{itemindent} key to the right.
+%    \begin{macrocode}
         \bool_if:NT \l_@@_item_starred_viii_bool
           {
             \tl_use:N \l_@@_fake_item_indent_viii_tl
             \@@_keyans_show_item_opt:
-            \skip_horizontal:n { -\l_@@_fake_item_indent_viii_dim - \l_@@_labelsep_viii_dim }
+            \skip_horizontal:n
+              {
+                -\l_@@_fake_item_indent_viii_dim - \l_@@_labelsep_viii_dim
+              }
           }
           {
             \tl_use:N \l_@@_fake_item_indent_viii_tl
@@ -13640,17 +13651,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
         \dim_set_eq:NN \parindent \l_@@_listparindent_viii_dim
         \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
    }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_stop_item_viii:}
-%   The \cs{@@_stop_item_viii:} function will finish the fetching |\item|
-%   and its \mymeta{content} by closing the \myenv{minipage} environment
-%   and the \emph{horizontal box}. Here we will reduce the \emph{warnings}
-%   a bit by setting the value of |\hbadness| to \mydim{10000}, print the
-%   \mymeta{contents} of the \emph{box} along with |\footnote| and finally set the
-%   vertical and horizontal spaces between rows and columns.
-%    \begin{macrocode}
 \cs_new_protected_nopar:Nn \@@_stop_item_viii:
   {
       \@@_endminipage:
@@ -13679,9 +13679,8 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \end{macro}
 %
 % \begin{macro}{\@@_remove_extra_parsep_viii:}
-%   Finally we will remove the \emph{vertical space} equal to |\parsep| when the
-%   total number of items is divisible by the number of items in the last
-%   row of the environment.
+%    The implementation at this is very similar to that of the
+%    \myenv*{enumext*} environment.
 % \iffalse
 %% Remove extra \parsep in |keyans*| environment.
 % \fi
