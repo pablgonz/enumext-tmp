@@ -2439,13 +2439,13 @@
       }
       { #1 }
   }
-\cs_generate_variant:Nn \__enumext_store_addto_prop:n { V, e }
+\cs_generate_variant:Nn \__enumext_store_addto_prop:n { V }
 %% Function for store content to sequence.
 \cs_new_protected:Npn \__enumext_store_addto_seq:n #1
   {
     \seq_gput_right:cn { g__enumext_ \l__enumext_store_name_tl _seq } { #1 }
   }
-\cs_generate_variant:Nn \__enumext_store_addto_seq:n { v, V, e }
+\cs_generate_variant:Nn \__enumext_store_addto_seq:n { v, V }
 %% Function for storing structure level execution of |\anskey| on |enumext| environment.
 \cs_new_protected:Nn \__enumext_store_level_open:
   {

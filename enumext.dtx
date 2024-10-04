@@ -3988,7 +3988,6 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   {
      colorlinks = true,
      pdftitle   = {Test tagged PDF for enumext package},
-     pdfauthor  = {Pablo González L},
   }
 \usepackage{enumext}
 \begin{document}
@@ -4093,7 +4092,6 @@ Some refs here \ref{G} and \ref{H}
   {
     colorlinks = true,
     pdftitle   = {Test tagged PDF for enumext package},
-    pdfauthor  = {Pablo González L},
   }
 \begin{document}
 \section{enumext + multicols}
@@ -4177,7 +4175,6 @@ Some text here
   {
     colorlinks = true,
     pdftitle   = {Test tagged PDF for enumext package},
-    pdfauthor  = {Pablo González L},
   }
 \setlength{\parindent}{0pt}
 \begin{document}
@@ -4252,7 +4249,6 @@ The answer to question \ref{dos} is \getkeyans{test:2}
   {
     colorlinks = true,
     pdftitle   = {Test tagged PDF for enumext package},
-    pdfauthor  = {Pablo González L},
   }
 \setlength{\parindent}{0pt}
 \begin{document}
@@ -4323,7 +4319,6 @@ Some text here
   {
     colorlinks = true,
     pdftitle   = {Test tagged PDF for enumext package},
-    pdfauthor  = {Pablo González L},
   }
 \setenumext[print,1]{columns=2, columns-sep=1cm, font=\bfseries}
 \setenumext[print*]{columns=2, columns-sep=1cm,first=\bfseries}
@@ -4364,7 +4359,7 @@ Some text here
   \begin{keyans}
     \item value
     \item value
-    \item*[some note] value
+    \item*[some note $y$] value
     \item value
     \item value
   \end{keyans}
@@ -4381,7 +4376,7 @@ Some text here
     \item value
     \item value
     \item value
-    \item*[\em{other note}] correct
+    \item*[other note] correct
     \item value
     \miniright
     \includegraphics[scale=0.15,alt={Una letra mayuscula B}]{example-image-b}
@@ -4389,12 +4384,23 @@ Some text here
 \item Question with image on left side: \anskey[item-star]{Mucak}
 \end{enumext}
 
+Some text here
 \section{printkeyans}
+Some text here
+
 \printkeyans{mytest}
 
 \section{printkeyans*}
+Some text here
+
 \printkeyans*{mytest}
 
+\section{foreachkeyans}
+Some text here
+
+\foreachkeyans[sep={\par}]{mytest}
+
+Some text here
 \end{document}
 \end{filecontents*}
 \IfFileExists{enumext-05.pdf}{}{\ShellEscape{arara enumext-05.tex}}
@@ -4433,7 +4439,7 @@ Some text here
 % \item The file \myfile{enumext-05.tex} contains the tests for the environments
 %   \myenv{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} activated by the key
 %   \mykey{save-ans} together with the keys \mykey{no-store} and \mykey{show-ans}
-%   and the commands |\setenumext|, |\setenumextmeta| and |\printkeyans|.
+%   and the commands |\setenumext|, |\setenumextmeta|, |\printkeyans| and |\foreachkeyans|.
 %   \IfFileExists{enumext-05.pdf}{Source file \textattachfile[color=red,print=false]{enumext-05.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-05.pdf}{\faFilePdf[regular]}}{}.%
 % \end{itemize}
@@ -9162,7 +9168,7 @@ Some text here
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Store optional arguments of the environments}
+% \subsubsection{Storing structure of the environments}
 %
 % The idea behind \emph{\enquote{storing structure}} in the \emph{sequence} is
 % to have a copy of the \emph{structure of the environment} in which the key
@@ -9347,7 +9353,7 @@ Some text here
       }
       { #1 }
   }
-\cs_generate_variant:Nn \@@_store_addto_prop:n { V, e }
+\cs_generate_variant:Nn \@@_store_addto_prop:n { V }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -9375,16 +9381,16 @@ Some text here
   {
     \seq_gput_right:cn { g_@@_ \l_@@_store_name_tl _seq } { #1 }
   }
-\cs_generate_variant:Nn \@@_store_addto_seq:n { v, V, e }
+\cs_generate_variant:Nn \@@_store_addto_seq:n { v, V }
 %    \end{macrocode}
 % \end{macro}
 %
 % \subsubsection{Functions for storing structure in the sequence}
 %
 % \begin{macro}{\@@_store_level_open:, \@@_store_level_close:,}
-%    The \emph{\enquote{storing structure}} is handled by the functions
-%    \cs{@@_store_level_open:} and \cs{@@_store_level_close:} which are
-%    executed per level within the \myenv*{enumext} environment.
+%   The \emph{\enquote{storing structure}} is handled by the functions
+%   \cs{@@_store_level_open:} and \cs{@@_store_level_close:} which are
+%   executed per level within the \myenv*{enumext} environment.
 % \iffalse
 %% Function for storing structure level execution of |\anskey| on |enumext| environment.
 % \fi
@@ -9968,10 +9974,10 @@ Some text here
 % \end{itemize}
 %
 % \begin{macro}[int]{\@@_undefine_anskey_env:,}
-%    The function \cs{@@_undefine_anskey_env:} will undefine the environment
-%    \myenv*{anskey*} and will be passed to the function
-%    \cs{@@_execute_after_env:} (\S\ref{fun:exec-after-env}) which is
-%    executed after the environment in which the key \mykey{save-ans} is active.
+%   The function \cs{@@_undefine_anskey_env:} will undefine the environment
+%   \myenv*{anskey*} and will be passed to the function
+%   \cs{@@_execute_after_env:} (\S\ref{fun:exec-after-env}) which is
+%   executed after the environment in which the key \mykey{save-ans} is active.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_undefine_anskey_env:
   {
@@ -9981,8 +9987,8 @@ Some text here
     \cs_undefine:c { __scontents_anskey*_env_end: }
   }
 %    \end{macrocode}
-%    Detection of the \myenv*{anskey*} environment outside the
-%    \myenv*{enumext} and \myenv*{enumext*} environments.
+%   Detection of the \myenv*{anskey*} environment outside the
+%   \myenv*{enumext} and \myenv*{enumext*} environments.
 % \iffalse
 %% Hooks for |anskey*| environment out off |enumext| and |enumext*| environments.
 % \fi
@@ -10012,10 +10018,10 @@ Some text here
       }
   }
 %    \end{macrocode}
-%    Detection of the \myenv*{anskey*} environment inside the
-%    \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic}
-%    environments, if preceded by a not numbered |\item| or if it is in
-%    \emph{math mode} returning the appropriate messages.
+%   Detection of the \myenv*{anskey*} environment inside the \myenv*{keyans},
+%   \myenv*{keyans*} and \myenv*{keyanspic} environments, if preceded by
+%   a not numbered |\item| or if it is in \emph{math mode} returning
+%   the appropriate messages.
 % \iffalse
 %% Hooks for |anskey*| inside the |keyans|, |keyans*| and |keyanspic| environments, math-mode ans not number |\item|.
 % \fi
@@ -10049,19 +10055,18 @@ Some text here
 % \begin{macro}{anskey*, \@@_anskey_env_make:n, \@@_anskey_env_make:V,
 %              \@@_anskey_env_define_keys:, \@@_anskey_env_reset_keys:
 %              \@@_rescan_anskey_env:n,}
-%    The function \cs{@@_anskey_env_make:n} creates the environment
-%    \myenv*{anskey*} (\emph{custom version} of \myenv{scontents}
-%    environment) by setting the initial keys |store-env=|\mymarg{store name}
-%    and |print-env=false|.
+%   The function \cs{@@_anskey_env_make:n} creates the environment
+%   \myenv*{anskey*} (\emph{custom version} of \myenv{scontents}
+%   environment) by setting the initial keys |store-env=|\mymarg{store name}
+%   and |print-env=false|.
 %
-%    To maintain the \emph{scope} of the environment and that it is only active
-%    when the key \mykey{save-ans} is active we will pass this function to
-%    the function \cs{@@_storing_exec:} (\S\ref{key:save-ans}) and we
-%    will execute it only if the variable \cs{l_@@_anskey_env_bool} is true,
-%    with this we prevent it from being executed again when the environment
-%    is nested and the key \mykey{save-ans} is active, which returns an
-%    error for part of the package \mypkg{scontents}.
-%
+%   To maintain the \emph{scope} of the environment and that it is only active
+%   when the key \mykey{save-ans} is active we will pass this function to
+%   the function \cs{@@_storing_exec:} (\S\ref{key:save-ans}) and we
+%   will execute it only if the variable \cs{l_@@_anskey_env_bool} is true,
+%   with this we prevent it from being executed again when the environment
+%   is nested and the key \mykey{save-ans} is active, which returns an
+%   error for part of the package \mypkg{scontents}.
 % \iffalse
 %% Function for define |anskey*| environment using scontents.
 % \fi
@@ -10109,8 +10114,8 @@ Some text here
       }
   }
 %    \end{macrocode}
-%   The \mymeta{keys} are stored in \cs{l_keys_key_str} and the value (if any) is passed as an
-%   argument to the function \cs{@@_anskey_env_unknown:n}.
+%   The \mymeta{keys} are stored in \cs{l_keys_key_str} and the value
+%   (if any) is passed as an argument to the function \cs{@@_anskey_env_unknown:n}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_anskey_env_unknown:n #1
   {
@@ -14195,10 +14200,10 @@ Some text here
 % \subsection{The command \cs{getkeyans}}\label{cmd:getkeyans}
 %
 % \begin{macro}{\getkeyans, \@@_getkeyans_aux:n, \@@_getkeyans:nn}
-%    The \ics*{getkeyans} command takes a \emph{mandatory argument} of the
-%    form \mymarg{store name \textcolor{red}{:} position}.
-%    Retrieve a \emph{\enquote{single content}}  stored by \ics*{anskey}, \ics*{anspic*}
-%    and \ics*{item*} and \myenv*{anskey*} from \emph{prop list} defined by \mykey{save-ans} key.
+%   The \ics*{getkeyans} command takes a \emph{mandatory argument} of the
+%   form \mymarg{store name \textcolor{red}{:} position}.
+%   Retrieve a \emph{\enquote{single content}}  stored by \ics*{anskey}, \ics*{anspic*}
+%   and \ics*{item*} and \myenv*{anskey*} from \emph{prop list} defined by \mykey{save-ans} key.
 % \iffalse
 %% Define |\getkeyans|.
 % \fi
@@ -14209,9 +14214,9 @@ Some text here
       { \tl_to_str:e { \text_expand:n {#1} } }
   }
 %    \end{macrocode}
-%    The internal function \cs{@@_getkeyans_aux:n} is in charge of
-%    \emph{splitting} the \emph{mandatory argument} using \enquote{\textcolor{red}{:}}.
-%    If \enquote{\textcolor{red}{:}} is omitted it will return an error.
+%   The internal function \cs{@@_getkeyans_aux:n} is in charge of
+%   \emph{splitting} the \emph{mandatory argument} using \enquote{\textcolor{red}{:}}.
+%   If \enquote{\textcolor{red}{:}} is omitted it will return an error.
 % \iffalse
 %% Internal functions for |\getkeyans|.
 % \fi
@@ -14230,10 +14235,10 @@ Some text here
       { \msg_error:nnn { enumext } { missing-colon } {#1} }
   }
 %    \end{macrocode}
-%    The internal function \cs{@@_getkeyans:nn} will check for the existence
-%    of the \emph{prop list}, if it does not exist it will return an error
-%    message, then it will fetch the content specified by the second
-%    \mymeta{argument} from \emph{prop list}.
+%   The internal function \cs{@@_getkeyans:nn} will check for the existence
+%   of the \emph{prop list}, if it does not exist it will return an error
+%   message, then it will fetch the content specified by the \emph{second argument}
+%   from \emph{prop list}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_getkeyans:nn #1 #2
   {
@@ -14311,10 +14316,10 @@ Some text here
 % \end{important}
 %
 % \begin{macro}{\printkeyans, \@@_printkeyans:nnn}
-%    Create a user command to print \emph{\enquote{all stored content}}
-%    in \emph{sequence} for \ics*{anskey}, \myenv*{anskey*}, \ics*{item*} and \ics*{anspic*}.
-%    Within a group we will run our \emph{\enquote{precompiled keys}} and
-%    then call the internal function \cs{@@_printkeyans:nnn}.
+%   Create a user command to print \emph{\enquote{all stored content}}
+%   in \emph{sequence} for \ics*{anskey}, \myenv*{anskey*}, \ics*{item*} and \ics*{anspic*}.
+%   Within a group we will run our \emph{\enquote{precompiled keys}} and
+%   then call the internal function \cs{@@_printkeyans:nnn}.
 % \iffalse
 %% Define |\printkeyans|.
 % \fi
@@ -14331,9 +14336,9 @@ Some text here
     \group_end:
   }
 %    \end{macrocode}
-%    The internal function \cs{@@_printkeyans:nnn} will check
-%    for the existence of the \emph{sequence}, if it does not exist
-%    it will return an error message, then it will check if not empty.
+%   The internal function \cs{@@_printkeyans:nnn} will check
+%   for the existence of the \emph{sequence}, if it does not exist
+%   it will return an error message, then it will check if not empty.
 % \iffalse
 %% Internal function for |\printkeyans|.
 % \fi
@@ -14533,7 +14538,7 @@ Some text here
 % \end{macro}
 %
 % \begin{macro}{\@@_set_parse:n, \@@_set_error:nn, }
-%    Internal functions used by the \ics*{setenumext} command.
+%   Internal functions used by the \ics*{setenumext} command.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_set_parse:n #1
   {
@@ -14637,9 +14642,9 @@ Some text here
 % \begin{macro}{\foreachkeyans, \@@_parse_foreach_keys:nn,
 %               \@@_parse_foreach_keys:n, \@@_foreach_keyans:nn,
 %               \@@_foreach_add_body:n}
-%    We define a set of \mymeta{keys} for command and we will save the
-%    default values ​​of these in \cs{g_@@_foreach_default_keys_tl} to avoid
-%    the use of group.
+%   We define a set of \mymeta{keys} for command and we will save the
+%   default values ​​of these in \cs{g_@@_foreach_default_keys_tl} to avoid
+%   the use of group.
 % \iffalse
 %% Define |\foreachkeyans|.
 % \fi
