@@ -4740,7 +4740,11 @@
 %% Remove |\labelwidth+\labelsep| on left in first |\item| for |enumext*| environment.
 \cs_new_protected_nopar:Nn \__enumext_first_item_tmp_vii:
   {
-    \skip_horizontal:n { -\l__enumext_labelwidth_vii_dim - \l__enumext_labelsep_vii_dim }
+    \skip_horizontal:n
+      {
+        -\l__enumext_labelwidth_vii_dim - \l__enumext_labelsep_vii_dim
+      }
+    \ignorespaces
   }
 %% Start boxed item's for |enumext*| environment.
 \cs_new_protected_nopar:Nn \__enumext_start_item_tmp_vii:
@@ -4862,9 +4866,7 @@
     \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \__enumext_stop_item_vii:
     \hbox_set_to_wd:Nnw \l__enumext_item_text_vii_box
       {
-        \l__enumext_joined_width_vii_dim
-        + \l__enumext_labelwidth_vii_dim
-        + \l__enumext_labelsep_vii_dim
+        \l__enumext_joined_width_vii_dim + \l__enumext_labelwidth_vii_dim + \l__enumext_labelsep_vii_dim
       }
      \IfDocumentMetadataTF { }
        {
@@ -5001,7 +5003,11 @@
 %% Remove |\labelwidth+\labelsep| on left in first |\item| for |keyans*| environment.
 \cs_new_protected_nopar:Nn \__enumext_first_item_tmp_viii:
   {
-    \skip_horizontal:n { -\l__enumext_labelwidth_viii_dim - \l__enumext_labelsep_viii_dim }
+    \skip_horizontal:n
+      {
+        -\l__enumext_labelwidth_viii_dim - \l__enumext_labelsep_viii_dim
+      }
+    \ignorespaces
   }
 %% Start boxed item's for |keyans*| environment.
 \cs_new_protected_nopar:Nn \__enumext_start_item_tmp_viii:
