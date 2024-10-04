@@ -2324,7 +2324,7 @@
         show-pos   .initial:n  = false,
         show-pos   .value_required:n = true,
         mark-ref   .tl_set:N   = \l__enumext_mark_ref_sym_tl,
-        mark-ref   .initial:n  = \textasteriskcentered,
+        mark-ref   .initial:n  = \textreferencemark,
         mark-ref   .value_required:n = true,
         save-ref   .bool_set:N = \l__enumext_store_ref_key_bool,
         save-ref   .initial:n  = false,
@@ -3383,7 +3383,7 @@
       {
         item-sym* .tl_set:c  = { l__enumext_item_symbol_#2_tl },
         item-sym* .value_required:n = true,
-        item-sym* .initial:n  = {$\star$},
+        item-sym* .initial:n  = {\textasteriskcentered},
         item-pos* .dim_set:c  = { l__enumext_item_symbol_sep_#2_dim },
         item-pos* .value_required:n = true,
       }
@@ -5488,7 +5488,7 @@
   }
 \keys_precompile:nnN { enumext / foreach }
   {
-    before={},after={},start=1,step=1,stop=0,wrapper=#1,sep=
+    before={},after={},start=1,step=1,stop=0,wrapper=#1,sep={; }
   }
   \g__enumext_foreach_default_keys_tl
 \cs_new_protected:Npn \__enumext_parse_foreach_keys:nn #1#2

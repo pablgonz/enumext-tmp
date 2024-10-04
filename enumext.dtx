@@ -1519,13 +1519,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 %     \ics*{item*}\myoarg{symbol}
 %     \ics*{item*}\myoarg{symbol}\myoarg{offset}
 %   \end{syntax}
-%    The \ics*{item*}, \ics*{item*}\myoarg{symbol} and
-%    \ics*{item*}\myoarg{symbol}\myoarg{offset} works like
-%    the numbered |\item|, but placing a \mymeta{symbol} to the \emph{\enquote{left}} of the
-%    \mymeta{label} separated from it by the \mymeta{offset} set by the
-%    the \emph{second optional argument}. The default values for \mymeta{symbol} and
-%    \mymeta{offset} are |$\star$| ‘$\star$’ and the value set by
-%    \mykey{labelsep} key.
+%    The \ics*{item*}, \ics*{item*}\myoarg{symbol} and \ics*{item*}\myoarg{symbol}\myoarg{offset}
+%    works like the numbered |\item|, but placing a \mymeta{symbol} to
+%    the \emph{\enquote{left}} of the \mymeta{label} separated from it by
+%    the \mymeta{offset} set by the the \emph{second optional argument}.
+%    The default values for \mymeta{symbol} and \mymeta{offset} are |\textasteriskcentered| ‘\textasteriskcentered’
+%    and the value set by \mykey{labelsep} key.
 %
 %    \smallskip
 %
@@ -1546,11 +1545,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsubsection{Keys for \cs[no-index]{item*}}
 %
-% \keyexamp{item-sym\textcolor{MediumOrchid}{*}}{symbol}{\$\textbackslash{}star\$}
+% \keyexamp{item-sym\textcolor{MediumOrchid}{*}}{symbol}{\textbackslash{}textasteriskcentered}
 % Sets the \emph{symbol} to be displayed in the \emph{\enquote{left}} of the
 % box containing the current \mymeta{label} set by \mykey{labelwidth} key for \ics*{item*} in
-% \myenv*{enumext} and \myenv*{enumext*}. The \emph{symbol} can be in text or math mode, for
-% example \mykey{item-sym*}|={$\ast$}|.
+% \myenv*{enumext} and \myenv*{enumext*}. The \emph{symbol} can be in
+% \emph{text} or \emph{math} mode, for example \mykey{item-sym*}|={$\star$}|.
 %
 % \smallskip
 %
@@ -2470,7 +2469,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \keyexamp{mark-ref}{symbol}{\textbackslash{}textasteriskcentered}
+% \keyexamp{mark-ref}{symbol}{\textbackslash{}\textreferencemark}
 % Sets the \emph{symbol} that will be displayed by the \ics*{printkeyans}
 % command only if the \mypkg{hyperref} package is detected and the
 % \mykey{save-ref} key are active.
@@ -2628,7 +2627,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Stores \mymarg{content} in the \emph{sequence} \mymarg{store name} of
 % the form |\item*| \mymeta{content}.
 %
-% \keyexampcmd{item-sym\textcolor{MediumOrchid}{*}}{symbol}{\$\textbackslash{}star\$}
+% \keyexampcmd{item-sym\textcolor{MediumOrchid}{*}}{symbol}{not set}
 %
 % \smallskip
 %
@@ -3193,7 +3192,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsubsection*{Options for command}
 % \label{sec:optcmdforeach}
 %
-% \keyexampcmd{sep}{code}{empty}[foreachkeyans]
+% \keyexampcmd{sep}{code}{\{; \}}[foreachkeyans]
 % Establishes the \emph{separation} between \emph{\enquote{each}} \mymarg{content} stored in \emph{prop list} \mymarg{store name}.
 % For example, you can use \mykeycmd[foreachkeyans]{sep}|={\\[10pt]}| for vertical separation of stored
 % contents.
@@ -4726,7 +4725,7 @@ Some text here
 %
 % \bibitem{scontents} \textsc{González, Pablo}. \enquote{\textsf{scontents} - Stores
 % \hologo{LaTeX} contents in memory or files}. Available from
-% \textsc{ctan}, \url{https://www.ctan.org/pkg/scontents}, 2022.
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/scontents}, 2024.
 %
 % \bibitem{enumerate} The \hologo{LaTeX} Project. \enquote{\textsf{enumerate} – Enumerate
 % with redefinable labels}. Available from
@@ -9129,7 +9128,7 @@ Some text here
         show-pos   .initial:n  = false,
         show-pos   .value_required:n = true,
         mark-ref   .tl_set:N   = \l_@@_mark_ref_sym_tl,
-        mark-ref   .initial:n  = \textasteriskcentered,
+        mark-ref   .initial:n  = \textreferencemark,
         mark-ref   .value_required:n = true,
         save-ref   .bool_set:N = \l_@@_store_ref_key_bool,
         save-ref   .initial:n  = false,
@@ -10925,7 +10924,7 @@ Some text here
       {
         item-sym* .tl_set:c  = { l_@@_item_symbol_#2_tl },
         item-sym* .value_required:n = true,
-        item-sym* .initial:n  = {$\star$},
+        item-sym* .initial:n  = {\textasteriskcentered},
         item-pos* .dim_set:c  = { l_@@_item_symbol_sep_#2_dim },
         item-pos* .value_required:n = true,
       }
@@ -14669,7 +14668,7 @@ Some text here
   }
 \keys_precompile:nnN { enumext / foreach }
   {
-    before={},after={},start=1,step=1,stop=0,wrapper=#1,sep=
+    before={},after={},start=1,step=1,stop=0,wrapper=#1,sep={; }
   }
   \g_@@_foreach_default_keys_tl
 %    \end{macrocode}
