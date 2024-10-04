@@ -528,6 +528,17 @@ This work consists of the files enumext.dtx and enumext.sty.
     \regex_replace_all:nnN  { (\.) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tmpa_tl
     \textcolor{gray}{ \ttfamily \tl_use:N \l_tmpa_tl }
   }
+% \myfile{m}
+\NewDocumentCommand \myfile { m }
+  {
+    \group_begin:
+      \tl_clear:N \l_tmpa_tl
+      \tl_set:Nn \l_tmpa_tl { #1 }
+      \regex_replace_all:nnN { (\d) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tmpa_tl
+      \regex_replace_all:nnN  { (\.) } { \c{textcolor}\cB\{MediumOrchid\cE\}\cB\{\1\cE\} } \l_tmpa_tl
+      \textcolor{gray}{ \ttfamily \tl_use:N \l_tmpa_tl }
+    \group_end:
+  }
 % \myvarenv{m}
 \NewDocumentCommand \myvarenv { s m }
   {
@@ -4384,8 +4395,6 @@ Some text here
 \section{printkeyans*}
 \printkeyans*{mytest}
 
-\section{foreachkeyans}
-\foreachkeyans[wrapper={\makebox[3cm][l]{#1}}]{mytest}
 \end{document}
 \end{filecontents*}
 \IfFileExists{enumext-05.pdf}{}{\ShellEscape{arara enumext-05.tex}}
@@ -4394,37 +4403,37 @@ Some text here
 % \fi
 %
 % \begin{itemize}[topsep=0pt,partopsep=0pt]
-% \item The file |enumext-01.tex| contains the basic tests for the
+% \item The file \myfile{enumext-01.tex} contains the basic tests for the
 %   \myenv*{enumext} and \myenv*{enumet*} environments and the nesting
 %   between them plus the use of the \mykey{label}, \mykey{labelwidth},
 %   \mykey{labelsep}, \mykey{ref}, \mykey{align} and \mykey{wrap-label} keys.
 %   \IfFileExists{enumext-01.pdf}{Source file \textattachfile[color=red,print=false]{enumext-01.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-01.pdf}{\faFilePdf[regular]}}{}.%
 %
-% \item The file |enumext-01.tex| contains the tests for the \myenv*{enumext}
+% \item The file \myfile{enumext-01.tex} contains the tests for the \myenv*{enumext}
 %   and \myenv*{enumet*} environments and the support for \myenv{minipage}
 %   and \myenv{multicols} environments using the keys \mykey{columns},
 %   \mykey{columns-sep}, \mykey{mini-env}, \mykey{mini-right} and
 %   |\miniright| command. \IfFileExists{enumext-02.pdf}{Source file \textattachfile[color=red,print=false]{enumext-02.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-02.pdf}{\faFilePdf[regular]}}{}.%
 %
-% \item The file |enumext-03.tex| contains the tests for the \myenv*{enumext}
+% \item The file \myfile{enumext-03.tex} contains the tests for the \myenv*{enumext}
 %   and \myenv*{keyanspic} environments activated by the \mykey{save-ans}
 %   key together with the \mykey{save-sep} and \mykey{save-ref} keys and
 %   the |\printkeyans| command.
 %   \IfFileExists{enumext-03.pdf}{Source file \textattachfile[color=red,print=false]{enumext-03.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-03.pdf}{\faFilePdf[regular]}}{}.%
 %
-% \item The file |enumext-04.tex| contains the tests for the |\anskey|
+% \item The file \myfile{enumext-04.tex} contains the tests for the |\anskey|
 %   command and the \myenv*{anskey*} environment activated by the
 %   \mykey{save-ans} key along with the |\getkeyans| and |\printkeyans| commands.
 %   \IfFileExists{enumext-04.pdf}{Source file \textattachfile[color=red,print=false]{enumext-04.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-04.pdf}{\faFilePdf[regular]}}{}.%
 %
-% \item The file |enumext-05.tex| contains the tests for the environments
+% \item The file \myfile{enumext-05.tex} contains the tests for the environments
 %   \myenv{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} activated by the key
 %   \mykey{save-ans} together with the keys \mykey{no-store} and \mykey{show-ans}
-%   and the commands |\setenumext|, |\setenumextmeta| and |\foreachkeyans|.
+%   and the commands |\setenumext|, |\setenumextmeta| and |\printkeyans|.
 %   \IfFileExists{enumext-05.pdf}{Source file \textattachfile[color=red,print=false]{enumext-05.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-05.pdf}{\faFilePdf[regular]}}{}.%
 % \end{itemize}
@@ -4876,7 +4885,7 @@ Some text here
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-10-03}
+  {2024-10-04}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}

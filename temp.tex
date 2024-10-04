@@ -1,4 +1,145 @@
-\DocumentMetadata{lang=en-US, pdfversion=2.0, pdfstandard=ua-2, testphase={phase-III,math,table,title,firstaid}, uncompress}
+\DocumentMetadata{
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    testphase={phase-III,math,title,table,firstaid},
+    uncompress,
+  }
+\documentclass{article}
+\usepackage{unicode-math,graphicx,hyperref,enumext}
+\hypersetup
+  {
+    colorlinks = true,
+    pdftitle   = {Test tagged PDF for enumext package},
+    pdfauthor  = {Pablo González L},
+  }
+\ExplSyntaxOn
+
+% Add to prop
+\tl_new:N \l__prop_list_name_tl
+\NewDocumentCommand \addtoprop { m +m }
+  {
+    \tl_set:Nn \l__prop_list_name_tl {#1}
+    \prop_if_exist:cF { g_ \l__prop_list_name_tl _prop }
+      { \prop_new:c { g_ \l__prop_list_name_tl _prop }  }
+    \prop_gput_if_not_in:cen { g_ \l__prop_list_name_tl _prop }
+      {
+        \int_eval:n
+          { \prop_count:c { g_ \l__prop_list_name_tl _prop } + 1 }
+      }{ #2 }
+  }
+
+% foreach
+\seq_new:N  \l__foreach_print_seq
+\tl_new:N   \l__foreach_name_prop_tl
+\tl_new:N   \l__foreach_temp_tl
+\cs_generate_variant:Nn \seq_use:Nn { NV }
+
+\keys_define:nn { foreach }
+  {
+    before  .tl_set:N  = \l__foreach_before_tl,
+    after   .tl_set:N  = \l__foreach_after_tl,
+    start   .int_set:N = \l__foreach_start_int,
+    stop    .int_set:N = \l__foreach_stop_int,
+    step    .int_set:N = \l__foreach_step_int,
+    wrapper .cs_set_protected:Np = \__foreach_wrapper:n #1,
+    sep     .tl_set:N  = \l__foreach_sep_tl,
+  }
+\keys_precompile:nnN { foreach }
+  {
+    before={},after={},start=1,step=1,stop=0,wrapper=#1,sep=
+  }
+  \g_foreach_presets_tl
+
+\NewDocumentCommand \foreachinprop { +O{} m }
+  {
+    \__foreach_code:nn {#1} {#2}
+  }
+\cs_new_protected:Npn \__foreach_code:nn #1 #2
+  {
+    \tl_use:N \g_foreach_presets_tl
+    \keys_set:nn { foreach } {#1}
+    \tl_set:Nn \l__foreach_name_prop_tl {#2}
+    \seq_clear:N \l__foreach_print_seq
+    \int_compare:nNnT { \l__foreach_stop_int } = { 0 }
+      {
+        \int_set:Nn \l__foreach_stop_int
+          { \prop_count:c { g_ \l__foreach_name_prop_tl _prop } }
+      }
+    \int_step_function:nnnN
+        { \l__foreach_start_int }
+        { \l__foreach_step_int }
+        { \l__foreach_stop_int }
+        \__foreach_prop:n
+    \seq_use:NV \l__foreach_print_seq \l__foreach_sep_tl
+  }
+\cs_new_protected:Npn \__foreach_prop:n #1
+  {
+    \seq_put_right:Ne \l__foreach_print_seq
+      {
+        \exp_not:V \l__foreach_before_tl
+        % wrapper
+        \__foreach_wrapper:n
+          {
+            \prop_item:cn { g_ \l__foreach_name_prop_tl _prop }{#1}
+          }
+        \exp_not:V \l__foreach_after_tl
+      }
+  }
+
+\ExplSyntaxOff
+
+\begin{document}
+\section{Test}
+Hola $x+y$
+\addtoprop{test}{$x$}
+\addtoprop{test}{The second $y$}
+
+\addtoprop{test}{$z$}
+\addtoprop{test}{The fourth}
+
+\begin{enumerate}
+ \item Hola $3$
+\end{enumerate}
+
+%\foreachinprop[sep={\\}, before=FOO, after= BAZZ]{test} % OK
+
+%\foreachinprop[wrapper={\fbox{#1}}]{test} % OK
+
+%\foreachinprop[sep={\\}, before=FOO, after= BAZZ]{test} % OK
+
+%\foreachinprop[sep={\par}]{test} % OK
+
+%\foreachinprop[sep={\par},start=2,stop=3]{test} % OK
+\section{Test}
+\foreachinprop[wrapper=\fbox{#1}]{test} % OK
+
+%\foreachinprop[sep={\par}]{test} % OK
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \documentclass{article}
 \usepackage{enumext}
 \begin{document}
