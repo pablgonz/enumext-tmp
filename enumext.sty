@@ -180,7 +180,7 @@
 \dim_new:N  \l__enumext_anspic_mini_width_dim
 \int_new:N  \l__enumext_anspic_above_int
 \int_new:N  \l__enumext_anspic_below_int
-\bool_new:N \l__enumext_keyans_pic_star_bool
+\bool_new:N \l__enumext_anspic_label_above_bool
 \str_new:N  \l__enumext_anspic_mini_pos_str
 \skip_new:N \g__enumext_keyans_pic_parsep_skip
 \box_new:N  \l__enumext_anspic_label_box
@@ -4092,7 +4092,37 @@
       } {}
    }
 %% Internal check code for |keyanspic| environment.
-\cs_new_protected:Npn \__enumext_keyans_pic_safe_exec:nn #1 #2
+\tl_new:N \l__enumext_anspic_layout_tl
+\keys_define:nn { enumext / keyanspic }
+  {
+    label-pos .choice:,
+    label-pos / above   .code:n =
+                              \bool_set_true:N \l__enumext_anspic_label_above_bool
+                              \str_set:Nn \l__enumext_anspic_mini_pos_str { t },
+    label-pos / below   .code:n =
+                              \bool_set_false:N \l__enumext_anspic_label_above_bool
+                              \str_set:Nn \l__enumext_anspic_mini_pos_str { b },
+    label-pos / unknown .code:n =
+                              \msg_error:nneee { enumext } { unknown-choice }
+                                { label-pos } { above,~ below } { \exp_not:n {#1} },
+    label-pos  .initial:n = below,
+    label-pos  .value_required:n = true,
+    label-sep  .skip_set:N = \l__enumext_anspic_label_sep_skip,
+    label-sep  .value_required:n = true,
+    layout     .tl_set:N   = \l__enumext_anspic_layout_tl,
+    layout     .value_required:n = true,
+    layout-sep .code:n  = \keys_set:nn { enumext / keyans } { parsep = #1 },
+    layout-sep .value_required:n = true,
+    %unknown    .code:n = { \__enumext_keyans_unknown_keys:n {#1} }
+  }
+\cs_new_protected:Npn \__enumext_keyans_pic_parse_keys:n #1
+  {
+    \tl_if_novalue:nF {#1}
+      {
+        \keys_set:nn { enumext / keyanspic } {#1}
+      }
+  }
+\cs_new_protected:Nn \__enumext_keyans_pic_safe_exec:
   {
     \int_incr:N \l__enumext_keyans_pic_level_int
     \int_compare:nNnT { \l__enumext_keyans_pic_level_int } > { 1 }
@@ -4100,18 +4130,6 @@
         \msg_error:nn { enumext } { keyanspic-nested }
       }
     \__enumext_keyans_name_and_start:
-    \bool_if:nTF { #1 }
-      {
-        \bool_set_true:N \l__enumext_keyans_pic_star_bool
-        \str_set:Nn \l__enumext_anspic_mini_pos_str { t }
-      }
-      {
-        \str_set:Nn \l__enumext_anspic_mini_pos_str { b }
-      }
-    \tl_if_novalue:nF { #2 }
-      {
-        \keys_set:nn { enumext / keyans } { #2 }
-      }
   }
 \cs_new_protected:Npn \__enumext_keyans_pic_skip_abs:N #1
   {
@@ -4125,7 +4143,7 @@
     \bool_set_false:N \l__enumext_leftmargin_tmp_v_bool
     \__enumext_list_arg_two_v:
     \__enumext_keyans_pic_skip_abs:N \parsep
-    \bool_if:NF \l__enumext_keyans_pic_star_bool
+    \bool_if:NF \l__enumext_anspic_label_above_bool
       {
         \stepcounter { enumXv }
         \hbox_set:Nn \l__enumext_anspic_label_box { \l__enumext_label_v_tl }
@@ -4141,25 +4159,17 @@
     \skip_gset_eq:NN \g__enumext_keyans_pic_parsep_skip \parsep
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \skip_add:Nn \topsep { 0.5\box_dp:N \strutbox }
-    \skip_zero:N \partopsep
-    \bool_if:NF \l__enumext_keyans_pic_star_bool
-      {
-         \skip_add:Nn \topsep { \itemsep }
-      }
     \dim_zero:N  \listparindent
-    
-    %%\skip_zero:N \itemsep
+    \skip_zero:N \partopsep
+    \skip_zero:N \itemsep
   }
 %% Define |keyanspic| environment.
-\NewDocumentEnvironment{keyanspic}{ s o d() }
+\NewDocumentEnvironment{keyanspic}{ o }
   {
-    \__enumext_keyans_pic_safe_exec:nn { #1 } { #3 }
+    \__enumext_keyans_pic_safe_exec:
+    \__enumext_keyans_pic_parse_keys:n {#1}
     \begin{list} { } { \__enumext_keyans_pic_arg_two: }
-    \bool_if:NF \l__enumext_keyans_pic_star_bool
-      {
-        \vspace*{ -\dimeval{ \itemsep + \topsep } }
-      }
-     \IfDocumentMetadataTF
+    \IfDocumentMetadataTF
       {
         \tag_suspend:n {list}
       }{}
@@ -4182,11 +4192,7 @@
         \tag_resume:n {keyanspic}
         \tag_struct_begin:n {tag=L,attribute=enumerate}
       } { }
-    \tl_if_novalue:nTF { #2 }
-      {
-        \__enumext_anspic_print:e { \seq_count:N \l__enumext_anspic_args_seq }
-      }
-      { \__enumext_anspic_print:n { #2 } }
+    \__enumext_anspic_exec:
     \IfDocumentMetadataTF
       {
         \tag_suspend:n {keyanspic}
@@ -4199,7 +4205,7 @@
       } { }
     \__enumext_check_starred_cmd:n { anspic }
     \setcounter { enumXvi } { 0 }
-    \bool_if:NTF \l__enumext_keyans_pic_star_bool
+    \bool_if:NTF \l__enumext_anspic_label_above_bool
       {
         \par\addvspace{ 0.5\box_dp:N \strutbox }
       }
@@ -4231,7 +4237,7 @@
 %% Set the height and depth off body arg in dim var for |\anspic|.
 \cs_new_protected:Npn \__enumext_anspic_body_dim:n #1
   {
-    \bool_if:NF \l__enumext_keyans_pic_star_bool
+    \bool_if:NF \l__enumext_anspic_label_above_bool
       {
         \IfDocumentMetadataTF
           {
@@ -4278,7 +4284,7 @@
   {
     \stepcounter { enumXvi }
     \__enumext_anspic_body_dim:n { #3 }
-    \bool_if:NTF \l__enumext_keyans_pic_star_bool
+    \bool_if:NTF \l__enumext_anspic_label_above_bool
       {
         \__enumext_anspic_label:nn { #1 } { #2 }
       }
@@ -4290,7 +4296,6 @@
                 \l__enumext_anspic_label_htdp_dim
                 + \l__enumext_anspic_body_htdp_dim
                 + \box_dp:N \strutbox
-                + \itemsep
               }
           }
           [ 0pt ] [ 0pt ]
@@ -4305,14 +4310,14 @@
     \__enumext_anspic_start_list_tag:
     \__enumext_anspic_label_pos:nnn { #1 } { #2 } { #3 }
     \__enumext_anspic_stop_start_list_tag:
-    \\[\itemsep] #3
+    \\ #3
     \__enumext_anspic_stop_list_tag:
   }
 \cs_new_protected:Nn \__enumext_anspic_print:n
   {
     \clist_map_function:nN { #1 } \__enumext_anspic_row:n
   }
-\cs_generate_variant:Nn \__enumext_anspic_print:n { e }
+\cs_generate_variant:Nn \__enumext_anspic_print:n { e, V }
 \cs_new_protected:Nn \__enumext_anspic_row:n
   {
     \dim_set:Nn \l__enumext_anspic_mini_width_dim { \linewidth / #1 }
@@ -4336,6 +4341,16 @@
           } { }
       }
     \par
+  }
+\cs_new_protected:Nn \__enumext_anspic_exec:
+  {
+    \tl_if_empty:NTF \l__enumext_anspic_layout_tl
+      {
+        \__enumext_anspic_print:e { \seq_count:N \l__enumext_anspic_args_seq }
+      }
+      {
+        \__enumext_anspic_print:V \l__enumext_anspic_layout_tl
+      }
   }
 %% Define default item width (columns width) for |enumext*| and |keyans*| environments.
 \cs_new_protected:Nn \__enumext_starred_columns_set_vii:
