@@ -4092,7 +4092,7 @@
       } {}
    }
 %% Internal check code for |keyanspic| environment.
-\cs_new_protected:Npn \__enumext_keyans_pic_safe_exec:n #1
+\cs_new_protected:Npn \__enumext_keyans_pic_safe_exec:nn #1 #2
   {
     \int_incr:N \l__enumext_keyans_pic_level_int
     \int_compare:nNnT { \l__enumext_keyans_pic_level_int } > { 1 }
@@ -4108,6 +4108,10 @@
       {
         \str_set:Nn \l__enumext_anspic_mini_pos_str { b }
       }
+    \tl_if_novalue:nF { #2 }
+      {
+        \keys_set:nn { enumext / keyans } { #2 }
+      }
   }
 \cs_new_protected:Npn \__enumext_keyans_pic_skip_abs:N #1
   {
@@ -4116,7 +4120,7 @@
         \skip_set:Nn #1 { -#1 }
       }
   }
-\cs_new_protected:Nn \__enumext_keyans_pic_arg_two:
+\cs_new_protected:Npn \__enumext_keyans_pic_arg_two:
   {
     \bool_set_false:N \l__enumext_leftmargin_tmp_v_bool
     \__enumext_list_arg_two_v:
@@ -4133,20 +4137,29 @@
           {
             \l__enumext_anspic_label_htdp_dim + \box_dp:N \strutbox
           }
-        \skip_gset_eq:NN \g__enumext_keyans_pic_parsep_skip \parsep
       }
+    \skip_gset_eq:NN \g__enumext_keyans_pic_parsep_skip \parsep
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \skip_add:Nn \topsep { 0.5\box_dp:N \strutbox }
-    \dim_zero:N  \listparindent
     \skip_zero:N \partopsep
-    \skip_zero:N \itemsep
+    \bool_if:NF \l__enumext_keyans_pic_star_bool
+      {
+         \skip_add:Nn \topsep { \itemsep }
+      }
+    \dim_zero:N  \listparindent
+    
+    %%\skip_zero:N \itemsep
   }
 %% Define |keyanspic| environment.
-\NewDocumentEnvironment{keyanspic}{ s o }
+\NewDocumentEnvironment{keyanspic}{ s o d() }
   {
-    \__enumext_keyans_pic_safe_exec:n { #1 }
+    \__enumext_keyans_pic_safe_exec:nn { #1 } { #3 }
     \begin{list} { } { \__enumext_keyans_pic_arg_two: }
-    \IfDocumentMetadataTF
+    \bool_if:NF \l__enumext_keyans_pic_star_bool
+      {
+        \vspace*{ -\dimeval{ \itemsep + \topsep } }
+      }
+     \IfDocumentMetadataTF
       {
         \tag_suspend:n {list}
       }{}
@@ -4277,6 +4290,7 @@
                 \l__enumext_anspic_label_htdp_dim
                 + \l__enumext_anspic_body_htdp_dim
                 + \box_dp:N \strutbox
+                + \itemsep
               }
           }
           [ 0pt ] [ 0pt ]
@@ -4291,7 +4305,7 @@
     \__enumext_anspic_start_list_tag:
     \__enumext_anspic_label_pos:nnn { #1 } { #2 } { #3 }
     \__enumext_anspic_stop_start_list_tag:
-    \\ #3
+    \\[\itemsep] #3
     \__enumext_anspic_stop_list_tag:
   }
 \cs_new_protected:Nn \__enumext_anspic_print:n

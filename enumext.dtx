@@ -12303,9 +12303,15 @@ Some text here
 % implementation is adapted from the answer given by Enrico Gregorio
 % (\texttt{@egreg}) in \href{https://tex.stackexchange.com/a/577705/7832}{How to process the body of an environment and divide it by a \textbackslash macro?}.
 %
-% \begin{macro}{\@@_keyans_pic_safe_exec:n}
-%   The function \cs{@@_keyans_pic_safe_exec:n} check the \emph{starred argument} ‘|*|’
+% \begin{macro}{\@@_keyans_pic_safe_exec:nn}
+%   The function \cs{@@_keyans_pic_safe_exec:nn} check the \emph{starred argument} ‘|*|’
 %   and nested level position inside the \myenv*{enumext} environment.
+%
+% \begin{arguments}
+%    \item starred argument
+%    \item delimited argument
+% \end{arguments}
+%
 %   We will set the state of the variable \cs{l_@@_keyans_pic_star_bool}
 %   along with the value of the variable \cs{l_@@_anspic_mini_pos_str} using by |\anspic|
 %   according to the presence of the \emph{starred argument} ‘|*|’.
@@ -12313,7 +12319,7 @@ Some text here
 %% Internal check code for |keyanspic| environment.
 % \fi
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_keyans_pic_safe_exec:n #1
+\cs_new_protected:Npn \@@_keyans_pic_safe_exec:nn #1 #2
   {
     \int_incr:N \l_@@_keyans_pic_level_int
     \int_compare:nNnT { \l_@@_keyans_pic_level_int } > { 1 }
@@ -12328,6 +12334,10 @@ Some text here
       }
       {
         \str_set:Nn \l_@@_anspic_mini_pos_str { b }
+      }
+    \tl_if_novalue:nF { #2 }
+      {
+        \keys_set:nn { enumext / keyans } { #2 }
       }
   }
 %    \end{macrocode}
@@ -12350,7 +12360,7 @@ Some text here
 % \begin{macro}{\@@_keyans_pic_arg_two:}
 %   The \cs{@@_keyans_pic_arg_two:} function will be used in the
 %   \emph{second argument} of the \myenv{list} environment that defines
-%   the \myenv*{keyanspic}  environment, with this we will take the
+%   the \myenv*{keyanspic} environment, with this we will take the
 %   configuration of the \emph{\enquote{spaces}} and the \mymeta{keys}
 %   \mykey{label} and \mykey{wrap-label} from the \myenv*{keyans}
 %   environment.
@@ -12360,8 +12370,9 @@ Some text here
 %   to \enquote{false}, then copy the definition of the second list argument from the
 %   \myenv*{keyans} environment definition and make sure that |\parsep| does not have a
 %   negative value.
+%
 %    \begin{macrocode}
-\cs_new_protected:Nn \@@_keyans_pic_arg_two:
+\cs_new_protected:Npn \@@_keyans_pic_arg_two:
   {
     \bool_set_false:N \l_@@_leftmargin_tmp_v_bool
     \@@_list_arg_two_v:
@@ -12384,8 +12395,8 @@ Some text here
           {
             \l_@@_anspic_label_htdp_dim + \box_dp:N \strutbox
           }
-        \skip_gset_eq:NN \g_@@_keyans_pic_parsep_skip \parsep
       }
+    \skip_gset_eq:NN \g_@@_keyans_pic_parsep_skip \parsep
 %    \end{macrocode}
 %   Finally we adjust the value of |\leftmargin| and |\topsep| then set
 %   |\listparindent|, |\partopsep| and |\itemsep| to zero so that
@@ -12408,9 +12419,9 @@ Some text here
 %% Define |keyanspic| environment.
 % \fi
 %    \begin{macrocode}
-\NewDocumentEnvironment{keyanspic}{ s o }
+\NewDocumentEnvironment{keyanspic}{ s o d() }
   {
-    \@@_keyans_pic_safe_exec:n { #1 }
+    \@@_keyans_pic_safe_exec:nn { #1 } { #3 }
     \begin{list} { } { \@@_keyans_pic_arg_two: }
     \IfDocumentMetadataTF
       {
