@@ -12292,16 +12292,6 @@ Some text here
 %   \label{fig:keyanspic}
 % \end{figure}
 %
-% The environment \myenv*{keyanspic} will take two arguments, the first
-% \emph{starred argument} ‘|*|’ will set the position of the \mymeta{label}
-% processed by the command |\anspic| which will be \emph{\enquote{above}}
-% if present and \emph{\enquote{below}} otherwise, the second \emph{optional
-% argument} will take two values ​​separated by comma \myoarg{n° upper, n° lower}
-% and will determine the number of \myenv{minipage} environments in which
-% all arguments of |\anspic| will be printed at the \enquote{upper} and
-% \enquote{lower} within the environment, if not present these will be
-% printed on a \emph{single line}.
-%
 % \smallskip
 %
 % \begin{important}
@@ -12324,20 +12314,22 @@ Some text here
 % implementation is adapted from the answer given by Enrico Gregorio
 % (\texttt{@egreg}) in \href{https://tex.stackexchange.com/a/577705/7832}{How to process the body of an environment and divide it by a \textbackslash macro?}.
 %
-% \begin{macro}{\@@_keyans_pic_safe_exec:, \@@_keyans_pic_parse_keys:n}
-%   The function \cs{@@_keyans_pic_safe_exec:} check the \emph{starred argument} ‘|*|’
-%   and nested level position inside the \myenv*{enumext} environment.
-%
-% \begin{arguments}
-%    \item starred argument
-%    \item delimited argument
-% \end{arguments}
-%
-%   We will set the state of the variable \cs{l_@@_anspic_label_above_bool}
-%   along with the value of the variable \cs{l_@@_anspic_mini_pos_str} using by |\anspic|
-%   according to the presence of the \emph{starred argument} ‘|*|’.
+% \begin{macro}[int]{label-pos, label-sep, layout-sty, layout-sep,
+%                   layout-top,}
+%   First we define the key that allows us to process the position of the
+%   \mymeta{label} centered \enquote{above} or \enquote{below} which will be \mykey{label-pos},
+%   the vertical separation of these from \emph{drawing or tabular} will be
+%   handled with the key \mykey{label-sep}.
+%   The \emph{\enquote{layout style}} will be handled with the key
+%   \mykey{layout-sty} will take two values ​​separated by comma \mymarg{n°
+%   upper, n° lower} and will determine the number of \myenv{minipage}
+%   environments in which all arguments of |\anspic| will be printed at the
+%   \enquote{upper} and \enquote{lower} within the environments separated
+%   by the value of the key \mykey{layout-sep}. The vertical space
+%   \enquote{top} and \enquote{bottom} of the environment will be handled
+%   with the key \mykey{layout-top}.
 % \iffalse
-%% Internal check code for |keyanspic| environment.
+%% Add keys for |keyanspic| environment.
 % \fi
 %    \begin{macrocode}
 \tl_new:N \l_@@_anspic_layout_tl
@@ -12365,13 +12357,17 @@ Some text here
     layout-top .value_required:n = true,
     %unknown    .code:n = { \@@_keyans_unknown_keys:n {#1} }
   }
-\cs_new_protected:Npn \@@_keyans_pic_parse_keys:n #1
-  {
-    \tl_if_novalue:nF {#1}
-      {
-        \keys_set:nn { enumext / keyanspic } {#1}
-      }
-  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_keyans_pic_safe_exec:, \@@_keyans_pic_parse_keys:n,
+%               \@@_keyans_pic_skip_abs:N, \@@_keyans_pic_arg_two:,}
+%   The function \cs{@@_keyans_pic_safe_exec:} check the nested level
+%   position inside the \myenv*{enumext} environment.
+% \iffalse
+%% Internal check code for |keyanspic| environment.
+% \fi
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_pic_safe_exec:
   {
     \int_incr:N \l_@@_keyans_pic_level_int
@@ -12382,9 +12378,15 @@ Some text here
     \@@_keyans_name_and_start:
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_pic_skip_abs:N}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_keyans_pic_parse_keys:n #1
+  {
+    \tl_if_novalue:nF {#1}
+      {
+        \keys_set:nn { enumext / keyanspic } {#1}
+      }
+  }
+%    \end{macrocode}
 %   The function \cs{@@_keyans_pic_skip_abs:N} will return a positive
 %   value \ics{parsep}.
 %    \begin{macrocode}
@@ -12396,9 +12398,6 @@ Some text here
       }
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_keyans_pic_arg_two:}
 %   The \cs{@@_keyans_pic_arg_two:} function will be used in the
 %   \emph{second argument} of the \myenv{list} environment that defines
 %   the \myenv*{keyanspic} environment, with this we will take the
@@ -12406,12 +12405,13 @@ Some text here
 %   \mykey{label} and \mykey{wrap-label} from the \myenv*{keyans}
 %   environment.
 %
+%   \smallskip
+%
 %   The first thing we need to do is set the boolean variable
 %   \cs{l_@@_leftmargin_tmp_v_bool} handled by the \mykey{list-indent} key
 %   to \enquote{false}, then copy the definition of the second list argument from the
 %   \myenv*{keyans} environment definition and make sure that |\parsep| does not have a
 %   negative value.
-%
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_pic_arg_two:
   {
@@ -12419,7 +12419,7 @@ Some text here
     \@@_list_arg_two_v:
     \@@_keyans_pic_skip_abs:N \parsep
 %    \end{macrocode}
-%   Now we increment the |enumXv| counter of the \myenv*{keyans}
+%   Now we increment the counter |enumXv| of the \myenv*{keyans}
 %   environment and save the \emph{total height} of the \mymeta{label} in
 %   \cs{l_@@_anspic_label_htdp_dim} used by |\anspic| and we will adjust
 %   the values ​​of |\parsep| only if the \emph{starred argument} ‘|*|’ is NOT present.
@@ -12439,7 +12439,6 @@ Some text here
             + \l_@@_anspic_label_sep_skip
           }
       }
-%%%    \skip_gset_eq:NN \g_@@_keyans_pic_parsep_skip \parsep
 %    \end{macrocode}
 %   Finally we adjust the value of |\leftmargin| and |\topsep| then set
 %   |\listparindent|, |\partopsep| and |\itemsep| to zero so that

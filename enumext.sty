@@ -4112,7 +4112,7 @@
         \socket_use:nn {tagsupport/enumext/keyanspic}
       } {}
    }
-%% Internal check code for |keyanspic| environment.
+%% Add keys for |keyanspic| environment.
 \tl_new:N \l__enumext_anspic_layout_tl
 \keys_define:nn { enumext / keyanspic }
   {
@@ -4138,13 +4138,7 @@
     layout-top .value_required:n = true,
     %unknown    .code:n = { \__enumext_keyans_unknown_keys:n {#1} }
   }
-\cs_new_protected:Npn \__enumext_keyans_pic_parse_keys:n #1
-  {
-    \tl_if_novalue:nF {#1}
-      {
-        \keys_set:nn { enumext / keyanspic } {#1}
-      }
-  }
+%% Internal check code for |keyanspic| environment.
 \cs_new_protected:Nn \__enumext_keyans_pic_safe_exec:
   {
     \int_incr:N \l__enumext_keyans_pic_level_int
@@ -4153,6 +4147,13 @@
         \msg_error:nn { enumext } { keyanspic-nested }
       }
     \__enumext_keyans_name_and_start:
+  }
+\cs_new_protected:Npn \__enumext_keyans_pic_parse_keys:n #1
+  {
+    \tl_if_novalue:nF {#1}
+      {
+        \keys_set:nn { enumext / keyanspic } {#1}
+      }
   }
 \cs_new_protected:Npn \__enumext_keyans_pic_skip_abs:N #1
   {
@@ -4181,7 +4182,6 @@
             + \l__enumext_anspic_label_sep_skip
           }
       }
-%%%    \skip_gset_eq:NN \g_@@_keyans_pic_parsep_skip \parsep
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
     \skip_add:Nn \topsep { 0.5\box_dp:N \strutbox }
     \dim_zero:N  \listparindent
