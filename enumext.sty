@@ -1030,7 +1030,7 @@
             \exp_not:N \mode_leave_vertical:
             \exp_not:n { \skip_horizontal:n }
               { \dim_use:c { l__enumext_fake_item_indent_ \__enumext_level: _dim } }
-            \ignorespaces
+            \exp_not:N \ignorespaces
           }
       }
    }
@@ -1043,7 +1043,7 @@
           {
             \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_v_dim
-            \ignorespaces
+            \exp_not:N \ignorespaces
           }
       }
    }
@@ -1054,9 +1054,8 @@
       {
         \tl_set:Ne \l__enumext_fake_item_indent_vii_tl
           {
-            \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_vii_dim
-            \ignorespaces
+            \exp_not:N \ignorespaces
           }
       }
    }
@@ -1067,9 +1066,8 @@
       {
         \tl_set:Ne \l__enumext_fake_item_indent_viii_tl
           {
-            \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_viii_dim
-            \ignorespaces
+            \exp_not:N \ignorespaces
           }
       }
    }
@@ -4132,10 +4130,12 @@
     label-pos  .value_required:n = true,
     label-sep  .skip_set:N = \l__enumext_anspic_label_sep_skip,
     label-sep  .value_required:n = true,
-    layout     .tl_set:N   = \l__enumext_anspic_layout_tl,
-    layout     .value_required:n = true,
+    layout-sty .tl_set:N   = \l__enumext_anspic_layout_tl,
+    layout-sty .value_required:n = true,
     layout-sep .code:n  = \keys_set:nn { enumext / keyans } { parsep = #1 },
     layout-sep .value_required:n = true,
+    layout-top .code:n  = \keys_set:nn { enumext / keyans } { topsep = #1 },
+    layout-top .value_required:n = true,
     %unknown    .code:n = { \__enumext_keyans_unknown_keys:n {#1} }
   }
 \cs_new_protected:Npn \__enumext_keyans_pic_parse_keys:n #1
@@ -4948,13 +4948,13 @@
       \__enumext_fake_make_label_vii:n {#1}
       \__enumext_stop_start_list_tag:
       \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_vii_dim  }
-        \tl_use:N \l__enumext_after_list_args_vii_tl
         \dim_set_eq:NN \parindent \l__enumext_listparindent_vii_dim
         \skip_set_eq:NN \parskip \l__enumext_parsep_vii_skip
         \__enumext_unskip_unkern:
         \__enumext_unskip_unkern:
-        \skip_horizontal:n { -\l__enumext_listparindent_vii_dim }  \ignorespaces
+        \skip_horizontal:n { -\l__enumext_listparindent_vii_dim } \ignorespaces\noindent
         \tl_use:N \l__enumext_fake_item_indent_vii_tl
+        \tl_use:N \l__enumext_after_list_args_vii_tl
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_item_vii:
   {
@@ -5226,17 +5226,17 @@
       \__enumext_fake_make_label_viii:n {#1}
       \__enumext_stop_start_list_tag:
       \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_viii_dim  }
-        \tl_use:N \l__enumext_after_list_args_viii_tl
         \dim_set_eq:NN \parindent \l__enumext_listparindent_viii_dim
         \skip_set_eq:NN \parskip \l__enumext_parsep_viii_skip
         \__enumext_unskip_unkern:
         \__enumext_unskip_unkern:
-        \skip_horizontal:n { -\l__enumext_listparindent_viii_dim } \ignorespaces
+        \skip_horizontal:n { -\l__enumext_listparindent_viii_dim } \ignorespaces\noindent
         \tl_use:N \l__enumext_fake_item_indent_viii_tl
         \bool_if:NT \l__enumext_item_starred_viii_bool
           {
             \__enumext_keyans_show_item_opt:
           }
+        \tl_use:N \l__enumext_after_list_args_viii_tl
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_item_viii:
   {

@@ -1054,7 +1054,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \item Question with image and label below:
 %
-%  \begin{keyanspic}[label-pos=below, layout={3,2}]
+%  \begin{keyanspic}[label-pos=below, layout-sty={3,2}]
 %    \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %    \anspic{\includegraphics[scale=0.15]{example-image-b}}
 %    \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -2032,9 +2032,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{itemindent}{rigid length}{\mydim{0}pt}
 %
 % Extra \emph{horizontal indentation}, beyond \mykey{labelsep}, of the
-% \emph{\enquote{first line}} off each item. This value is applied
-% internally using |\hspace| and does not modify the value of
-% |\itemindent|.
+% \emph{\enquote{first line}} off each item. This value must be greater
+% than or equal to \mydim{0pt} and is applied internally using |\hspace|
+% without modifying the value of |\itemindent|.
 %
 % \keyexamp{rightmargin}{rigid length}{\mydim{0}pt}
 % Set the \emph{horizontal space} between the right margin of the environment and the
@@ -2045,10 +2045,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{listparindent}{rigid length}{\mydim{0}pt}
-% Sets the \emph{horizontal space} indentation, beyond
-% \mykey{list-indent}, for second and subsequent paragraphs within a list
-% item. Internally sets the value of \ics{listparindent} for the current
-% level.
+% Sets the \emph{horizontal space} indentation, beyond \mykey{list-indent},
+% for second and subsequent paragraphs within a list item. Internally
+% sets the value of \ics{listparindent} for the current level.
 %
 % \smallskip
 %
@@ -3083,7 +3082,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \begin{enumext}[save-ans=test,show-ans,nosep]
   \item Question with images.
 
-    \begin{keyanspic}[layout={3,2}]
+    \begin{keyanspic}[layout-sty={3,2}]
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
       \anspic{\includegraphics[scale=0.15]{example-image-b}}
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3093,7 +3092,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 
   \item Question with images.
 
-    \begin{keyanspic}[label-pos=above, layout={3,2}]
+    \begin{keyanspic}[label-pos=above, layout-sty={3,2}]
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
       \anspic{\includegraphics[scale=0.15]{example-image-b}}
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3118,7 +3117,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{enumext}[save-ans=test,show-ans=true,nosep, before= {\setenumext[keyans]{nosep,parsep=3mm} }]
 % \item Question with images.
-%    \begin{keyanspic}[layout={3,2}]
+%    \begin{keyanspic}[layout-sty={3,2}]
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-b}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3126,7 +3125,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
 %    \end{keyanspic}
 % \item Question with images.
-%    \begin{keyanspic}[label-pos=above, layout={3,2}]
+%    \begin{keyanspic}[label-pos=above, layout-sty={3,2}]
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-b}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3673,7 +3672,7 @@ $ pdfdetach -saveall enumext.pdf
 \end{keyans}
 
 \item Question with image and label below:
-\begin{keyanspic}[layout={3,2}]
+\begin{keyanspic}[layout-sty={3,2}]
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
 \anspic{\includegraphics[scale=0.15]{example-image-b}}
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -4014,12 +4013,12 @@ Some ref here \ref{A}
 
 Some text here
 
-\begin{enumext}[columns=2,labelwidth=1cm,labelsep=0.25cm,align=left, wrap-label=\textbf{#1)}, label=(\arabic*.]
+\begin{enumext*}[columns=2,labelwidth=1cm,labelsep=0.25cm,align=left, wrap-label=\textbf{#1)}, label=(\arabic*.]
   \item This text is in the first level.\label{B}
   \item[X] This text is in the first level.
   \item* This text is in the first level.
   \item This text is in the first level.
-\end{enumext}
+\end{enumext*}
 
 Some ref here \ref{B}
 
@@ -4183,7 +4182,7 @@ Some text here
 
 \begin{enumext}[save-ans=test,save-sep={ },save-ref = true]
   \item Question with images.
-    \begin{keyanspic}[layout={3,2}]
+    \begin{keyanspic}[layout-sty={3,2}]
       \anspic{\includegraphics[scale=0.30, alt={Un pato de color amarillo}]{example-image-duck}}
       \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula A}]{example-image-a}}
       \anspic*{\includegraphics[scale=0.15, alt={Una letra mayuscula B}]{example-image-b}}
@@ -4191,7 +4190,7 @@ Some text here
       \anspic{\includegraphics[scale=0.15, alt={La palabra Image}]{example-image}}
     \end{keyanspic}
    \item Question with images.\label{dos}
-    \begin{keyanspic}[label-pos=above, layout={3,2}]
+    \begin{keyanspic}[label-pos=above, layout-sty={3,2}]
       \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula A}]{example-image-a}}
       \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula B}]{example-image-b}}
       \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula C}]{example-image-c}}
@@ -4363,7 +4362,7 @@ Some text here
     \item value
   \end{keyans}
 \item Question with image and label above:
-  \begin{keyanspic}[label-pos=above, layout={3,2}]
+  \begin{keyanspic}[label-pos=above, layout-sty={3,2}]
     \anspic*[La letra A]{\includegraphics[scale=0.15, alt={Una letra mayuscula A}]{example-image-a}}
     \anspic{\includegraphics[scale=0.15, alt={Una letra mayuscula B}]{example-image-b}}
     \anspic{\includegraphics[scale=0.30, alt={Un pato de color amarillo}]{example-image-duck}}
@@ -6905,7 +6904,7 @@ Some text here
             \exp_not:N \mode_leave_vertical:
             \exp_not:n { \skip_horizontal:n }
               { \dim_use:c { l_@@_fake_item_indent_ \@@_level: _dim } }
-            \ignorespaces
+            \exp_not:N \ignorespaces
           }
       }
    }
@@ -6918,7 +6917,7 @@ Some text here
           {
             \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l_@@_fake_item_indent_v_dim
-            \ignorespaces
+            \exp_not:N \ignorespaces
           }
       }
    }
@@ -6929,9 +6928,8 @@ Some text here
       {
         \tl_set:Ne \l_@@_fake_item_indent_vii_tl
           {
-            \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l_@@_fake_item_indent_vii_dim
-            \ignorespaces
+            \exp_not:N \ignorespaces
           }
       }
    }
@@ -6942,9 +6940,8 @@ Some text here
       {
         \tl_set:Ne \l_@@_fake_item_indent_viii_tl
           {
-            \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l_@@_fake_item_indent_viii_dim
-            \ignorespaces
+            \exp_not:N \ignorespaces
           }
       }
    }
@@ -12229,13 +12226,13 @@ Some text here
 %   \begin{tikzpicture}[line cap=round,line join=round,x=0.8cm,y=0.8cm,every node/.style={font=\footnotesize}]
 %     % space above
 %     \draw[color=white] (7.0,6.10) rectangle (17.5,6.5) node[pos=.5,text=black]%
-%       { \textcolor{blue}{\texttt{space above keyanspic}} };
+%       { \textcolor{optcolor}{\texttt{layout-top}} };
 %     % space between
 %     \draw[color=white] (7.0,4.5) rectangle (17.5,4.9) node[pos=.5,text=black]%
-%       { \textcolor{blue}{\texttt{\textbackslash{}parsep [+\textbackslash{}box\_dp:N \textbackslash{}strutbox]}} };
+%       { \textcolor{optcolor}{\texttt{layout-sep}} };
 %     % space below
 %     \draw[color=white] (7.0,2.9) rectangle (17.5,3.3) node[pos=.5,text=black]%
-%       { \textcolor{blue}{\texttt{space below keyanspic}} };
+%       { \textcolor{optcolor}{\texttt{layout-top}} };
 %     % labelwidth
 %     \draw[<->,color=gray] (2.0,7.0) --node[above,text=optcolor]{\vphantom{p}\texttt{labelwidth}} (5.0,7.0);
 %     \draw[<->,color=gray] (5.0,7.0) --node[above,text=optcolor]{\texttt{labelsep}} (7.0,7.0);
@@ -12360,10 +12357,12 @@ Some text here
     label-pos  .value_required:n = true,
     label-sep  .skip_set:N = \l_@@_anspic_label_sep_skip,
     label-sep  .value_required:n = true,
-    layout     .tl_set:N   = \l_@@_anspic_layout_tl,
-    layout     .value_required:n = true,
+    layout-sty .tl_set:N   = \l_@@_anspic_layout_tl,
+    layout-sty .value_required:n = true,
     layout-sep .code:n  = \keys_set:nn { enumext / keyans } { parsep = #1 },
     layout-sep .value_required:n = true,
+    layout-top .code:n  = \keys_set:nn { enumext / keyans } { topsep = #1 },
+    layout-top .value_required:n = true,
     %unknown    .code:n = { \@@_keyans_unknown_keys:n {#1} }
   }
 \cs_new_protected:Npn \@@_keyans_pic_parse_keys:n #1
@@ -13674,13 +13673,13 @@ Some text here
 %   equal to |\parskip|.
 %    \begin{macrocode}
       \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
-        \tl_use:N \l_@@_after_list_args_vii_tl
         \dim_set_eq:NN \parindent \l_@@_listparindent_vii_dim
         \skip_set_eq:NN \parskip \l_@@_parsep_vii_skip
         \@@_unskip_unkern:
         \@@_unskip_unkern:
-        \skip_horizontal:n { -\l_@@_listparindent_vii_dim }  \ignorespaces
+        \skip_horizontal:n { -\l_@@_listparindent_vii_dim } \ignorespaces\noindent
         \tl_use:N \l_@@_fake_item_indent_vii_tl
+        \tl_use:N \l_@@_after_list_args_vii_tl
    }
 %    \end{macrocode}
 %   The \cs{@@_stop_item_vii:} function will finish the fetching |\item|
@@ -14168,17 +14167,17 @@ Some text here
       \@@_fake_make_label_viii:n {#1}
       \@@_stop_start_list_tag:
       \@@_minipage:w [ t ]{ \l_@@_joined_width_viii_dim  }
-        \tl_use:N \l_@@_after_list_args_viii_tl
         \dim_set_eq:NN \parindent \l_@@_listparindent_viii_dim
         \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
         \@@_unskip_unkern:
         \@@_unskip_unkern:
-        \skip_horizontal:n { -\l_@@_listparindent_viii_dim } \ignorespaces
+        \skip_horizontal:n { -\l_@@_listparindent_viii_dim } \ignorespaces\noindent
         \tl_use:N \l_@@_fake_item_indent_viii_tl
         \bool_if:NT \l_@@_item_starred_viii_bool
           {
             \@@_keyans_show_item_opt:
           }
+        \tl_use:N \l_@@_after_list_args_viii_tl
    }
 \cs_new_protected_nopar:Nn \@@_stop_item_viii:
   {
