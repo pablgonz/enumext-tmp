@@ -1054,11 +1054,9 @@
       {
         \tl_set:Ne \l__enumext_fake_item_indent_vii_tl
           {
-            %\exp_not:N \mode_leave_vertical:
-            %\exp_not:N \unskip
-            %\unskip
+            \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_vii_dim
-            %\exp_not:N \ignorespaces
+            \ignorespaces
           }
       }
    }
@@ -1071,7 +1069,7 @@
           {
             \exp_not:N \mode_leave_vertical:
             \exp_not:N \skip_horizontal:N \l__enumext_fake_item_indent_viii_dim
-            \exp_not:N \ignorespaces
+            \ignorespaces
           }
       }
    }
@@ -3213,7 +3211,7 @@
           { \bool_if_p:N \l__enumext_show_answer_bool }
           { \bool_if_p:N \l__enumext_show_position_bool }
           {
-            \__enumext_keyans_wrapper_opt:n { \l__enumext_store_current_opt_arg_tl } %%\c_space_tl\ignorespaces
+            \__enumext_keyans_wrapper_opt:n { \l__enumext_store_current_opt_arg_tl } \c_space_tl
           }
       }
   }
@@ -4888,9 +4886,8 @@
 %% Fake \makelabel definition for |enumext*| environment.
 \cs_new_protected_nopar:Npn \__enumext_fake_make_label_vii:n #1
   {
-    \legacy_if:nTF { @noitemarg }
+    \legacy_if:nT { @noitemarg }
       {
-        \unskip
         \legacy_if_set_false:n { @noitemarg }
         \legacy_if:nT { @nmbrlist }
           {
@@ -4908,9 +4905,6 @@
                 \bool_set_true:N \l__enumext_item_number_bool
               }
           }
-      }
-      {
-        \unskip
       }
     \bool_if:NT \l__enumext_item_starred_vii_bool
       {
@@ -4933,7 +4927,6 @@
             \__enumext_wrapper_label_vii:n {#1}
           }
           { #1 }
-          
       }
     \skip_horizontal:N \l__enumext_labelsep_vii_dim \ignorespaces
   }
@@ -4955,16 +4948,16 @@
       \__enumext_fake_make_label_vii:n {#1}
       \__enumext_stop_start_list_tag:
       \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_vii_dim  }
-        %\tl_use:N \l__enumext_after_list_args_vii_tl
-        \unskip\unskip\unskip\unskip\unskip
-        \tl_use:N \l__enumext_fake_item_indent_vii_tl \unskip\unskip%%%\ignorespaces  
+        \tl_use:N \l__enumext_after_list_args_vii_tl
         \dim_set_eq:NN \parindent \l__enumext_listparindent_vii_dim
         \skip_set_eq:NN \parskip \l__enumext_parsep_vii_skip
-        \unskip\unskip\unskip\unskip\unskip\unskip\unskip\unskip
+        \__enumext_unskip_unkern:
+        \__enumext_unskip_unkern:
+        \skip_horizontal:n { -\l__enumext_listparindent_vii_dim }  \ignorespaces
+        \tl_use:N \l__enumext_fake_item_indent_vii_tl
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_item_vii:
   {
-      \unskip\unskip\unskip\unskip
       \__enumext_endminipage:
     \__enumext_stop_list_tag:n {enumext*}
     \hbox_set_end:
@@ -5094,9 +5087,7 @@
     \__enumext_stop_item_tmp_viii:
     \int_incr:N \l__enumext_item_column_pos_viii_int
     \int_gincr:N \g__enumext_item_count_all_viii_int
-    
     \__enumext_item_peek_args_viii:
-    %}
   }
 %% Peek argument for \item(number)*[opt] for |keyans*| environment.
 \cs_new_protected:Nn \__enumext_item_peek_args_viii:
@@ -5120,8 +5111,7 @@
     \peek_meaning:NTF [
       {
         \bool_set_eq:NN \l__enumext_wrap_label_viii_bool \l__enumext_wrap_label_opt_viii_bool
-        \legacy_if_set_false:n { @noitemarg }
-        \__enumext_start_item_viii:w%%% 
+        \__enumext_start_item_viii:w
       }
       {
         \bool_set_true:N \l__enumext_wrap_label_viii_bool
@@ -5158,7 +5148,7 @@
 \cs_new_protected:Npn \__enumext_starred_item_viii_aux_ii:w
   {
     \legacy_if_set_true:n { @noitemarg }
-    \__enumext_start_item_viii:w [ \l__enumext_label_viii_tl ] \ignorespaces%%\unskip\unskip\unskip
+    \__enumext_start_item_viii:w [ \l__enumext_label_viii_tl ] \ignorespaces
   }
 %% Set \item*[content] for |keyans*| environment.
 \cs_new_protected:Nn \__enumext_starred_item_exec:
@@ -5237,18 +5227,16 @@
       \__enumext_stop_start_list_tag:
       \__enumext_minipage:w [ t ]{ \l__enumext_joined_width_viii_dim  }
         \tl_use:N \l__enumext_after_list_args_viii_tl
-        \bool_if:NT \l__enumext_item_starred_viii_bool
-          {
-            \tl_use:N \l__enumext_fake_item_indent_viii_tl%%\ignorespaces%%\unskip
-            \__enumext_keyans_show_item_opt: \space
-            \skip_horizontal:n { -\l__enumext_fake_item_indent_viii_dim  }%%%\ignorespaces
-          }
-          {
-            \tl_use:N \l__enumext_fake_item_indent_viii_tl \ignorespaces
-          }
         \dim_set_eq:NN \parindent \l__enumext_listparindent_viii_dim
         \skip_set_eq:NN \parskip \l__enumext_parsep_viii_skip
-        
+        \__enumext_unskip_unkern:
+        \__enumext_unskip_unkern:
+        \skip_horizontal:n { -\l__enumext_listparindent_viii_dim } \ignorespaces
+        \tl_use:N \l__enumext_fake_item_indent_viii_tl
+        \bool_if:NT \l__enumext_item_starred_viii_bool
+          {
+            \__enumext_keyans_show_item_opt:
+          }
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_item_viii:
   {

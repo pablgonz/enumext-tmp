@@ -13675,9 +13675,12 @@ Some text here
 %    \begin{macrocode}
       \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
         \tl_use:N \l_@@_after_list_args_vii_tl
-        \tl_use:N \l_@@_fake_item_indent_vii_tl
         \dim_set_eq:NN \parindent \l_@@_listparindent_vii_dim
         \skip_set_eq:NN \parskip \l_@@_parsep_vii_skip
+        \@@_unskip_unkern:
+        \@@_unskip_unkern:
+        \skip_horizontal:n { -\l_@@_listparindent_vii_dim }  \ignorespaces
+        \tl_use:N \l_@@_fake_item_indent_vii_tl
    }
 %    \end{macrocode}
 %   The \cs{@@_stop_item_vii:} function will finish the fetching |\item|
@@ -14166,25 +14169,16 @@ Some text here
       \@@_stop_start_list_tag:
       \@@_minipage:w [ t ]{ \l_@@_joined_width_viii_dim  }
         \tl_use:N \l_@@_after_list_args_viii_tl
-%    \end{macrocode}
-%   The implementation of |\item*|\myoarg{content} with the \mykey{itemindent}
-%   and \mykey{wrap-opt} keys calls the function \cs{@@_keyans_show_item_opt:}
-%   which shifts \mykey{itemindent} key to the right.
-%    \begin{macrocode}
-        \bool_if:NT \l_@@_item_starred_viii_bool
-          {
-            \tl_use:N \l_@@_fake_item_indent_viii_tl
-            \@@_keyans_show_item_opt:
-            \skip_horizontal:n
-              {
-                -\l_@@_fake_item_indent_viii_dim %%%- \l_@@_labelsep_viii_dim
-              }
-          }
-          {
-            \tl_use:N \l_@@_fake_item_indent_viii_tl
-          }
         \dim_set_eq:NN \parindent \l_@@_listparindent_viii_dim
         \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
+        \@@_unskip_unkern:
+        \@@_unskip_unkern:
+        \skip_horizontal:n { -\l_@@_listparindent_viii_dim } \ignorespaces
+        \tl_use:N \l_@@_fake_item_indent_viii_tl
+        \bool_if:NT \l_@@_item_starred_viii_bool
+          {
+            \@@_keyans_show_item_opt:
+          }
    }
 \cs_new_protected_nopar:Nn \@@_stop_item_viii:
   {
