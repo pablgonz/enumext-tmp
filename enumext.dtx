@@ -6146,6 +6146,27 @@ Some text here
 %
 % \subsection{Setting keys associated with label}\label{key:label}
 %
+% When \emph{tagged} \texttt{PDF} is active |\makelabel| is redefined using
+% |\makebox| to work correctly (\S\ref{env:item-starred-enumext}). From
+% the user side it is convenient to have a key that allows using this
+% redefinition with |\makebox| without having |\IfDocumentMetadataTF| active.
+%
+% \begin{macro}[int]{mode-box}
+%   We define the key \mykey{mode-box} only for the \emph{\enquote{first level}}
+%   of \myenv*{enumext} environment.
+% \iffalse
+%% Add |mode-box| key only on first level off |enumext| environment.
+% \fi
+%    \begin{macrocode}
+\keys_define:nn { enumext /  level-1 }
+  {
+    mode-box .bool_set:N = \l_@@_mode_box_bool,
+    mode-box .initial:n  = false,
+    mode-box .value_forbidden:n = true,
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[int]{font, labelsep, labelwidth, wrap-label,wrap-label*}
 %   Definition of keys \mykey{font}, \mykey{labelsep}, \mykey{labelwidth},
 %   \mykey{wrap-label} and \mykey{wrap-label*} keys for \myenv*{enumext}
@@ -6180,16 +6201,17 @@ Some text here
 % \end{macro}
 %
 % \begin{important}*
-%    In this point, the following are set \myvarenv{__@@_wrapper_label_X:n} which
-%    will be used by \cs{@@_make_label:} for the different levels of the
-%    \myenv*{enumext} environment and is set to \myvarenv{__@@_wrapper_label_v:n}
-%    which will be used by \cs{@@_keyans_make_label:} for \myenv*{keyans} and \myenv*{keyanspic}
-%    environments.
+%   In this point, the following are set \myvarenv{__@@_wrapper_label_X:n} which
+%   will be used by \cs{@@_make_label:} for the different levels of the
+%   \myenv*{enumext} environment and is set to \myvarenv{__@@_wrapper_label_v:n}
+%   which will be used by \cs{@@_keyans_make_label:} for \myenv*{keyans} and \myenv*{keyanspic}
+%   environments.
 % \end{important}
 %
 % \begin{macro}[int]{align}
-%   The \mykey{align} key is implemented differently for
-%   \emph{\enquote{starred}} and \emph{\enquote{non starred}} environments.
+%   The \mykey{align} key is implemented differently for \emph{\enquote{starred}}
+%   and \emph{\enquote{non starred}} environments. For compatibility with
+%   \emph{tagged} \texttt{PDF} we must set \myvarenv{l__@@_align_label_pos_X_str}. 
 % \iffalse
 %% Add |align| key for |enumext| and |keyans| environments.
 % \fi
@@ -6230,15 +6252,6 @@ Some text here
   }
   { \@@_tmp:nn #1 }
 %    \end{macrocode}
-%
-% \smallskip
-%
-% \begin{important}
-%  For compatibility with \hologo{LaTeX} \emph{tagged} \texttt{PDF} we
-%  must set \myvarenv{l__@@_align_label_pos_X_str}. When \emph{tagged}
-%  \texttt{PDF} is active |\makelabel| is redefined and the only way to
-%  get the \mykey{align} key to work correctly is by using |\makebox|.
-% \end{important}
 %
 % \smallskip
 %
@@ -6730,9 +6743,9 @@ Some text here
 % apply |\vspace{-\baselineskip}| and set |\topsep=|\mydim{0pt} for
 % the \emph{\enquote{first level}} of the nested \myenv*{enumext} environment.
 %
-% \begin{macro}[int]{base-fix}
-%     We define the key \mykey{base-fix} only for the \emph{\enquote{first level}}
-%     of \myenv*{enumext} environment.
+% \begin{macro}[int]{base-fix, \@@_nested_base_line_fix:}
+%   We define the key \mykey{base-fix} only for the \emph{\enquote{first level}}
+%   of \myenv*{enumext} environment.
 % \iffalse
 %% Add |base-fix| key only on first level off |enumext| environment.
 % \fi
@@ -6744,9 +6757,6 @@ Some text here
     base-fix .value_forbidden:n = true,
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{\@@_nested_base_line_fix:}
 %   The function \cs{@@_nested_base_line_fix:} passed to the \cs{@@_parse_keys:n}
 %   function in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext})
 %   will be responsible for applying the \emph{baseline correction} and
@@ -10836,12 +10846,10 @@ Some text here
 %
 % \medskip
 %
-% \begin{important}
 %  When \emph{tagged} \texttt{PDF} is active |\makelabel| is redefined as
 %  |\hss #1| and the only way to get the \mykey{align} key to work
 %  correctly is by using |\makebox|. The solution here is to redefine
 %  |\makelabel| conditionally using |\IfDocumentMetadataTF|.
-% \end{important}
 %
 % \begin{macro}{\@@_make_label:,\@@_make_label_std:,\@@_make_label_box:}
 %   The function \cs{@@_make_label:} redefine \ics{makelabel} for the keys \mykey{align}, \mykey{font},
@@ -10858,7 +10866,15 @@ Some text here
       {
         \@@_make_label_box:
       }
-      { \@@_make_label_std: }
+      {
+        \bool_if:NTF \l_@@_mode_box_bool
+          {
+             \@@_make_label_box:
+          }
+          {
+             \@@_make_label_std:
+          }
+      }
   }
 %    \end{macrocode}
 %   Standard definition when |\DocumentMetadata| is not active.
@@ -11159,7 +11175,15 @@ Some text here
       {
         \@@_keyans_make_label_box:
       }
-      { \@@_keyans_make_label_std: }
+      {
+        \bool_if:NTF \l_@@_mode_box_bool
+          {
+            \@@_keyans_make_label_box:
+          }
+          {
+            \@@_keyans_make_label_std:
+          }
+      }
   }
 %    \end{macrocode}
 %   Standard definition when |\DocumentMetadata| is not active.
@@ -12411,10 +12435,12 @@ Some text here
           }
         \skip_add:Nn \parsep
           {
-            \l_@@_anspic_label_htdp_dim + \box_dp:N \strutbox
+            \l_@@_anspic_label_htdp_dim
+            + \box_dp:N \strutbox
+            + \l_@@_anspic_label_sep_skip
           }
       }
-    \skip_gset_eq:NN \g_@@_keyans_pic_parsep_skip \parsep
+%%%    \skip_gset_eq:NN \g_@@_keyans_pic_parsep_skip \parsep
 %    \end{macrocode}
 %   Finally we adjust the value of |\leftmargin| and |\topsep| then set
 %   |\listparindent|, |\partopsep| and |\itemsep| to zero so that
@@ -12492,7 +12518,15 @@ Some text here
         \par\addvspace{ 0.5\box_dp:N \strutbox }
       }
       {
-        \par\addvspace{ \g_@@_keyans_pic_parsep_skip }
+        \par
+        \addvspace
+          {
+            \dim_eval:n
+              {
+                \l_@@_anspic_label_htdp_dim + \box_ht_plus_dp:N \strutbox
+                + \l_@@_anspic_label_sep_skip + \l_@@_topsep_v_skip
+              } 
+          }
       }
     %\bool_set_false:N \l_@@_store_active_bool
   }
@@ -12627,6 +12661,7 @@ Some text here
                 \l_@@_anspic_label_htdp_dim
                 + \l_@@_anspic_body_htdp_dim
                 + \box_dp:N \strutbox
+                + \l_@@_anspic_label_sep_skip
               }
           }
           [ 0pt ] [ 0pt ]
@@ -12651,7 +12686,13 @@ Some text here
     \@@_anspic_start_list_tag:
     \@@_anspic_label_pos:nnn { #1 } { #2 } { #3 }
     \@@_anspic_stop_start_list_tag:
-    \\ #3
+    \bool_if:NTF \l_@@_anspic_label_above_bool
+      {
+        \\[\l_@@_anspic_label_sep_skip] #3
+      }
+      {
+        \\ #3
+      }
     \@@_anspic_stop_list_tag:
   }
 %    \end{macrocode}
@@ -13464,7 +13505,7 @@ Some text here
       {
         \bool_set_true:N \l_@@_wrap_label_vii_bool
         \legacy_if_set_true:n { @noitemarg }
-        \@@_start_item_vii:w [ \l_@@_label_vii_tl ]
+        \@@_start_item_vii:w [ \l_@@_label_vii_tl ] \ignorespaces
       }
   }
 %    \end{macrocode}
@@ -13495,14 +13536,14 @@ Some text here
       {
         \dim_set_eq:NN \l_@@_item_symbol_sep_vii_dim \l_@@_labelsep_vii_dim
         \legacy_if_set_true:n { @noitemarg }
-        \@@_start_item_vii:w [ \l_@@_label_vii_tl ]
+        \@@_start_item_vii:w [ \l_@@_label_vii_tl ] \ignorespaces
       }
   }
 \cs_new_protected:Npn \@@_starred_item_vii_aux_iii:w [#1]
   {
     \dim_set:Nn \l_@@_item_symbol_sep_vii_dim {#1}
     \legacy_if_set_true:n { @noitemarg }
-    \@@_start_item_vii:w [ \l_@@_label_vii_tl ]
+    \@@_start_item_vii:w [ \l_@@_label_vii_tl ] \ignorespaces
   }
 %    \end{macrocode}
 % \end{macro}
@@ -13966,7 +14007,7 @@ Some text here
       {
         \bool_set_true:N \l_@@_wrap_label_viii_bool
         \legacy_if_set_true:n { @noitemarg }
-        \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
+        \@@_start_item_viii:w [ \l_@@_label_viii_tl ] \ignorespaces
       }
   }
 %    \end{macrocode}
@@ -14016,7 +14057,7 @@ Some text here
 \cs_new_protected:Npn \@@_starred_item_viii_aux_ii:w
   {
     \legacy_if_set_true:n { @noitemarg }
-    \@@_start_item_viii:w [ \l_@@_label_viii_tl ]
+    \@@_start_item_viii:w [ \l_@@_label_viii_tl ] \ignorespaces
   }
 %    \end{macrocode}
 %   The function \cs{@@_starred_item_exec:} will be in charge of storing
@@ -14136,7 +14177,7 @@ Some text here
             \@@_keyans_show_item_opt:
             \skip_horizontal:n
               {
-                -\l_@@_fake_item_indent_viii_dim - \l_@@_labelsep_viii_dim
+                -\l_@@_fake_item_indent_viii_dim %%%- \l_@@_labelsep_viii_dim
               }
           }
           {
