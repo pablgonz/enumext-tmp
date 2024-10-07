@@ -6210,7 +6210,7 @@ Some text here
 % \begin{macro}[int]{align}
 %   The \mykey{align} key is implemented differently for \emph{\enquote{starred}}
 %   and \emph{\enquote{non starred}} environments. For compatibility with
-%   \emph{tagged} \texttt{PDF} we must set \myvarenv{l__@@_align_label_pos_X_str}. 
+%   \emph{tagged} \texttt{PDF} we must set \myvarenv{l__@@_align_label_pos_X_str}.
 % \iffalse
 %% Add |align| key for |enumext| and |keyans| environments.
 % \fi
@@ -12512,7 +12512,7 @@ Some text here
               {
                 \l_@@_anspic_label_htdp_dim + \box_ht_plus_dp:N \strutbox
                 + \l_@@_anspic_label_sep_skip + \l_@@_topsep_v_skip
-              } 
+              }
           }
       }
   }
@@ -13449,10 +13449,10 @@ Some text here
   }
 %    \end{macrocode}
 %   The function \cs{@@_item_peek_args_vii:} will handle the \ics*{item}\myparg{number}.
-%   Look for the argument \enquote{\textcolor{MediumOrchid}{\ttfamily (}}, if it is
-%   present we will call the function \cs{@@_joined_item_vii:w} \myparg{number}, which is in charge of joining the item's
-%   in the same row, in case they are not present we will set the default
-%   value \textcolor{gray}{\ttfamily(\mydim{1})}.
+%   Look for the argument \enquote{\textcolor{MediumOrchid}{\ttfamily (}},
+%   if it is present we will call the function \cs{@@_joined_item_vii:w} \myparg{number},
+%   which is in charge of joining the item's in the same row, in case they
+%   are not present we will set the default value \textcolor{gray}{\ttfamily(\mydim{1})}.
 % \iffalse
 %% Peek argument for \item()*[][] for |enumext*| environment.
 % \fi
@@ -13649,7 +13649,9 @@ Some text here
     \cs_set_eq:NN \@@_stop_item_tmp_vii: \@@_stop_item_vii:
     \hbox_set_to_wd:Nnw \l_@@_item_text_vii_box
       {
-        \l_@@_joined_width_vii_dim + \l_@@_labelwidth_vii_dim + \l_@@_labelsep_vii_dim
+        \l_@@_joined_width_vii_dim
+        + \l_@@_labelwidth_vii_dim
+        + \l_@@_labelsep_vii_dim
       }
 %    \end{macrocode}
 %   If |\DocumentMetadata| is not active and the state of the variable
@@ -13671,17 +13673,30 @@ Some text here
       \@@_fake_make_label_vii:n {#1}
       \@@_stop_start_list_tag:
 %    \end{macrocode}
-%   Finally we open the \myenv{minipage} environment, capture the \emph{\enquote{item content}}
-%   and execute \mykey{first} and \mykey{itemindent} keys, then \mykey{listparindent}
-%   key which will be equal to |\parindent|, then \mykey{parsep} key which will be
-%   equal to |\parskip|.
+%   Finally we open the \myenv{minipage} environment, capture the
+%   \emph{\enquote{item content}}, make |\parindent| take the value of the
+%   key \mykey{listparindent} and |\parskip| take the value of the key
+%   \mykey{parsep}, then execute the keys \mykey{itemindent} and
+%   \mykey{first}.
+%
+%   \smallskip
+%
+% \begin{important}*
+%  Here the use of |\unskip| and |\skip_horizontal:n| with the value of
+%  \mykey{listparindent} is necessary, otherwise an unwanted space is
+%  created when using |\item|\myoarg{opt} and the value passed to the key
+%  \mykey{itemindent} is incremented.
+% \end{important}
+%
+%   \smallskip
+%
 %    \begin{macrocode}
       \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
         \dim_set_eq:NN \parindent \l_@@_listparindent_vii_dim
         \skip_set_eq:NN \parskip \l_@@_parsep_vii_skip
         \@@_unskip_unkern:
         \@@_unskip_unkern:
-        \skip_horizontal:n { -\l_@@_listparindent_vii_dim } \ignorespaces\noindent
+        \skip_horizontal:n { -\l_@@_listparindent_vii_dim } \ignorespaces
         \tl_use:N \l_@@_fake_item_indent_vii_tl
         \tl_use:N \l_@@_after_list_args_vii_tl
    }
@@ -13757,6 +13772,8 @@ Some text here
   }
 %    \end{macrocode}
 % \end{macro}
+%
+% \smallskip
 %
 % As we don't want our check to be executed \mykey{check-ans} by levels
 % but on the complete list, we will take it out of the \myenv*{enumext*}
@@ -14175,7 +14192,7 @@ Some text here
         \skip_set_eq:NN \parskip \l_@@_parsep_viii_skip
         \@@_unskip_unkern:
         \@@_unskip_unkern:
-        \skip_horizontal:n { -\l_@@_listparindent_viii_dim } \ignorespaces\noindent
+        \skip_horizontal:n { -\l_@@_listparindent_viii_dim } \ignorespaces
         \tl_use:N \l_@@_fake_item_indent_viii_tl
         \bool_if:NT \l_@@_item_starred_viii_bool
           {

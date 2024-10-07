@@ -4935,7 +4935,9 @@
     \cs_set_eq:NN \__enumext_stop_item_tmp_vii: \__enumext_stop_item_vii:
     \hbox_set_to_wd:Nnw \l__enumext_item_text_vii_box
       {
-        \l__enumext_joined_width_vii_dim + \l__enumext_labelwidth_vii_dim + \l__enumext_labelsep_vii_dim
+        \l__enumext_joined_width_vii_dim
+        + \l__enumext_labelwidth_vii_dim
+        + \l__enumext_labelsep_vii_dim
       }
      \IfDocumentMetadataTF { }
        {
@@ -4952,7 +4954,7 @@
         \skip_set_eq:NN \parskip \l__enumext_parsep_vii_skip
         \__enumext_unskip_unkern:
         \__enumext_unskip_unkern:
-        \skip_horizontal:n { -\l__enumext_listparindent_vii_dim } \ignorespaces\noindent
+        \skip_horizontal:n { -\l__enumext_listparindent_vii_dim } \ignorespaces
         \tl_use:N \l__enumext_fake_item_indent_vii_tl
         \tl_use:N \l__enumext_after_list_args_vii_tl
    }
@@ -5230,7 +5232,7 @@
         \skip_set_eq:NN \parskip \l__enumext_parsep_viii_skip
         \__enumext_unskip_unkern:
         \__enumext_unskip_unkern:
-        \skip_horizontal:n { -\l__enumext_listparindent_viii_dim } \ignorespaces\noindent
+        \skip_horizontal:n { -\l__enumext_listparindent_viii_dim } \ignorespaces
         \tl_use:N \l__enumext_fake_item_indent_viii_tl
         \bool_if:NT \l__enumext_item_starred_viii_bool
           {
