@@ -576,13 +576,17 @@
     \tl_set_eq:cN { the #2 } #1
   }
 \cs_generate_variant:Nn \__enumext_label_style:Nnn { cvn }
-%% Add |mode-box| key only on first level off |enumext| environment.
-\keys_define:nn { enumext /  level-1 }
+%% Add |mode-box| key only on first level off |enumext| and |enumext*| environments.
+\cs_set_protected:Npn \__enumext_tmp:n #1
   {
-    mode-box .bool_set:N = \l__enumext_mode_box_bool,
-    mode-box .initial:n  = false,
-    mode-box .value_forbidden:n = true,
+    \keys_define:nn { enumext /  #1 }
+      {
+        mode-box .bool_set:N = \l__enumext_mode_box_bool,
+        mode-box .initial:n  = false,
+        mode-box .value_forbidden:n = true,
+      }
   }
+\clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
 %% Add |font|, |labelsep|, |labelwidth|, |wrap-label| and |wrap-label*| keys.
 \cs_set_protected:Npn \__enumext_tmp:nn #1 #2
   {

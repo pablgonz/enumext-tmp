@@ -6152,17 +6152,21 @@ Some text here
 %
 % \begin{macro}[int]{mode-box}
 %   We define the key \mykey{mode-box} only for the \emph{\enquote{first level}}
-%   of \myenv*{enumext} environment.
+%   of \myenv*{enumext} and \myenv*{enumext*} environments.
 % \iffalse
-%% Add |mode-box| key only on first level off |enumext| environment.
+%% Add |mode-box| key only on first level off |enumext| and |enumext*| environments.
 % \fi
 %    \begin{macrocode}
-\keys_define:nn { enumext /  level-1 }
+\cs_set_protected:Npn \__enumext_tmp:n #1
   {
-    mode-box .bool_set:N = \l_@@_mode_box_bool,
-    mode-box .initial:n  = false,
-    mode-box .value_forbidden:n = true,
+    \keys_define:nn { enumext /  #1 }
+      {
+        mode-box .bool_set:N = \l_@@_mode_box_bool,
+        mode-box .initial:n  = false,
+        mode-box .value_forbidden:n = true,
+      }
   }
+\clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -10708,6 +10712,15 @@ Some text here
 %
 % \smallskip
 %
+% When \emph{labeling} \texttt{PDF} is active |\makelabel| is redefined
+% as |\hss #1| and the only way to get the \mykey{align} key to work
+% correctly is to redefine |\makelabel| using |\makebox|. The best way to
+% implement this is to use the conditional command |\IfDocumentMetadataTF|
+% to force this redefinition and the dedicated \mykey{mode-box} key to
+% manually activate it by the user.
+%
+% \smallskip
+%
 % The \ics*{item} and \ics*{item}\myoarg{custom} commands work in the
 % usual way on \myenv*{enumext} and we will add \ics*{item*}, \ics*{item*}\myoarg{symbol} and
 % \ics*{item*}\myoarg{symbol}\myoarg{offset}.
@@ -10843,14 +10856,10 @@ Some text here
 %
 % \medskip
 %
-%  When \emph{tagged} \texttt{PDF} is active |\makelabel| is redefined as
-%  |\hss #1| and the only way to get the \mykey{align} key to work
-%  correctly is by using |\makebox|. The solution here is to redefine
-%  |\makelabel| conditionally using |\IfDocumentMetadataTF|.
-%
 % \begin{macro}{\@@_make_label:,\@@_make_label_std:,\@@_make_label_box:}
-%   The function \cs{@@_make_label:} redefine \ics{makelabel} for the keys \mykey{align}, \mykey{font},
-%   \mykey{wrap-label}, \mykey{wrap-label*} and |\item*| for \myenv*{enumext} environment.
+%   The function \cs{@@_make_label:} redefine \ics{makelabel} for the keys
+%   \mykey{mode-box}, \mykey{align}, \mykey{font}, \mykey{wrap-label},
+%   \mykey{wrap-label*} and |\item*| for \myenv*{enumext} environment.
 %   This function are passed to \myvarenv{__@@_list_arg_two_X:} used
 %   in the definition of the \myenv*{enumext} environment (\S\ref{env:enumext}).
 % \iffalse
@@ -10893,7 +10902,8 @@ Some text here
       }
   }
 %    \end{macrocode}
-%   Definition using |\makebox| when |\DocumentMetadata| is active.
+%   Definition using |\makebox| when |\DocumentMetadata| is active or
+%   \mykey{mode-box} is active.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_make_label_box:
   {
@@ -11066,9 +11076,10 @@ Some text here
 % \subsection{Redefining \cs{item} and \cs{makelabel} in \env{keyans}}\label{cmd:item-starred}
 %
 % The \ics*{item} and \ics*{item}\myoarg{custom} commands work in the
-% usual way in \myenv*{keyans}, but the \ics*{item*} and \ics*{item*}\myoarg{content} commands \emph{store}
-% the current \mymeta{label} next to the \mymeta{content} if it is present
-% in the \emph{sequence} and \emph{prop list} defined by \mykey{save-ans} key.
+% usual way in \myenv*{keyans}, but the \ics*{item*} and \ics*{item*}\myoarg{content}
+% commands \emph{store} the current \mymeta{label} next to the \mymeta{content}
+% if it is present in the \emph{sequence} and \emph{prop list} defined by
+% \mykey{save-ans} key.
 %
 % \begin{macro}{\@@_keyans_default_item:n,}
 %   The function \cs{@@_keyans_default_item:n} executes the original
@@ -11157,11 +11168,12 @@ Some text here
 % \end{macro}
 %
 % \begin{macro}{\@@_keyans_make_label:,\@@_keyans_make_label_std:,\@@_keyans_make_label_box:}
-%    The function \cs{@@_keyans_make_label:} redefine \ics{makelabel}
-%    for the keys \mykey{align}, \mykey{font}, \mykey{wrap-label}, \mykey{wrap-label*} and |\item*|
-%    for \myenv*{keyans} environment.
-%    This function are passed to \myvarenv{__@@_list_arg_two_v:} used
-%    in the definition of the \myenv*{keyans} environment (\S\ref{ltx:second-arg}).
+%   The function \cs{@@_keyans_make_label:} redefine \ics{makelabel}
+%   for the keys \mykey{mode-box}, \mykey{align}, \mykey{font},
+%   \mykey{wrap-label}, \mykey{wrap-label*} and |\item*| for \myenv*{keyans}
+%   environment.
+%   This function are passed to \myvarenv{__@@_list_arg_two_v:} used
+%   in the definition of the \myenv*{keyans} environment (\S\ref{ltx:second-arg}).
 % \iffalse
 %% Redefine |\makelabel| for |keyans| environment.
 % \fi
@@ -11200,7 +11212,8 @@ Some text here
       }
   }
 %    \end{macrocode}
-%   Definition using |\makebox| when |\DocumentMetadata| is active.
+%   Definition using |\makebox| when |\DocumentMetadata| is active or
+%   \mykey{mode-box} is active.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_keyans_make_label_box:
   {
