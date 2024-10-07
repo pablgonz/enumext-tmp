@@ -653,10 +653,11 @@ This work consists of the files enumext.dtx and enumext.sty.
     keywords      = [6]{save-ans,wrap-ans,save-ref,show-pos,show-ans,columns,list-offset, eunumXi,%
                     nosep,before,after,start, right, item-sym, item-sep, hyperfootnotes, item-star, %
                     scale,wrap-label,font,first,widest,mini-env,list-indent, no-store, save-key,%
-                    store-env, print-env, write-out, force-eol, write-env, overwrite, unknown, midsep, wrapper,},%
+                    store-env, print-env, write-out, force-eol, write-env, overwrite, unknown, %
+                    midsep, wrapper,label-pos,label-sep, layout-sty, layout-sep, layout-top, },%
 % Reserved words 7 (label values)
     keywordstyle  = [7]{\color{MediumOrchid}},%
-    keywords      = [7]{m,s,M,VIII,viii,v,E,t,l,A,XXIII,true, false,test,sample},%
+    keywords      = [7]{m,s,M,VIII,viii,v,E,t,l,A,XXIII,true, false,test,sample,above,below},%
 % literate
     literate      =*{\{}{{{\color{gray}{\char`\{}}}}{1}
                     {\}}{{{\color{gray}{\char`\}}}}}{1}
@@ -3070,19 +3071,59 @@ This work consists of the files enumext.dtx and enumext.sty.
 % When the \myenv*{keyanspic} environment is used \emph{without
 % keys} the \mymeta{labels} are centered \emph{below} the \emph{drawings
 % or tabular} in a \emph{single line} layout style.
-%^^A The \emph{starred argument} ‘|*|’
-%^^A places \mymeta{labels} centered \emph{above} the drawings or tabular.
 %
 % \smallskip
 %
-% The \emph{optional argument} determines the number drawings or
-% tabular placed at \emph{upper and lower} in the environment.
-% If the \emph{optional argument} or the \mymeta{nº lower} is
+% This environment cannot be nested and must always be at the
+% \emph{\enquote{first level}} of the \myenv*{enumext} environment, the
+% \ics*{item} command is disabled and keys cannot be set using
+% |\setenumext|.
+%
+% \subsubsection{Keys for \texttt{keyanspic}}
+%
+% \keyexamp{label-pos}{above \textnormal{\textcolor{lightgray}{\textbar}} below}{below}
+%
+% \smallskip
+%
+% Sets the \emph{position} of the \mymeta{label} centered \enquote{above}
+% or \enquote{below} the drawings or tabular.
+%
+% \smallskip
+%
+%
+% \keyexamp{label-sep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{internal adjustment}
+%
+% \smallskip
+%
+% Set the \emph{vertical space} between the \mymeta{label} and
+% \emph{drawings or tabular}.
+%
+% \keyexamp{layout-sty}{n° upper \textnormal{\textcolor{gray}{,}} n° lower}{not set}
+%  
+% \smallskip
+%
+% Determines the number drawings or tabular placed at \emph{upper and lower}
+% in the environment. If not set or the \mymeta{nº lower} is
 % omitted the drawings or tabular will be put on a \emph{single line}.
-% The vertical separation between \emph{\enquote{upper}}
-% and \emph{\enquote{lower}} part is controlled by the values set
-% by \mykey{parsep} key passed to \myenv*{keyans}
-% environment.
+%
+% \smallskip
+%
+% \keyexamp{layout-sep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{adjusted parsep from keyans}
+%
+% \smallskip
+%
+% Set the \emph{vertical separation} between \emph{\enquote{upper}}
+% and \emph{\enquote{lower}} part. Internally adjust the value of
+% \mykey{parsep} taken from \myenv*{keyans} environment.
+%
+% \smallskip
+%
+% \keyexamp{layout-top}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{adjusted topsep from keyans}
+%
+% \smallskip
+%
+% Set the \emph{vertical space} added to both the top and bottom of the environment.
+% Internally adjust the value of \mykey{topsep} taken from \myenv*{keyans} environment.
 %
 % \subsubsection{The command \cs[no-index]{anspic}}
 %
