@@ -1851,7 +1851,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % and then pass it through the key |wrap-label={\labelbx{#1}}| or |wrap-label={\labelbx*{#1}}|.
 %
+% \smallskip
+%
 % \keyexamp{wrap-label\textcolor{MediumOrchid}{*}}{code{} \space\usebox{\hashbox} more code}{empty}
+%
+% \smallskip
+%
 % The same as the \mykey{wrap-label} key but also applies on \ics*{item}\myoarg{custom}.
 %
 % \newpage
@@ -1865,6 +1870,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Modifies the way \emph{cross references} are displayed. The
 % \mykey{label} key sets the default form of the \emph{cross references}, by using this key
 % you can define a different format, for example: \mykey{ref}|=\emph|\mymarg{\textnormal{\ilabel{alph*}}} is valid.
+%
+% \smallskip
 %
 % Internally it renews the command associated with each counter when it
 % is executed, i.e., in the environment \myenv*{enumext} the command |\theenumXi|
@@ -1894,6 +1901,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsubsection{Vertical spaces}
 %
 % \keyexamp{topsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
+%
+% \smallskip
+%
 % Set the \emph{vertical space} added to both the top and bottom of the list.
 % Internally sets the value of \ics{topsep} for the current level.
 % The default value for the first level of the environments
@@ -1902,7 +1912,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 % fourth level are \mydim{2.0pt plus 1.0pt minus 1.0pt}. For \myenv*{keyans}
 % and \myenv*{keyans*} environments the default value is \mydim{4.0pt plus 2.0pt minus 1.0pt}.
 %
+% \smallskip
+%
 % \keyexamp{parsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
+%
+% \smallskip
+%
 % Set the \emph{vertical space} between paragraphs within an item.
 % Internally sets the value of \ics{parsep} for the current level.
 % The default value for the first level of the environments \myenv*{enumext}
@@ -1911,13 +1926,19 @@ This work consists of the files enumext.dtx and enumext.sty.
 % fourth level are \mydim{0pt}. For \myenv*{keyans} and \myenv*{keyans*}
 % environments the default value is \mydim{2.0pt plus 1.0pt minus 1.0pt}.
 %
+% \smallskip
+%
 % \begin{important}*
 %  In the \myenv*{enumext*} and \myenv*{keyans*} environments this value
 %  is passed to |\parskip| within the \myenv{minipage} environment where
 %  \emph{\enquote{item content}} is placed.
 % \end{important}
 %
+% \smallskip
+%
 % \keyexamp{partopsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
+%
+% \smallskip
 %
 % Set the \emph{vertical space} added, beyond \mykey{topsep}, to the \enquote{top} and \enquote{bottom}
 % of the entire environment if the environment instance is preceded by a \emph{\enquote{blank
@@ -1930,6 +1951,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \myenv*{enumext*} environments it is available but \emph{without}
 % effect.
 %
+% \smallskip
+%
 % \begin{important}*
 % The value of this parameter also affects the \emph{inner levels} and the
 % environments \myenv*{keyans}, \myenv*{keyanspic} and \myenv*{keyans*}.
@@ -1939,6 +1962,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % and apply this value to the \enquote{top} and \enquote{bottom} the
 % environment or nested level.
 % \end{important}
+%
+% \smallskip
 %
 % \keyexamp{itemsep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{by levels}
 % Set the \emph{vertical space} between items, beyond the \mykey{parsep}.
@@ -1974,7 +1999,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% This is a \emph{\enquote{meta-key}} that does not receive an
+% This is a \emph{\enquote{switch-key}} that does not receive an
 % argument available \emph{only} for the \emph{\enquote{first level}} of environment
 % \myenv*{enumext}. Fix the \emph{baseline} when an environment \myenv*{enumext}
 % is nested  in \myenv*{enumext*} and there is no material between the
@@ -1982,7 +2007,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % within the environment \myenv*{enumext*}. Internally sets the keys \mykey{topsep},
 % \mykey{above} and \mykey{above}|*| at \mydim{0pt}.
 %
-% \smallskip
+% \newpage
 %
 % \begin{important}*
 %  The following \mymeta{keys} should be used with \emph{\enquote{caution}}, they
@@ -2004,8 +2029,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{above}} the environment without hindering the value of
 % the \mykey{topsep} key. The space is added with |\vspace| so is
 % \emph{\enquote{discardable}}.
-%
-% \newpage
 %
 % \keyexamp{above\textcolor{MediumOrchid}{*}}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{not used}
 % Set the \emph{extra vertical space} added, beyond \mykey{topsep}, to
