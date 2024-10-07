@@ -10958,13 +10958,13 @@ Some text here
 % only thing left to do is do it with the \mymeta{keys} (you have to be
 % consistent in life).
 %
-% \subsubsection{Handling unknown keys for \env{keyans} and \env{keyans*}}\label{key:unknown-keys-keyans}
+% \subsubsection{Handling unknown keys for \env{keyans}, \env{keyans*} and \env{keyanspic}}\label{key:unknown-keys-keyans}
 %
 % \begin{macro}[int]{unknown, \@@_keyans_unknown_keys:n, \@@_keyans_unknown_keys:nn}
-%   Define and set |unknown| key for  \myenv*{keyans} and \myenv*{keyans*}
-%   environments.
+%   Define and set |unknown| key for  \myenv*{keyans}, \myenv*{keyans*}
+%   and \myenv*{keyanspic} environments.
 % \iffalse
-%% Add keys |unknown| for |keyans| and |keyans*| environments.
+%% Add keys |unknown| for |keyans|, |keyans*| and |keyanspic| environments.
 % \fi
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:n #1
@@ -10974,7 +10974,7 @@ Some text here
         unknown .code:n = { \@@_keyans_unknown_keys:n {##1} }
       }
   }
-\clist_map_inline:nn { keyans, keyans* } { \@@_tmp:n {#1} }
+\clist_map_inline:nn { keyans, keyans*, keyanspic } { \@@_tmp:n {#1} }
 %    \end{macrocode}
 %  Internal functions for handling |unknown| key.
 %    \begin{macrocode}
@@ -12294,25 +12294,14 @@ Some text here
 %
 % \smallskip
 %
-% \begin{important}
-% One of the complications here to make the \myenv*{keyanspic}
-% environment compatible with \emph{tagged} PDF is the position of
-% \mymeta{label}, the \ics*{anspic} command processes the arguments in
-% order, where |#1| and |#2| correspond to \mymeta{label} and |#3| to the
-% mandatory argument and puts all this inside a \myenv{minipage}
-% environment. If |#1| and |#2|, that is \mymeta{label}, is above |#3|
-% there are no problems with \emph{tagged} PDF, but if |#3| comes first
-% the list created with \emph{tagged} PDF will not be correct.
-% \end{important}
-%
-% \subsubsection{The environment \env{keyanspic}}\label{env:keyanspic}
-%
 % In order for the \myenv*{keyanspic} environment and the |\anspic|
 % command to work correctly, we need to set and export some variables in
 % the first part of the environment definition and pass them to |\anspic|
 % which is executed in the second part of the environment. This
 % implementation is adapted from the answer given by Enrico Gregorio
 % (\texttt{@egreg}) in \href{https://tex.stackexchange.com/a/577705/7832}{How to process the body of an environment and divide it by a \textbackslash macro?}.
+%
+% \subsubsection{The environment \env{keyanspic}}\label{env:keyanspic}
 %
 % \begin{macro}[int]{label-pos, label-sep, layout-sty, layout-sep,
 %                   layout-top,}
@@ -12332,7 +12321,6 @@ Some text here
 %% Add keys for |keyanspic| environment.
 % \fi
 %    \begin{macrocode}
-\tl_new:N \l_@@_anspic_layout_tl
 \keys_define:nn { enumext / keyanspic }
   {
     label-pos .choice:,
@@ -12345,17 +12333,19 @@ Some text here
     label-pos / unknown .code:n =
                               \msg_error:nneee { enumext } { unknown-choice }
                                 { label-pos } { above,~ below } { \exp_not:n {#1} },
-    label-pos  .initial:n = below,
+    label-pos  .initial:n        = below,
     label-pos  .value_required:n = true,
-    label-sep  .skip_set:N = \l_@@_anspic_label_sep_skip,
+    label-sep  .skip_set:N       = \l_@@_anspic_label_sep_skip,
     label-sep  .value_required:n = true,
-    layout-sty .tl_set:N   = \l_@@_anspic_layout_tl,
+    layout-sty .tl_set:N         = \l_@@_anspic_layout_style_tl,
     layout-sty .value_required:n = true,
-    layout-sep .code:n  = \keys_set:nn { enumext / keyans } { parsep = #1 },
+    layout-sep .code:n           = \keys_set:nn { enumext / keyans }
+                                     { parsep = #1 },
     layout-sep .value_required:n = true,
-    layout-top .code:n  = \keys_set:nn { enumext / keyans } { topsep = #1 },
+    layout-top .code:n           = \keys_set:nn { enumext / keyans }
+                                     { topsep = #1 },
     layout-top .value_required:n = true,
-    %unknown    .code:n = { \@@_keyans_unknown_keys:n {#1} }
+    unknown    .code:n           = { \@@_keyans_unknown_keys:n {#1} }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -12378,6 +12368,8 @@ Some text here
     \@@_keyans_name_and_start:
   }
 %    \end{macrocode}
+%   Parse \myoarg{key \textnormal{\textcolor{gray}{=}} val} for
+%   \myenv*{keyanspic} environment.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_pic_parse_keys:n #1
   {
@@ -12388,7 +12380,7 @@ Some text here
   }
 %    \end{macrocode}
 %   The function \cs{@@_keyans_pic_skip_abs:N} will return a positive
-%   value \ics{parsep}.
+%   value \ics{parsep} from \myenv*{keyans} environment.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_pic_skip_abs:N #1
   {
@@ -12401,17 +12393,14 @@ Some text here
 %   The \cs{@@_keyans_pic_arg_two:} function will be used in the
 %   \emph{second argument} of the \myenv{list} environment that defines
 %   the \myenv*{keyanspic} environment, with this we will take the
-%   configuration of the \emph{\enquote{spaces}} and the \mymeta{keys}
-%   \mykey{label} and \mykey{wrap-label} from the \myenv*{keyans}
-%   environment.
-%
-%   \smallskip
-%
+%   configuration of the \emph{\enquote{spaces}} and the keys
+%   \mykey{label}, \mykey{wrap-label}, \mykey{parsep} and \mykey{topsep}
+%   from the \myenv*{keyans} environment.
 %   The first thing we need to do is set the boolean variable
 %   \cs{l_@@_leftmargin_tmp_v_bool} handled by the \mykey{list-indent} key
-%   to \enquote{false}, then copy the definition of the second list argument from the
-%   \myenv*{keyans} environment definition and make sure that |\parsep| does not have a
-%   negative value.
+%   to \enquote{false}, then copy the definition of the second list argument
+%   from the \myenv*{keyans} environment definition and make sure that
+%   |\parsep| does not have a negative value.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_keyans_pic_arg_two:
   {
@@ -12419,10 +12408,10 @@ Some text here
     \@@_list_arg_two_v:
     \@@_keyans_pic_skip_abs:N \parsep
 %    \end{macrocode}
-%   Now we increment the counter |enumXv| of the \myenv*{keyans}
-%   environment and save the \emph{total height} of the \mymeta{label} in
+%   Now we increment the counter |enumXv| of the \myenv*{keyans} environment
+%   and save the \emph{total height} of the \mymeta{label} in
 %   \cs{l_@@_anspic_label_htdp_dim} used by |\anspic| and we will adjust
-%   the values ​​of |\parsep| only if the \emph{starred argument} ‘|*|’ is NOT present.
+%   the values ​​of |\parsep| only if the key \mykey{label-pos} is set to \emph{below}.
 %    \begin{macrocode}
     \bool_if:NF \l_@@_anspic_label_above_bool
       {
@@ -12440,8 +12429,8 @@ Some text here
           }
       }
 %    \end{macrocode}
-%   Finally we adjust the value of |\leftmargin| and |\topsep| then set
-%   |\listparindent|, |\partopsep| and |\itemsep| to zero so that
+%   Finally we \emph{adjust} the value of |\leftmargin| and |\topsep|
+%   then set |\listparindent|, |\partopsep| and |\itemsep| to zero so that
 %   the \emph{horizontal} and \emph{vertical} space is not affected.
 %    \begin{macrocode}
     \dim_add:Nn  \leftmargin { -\labelwidth - \labelsep }
@@ -12490,9 +12479,9 @@ Some text here
         \tag_struct_begin:n {tag=L,attribute=enumerate}
       } { }
 %    \end{macrocode}
-%   Now we process the command |\anspic|, if the \emph{optional argument} is not
-%   present, the number of times the \ics*{anspic} command appears will
-%   be counted from \cs{l_@@_anspic_args_seq} and placed a single line.
+%   Now we process the command |\anspic|, if the key \mykey{layout-sty}
+%   is not present, the number of times the \ics*{anspic} command appears will
+%   be counted from \cs{l_@@_anspic_args_seq} and placed a \emph{single line}.
 %    \begin{macrocode}
     \@@_anspic_exec:
     \IfDocumentMetadataTF
@@ -12506,8 +12495,8 @@ Some text here
         \tag_struct_end:
       } { }
 %    \end{macrocode}
-%   Finally we check if \ics*{anspic*} has been used, set the counter
-%   to zero and apply our \enquote{adjusted} vertical space below the environment.
+%   Finally we check if \ics*{anspic*} has been used, set the counter |enumXvi|
+%   to zero and apply our \enquote{adjusted} vertical space bottom.
 %    \begin{macrocode}
     \@@_check_starred_cmd:n { anspic }
     \setcounter { enumXvi } { 0 }
@@ -12526,7 +12515,6 @@ Some text here
               } 
           }
       }
-    %\bool_set_false:N \l_@@_store_active_bool
   }
 %    \end{macrocode}
 % \end{macro}
@@ -12539,10 +12527,21 @@ Some text here
 % \mymarg{drawing or tabular} is NOT \emph{stored} in the \emph{sequence} or
 % \emph{prop list}.
 %
+% \begin{important}
+% One of the complications here to make the \myenv*{keyanspic}
+% environment compatible with \emph{tagged} PDF is the position of
+% \mymeta{label}, the \ics*{anspic} command processes the arguments in
+% order, where |#1| and |#2| correspond to \mymeta{label} and |#3| to the
+% mandatory argument and puts all this inside a \myenv{minipage}
+% environment. If |#1| and |#2|, that is \mymeta{label}, is above |#3|
+% there are no problems with \emph{tagged} PDF, but if |#3| comes first
+% the list created with \emph{tagged} PDF will not be correct.
+% \end{important}
+%
 % \begin{macro}{\anspic, \@@_anspic_body_dim:n, \@@_anspic_label:nn,
 %               \@@_anspic_label_pos:nnn, \@@_anspic_args:nnn,
 %               \@@_anspic_print:n, \@@_anspic_print:e, \@@_anspic_print:V,
-%               \@@_anspic_row:n,}
+%               \@@_anspic_row:n, @@_anspic_exec:,}
 %   We check that the command is active in the \myenv*{keyanspic}
 %   environment only if the \mykey{save-ans} key is present, otherwise
 %   we return an error.
@@ -12574,11 +12573,11 @@ Some text here
   }
 %    \end{macrocode}
 %   The \cs{@@_anspic_body_dim:n} function will set the value of
-%   \cs{l_@@_anspic_body_htdp_dim} equal to the height and depth of the
-%   mandatory argument if the \myenv*{keyanspic}|*| environment is used with
-%   the \emph{starred argument} ‘|*|’.
+%   \cs{l_@@_anspic_body_htdp_dim} equal to the \enquote{height plus depth}
+%   of the \emph{mandatory argument} if the key \mykey{label-pos} is set
+%   \enquote{below}.
 % \iffalse
-%% Set the height and depth off body arg in dim var for |\anspic|.
+%% Set the height plus depth off body arg in dim var for |\anspic|.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_anspic_body_dim:n #1
@@ -12638,7 +12637,8 @@ Some text here
 %    \end{macrocode}
 %   The function \cs{@@_anspic_label_pos:nnn} will be in charge of
 %   handling the \emph{\enquote{counter}} and the position of the \mymeta{label},
-%   which will have the same configuration as the \myenv*{keyans} environment.
+%   set by \mykey{label-pos} key which will have the same configuration
+%   as the \myenv*{keyans} environment.
 % \iffalse
 %% Set position of labels for |\anspic|.
 % \fi
@@ -12694,10 +12694,9 @@ Some text here
     \@@_anspic_stop_list_tag:
   }
 %    \end{macrocode}
-%   The \emph{optional argument} \myoarg{n° upper, n° lower} passed to the
-%   \myenv*{keyanspic} environment is split by comma and is handled
-%   directly by the function \cs{@@_anspic_print:n} and passed to the
-%   function \cs{@@_anspic_row:n}.
+%   The value \mymarg{n° upper, n° lower} passed to the \mykey{layout-sty}
+%   key is split by comma and is handled directly by the function
+%   \cs{@@_anspic_print:n} and passed to the function \cs{@@_anspic_row:n}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_anspic_print:n
   {
@@ -12734,14 +12733,20 @@ Some text here
       }
     \par
   }
+%    \end{macrocode}
+%   The \cs{@@_anspic_exec:} function will execute all the code in the
+%   |\anspic| command in the second argument of the |keyanspic| environment
+%   definition. If the key \mykey{layout-sty} is not set, everything will
+%   be printed on a \emph{single line}.
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_anspic_exec:
   {
-    \tl_if_empty:NTF \l_@@_anspic_layout_tl
+    \tl_if_empty:NTF \l_@@_anspic_layout_style_tl
       {
         \@@_anspic_print:e { \seq_count:N \l_@@_anspic_args_seq }
       }
       {
-        \@@_anspic_print:V \l_@@_anspic_layout_tl
+        \@@_anspic_print:V \l_@@_anspic_layout_style_tl
       }
   }
 %    \end{macrocode}
