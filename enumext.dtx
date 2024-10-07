@@ -1717,6 +1717,34 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsection{Keys for \texttt{label} and \texttt{ref}}\label{subsec:label-and-ref}
 %
+% \keyexamp*{mode-box}{value forbidden}{not used}
+% This is a \emph{\enquote{switch-key}} that does not receive an
+% argument and is \enquote{only} available for the \emph{\enquote{first level}}
+% of the \myenv*{enumext} environment and the \myenv*{enumext*} environment.
+% When this is set the \mykey{label}, \mykey{font}, \mykey{wrap-label}
+% and \mykey{wrap-label*} keys are executed within |\makebox| for the
+% \myenv*{enumext} and \myenv*{keyans} environments.
+%
+% \smallskip
+%
+% \begin{important}
+%   This key is intended for compatibility with \emph{tagged} \texttt{PDF}
+%   and is forcibly \emph{\enquote{enabled}} when |\DocumentMetadata| is
+%   present. If you want to get the same document output whether |\DocumentMetadata|
+%   is active or not, you must enable this key.
+% \end{important}
+%
+% \smallskip
+%
+% \begin{important}*
+% In the \myenv*{enumext*} and \myenv*{keyans*} environments |\makelabel|
+% are redefined using |\makebox| by default. If \myenv*{enumext} or
+% \myenv*{keyans} is used in the \myenv*{enumext*} environment the key
+% must be activated manually.
+% \end{important}
+%
+% \smallskip
+%
 % \keyexamp{label}
 %   {\textnormal
 %       {\ilabel{alph*} \textcolor{lightgray}{\textbar} \ilabel{Alph*}
@@ -1768,12 +1796,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{widest}{integer \textnormal{\textcolor{lightgray}{\textbar}} string}{empty}
-% Sets the \mykey{labelwidth} key pass the \mymeta{integer} or converting the \mymeta{string} of the
-% form |\Alph|, |\alph|, |\Roman| or |\roman| to a
-% \emph{value} for the current counter defined by \mykey{label} key, then calculating the \emph{width}
-% by means of a box. For example |widest={XXIII}| or |widest={23}| are
-% equivalent. This key is useful when the default values of the
-% \mykey{labelwidth} key are smaller than those actually used.
+% Sets the \mykey{labelwidth} key pass the \mymeta{integer} or converting
+% the \mymeta{string} of the form |\Alph|, |\alph|, |\Roman| or |\roman|
+% to a \emph{value} for the current counter defined by \mykey{label} key,
+% then calculating the \emph{width} by means of a box. For example |widest={XXIII}|
+% or |widest={23}| are equivalent. This key is useful when the default
+% values of the \mykey{labelwidth} key are smaller than those actually used.
 %
 % \smallskip
 %
@@ -1823,30 +1851,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % and then pass it through the key |wrap-label={\labelbx{#1}}| or |wrap-label={\labelbx*{#1}}|.
 %
-% \smallskip
-%
 % \keyexamp{wrap-label\textcolor{MediumOrchid}{*}}{code{} \space\usebox{\hashbox} more code}{empty}
 % The same as the \mykey{wrap-label} key but also applies on \ics*{item}\myoarg{custom}.
 %
-% \smallskip
-%
-% \begin{important}*
-%  By default all the \mymeta{keys} described above are executed inside
-%  |\makebox| in the \myenv*{enumext*} and \myenv*{keyans*} environments.
-% \end{important}
-%
-% \smallskip
-%
-% \begin{important}
-%  For compatibility with \emph{tagged} PDF all \mymeta{keys} described
-%  above are executed inside |\makebox| in the \myenv*{enumext} and
-%  \myenv*{keyans} environments, this means that the document output may
-%  \emph{not look} the same when |\DocumentMetadata| is active. If you use
-%  the \mykey{wrap-label} or \mykey{wrap-label*} keys you can add
-%  conditional code using |\IfDocumentMetadataTF|.
-% \end{important}
-%
-% \smallskip
+% \newpage
 %
 % \newsavebox{\refboxsample}
 % \begin{lrbox}{\refboxsample}
@@ -4889,7 +4897,7 @@ Some text here
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-10-04}
+  {2024-10-06}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
