@@ -1868,8 +1868,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \keyexamp{ref}{code{} \space\usebox{\refboxsample} more code}{empty}
 %
 % Modifies the way \emph{cross references} are displayed. The
-% \mykey{label} key sets the default form of the \emph{cross references}, by using this key
-% you can define a different format, for example: \mykey{ref}|=\emph|\mymarg{\textnormal{\ilabel{alph*}}} is valid.
+% \mykey{label} key sets the default form of the \emph{cross references},
+% by using this key you can define a different format, for example:
+% \mykey{ref}|=\emph|\mymarg{\textnormal{\ilabel{alph*}}} is valid.
 %
 % \smallskip
 %
@@ -2990,14 +2991,15 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{function}{keyanspic}
 %   \begin{syntax}
-%     |\begin{keyanspic}*|\myoarg{nº upper, nº lower}\ics*{anspic}\mymarg{drawing}\ics*{anspic}|*|\myoarg{content}\mymarg{drawing or tabular}
+%     |\begin{keyanspic}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \ics*{anspic}|*|\myoarg{content}\mymarg{drawing or tabular} |\end{keyanspic}|
 %   \end{syntax}
 % The \myenv*{keyanspic} environment is an \emph{\enquote{enumerated
 % list}} environment activated by the \mykey{save-ans} key that has the
-% same settings as the \myenv*{keyans} environment that uses the
-% |\anspic| command instead of |\item|. It is intended for placing
-% drawings or tables with \mymeta{label} centered \emph{above} or
-% \emph{below} in a \emph{single line} or \emph{upper and lower} layout.
+% same configuration for \emph{\enquote{spacing}} and \mymeta{label}
+% as the \myenv*{keyans} environment that uses the |\anspic| command
+% instead of |\item|. It is intended for placing \emph{drawings or tabular}
+% with \mymeta{label} centered \emph{above} or \emph{below} in a \emph{single line}
+% or \emph{upper and lower} layout style.
 % A representation of the output can be seen in the figure \ref{fig:keyanspicdoc}.
 % \end{function}
 %
@@ -3061,14 +3063,15 @@ This work consists of the files enumext.dtx and enumext.sty.
 %          \textcolor{blue}{\emph{item text below the keyanspic environment}}
 %        \end{tabular}};% item width
 %   \end{tikzpicture}
-%   \caption{Representation of the \myenv*{keyanspic} environment with optional argument [3,2] in \mypkg*{enumext}.}
+%   \caption{Representation of the \myenv*{keyanspic} environment with \mykey{layout-sty}=\mymarg{3, 2} in \mypkg*{enumext}.}
 %   \label{fig:keyanspicdoc}
 % \end{figure}
 %
 % When the \myenv*{keyanspic} environment is used \emph{without
-% arguments} the \mymeta{labels} are centered \emph{below} the drawings
-% or tabular in a \emph{single line} layout. The \emph{starred argument} ‘|*|’
-% places \mymeta{labels} centered \emph{above} the drawings or tabular.
+% keys} the \mymeta{labels} are centered \emph{below} the \emph{drawings
+% or tabular} in a \emph{single line} layout style.
+%^^A The \emph{starred argument} ‘|*|’
+%^^A places \mymeta{labels} centered \emph{above} the drawings or tabular.
 %
 % \smallskip
 %
