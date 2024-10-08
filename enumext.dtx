@@ -2208,8 +2208,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{important}*
 %  In the \myenv*{enumext*} and \myenv*{keyans*} environments this key
-%  is executed after the \mykey{listparindent}, \mykey{parsep}, and
-%  \mykey{itemindent} braces within the \myenv{minipage} environment in
+%  is executed after the \mykey{listparindent}, \mykey{parsep} and
+%  \mykey{itemindent} keys within the \myenv{minipage} environment in
 %  which the \emph{\enquote{item content}} is placed.
 % \end{important}
 %
@@ -3009,6 +3009,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \begin{examplecode}[frame=single]
 \begin{enumext}[save-ans=test,columns=2,show-ans=true]
   \item Text containing a question.
+  
     \begin{keyans*}[nosep,columns=2]
       \item Choice
       \item* Correct choice
@@ -3016,7 +3017,9 @@ This work consists of the files enumext.dtx and enumext.sty.
       \item Choice
       \item Choice
     \end{keyans*}
+
   \item Text containing a question and image.
+  
     \begin{keyans}[nosep,mini-env={0.4\linewidth}]
       \item Choice
       \item Choice
@@ -3158,26 +3161,29 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% Sets the \emph{position} of the \mymeta{label} centered \enquote{above}
-% or \enquote{below} the drawings or tabular.
+% Set the \emph{position} of \mymeta{label} to be centered
+% \enquote{above} or \enquote{below} \emph{drawings} or \emph{tabular}
+% when the |\anspic| command is executed.
 %
 % \smallskip
-%
 %
 % \keyexamp{label-sep}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{internal adjustment}
 %
 % \smallskip
 %
-% Set the \emph{vertical space} between the \mymeta{label} and
-% \emph{drawings or tabular}.
+% Set the \emph{vertical spacing} between the \mymeta{label} centered
+% \enquote{above} or \enquote{below} and \emph{drawings} or \emph{tabular}
+% when running the |\anspic| command.
 %
 % \keyexamp{layout-sty}{n° upper \textnormal{\textcolor{gray}{,}} n° lower}{not set}
 %  
 % \smallskip
 %
-% Determines the number drawings or tabular placed at \emph{upper and lower}
-% in the environment. If not set or the \mymeta{nº lower} is
-% omitted the drawings or tabular will be put on a \emph{single line}.
+% Set the \emph{number} of \emph{drawings} or \emph{tabular} that will be
+% distributed \enquote{upper} and \enquote{lower} within the environment
+% when executing the |\anspic| command. The value must be passed in braces
+% and if not set or the \mymeta{nº lower} is omitted the \emph{drawings}
+% or \emph{tabular} will be put on a \emph{single line}.
 %
 % \smallskip
 %
@@ -3185,9 +3191,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% Set the \emph{vertical separation} between \emph{\enquote{upper}}
-% and \emph{\enquote{lower}} part. Internally adjust the value of
-% \mykey{parsep} taken from \myenv*{keyans} environment.
+% Set the \emph{vertical separation} between the number of
+% \emph{drawings} or \emph{tabular} placed at the \enquote{upper} and
+% \enquote{lower} within the environment when executing the |\anspic|
+% command. Internally adjusts the \mykey{parsep} value taken from the
+% \myenv*{keyans} environment.
 %
 % \smallskip
 %
@@ -3213,13 +3221,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 %  \emph{prop list} \mymarg{store name} set by \mykey{save-ans} key.
 % \end{function}
 %
-%  \smallskip
+% \smallskip
 %
-%  The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
-%  from the command, i.e. \ics*{anspic}|*| and the \emph{optional argument}
-%  does \enquote{NOT} support \emph{verbatim content}. By design it
-%  is assumed that the \emph{starred argument} ‘|*|’ will only
-%  appear \emph{\enquote{once}} within the environment.
+% The \emph{starred argument} ‘|*|’ cannot be separated by spaces ‘\verb*| |’
+% from the command, i.e. \ics*{anspic}|*| and the \emph{optional argument}
+% does \enquote{NOT} support \emph{verbatim content}. By design it
+% is assumed that the \emph{starred argument} ‘|*|’ will only
+% appear \emph{\enquote{once}} within the environment.
 %
 % \subsubsection*{Example}
 %
@@ -3228,7 +3236,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \fi
 \begin{examplecode}[frame=single]
 \begin{enumext}[save-ans=test,show-ans,nosep]
-  \item Question with images.
+  \item Question with images and labels below.
 
     \begin{keyanspic}[layout-sty={3,2}]
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3238,7 +3246,7 @@ This work consists of the files enumext.dtx and enumext.sty.
       \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
     \end{keyanspic}
 
-  \item Question with images.
+  \item Question with images and labels above.
 
     \begin{keyanspic}[label-pos=above, layout-sty={3,2}]
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3248,7 +3256,7 @@ This work consists of the files enumext.dtx and enumext.sty.
       \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
     \end{keyanspic}
 
-  \item Question with images.
+  \item Question with images and labels below on a single line.
 
     \begin{keyanspic}
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3264,7 +3272,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \fi
 %
 % \begin{enumext}[save-ans=test,show-ans=true,nosep, before= {\setenumext[keyans]{nosep,parsep=3mm} }]
-% \item Question with images.
+% \item Question with images and labels below.
 %    \begin{keyanspic}[layout-sty={3,2}]
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-b}}
@@ -3272,7 +3280,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
 %    \end{keyanspic}
-% \item Question with images.
+% \item Question with images and labels above.
 %    \begin{keyanspic}[label-pos=above, layout-sty={3,2}]
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-b}}
@@ -3280,7 +3288,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
 %    \end{keyanspic}
-% \item Question with images.
+% \item Question with images and labels below on a single line.
 %    \begin{keyanspic}
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-b}}
@@ -3289,6 +3297,13 @@ This work consists of the files enumext.dtx and enumext.sty.
 %      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
 %    \end{keyanspic}
 % \end{enumext}
+%
+% \smallskip
+%
+% \begin{important}
+%  Preferably use \mykey{label-pos}|=above| when creating a \emph{tagged}
+%  PDF, this will preserve the reading order and navigation of the document.
+% \end{important}
 %
 % \subsection{Printing stored content}
 %
@@ -3320,9 +3335,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % at position |4| of the environment in which the key |save-ans=test|
 % was set.
 %
-%
-% \subsubsection{The command \cs{foreachkeyans}}
-% \label{sec:foreachkeyans}
+% \subsubsection{The command \cs{foreachkeyans}}\label{sec:foreachkeyans}
 %
 % \vspace*{-10pt}
 %
@@ -3370,8 +3383,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The \mymarg{code} must be passed between braces. For example
 % |\foreachkeyans[wrapper={\makebox[1em][l]{#1}}]|\mymarg{store name}.
 %
-% \subsubsection{The command \cs[no-index]{printkeyans}}
-% \label{sec:printkeyans}
+% \subsubsection{The command \cs[no-index]{printkeyans}}\label{sec:printkeyans}
 %
 % \vspace*{-10pt}
 %
