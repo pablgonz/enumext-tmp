@@ -4943,7 +4943,10 @@
         + \l__enumext_labelwidth_vii_dim
         + \l__enumext_labelsep_vii_dim
       }
-     \IfDocumentMetadataTF { }
+     \IfDocumentMetadataTF
+       {
+         \__enumext_renew_footnote:
+       }
        {
          \bool_if:NF \l__enumext_footnotes_key_bool
            {
@@ -4969,7 +4972,10 @@
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_vii_box
-    \IfDocumentMetadataTF { }
+    \IfDocumentMetadataTF
+      {
+        \__enumext_print_footnote:
+      }
       {
         \bool_if:NF \l__enumext_footnotes_key_bool
           {
@@ -5221,7 +5227,10 @@
         + \l__enumext_labelwidth_viii_dim
         + \l__enumext_labelsep_viii_dim
       }
-      \IfDocumentMetadataTF { }
+      \IfDocumentMetadataTF
+        {
+          \__enumext_renew_footnote:
+        }
         {
           \bool_if:NF \l__enumext_footnotes_key_bool
             {
@@ -5251,7 +5260,10 @@
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_viii_box
-    \IfDocumentMetadataTF { }
+    \IfDocumentMetadataTF
+      {
+        \__enumext_print_footnote:
+      }
       {
         \bool_if:NF \l__enumext_footnotes_key_bool
           {

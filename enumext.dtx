@@ -3009,7 +3009,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 \begin{examplecode}[frame=single]
 \begin{enumext}[save-ans=test,columns=2,show-ans=true]
   \item Text containing a question.
-  
+
     \begin{keyans*}[nosep,columns=2]
       \item Choice
       \item* Correct choice
@@ -3019,7 +3019,7 @@ This work consists of the files enumext.dtx and enumext.sty.
     \end{keyans*}
 
   \item Text containing a question and image.
-  
+
     \begin{keyans}[nosep,mini-env={0.4\linewidth}]
       \item Choice
       \item Choice
@@ -3176,7 +3176,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % when running the |\anspic| command.
 %
 % \keyexamp{layout-sty}{n° upper \textnormal{\textcolor{gray}{,}} n° lower}{not set}
-%  
+%
 % \smallskip
 %
 % Set the \emph{number} of \emph{drawings} or \emph{tabular} that will be
@@ -4153,11 +4153,11 @@ Some text here
 \begin{enumext}[labelwidth=1cm,labelsep=0.25cm,align=left, wrap-label=\textbf{(#1}, label=\arabic*.)]
   \item This text is in the first level.\label{A}
     \begin{enumext}
-      \item This text is in the second level.
+      \item This text is in the second level.\footnote{foot note in enumext}
         \begin{enumext}
           \item This text is in the third level.
             \begin{enumext}
-              \item This text is in the fourth level.
+              \item This text is in the fourth level.\footnotemark[20]
             \end{enumext}
         \end{enumext}
     \end{enumext}
@@ -4165,7 +4165,7 @@ Some text here
   \item* This text is in the first level.
 \end{enumext}
 
-Some ref here \ref{A}
+Some ref here \ref{A}\footnotetext[20]{foot note in enumext [20]}
 
 \section{only enumext*}
 
@@ -4173,40 +4173,40 @@ Some text here
 
 \begin{enumext*}[columns=2,labelwidth=1cm,labelsep=0.25cm,align=left, wrap-label=\textbf{#1)}, label=(\arabic*.]
   \item This text is in the first level.\label{B}
-  \item[X] This text is in the first level.
-  \item* This text is in the first level.
+  \item[X] This text is in the first level.\footnotemark[30]
+  \item* This text is in the first level.\footnote{foot note in enumext*}
   \item This text is in the first level.
 \end{enumext*}
 
-Some ref here \ref{B}
+Some ref here \ref{B}\footnotetext[30]{foot note in enumext* [30]}
 
 \section{enumext nested in enumext*}
 
 Some text here
 
-\begin{enumext}
+\begin{enumext*}
   \item This text is in the first level.\label{C}
-  \item \begin{enumext}
-              \item This text is in nested enumext.\label{D}
-              \item This text is in nested enumext.
+  \item \begin{enumext}[base-fix]
+              \item This text is in nested enumext.\label{D}\footnote{foot note in neseted enumext}
+              \item This text is in nested enumext.\footnotemark[40]
          \end{enumext}
   \item This text is in the first level.
-\end{enumext}
+\end{enumext*}
 
-Some refs here \ref{C} and \ref{D}
+Some refs here \ref{C} and \ref{D} \footnotetext[40]{foot note in neseted enumext [40]}
 
 \section{enumext* nested in enumext}
 
 \begin{enumext}
   \item This text is in the first level. \label{E}
   \item \begin{enumext*}[label=\roman*.]
-              \item This text is in nested enumext*.\label{F}
-              \item This text is in nested enumext*.
+              \item This text is in nested enumext*.\label{F}\footnotemark[50]
+              \item This text is in nested enumext*.\footnote{foot note in neseted enumext*}
          \end{enumext*}
   \item This text is in the first level.
 \end{enumext}
 
-Some refs here \ref{E} and \ref{F}
+Some refs here \ref{E} and \ref{F} \footnotetext[50]{foot note in neseted enumext* [50]}
 
 \section{Custom ref}
 
@@ -4593,7 +4593,7 @@ Some text here
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-04.pdf}{\faFilePdf[regular]}}{}.%
 %
 % \item The file \myfile{enumext-05.tex} contains the tests for the environments
-%   \myenv{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} activated by the key
+%   \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} activated by the key
 %   \mykey{save-ans} together with the keys \mykey{no-store} and \mykey{show-ans}
 %   and the commands |\setenumext|, |\setenumextmeta|, |\printkeyans| and |\foreachkeyans|.
 %   \IfFileExists{enumext-05.pdf}{Source file \textattachfile[color=red,print=false]{enumext-05.tex}{\faFile*[regular]}
@@ -13829,7 +13829,10 @@ Some text here
 %   \cs{l_@@_footnotes_key_bool} is false, we will redefine the |\footnote|
 %   command.
 %    \begin{macrocode}
-     \IfDocumentMetadataTF { }
+     \IfDocumentMetadataTF
+       {
+         \@@_renew_footnote:
+       }
        {
          \bool_if:NF \l_@@_footnotes_key_bool
            {
@@ -13885,11 +13888,14 @@ Some text here
 %    \end{macrocode}
 %   Here we will reduce the \emph{warnings} a bit by setting the value
 %   of |\hbadness| to \mydim{10000}, print |\item| and \emph{\enquote{item content}}
-%   from the \emph{horizontal box} and \emph{footnotes} if it was redefined.
+%   from the \emph{horizontal box} and \emph{footnotes}.
 %    \begin{macrocode}
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_vii_box
-    \IfDocumentMetadataTF { }
+    \IfDocumentMetadataTF
+      {
+        \@@_print_footnote:
+      }
       {
         \bool_if:NF \l_@@_footnotes_key_bool
           {
@@ -14348,7 +14354,10 @@ Some text here
         + \l_@@_labelwidth_viii_dim
         + \l_@@_labelsep_viii_dim
       }
-      \IfDocumentMetadataTF { }
+      \IfDocumentMetadataTF
+        {
+          \@@_renew_footnote:
+        }
         {
           \bool_if:NF \l_@@_footnotes_key_bool
             {
@@ -14378,7 +14387,10 @@ Some text here
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_viii_box
-    \IfDocumentMetadataTF { }
+    \IfDocumentMetadataTF
+      {
+        \@@_print_footnote:
+      }
       {
         \bool_if:NF \l_@@_footnotes_key_bool
           {
