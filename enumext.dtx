@@ -1,5 +1,6 @@
 % \iffalse meta-comment
 % arara: lualatex: { branch: developer, draft: true }
+% arara: clean: { files: [ enumext-01.pdf, enumext-02.pdf, enumext-03.pdf, enumext-04.pdf, enumext-05.pdf ] }
 % arara: lualatex: { branch: developer, shell: true }
 % arara: clean: { extensions: [ aux, log, out, glo, gls, hd, ind, ilg, idx, toc, atfi ] }
 % arara: clean: { files: [ userdoc.idx, userdoc.ilg, userdoc.ind ] }
@@ -2025,6 +2026,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{above}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{not used}
+%
+% \smallskip
+%
 % Set the \emph{extra vertical space} added, beyond \mykey{topsep}, to
 % the top of the entire level of environment. This key is intended to
 % give a \emph{\enquote{fine adjustment}} of the vertical space
@@ -2033,6 +2037,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{discardable}}.
 %
 % \keyexamp{above\textcolor{MediumOrchid}{*}}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{not used}
+%
+% \smallskip
+%
 % Set the \emph{extra vertical space} added, beyond \mykey{topsep}, to
 % the top of the entire level of environment. This key is intended to
 % give a \emph{\enquote{fine adjustment}} of the vertical space
@@ -2043,6 +2050,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{below}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{not used}
+%
+% \smallskip
+%
 % Set the \emph{extra vertical space} space added, beyond \mykey{topsep}, to
 % the bottom of the entire level of environment. This key is intended to
 % give a \emph{\enquote{fine adjustment}} of the vertical space on the
@@ -2053,6 +2063,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{below\textcolor{MediumOrchid}{*}}{rubber length \textnormal{\textcolor{lightgray}{\textbar}} rigid length}{not used}
+%
+% \smallskip
+%
 % Set the \emph{extra vertical space} space added, beyond \mykey{topsep}, to
 % the bottom of the entire level of environment. This key is intended to
 % give a \emph{\enquote{fine adjustment}} of the vertical space on the
@@ -2062,14 +2075,62 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsubsection{Horizontal spaces}
 %
+% \keyexamp{list-offset}{rigid length}{\mydim{0}pt}
+% Sets the \emph{horizontal translation} of the entire environment level from the left edge
+% of the box defined by the \mykey{labelwidth} key. Internally sets the values of
+% |\leftmargin| and |\itemindent| for the current level.
+%
+% \smallskip
+%
+% \keyexamp{list-indent}{rigid length}{labelwidth + labelsep}
+% Sets the \emph{indentation} of the whole environment under the box defined by
+% \mykey{labelwidth} and \mykey{labelsep} keys. Internally sets the value of
+% |\leftmargin| and |\itemindent| for the current level.
+% If |list-indent=|\mydim{0pt} is set in the environments \myenv*{enumext}
+% and \myenv*{keyans} the \mymeta{label} will be part of the text, separated
+% by the value of the \mykey{labelsep} key and the \emph{first word}, in
+% simple terms it will look like a \emph{\enquote{common paragraph}}.
+%
+% \smallskip
+%
+% \begin{important}*
+%  The \myenv*{enumext*} and \myenv*{kenyans*} environments are
+%  implemented using |\makebox| and \myenv{minipage} which causes
+%  \emph{\enquote{list indent}} to always be equal to the value passed to
+%  \mykey{labewdith} plus \mykey{labelsep}. Passing a value to this key is
+%  equivalent to setting the value for the \mykey{list-offset} key.
+% \end{important}
+%
+% \smallskip
+%
 % \keyexamp{itemindent}{rigid length}{\mydim{0}pt}
 %
-% Extra \emph{horizontal indentation}, beyond \mykey{labelsep}, of the
-% \emph{\enquote{first line}} off each item. This value must be greater
-% than or equal to \mydim{0pt} and is applied internally using |\hspace|
-% without modifying the value of |\itemindent|.
+% \smallskip
+%
+% Sets the extra \emph{horizontal indentation}, beyond \mykey{labelsep},
+% of the \emph{\enquote{first line}} off each |\item| that is not followed
+% by a \emph{\enquote{blank line}} or the |\par| command . This value must
+% be greater than or equal to \mydim{0pt} and is applied internally using
+% |\hspace| \emph{without} modifying the value of |\itemindent|.
+%
+% \smallskip
+%
+% \begin{important}*
+%  This key is intended for the \myenv*{enumext*} and \myenv*{keyans*}
+%  environments where, by their implementation, it is not possible to
+%  adjust \mykey{labelwidth} and \mykey{list-indent} \emph{without}
+%  modifying the output. If you use \myenv*{enumext} or \myenv*{keyans}
+%  and want to get around the \emph{blank line} limitation or the |\par|
+%  command followed by |\item| you can modify \mykey{labelwidth} and
+%  \mykey{label-indent} and get the same effect.
+% \end{important}
+%
+% \smallskip
 %
 % \keyexamp{rightmargin}{rigid length}{\mydim{0}pt}
+%
+% \smallskip
+%
 % Set the \emph{horizontal space} between the right margin of the environment and the
 % right margin of the enclosing environment, the value it takes must be
 % greater than or equal to \mydim{0pt}. Internally sets the value of
@@ -2084,46 +2145,24 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% \keyexamp{list-offset}{rigid length}{\mydim{0}pt}
-% Sets the \emph{horizontal translation} of the entire environment level from the left edge
-% of the box defined by the \mykey{labelwidth} key. Internally sets the values of
-% |\leftmargin| and |\itemindent| for the current level.
-%
-% \smallskip
-%
-% \keyexamp{list-indent}{rigid length}{labelwidth + labelsep}
-% Sets the \emph{indentation} of the whole environment under the box defined by
-% \mykey{labelwidth} and \mykey{labelsep} keys. Internally sets the value of
-% |\leftmargin| and |\itemindent| for the current level.
-%
-% \smallskip
-%
-% If |list-indent=|\mydim{0pt} is set in the environment \myenv*{enumext} the \mymeta{label} will be part of the
-% text, separated by the value of the \mykey{labelsep} key and the \emph{first word},
-% in simple terms it will look like a \emph{\enquote{common paragraph}}. This
-% setting is equivalent (more or less) to the \textcolor{optcolor}{\texttt{wide}}
-% key provided by the \mypkg{enumitem} package.
-%
-% \smallskip
-%
 % \begin{important}*
-% For the \myenv*{enumext*} and \myenv*{keyans*} environments the keys
-% \mykey{list-indent} and \mykey{list-offset} have the same effect.
+%  In the \myenv*{enumext*} and \myenv*{keyans*} environments this value
+%  is passed to |\parindent| within the \myenv{minipage} environment where
+%  \emph{\enquote{item content}} is placed.
 % \end{important}
+%
+% \smallskip
 %
 % \subsection{Keys for add \texttt{code}}
 %
-%^^A \begin{important}*
-% The following \mymeta{keys} should be used with \emph{\enquote{caution}}, they
-% are intended to inject \mymarg{code} into different parts of
-% the defined environments. We must keep in mind that the defined
+% The following \mymeta{keys} should be used with \emph{\enquote{caution}},
+% they are intended to inject \mymarg{code} into different parts of the
+% defined environments. We must keep in mind that the defined
 % environments are based on the \myenv{list} base environment provided by
-% \hologo{LaTeX} which is defined (simplified) as plain form
-% |\list|\mymarg{arg one}\mymarg{arg two}.
+% \hologo{LaTeX} which is defined (simplified) as plain form |\list|\mymarg{arg one}\mymarg{arg two}.
 % Using the \mykey{before*} key does not allow access to the \myenv{list}
 % parameters defined by \myoarg{key
 % \textnormal{\textcolor{gray}{=}} val}.
-%^^A \end{important}
 %
 % \smallskip
 %
@@ -2162,9 +2201,16 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Keep in mind that the code set in this key will affect the entire
 % \emph{\enquote{body}} of the environment and therefore the inner levels
 % of the list and the \myenv*{keyans} environment. It is recommended to
-% set this key per level. In the \myenv*{enumext*} and \myenv*{keyans*}
-% environments this key is executed within the \myenv{minipage} environment
-% in which \emph{\enquote{item content}} is placed.
+% set this key per level.
+% \end{important}
+%
+% \smallskip
+%
+% \begin{important}*
+%  In the \myenv*{enumext*} and \myenv*{keyans*} environments this key
+%  is executed after the \mykey{listparindent}, \mykey{parsep}, and
+%  \mykey{itemindent} braces within the \myenv{minipage} environment in
+%  which the \emph{\enquote{item content}} is placed.
 % \end{important}
 %
 % \smallskip
@@ -2193,16 +2239,15 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-%^^A \begin{important}*
 % The following \mymeta{keys} are \emph{\enquote{only}} available for the
 % \myenv*{enumext*} environment and the \emph{\enquote{first level}} of
 % the \myenv*{enumext} environment and are ignored if set when nested
 % within each other.
-%^^A \end{important}
-%
-%^^A \newpage
 %
 % \keyexamp{series}{series name}{not used}
+%
+% \smallskip
+%
 % Stores the \emph{keys} of the \emph{optional argument} of the \emph{\enquote{first level}}
 % of the environment in which it is executed in \mymarg{series
 % name} which is used as an argument in the key \mykey{resume}. The \mymeta{keys}
@@ -2272,10 +2317,20 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \begin{important}*
-% The |\footnote|\mymarg{text} command in the nested levels of \myenv{multicols} will not
-% work as expected, prefer the use of |\footnotemark|\myoarg{number} inside the
-% environment and |\footnotetext|\myoarg{number}\mymarg{text} outside the environment
-% or via the \mykey{after} key.
+%  The |\footnote|\mymarg{text} command in the nested levels of \myenv{multicols}
+%  will not work as expected, prefer the use of |\footnotemark|\myoarg{number}
+%  inside the environment and |\footnotetext|\myoarg{number}\mymarg{text}
+%  outside the environment or via the \mykey{after} key.
+% \end{important}
+%
+% \smallskip
+%
+% \begin{important}
+%  By default the \mypkg{hyperref} package does not provide support for
+%  |\footnotemark|\myoarg{number} and |\footnotetext|\myoarg{number}\mymarg{text},
+%  but when \emph{tagged} \texttt{PDF} is enabled and the package is loaded
+%  the |\footnotemark|\myoarg{number} and |\footnotetext|\myoarg{number}\mymarg{text}
+%  commands create links correctly.
 % \end{important}
 %
 % \subsection{Keys for \env{minipage}}\label{key:mini}
@@ -2305,13 +2360,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \end{syntax}
 % \end{function}
 %
-% The \ics*{miniright} command close the \myenv{minipage}
-% environment on the \emph{\enquote{left side}} and opens the
-% \myenv{minipage} environment on the \emph{\enquote{right side}} by
-% starting it with the |\centering| command. It
-% must be placed \emph{\enquote{after}} the last \ics*{item} of the
-% current environment and \emph{\enquote{before}} starting the material
-% to be placed on the \emph{\enquote{right side}}.
+% The \ics*{miniright} command close the \myenv{minipage} environment on
+% the \emph{\enquote{left side}} and opens the \myenv{minipage} environment
+% on the \emph{\enquote{right side}} by starting it with the |\centering|
+% command. It must be placed \emph{\enquote{after}} the last \ics*{item}
+% of the current environment and \emph{\enquote{before}} starting the
+% material to be placed on the \emph{\enquote{right side}}.
 %
 % \smallskip
 %
@@ -2329,15 +2383,30 @@ This work consists of the files enumext.dtx and enumext.sty.
 % or via the \mykey{after} key (see \S\ref{doc:footnote} for full support).
 % \end{important}
 %
+% \smallskip
+%
+% \begin{important}
+%  By default the \mypkg{hyperref} package does not provide support for
+%  |\footnotemark|\myoarg{number} and |\footnotetext|\myoarg{number}\mymarg{text},
+%  but when \emph{tagged} \texttt{PDF} is enabled and the package is loaded
+%  the |\footnotemark|\myoarg{number} and |\footnotetext|\myoarg{number}\mymarg{text}
+%  commands create links correctly.
+% \end{important}
+%
+% \smallskip
+%
 % \subsubsection{The key \texttt{mini-right}}
 %
-% In the horizontal list environments \myenv*{enumext*} and \myenv*{keyans*}
+% In the \emph{horizontal list environments} \myenv*{enumext*} and \myenv*{keyans*}
 % it is not possible to use the \ics*{miniright} command and the \mykey{mini-right}
 % key must be used instead.
 %
 % \smallskip
 %
 % \keyexamp{mini-right}{content}{not used}
+%
+% \smallskip
+%
 % Set the \emph{content} for the drawing or tabular to be placed in the
 % \myenv{minipage} environment on the \emph{\enquote{right side}} by
 % starting it with |\centering|. The \mymarg{content} must be passed between braces.
@@ -2345,13 +2414,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{mini-right\textcolor{MediumOrchid}{*}}{content}{not used}
+%
+% \smallskip
+%
 % Same as above, but \emph{without} starting with |\centering|.
 %
-%^^A \begin{important}*
-%^^A  The keys \mykey{mini-right} and \mykey{mini-right*} has a \emph{slightly different}
-%^^A  implementation, the argument \mymarg{content} is saved in a \emph{box}
-%^^A  and then printed outside the environment using \emph{hooks}.
-%^^A \end{important}
+% \smallskip
 %
 % \section{The storage system}\label{sec:storage system}
 %
@@ -2396,28 +2464,32 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \fi
 %
 % By executing the key \mykey{save-ans}|=|\mymarg{store name} the entire
-% \emph{\enquote{structure}} of the environment (excluding the \emph{first level}) including the
-% \emph{optional argument} passed to the inner levels or the environment nested
-% in it, along with the \mymeta{content} passed to \ics*{anskey} or \myenv*{anskey*}, the current
-% \mymeta{labels} for \ics*{item*} and \ics*{anspic}|*| in the environments
-% \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} will be \emph{\enquote{stored}}
-% in a \emph{sequence} \mymarg{store name} and at the same time will be \emph{\enquote{stored}} (without the
-% \emph{\enquote{structure}} or \emph{optional argument}) in a \emph{prop list} \mymarg{store name}.
+% \emph{\enquote{structure}} of the environment (excluding the \emph{first level})
+% including the \emph{optional argument} passed to the inner levels or
+% the environment nested in it, along with the \mymeta{content} passed
+% to \ics*{anskey} or \myenv*{anskey*}, the current \mymeta{labels} for
+% \ics*{item*} and \ics*{anspic}|*| in the environments \myenv*{keyans},
+% \myenv*{keyans*} and \myenv*{keyanspic} will be \emph{\enquote{stored}}
+% in a \emph{sequence} \mymarg{store name} and at the same time will be
+% \emph{\enquote{stored}} (without the \emph{\enquote{structure}} or
+% \emph{optional argument}) in a \emph{prop list} \mymarg{store name}.
 %
 % \smallskip
 %
-% \begin{important}*
+%^^A \begin{important}*
 %  For security reasons the \emph{optional argument} of the inner levels
 %  or the nested environment are \emph{filtered} by excluding all \mymeta{keys}
 %  related to the \emph{\enquote{storage system}} (\S\ref{subsec:storage-keys})
-%  along with the \mymeta{keys} \mykey{mini-env}, \mykey{mini-sep}, \mykey{mini-right},
+%  along with the keys \mykey{mini-env}, \mykey{mini-sep}, \mykey{mini-right},
 %  \mykey{mini-right*}, \mykey{series}, \mykey{resume} and \mykey{resume*}
 %  when storing in \emph{sequence} \mymarg{store name} set by \mykey{save-ans} key.
-% \end{important}
+%^^A \end{important}
 %
 % \subsection{Keys for storage system}\label{subsec:storage-keys}
 %
-% \begin{important}*
+% \smallskip
+%
+%^^A  \begin{important}*
 % The only \mymeta{keys} available for all levels of the \myenv*{enumext}
 % environment and the \myenv*{enumext*} environment are \mykey{no-store}
 % and \mykey{save-key}, the rest of the \mymeta{keys} described in this
@@ -2425,9 +2497,10 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{first level}} of the environment in which the key
 % \mykey{save-ans} is executed. The key \mykey{save-ans} should NOT be passed
 % with the command \ics*{setenumext}.
-% \end{important}
+%^^A  \end{important}
 %
-% \smallskip
+%^^A \smallskip
+% \newpage
 %
 % \keyexamp{save-ans}{store name}{not set}
 % Sets the \emph{name} of the \emph{sequence} and \emph{prop list} in
@@ -4055,14 +4128,12 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
   }
 \documentclass{article}
 \usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}
-\usepackage{unicode-math}
-\usepackage{hyperref}
+\usepackage{unicode-math,hyperref,enumext}
 \hypersetup
   {
-     colorlinks = true,
-     pdftitle   = {Test tagged PDF for enumext package},
+    colorlinks = true,
+    pdftitle   = {Test tagged PDF for enumext package},
   }
-\usepackage{enumext}
 \begin{document}
 \section{only enumext}
 Some text here
@@ -4489,7 +4560,7 @@ Some text here
 %   \IfFileExists{enumext-01.pdf}{Source file \textattachfile[color=red,print=false]{enumext-01.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-01.pdf}{\faFilePdf[regular]}}{}.%
 %
-% \item The file \myfile{enumext-01.tex} contains the tests for the \myenv*{enumext}
+% \item The file \myfile{enumext-02.tex} contains the tests for the \myenv*{enumext}
 %   and \myenv*{enumet*} environments and the support for \myenv{minipage}
 %   and \myenv{multicols} environments using the keys \mykey{columns},
 %   \mykey{columns-sep}, \mykey{mini-env}, \mykey{mini-right} and
