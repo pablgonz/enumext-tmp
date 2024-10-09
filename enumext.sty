@@ -567,33 +567,27 @@
   }
 \cs_new_protected:Nn \__enumext_renew_footnote_starred:
   {
-    \bool_if:NT \g__enumext_starred_bool
+    \IfDocumentMetadataTF
       {
-        \IfDocumentMetadataTF
+        \__enumext_renew_footnote:
+      }
+      {
+        \bool_if:NF \l__enumext_footnotes_key_bool
           {
             \__enumext_renew_footnote:
-          }
-          {
-            \bool_if:NF \l__enumext_footnotes_key_bool
-              {
-                \__enumext_renew_footnote:
-              }
           }
       }
   }
 \cs_new_protected:Nn \__enumext_print_footnote_starred:
   {
-    \bool_if:NT \g__enumext_starred_bool
+    \IfDocumentMetadataTF
       {
-        \IfDocumentMetadataTF
+        \__enumext_print_footnote:
+      }
+      {
+        \bool_if:NF \l__enumext_footnotes_key_bool
           {
             \__enumext_print_footnote:
-          }
-          {
-            \bool_if:NF \l__enumext_footnotes_key_bool
-              {
-                \__enumext_print_footnote:
-              }
           }
       }
   }

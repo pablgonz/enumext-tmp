@@ -6164,7 +6164,8 @@ Some text here
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_renew_footnote_standar:,\@@_print_footnote_standar:,}
+% \begin{macro}[int]{\@@_renew_footnote_standar:,\@@_print_footnote_standar:,
+%                    \@@_renew_footnote_starred:,\@@_print_footnote_starred:,}
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_renew_footnote_standar:
   {
@@ -6200,33 +6201,27 @@ Some text here
   }
 \cs_new_protected:Nn \@@_renew_footnote_starred:
   {
-    \bool_if:NT \g_@@_starred_bool
+    \IfDocumentMetadataTF
       {
-        \IfDocumentMetadataTF
+        \@@_renew_footnote:
+      }
+      {
+        \bool_if:NF \l_@@_footnotes_key_bool
           {
             \@@_renew_footnote:
-          }
-          {
-            \bool_if:NF \l_@@_footnotes_key_bool
-              {
-                \@@_renew_footnote:
-              }
           }
       }
   }
 \cs_new_protected:Nn \@@_print_footnote_starred:
   {
-    \bool_if:NT \g_@@_starred_bool
+    \IfDocumentMetadataTF
       {
-        \IfDocumentMetadataTF
+        \@@_print_footnote:
+      }
+      {
+        \bool_if:NF \l_@@_footnotes_key_bool
           {
             \@@_print_footnote:
-          }
-          {
-            \bool_if:NF \l_@@_footnotes_key_bool
-              {
-                \@@_print_footnote:
-              }
           }
       }
   }
