@@ -446,23 +446,6 @@
     \cs_new_eq:NN \__enumext_minipage:w \minipage
     \cs_new_eq:NN \__enumext_endminipage: \endminipage
   }
-%% Function for define a internal |minipage| environment.
-\cs_new_protected:Nn \__enumext_internal_mini_page:
-  {
-    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
-      {
-        \DeclareDocumentEnvironment{__enumext_mini_page}{ m }
-          {
-            \__enumext_minipage:w [ t ] { ##1 }
-              \legacy_if_gset_false:n { @minipage }
-              \skip_vertical:N \c_zero_skip
-          }
-          {
-              \skip_vertical:N \c_zero_skip
-            \__enumext_endminipage:
-          }
-      }
-  }
 %% Detection off |hyperref| package with |hyperfootnotes=true|.
 \hook_gput_code:nnn { begindocument } { enumext } { \__enumext_after_hyperref: }
 \hook_gset_rule:nnnn { begindocument } { enumext } { after } { hyperref }
@@ -474,12 +457,9 @@
         \bool_set_true:N \l__enumext_hyperref_bool
         \IfHyperBoolean{hyperfootnotes}
           {
-            % \typeout{hyperfootnotes=true}
             \bool_set_true:N \l__enumext_footnotes_key_bool
           }
-          {
-            % \typeout{hyperfootnotes=false}
-          }
+          { }
       }
       {  }
 %% Detection off |footnotehyper| package.
@@ -490,8 +470,6 @@
            \msg_info:nnn { enumext } { package-load } { footnotehyper }
          }
          {
-           % \typeout{No ~ footnotehyper ~ load}
-           % \typeout{Load ~ and  ~ use  ~ \string\makesavenoteenv{enumext*}}
            \bool_set_false:N \l__enumext_footnotes_key_bool
          }
      }
@@ -520,6 +498,123 @@
       }
     \__enumext_hypertarget:nn {#1} { }
     \__enumext_phantomsection:
+  }
+%% Redefining \footnote.
+\cs_new_protected:Nn \__enumext_footnotetext:nn
+  {
+    \footnotetext[#1]{#2}
+  }
+\cs_new_protected:Nn \__enumext_renew_footnote:
+  {
+    \seq_gclear:N \g__enumext_footnote_arg_seq
+    \seq_gclear:N \g__enumext_footnote_int_seq
+    \RenewDocumentCommand \footnote { o +m }
+      {
+        \tl_if_novalue:nTF {##1}
+          {
+            \stepcounter{footnote}
+            \int_gset_eq:Nc \g__enumext_footnote_int { c@footnote }
+          }
+          {
+            \int_gset:Nn \g__enumext_footnote_int { ##1 }
+          }
+        \footnotemark [ \g__enumext_footnote_int ]
+        \seq_gput_right:Nn \g__enumext_footnote_arg_seq { ##2 }
+        \seq_gput_right:NV \g__enumext_footnote_int_seq \g__enumext_footnote_int
+     }
+  }
+\cs_new_protected:Nn \__enumext_print_footnote:
+  {
+    \seq_if_empty:NF \g__enumext_footnote_int_seq
+      {
+        \seq_map_pairwise_function:NNN
+          \g__enumext_footnote_int_seq
+          \g__enumext_footnote_arg_seq
+          \__enumext_footnotetext:nn
+      }
+  }
+\cs_new_protected:Nn \__enumext_renew_footnote_standar:
+  {
+    \bool_if:NT \g__enumext_standar_bool
+      {
+        \IfDocumentMetadataTF
+          {
+            \__enumext_renew_footnote:
+          }
+          {
+            \bool_if:NF \l__enumext_footnotes_key_bool
+              {
+                \__enumext_renew_footnote:
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_print_footnote_standar:
+  {
+    \bool_if:NT \g__enumext_standar_bool
+      {
+        \IfDocumentMetadataTF
+          {
+            \__enumext_print_footnote:
+          }
+          {
+            \bool_if:NF \l__enumext_footnotes_key_bool
+              {
+                \__enumext_print_footnote:
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_renew_footnote_starred:
+  {
+    \bool_if:NT \g__enumext_starred_bool
+      {
+        \IfDocumentMetadataTF
+          {
+            \__enumext_renew_footnote:
+          }
+          {
+            \bool_if:NF \l__enumext_footnotes_key_bool
+              {
+                \__enumext_renew_footnote:
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \__enumext_print_footnote_starred:
+  {
+    \bool_if:NT \g__enumext_starred_bool
+      {
+        \IfDocumentMetadataTF
+          {
+            \__enumext_print_footnote:
+          }
+          {
+            \bool_if:NF \l__enumext_footnotes_key_bool
+              {
+                \__enumext_print_footnote:
+              }
+          }
+      }
+  }
+%% Function for define a internal |minipage| environment.
+\cs_new_protected:Nn \__enumext_internal_mini_page:
+  {
+    \int_compare:nNnT { \l__enumext_level_int } = { 0 }
+      {
+        \DeclareDocumentEnvironment{__enumext_mini_page}{ m }
+          {
+            \__enumext_renew_footnote_standar:
+            \__enumext_minipage:w [ t ] { ##1 }
+              \legacy_if_gset_false:n { @minipage }
+              \skip_vertical:N \c_zero_skip
+          }
+          {
+              \skip_vertical:N \c_zero_skip
+            \__enumext_endminipage:
+            \__enumext_print_footnote_standar:
+          }
+      }
   }
 %% Public dimension |\itemwidth|
 \dim_zero_new:N \itemwidth
@@ -3681,8 +3776,8 @@
 %% Safe exec for |enumext| environment.
 \cs_new_protected:Nn \__enumext_safe_exec:
   {
-    \__enumext_internal_mini_page:
     \__enumext_is_not_nested:
+    \__enumext_internal_mini_page:
     \int_incr:N \l__enumext_level_int
     \int_compare:nNnT { \l__enumext_level_int } > { 4 }
       { \msg_fatal:nn { enumext } { list-too-deep } }
@@ -4686,40 +4781,6 @@
     \tl_gclear:N \g__enumext_miniright_code_viii_tl
     \dim_gzero:N \g__enumext_minipage_right_viii_dim
   }
-%% Redefining \footnote.
-\cs_new_protected:Nn \__enumext_footnotetext:nn
-  {
-    \footnotetext[#1]{#2}
-  }
-\cs_new_protected:Nn \__enumext_renew_footnote:
-  {
-    \seq_gclear:N \g__enumext_footnote_arg_seq
-    \seq_gclear:N \g__enumext_footnote_int_seq
-    \RenewDocumentCommand \footnote { o +m }
-      {
-        \tl_if_novalue:nTF {##1}
-          {
-            \stepcounter{footnote}
-            \int_gset_eq:Nc \g__enumext_footnote_int { c@footnote }
-          }
-          {
-            \int_gset:Nn \g__enumext_footnote_int { ##1 }
-          }
-        \footnotemark [ \g__enumext_footnote_int ]
-        \seq_gput_right:Nn \g__enumext_footnote_arg_seq { ##2 }
-        \seq_gput_right:NV \g__enumext_footnote_int_seq \g__enumext_footnote_int
-     }
-  }
-\cs_new_protected:Nn \__enumext_print_footnote:
-  {
-    \seq_if_empty:NF \g__enumext_footnote_int_seq
-      {
-        \seq_map_pairwise_function:NNN
-          \g__enumext_footnote_int_seq
-          \g__enumext_footnote_arg_seq
-          \__enumext_footnotetext:nn
-      }
-  }
 %% Define |enumext*|
 \NewDocumentEnvironment{enumext*}{ o }
   {
@@ -4748,8 +4809,8 @@
 %% Safe exec for |enumext*| environment (set vars for storage system).
 \cs_new_protected:Nn \__enumext_safe_exec_vii:
   {
-    \__enumext_internal_mini_page:
     \__enumext_is_not_nested:
+    \__enumext_internal_mini_page:
     \int_incr:N \l__enumext_level_h_int
     \int_compare:nNnT { \l__enumext_level_h_int } > { 1 }
       {
@@ -4943,16 +5004,7 @@
         + \l__enumext_labelwidth_vii_dim
         + \l__enumext_labelsep_vii_dim
       }
-     \IfDocumentMetadataTF
-       {
-         \__enumext_renew_footnote:
-       }
-       {
-         \bool_if:NF \l__enumext_footnotes_key_bool
-           {
-             \__enumext_renew_footnote:
-           }
-       }
+      \__enumext_renew_footnote_starred:
       \__enumext_start_list_tag:n {enumext*}
       \__enumext_fake_make_label_vii:n {#1}
       \__enumext_stop_start_list_tag:
@@ -4972,16 +5024,7 @@
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_vii_box
-    \IfDocumentMetadataTF
-      {
-        \__enumext_print_footnote:
-      }
-      {
-        \bool_if:NF \l__enumext_footnotes_key_bool
-          {
-            \__enumext_print_footnote:
-          }
-      }
+    \__enumext_print_footnote_starred:
     \int_compare:nNnTF
       { \l__enumext_item_column_pos_vii_int } = { \l__enumext_columns_vii_int }
       {
@@ -5227,16 +5270,7 @@
         + \l__enumext_labelwidth_viii_dim
         + \l__enumext_labelsep_viii_dim
       }
-      \IfDocumentMetadataTF
-        {
-          \__enumext_renew_footnote:
-        }
-        {
-          \bool_if:NF \l__enumext_footnotes_key_bool
-            {
-              \__enumext_renew_footnote:
-            }
-        }
+      \__enumext_renew_footnote_standar:
       \__enumext_start_list_tag:n {keyans*}
       \__enumext_fake_make_label_viii:n {#1}
       \__enumext_stop_start_list_tag:
@@ -5260,16 +5294,7 @@
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l__enumext_item_text_viii_box
-    \IfDocumentMetadataTF
-      {
-        \__enumext_print_footnote:
-      }
-      {
-        \bool_if:NF \l__enumext_footnotes_key_bool
-          {
-            \__enumext_print_footnote:
-          }
-      }
+    \__enumext_print_footnote_standar:
     \int_compare:nNnTF
       { \l__enumext_item_column_pos_viii_int } = { \l__enumext_columns_viii_int }
       {

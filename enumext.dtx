@@ -5724,10 +5724,10 @@ Some text here
 % \subsubsection{Utilities for environments and levels}\label{fun:utilities}
 %
 % \begin{macro}{\@@_is_not_nested:, \@@_is_on_first_level:}
-%   The function \cs{@@_is_not_nested:} set the variables \cs{g_@@_standar_bool} and
-%   \cs{g_@@_starred_bool} to \emph{\enquote{true}} only if the environments
-%   \myenv*{enumext} and \myenv*{enumext*} are nested in each other and
-%   save the environment name in \cs{l_@@_envir_name_tl}.
+%   The function \cs{@@_is_not_nested:} set the variables \cs{g_@@_standar_bool}
+%   and \cs{g_@@_starred_bool} to \emph{\enquote{true}} only if the
+%   environments \myenv*{enumext} and \myenv*{enumext*} are NOT nested
+%   in each other and save the environment name in \cs{l_@@_envir_name_tl}.
 % \iffalse
 %% Function to check/set current environment for |enumext| and |enumext*|.
 % \fi
@@ -6002,44 +6002,6 @@ Some text here
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{The internal \env{minipage} environment}
-%
-% \begin{macro}[int]{\@@_internal_mini_page:, @@_mini_env*}
-%   The function \cs{@@_internal_mini_page:} creates a internal
-%   \myvarenv*{__@@_mini_page} environment (\emph{custom version} of
-%   \myenv{minipage}) setting the |\if@minipage| switch to
-%   \emph{\enquote{false}} to allow spaces at the \emph{\enquote{above}} of
-%   the environment, plus we will add |\skip_vertical:N \c_zero_skip| to maintain alignment
-%   on \emph{\enquote{top}} in the first part and  |\skip_vertical:N \c_zero_skip|
-%   in the second part to allow spaces \emph{\enquote{below}}. This environment will be used internally by the
-%   \mykey{mini-env} key, it is not documented in the user interface and is for
-%   internal use only. This function is passed to the function \cs{@@_safe_exec:}
-%   in the \myenv*{enumext} environment definition (\S\ref{env:enumext}) and
-%   \cs{@@_safe_exec_vii:} in the \myenv*{enumext*} environment definition (\S\ref{env:starred})
-%
-% \iffalse
-%% Function for define a internal |minipage| environment.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_internal_mini_page:
-  {
-    \int_compare:nNnT { \l_@@_level_int } = { 0 }
-      {
-        \DeclareDocumentEnvironment{@@_mini_page}{ m }
-          {
-            \@@_minipage:w [ t ] { ##1 }
-              \legacy_if_gset_false:n { @minipage }
-              \skip_vertical:N \c_zero_skip
-          }
-          {
-              \skip_vertical:N \c_zero_skip
-            \@@_endminipage:
-          }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
 % \subsection{Compatibility with hyperref and footnotehyper}\label{pkg:hyperref}
 %
 % First we define the necessary rules using \emph{\enquote{hooks}} to
@@ -6054,12 +6016,12 @@ Some text here
 %    \end{macrocode}
 %
 % \begin{macro}{\@@_after_hyperref:, \@@_hypertarget:nn, \@@_phantomsection:}
-%    The function \cs{@@_after_hyperref:} sets the state of the boolean
-%    variable \cs{l_@@_hyperref_bool} to \enquote{true} if the package is
-%    loaded. At this point we will use the public macro |\IfHyperBoolean| to
-%    determine if the |hyperfootnotes=true| key is present, if so, we set
-%    the state of the boolean variable \cs{@@_footnotes_key_bool} to \enquote{true}.
-%
+%   The function \cs{@@_after_hyperref:} sets the state of the boolean
+%   variable \cs{l_@@_hyperref_bool} to \enquote{true} if the package is
+%   loaded. At this point we will use the public macro |\IfHyperBoolean|
+%   to determine if the |hyperfootnotes=true| key is present, if so, we
+%   set the state of the boolean variable \cs{@@_footnotes_key_bool} to
+%   \enquote{true}.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_after_hyperref:
   {
@@ -6069,20 +6031,16 @@ Some text here
         \bool_set_true:N \l_@@_hyperref_bool
         \IfHyperBoolean{hyperfootnotes}
           {
-            % \typeout{hyperfootnotes=true}
             \bool_set_true:N \l_@@_footnotes_key_bool
           }
-          {
-            % \typeout{hyperfootnotes=false}
-          }
+          { }
       }
       {  }
 %    \end{macrocode}
-%    If the state of the variable \cs{l_@@_footnotes_key_bool} is true
-%    we will check if the package \mypkg{footnotehyper} is loaded, in
-%    case it is not present, we will set the value of
-%    \cs{l_@@_footnotes_key_bool} to false and we will redefine
-%    |\footnote|.
+%   If the state of the variable \cs{l_@@_footnotes_key_bool} is true we
+%   will check if the package \mypkg{footnotehyper} is loaded, in case it
+%   is not present, we will set the value of \cs{l_@@_footnotes_key_bool}
+%   to false and we will redefine |\footnote|.
 % \iffalse
 %% Detection off |footnotehyper| package.
 % \fi
@@ -6094,8 +6052,6 @@ Some text here
            \msg_info:nnn { enumext } { package-load } { footnotehyper }
          }
          {
-           % \typeout{No ~ footnotehyper ~ load}
-           % \typeout{Load ~ and  ~ use  ~ \string\makesavenoteenv{enumext*}}
            \bool_set_false:N \l_@@_footnotes_key_bool
          }
      }
@@ -6156,6 +6112,164 @@ Some text here
       }
     \@@_hypertarget:nn {#1} { }
     \@@_phantomsection:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Redefining \cs{footnote} command}\label{ltx:footnote}
+%
+% \begin{macro}[int]{\@@_footnotetext:nn, \@@_renew_footnote:,\@@_print_footnote:}
+%   To keep the correct numbering of \ics{footnote} and to make it work
+%   correctly in the \myenv*{enumext*} and \myenv*{keyans*} environments,
+%   it is necessary to redefine the command.
+%   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
+%   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
+% \iffalse
+%% Redefining \footnote.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_footnotetext:nn
+  {
+    \footnotetext[#1]{#2}
+  }
+\cs_new_protected:Nn \@@_renew_footnote:
+  {
+    \seq_gclear:N \g_@@_footnote_arg_seq
+    \seq_gclear:N \g_@@_footnote_int_seq
+    \RenewDocumentCommand \footnote { o +m }
+      {
+        \tl_if_novalue:nTF {##1}
+          {
+            \stepcounter{footnote}
+            \int_gset_eq:Nc \g_@@_footnote_int { c@footnote }
+          }
+          {
+            \int_gset:Nn \g_@@_footnote_int { ##1 }
+          }
+        \footnotemark [ \g_@@_footnote_int ]
+        \seq_gput_right:Nn \g_@@_footnote_arg_seq { ##2 }
+        \seq_gput_right:NV \g_@@_footnote_int_seq \g_@@_footnote_int
+     }
+  }
+\cs_new_protected:Nn \@@_print_footnote:
+  {
+    \seq_if_empty:NF \g_@@_footnote_int_seq
+      {
+        \seq_map_pairwise_function:NNN
+          \g_@@_footnote_int_seq
+          \g_@@_footnote_arg_seq
+          \@@_footnotetext:nn
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_renew_footnote_standar:,\@@_print_footnote_standar:,}
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_renew_footnote_standar:
+  {
+    \bool_if:NT \g_@@_standar_bool
+      {
+        \IfDocumentMetadataTF
+          {
+            \@@_renew_footnote:
+          }
+          {
+            \bool_if:NF \l_@@_footnotes_key_bool
+              {
+                \@@_renew_footnote:
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \@@_print_footnote_standar:
+  {
+    \bool_if:NT \g_@@_standar_bool
+      {
+        \IfDocumentMetadataTF
+          {
+            \@@_print_footnote:
+          }
+          {
+            \bool_if:NF \l_@@_footnotes_key_bool
+              {
+                \@@_print_footnote:
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \@@_renew_footnote_starred:
+  {
+    \bool_if:NT \g_@@_starred_bool
+      {
+        \IfDocumentMetadataTF
+          {
+            \@@_renew_footnote:
+          }
+          {
+            \bool_if:NF \l_@@_footnotes_key_bool
+              {
+                \@@_renew_footnote:
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \@@_print_footnote_starred:
+  {
+    \bool_if:NT \g_@@_starred_bool
+      {
+        \IfDocumentMetadataTF
+          {
+            \@@_print_footnote:
+          }
+          {
+            \bool_if:NF \l_@@_footnotes_key_bool
+              {
+                \@@_print_footnote:
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The internal \env{minipage} environment}
+%
+% \begin{macro}[int]{\@@_internal_mini_page:, @@_mini_env*}
+%   The function \cs{@@_internal_mini_page:} creates a internal
+%   \myvarenv*{__@@_mini_page} environment (\emph{custom version} of
+%   \myenv{minipage}) setting the |\if@minipage| switch to \emph{\enquote{false}}
+%   to allow spaces at the \emph{\enquote{above}} of the environment,
+%   plus we will add |\skip_vertical:N \c_zero_skip| to maintain alignment
+%   on \emph{\enquote{top}} in the first part and  |\skip_vertical:N \c_zero_skip|
+%   in the second part to allow spaces \emph{\enquote{below}}. This environment
+%   will be used internally by the \mykey{mini-env} key, it is NOT documented
+%   in the user interface and is for internal use only. This function is
+%   passed to the function \cs{@@_safe_exec:} in the \myenv*{enumext} environment
+%   definition (\S\ref{env:enumext}) and \cs{@@_safe_exec_vii:} in the
+%   \myenv*{enumext*} environment definition (\S\ref{env:starred})
+%
+% \iffalse
+%% Function for define a internal |minipage| environment.
+% \fi
+%    \begin{macrocode}
+\cs_new_protected:Nn \@@_internal_mini_page:
+  {
+    \int_compare:nNnT { \l_@@_level_int } = { 0 }
+      {
+        \DeclareDocumentEnvironment{@@_mini_page}{ m }
+          {
+            \@@_renew_footnote_standar:
+            \@@_minipage:w [ t ] { ##1 }
+              \legacy_if_gset_false:n { @minipage }
+              \skip_vertical:N \c_zero_skip
+          }
+          {
+              \skip_vertical:N \c_zero_skip
+            \@@_endminipage:
+            \@@_print_footnote_standar:
+          }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -11665,23 +11779,23 @@ Some text here
 % \subsection{The environment \env{enumext}}\label{env:enumext}
 %
 % \begin{macro}{\@@_safe_exec:}\label{fun:enumext:safe-exe}
-%   The \cs{@@_safe_exec:} function first call the function \cs{@@_internal_mini_page:} to create
-%   the environment \myvarenv*{__@@_mini_page}, then the function
-%   \cs{@@_is_not_nested:} which sets \cs{g_@@_standar_bool} to \emph{\enquote{true}} if we
-%   are not nested within \myenv*{enumext*}, we will increment
-%   \cs{l_@@_level_int} to restrict nesting of the environment, set
-%   \cs{l_@@_standar_bool} to \emph{\enquote{true}} and finally call the function
-%   \cs{@@_is_on_first_level:} which sets \cs{l_@@_standar_first_bool} to
-%   \emph{\enquote{true}} only if the environment is not nested and we are
-%    at the \emph{\enquote{first level}}.
+%   The \cs{@@_safe_exec:} function first call the function \cs{@@_is_not_nested:}
+%   which sets \cs{g_@@_standar_bool} to \emph{\enquote{true}} if we
+%   are NOT nested within \myenv*{enumext*}, then call the function
+%   \cs{@@_internal_mini_page:} to create the environment \myvarenv*{__@@_mini_page},
+%   we will increment \cs{l_@@_level_int} to restrict nesting of the
+%   environment, set \cs{l_@@_standar_bool} to \emph{\enquote{true}} and
+%   finally call the function \cs{@@_is_on_first_level:} which sets
+%   \cs{l_@@_standar_first_bool} to \emph{\enquote{true}} only if the
+%   environment is NOT nested and we are at the \emph{\enquote{first level}}.
 % \iffalse
 %% Safe exec for |enumext| environment.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec:
   {
-    \@@_internal_mini_page:
     \@@_is_not_nested:
+    \@@_internal_mini_page:
     \int_incr:N \l_@@_level_int
     \int_compare:nNnT { \l_@@_level_int } > { 4 }
       { \msg_fatal:nn { enumext } { list-too-deep } }
@@ -13349,54 +13463,6 @@ Some text here
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsubsection{Redefining \cs{footnote} command}\label{ltx:footnote}
-%
-% \begin{macro}[int]{\@@_footnotetext:nn, \@@_renew_footnote:,\@@_print_footnote:}
-%   To keep the correct numbering of \ics{footnote} and to make it work
-%   correctly in the \myenv*{enumext*} and \myenv*{keyans*}
-%   environments, it is necessary to redefine the command.
-%   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
-%   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
-% \iffalse
-%% Redefining \footnote.
-% \fi
-%    \begin{macrocode}
-\cs_new_protected:Nn \@@_footnotetext:nn
-  {
-    \footnotetext[#1]{#2}
-  }
-\cs_new_protected:Nn \@@_renew_footnote:
-  {
-    \seq_gclear:N \g_@@_footnote_arg_seq
-    \seq_gclear:N \g_@@_footnote_int_seq
-    \RenewDocumentCommand \footnote { o +m }
-      {
-        \tl_if_novalue:nTF {##1}
-          {
-            \stepcounter{footnote}
-            \int_gset_eq:Nc \g_@@_footnote_int { c@footnote }
-          }
-          {
-            \int_gset:Nn \g_@@_footnote_int { ##1 }
-          }
-        \footnotemark [ \g_@@_footnote_int ]
-        \seq_gput_right:Nn \g_@@_footnote_arg_seq { ##2 }
-        \seq_gput_right:NV \g_@@_footnote_int_seq \g_@@_footnote_int
-     }
-  }
-\cs_new_protected:Nn \@@_print_footnote:
-  {
-    \seq_if_empty:NF \g_@@_footnote_int_seq
-      {
-        \seq_map_pairwise_function:NNN
-          \g_@@_footnote_int_seq
-          \g_@@_footnote_arg_seq
-          \@@_footnotetext:nn
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
 % \subsection{The environment \env{enumext*}}\label{env:starred}
 %
 % \begin{macro}{enumext*}
@@ -13441,10 +13507,10 @@ Some text here
 % \end{macro}
 %
 % \begin{macro}{\@@_safe_exec_vii:}\label{fun:starred:safe-exe}
-%   We will first call the function \cs{@@_internal_mini_page:} to create
-%   the environment \myvarenv*{__@@_mini_page}, then the function
-%   \cs{@@_is_not_nested:} which sets \cs{g_@@_starred_bool} to true if we
-%   are not nested within \myenv*{enumext}, we will increment
+%   We will first call the function \cs{@@_is_not_nested:} which sets
+%   \cs{g_@@_starred_bool} to true if we are NOT nested within \myenv*{enumext},
+%   then call the function \cs{@@_internal_mini_page:} to create the
+%   environment \myvarenv*{__@@_mini_page}, we will increment
 %   \cs{l_@@_level_h_int} to restrict nesting of the environment, set
 %   \cs{l_@@_starred_bool} to true and finally call the function
 %   \cs{@@_is_on_first_level:} which sets \cs{l_@@_starred_first_bool} to
@@ -13456,8 +13522,8 @@ Some text here
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_safe_exec_vii:
   {
-    \@@_internal_mini_page:
     \@@_is_not_nested:
+    \@@_internal_mini_page:
     \int_incr:N \l_@@_level_h_int
     \int_compare:nNnT { \l_@@_level_h_int } > { 1 }
       {
@@ -13825,20 +13891,9 @@ Some text here
         + \l_@@_labelsep_vii_dim
       }
 %    \end{macrocode}
-%   If |\DocumentMetadata| is not active and the state of the variable
-%   \cs{l_@@_footnotes_key_bool} is false, we will redefine the |\footnote|
-%   command.
+%   Redefine the |\footnote| command.
 %    \begin{macrocode}
-     \IfDocumentMetadataTF
-       {
-         \@@_renew_footnote:
-       }
-       {
-         \bool_if:NF \l_@@_footnotes_key_bool
-           {
-             \@@_renew_footnote:
-           }
-       }
+      \@@_renew_footnote_starred:
 %    \end{macrocode}
 %   Now we insert our \emph{sockets} for \emph{tagging} \texttt{PDF}
 %   support and run |\item|.
@@ -13892,16 +13947,7 @@ Some text here
 %    \begin{macrocode}
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_vii_box
-    \IfDocumentMetadataTF
-      {
-        \@@_print_footnote:
-      }
-      {
-        \bool_if:NF \l_@@_footnotes_key_bool
-          {
-            \@@_print_footnote:
-          }
-      }
+    \@@_print_footnote_starred:
 %    \end{macrocode}
 %   Finally apply the \emph{vertical space} between rows set by \mykey{itemsep}
 %   key passed to |\parsep| using |\par\noindent| and \emph{horizontal space}
@@ -14354,16 +14400,7 @@ Some text here
         + \l_@@_labelwidth_viii_dim
         + \l_@@_labelsep_viii_dim
       }
-      \IfDocumentMetadataTF
-        {
-          \@@_renew_footnote:
-        }
-        {
-          \bool_if:NF \l_@@_footnotes_key_bool
-            {
-              \@@_renew_footnote:
-            }
-        }
+      \@@_renew_footnote_standar:
       \@@_start_list_tag:n {keyans*}
       \@@_fake_make_label_viii:n {#1}
       \@@_stop_start_list_tag:
@@ -14387,16 +14424,7 @@ Some text here
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_viii_box
-    \IfDocumentMetadataTF
-      {
-        \@@_print_footnote:
-      }
-      {
-        \bool_if:NF \l_@@_footnotes_key_bool
-          {
-            \@@_print_footnote:
-          }
-      }
+    \@@_print_footnote_standar:
     \int_compare:nNnTF
       { \l_@@_item_column_pos_viii_int } = { \l_@@_columns_viii_int }
       {
