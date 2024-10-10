@@ -5047,7 +5047,7 @@ Some text here
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-10-06}
+  {2024-10-10}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -5518,15 +5518,20 @@ Some text here
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{ \g_@@_footnote_int, \g_@@_footnote_arg_seq, \g_@@_footnote_int_seq,}
-%    Internal variables used for redefinition of |\footnote| (\S\ref{ltx:footnote}).
+% \begin{variable}{ \g_@@_footnote_standar_int, \g_@@_footnote_starred_int,
+%                   \g_@@_footnote_standar_arg_seq, \g_@@_footnote_starred_arg_seq,
+%                   \g_@@_footnote_standar_int_seq, \g_@@_footnote_starred_int_seq}
+%   Internal variables used for redefinition of |\footnote| (\S\ref{ltx:footnote}).
 % \iffalse
-%% Variables used by |footnote|.
+%% Variables used by |footnote| redefinition.
 % \fi
 %    \begin{macrocode}
-\int_new:N \g_@@_footnote_int
-\seq_new:N \g_@@_footnote_arg_seq
-\seq_new:N \g_@@_footnote_int_seq
+\int_new:N \g_@@_footnote_standar_int
+\int_new:N \g_@@_footnote_starred_int
+\seq_new:N \g_@@_footnote_standar_arg_seq
+\seq_new:N \g_@@_footnote_starred_arg_seq
+\seq_new:N \g_@@_footnote_standar_int_seq
+\seq_new:N \g_@@_footnote_starred_int_seq
 %    \end{macrocode}
 % \end{variable}
 %
@@ -5706,16 +5711,8 @@ Some text here
   {
     \int_case:nnT { \lastnodetype }
       {
-        { 11 }
-             {
-               % \typeout{SKIP} \typeout{\the\lastskip}
-               \unskip
-             }
-        { 12 }
-             {
-               % \typeout{KERN} \typeout{\the\lastkern}
-               \unkern
-             }
+        { 11 }{ \unskip }
+        { 12 }{ \unkern }
       }
   }
 %    \end{macrocode}
@@ -5974,8 +5971,8 @@ Some text here
 % \begin{macro}{\@@_start_list:nn, \@@_stop_list:, \@@_item_std:w,
 %              \@@_minipage:w, \@@_endminipage:,}
 %   The functions \cs{@@_start_list:nn} and \cs{@@_stop_list:} correspond
-%   to copies of |\list| and |\endlist| from plain definition of \myenv{list},
-%   the function \cs{@@_item_std:w} is a copy of the |\item| command.
+%   to copies of |\list| and |\endlist| from plain definition of \myenv{list}
+%   environment, the function \cs{@@_item_std:w} is a copy of the |\item| command.
 % \iffalse
 %% Copy |list| environment and |\item| command.
 % \fi
@@ -6004,9 +6001,9 @@ Some text here
 %
 % \subsection{Compatibility with hyperref and footnotehyper}\label{pkg:hyperref}
 %
-% First we define the necessary rules using \emph{\enquote{hooks}} to
-% determine if the \mypkg{hyperref} package is loaded.
-%
+% \begin{macro}{\@@_after_hyperref:, \@@_hypertarget:nn, \@@_phantomsection:}
+%    First we define the necessary rules using \emph{\enquote{hooks}} to
+%    determine if the \mypkg{hyperref} package is loaded.
 % \iffalse
 %% Detection off |hyperref| package with |hyperfootnotes=true|.
 % \fi
@@ -6014,8 +6011,6 @@ Some text here
 \hook_gput_code:nnn { begindocument } { enumext } { \@@_after_hyperref: }
 \hook_gset_rule:nnnn { begindocument } { enumext } { after } { hyperref }
 %    \end{macrocode}
-%
-% \begin{macro}{\@@_after_hyperref:, \@@_hypertarget:nn, \@@_phantomsection:}
 %   The function \cs{@@_after_hyperref:} sets the state of the boolean
 %   variable \cs{l_@@_hyperref_bool} to \enquote{true} if the package is
 %   loaded. At this point we will use the public macro |\IfHyperBoolean|
@@ -6033,7 +6028,7 @@ Some text here
           {
             \bool_set_true:N \l_@@_footnotes_key_bool
           }
-          { }
+          {  }
       }
       {  }
 %    \end{macrocode}
@@ -6076,9 +6071,9 @@ Some text here
 % \end{macro}
 %
 % \begin{macro}{\@@_newlabel:nn,}\label{fun:newlabel}
-%    The function \cs{@@_newlabel:nn} write the information
-%    to the |.aux| file when using the \mykey{save-ref} key. The
-%    arguments taken by the function are:
+%   The function \cs{@@_newlabel:nn} write the information to the |.aux|
+%   file when using the \mykey{save-ref} key. The arguments taken by the
+%   function are:
 %
 % \begin{arguments}
 %    \item \cs{l_@@_newlabel_arg_one_tl}
@@ -6088,10 +6083,11 @@ Some text here
 % \smallskip
 %
 % \begin{important}*
-%    The trick here is to manage the number of arguments passed to
-%    \ics{newlabel}|{#1}{#2}| according to the presence of the \mypkg{hyperref}
-%    package.
+%   The trick here is to manage the number of arguments passed to
+%   \ics{newlabel}|{#1}{#2}| according to the presence of the \mypkg{hyperref}
+%   package.
 % \end{important}
+%
 % \smallskip
 %
 % \iffalse
@@ -6116,12 +6112,12 @@ Some text here
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Redefining \cs{footnote} command}\label{ltx:footnote}
+% \subsection{Internal redefining \cs{footnote} command}\label{ltx:footnote}
 %
 % \begin{macro}[int]{\@@_footnotetext:nn, \@@_renew_footnote:,\@@_print_footnote:}
 %   To keep the correct numbering of \ics{footnote} and to make it work
 %   correctly in the \myenv*{enumext*} and \myenv*{keyans*} environments,
-%   it is necessary to redefine the command.
+%   and \mykey{mini-env} key it is necessary to redefine the |\footnote| command.
 %   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
 %   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
 % \iffalse
@@ -6134,38 +6130,72 @@ Some text here
   }
 \cs_new_protected:Nn \@@_renew_footnote:
   {
-    \seq_gclear:N \g_@@_footnote_arg_seq
-    \seq_gclear:N \g_@@_footnote_int_seq
     \RenewDocumentCommand \footnote { o +m }
       {
         \tl_if_novalue:nTF {##1}
           {
             \stepcounter{footnote}
-            \int_gset_eq:Nc \g_@@_footnote_int { c@footnote }
+            \int_gset_eq:Nc \g_@@_footnote_standar_int { c@footnote }
           }
           {
-            \int_gset:Nn \g_@@_footnote_int { ##1 }
+            \int_gset:Nn \g_@@_footnote_standar_int { ##1 }
           }
-        \footnotemark [ \g_@@_footnote_int ]
-        \seq_gput_right:Nn \g_@@_footnote_arg_seq { ##2 }
-        \seq_gput_right:NV \g_@@_footnote_int_seq \g_@@_footnote_int
-     }
+        \footnotemark [ \g_@@_footnote_standar_int ]
+        \seq_gput_right:Nn \g_@@_footnote_standar_arg_seq { ##2 }
+        \seq_gput_right:NV \g_@@_footnote_standar_int_seq \g_@@_footnote_standar_int
+      }
   }
 \cs_new_protected:Nn \@@_print_footnote:
   {
-    \seq_if_empty:NF \g_@@_footnote_int_seq
+    \seq_if_empty:NF \g_@@_footnote_standar_int_seq
       {
         \seq_map_pairwise_function:NNN
-          \g_@@_footnote_int_seq
-          \g_@@_footnote_arg_seq
+          \g_@@_footnote_standar_int_seq
+          \g_@@_footnote_standar_arg_seq
           \@@_footnotetext:nn
       }
+    \seq_gclear:N \g_@@_footnote_standar_arg_seq
+    \seq_gclear:N \g_@@_footnote_standar_int_seq
+  }
+\cs_new_protected:Nn \@@_renew_footnote_mini:
+  {
+    \RenewDocumentCommand \footnote { o +m }
+      {
+        \tl_if_novalue:nTF {##1}
+          {
+            \stepcounter{footnote}
+            \int_gset_eq:Nc \g_@@_footnote_starred_int { c@footnote }
+          }
+          {
+            \int_gset:Nn \g_@@_footnote_starred_int { ##1 }
+          }
+        \footnotemark [ \g_@@_footnote_starred_int ]
+        \seq_gput_right:Nn \g_@@_footnote_starred_arg_seq { ##2 }
+        \seq_gput_right:NV \g_@@_footnote_starred_int_seq \g_@@_footnote_starred_int
+      }
+  }
+\cs_new_protected:Nn \@@_print_footnote_mini:
+  {
+    \seq_if_empty:NF \g_@@_footnote_starred_int_seq
+      {
+        \seq_map_pairwise_function:NNN
+          \g_@@_footnote_starred_int_seq
+          \g_@@_footnote_starred_arg_seq
+          \@@_footnotetext:nn
+      }
+    \seq_gclear:N \g_@@_footnote_starred_arg_seq
+    \seq_gclear:N \g_@@_footnote_starred_int_seq
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_renew_footnote_standar:,\@@_print_footnote_standar:,
 %                    \@@_renew_footnote_starred:,\@@_print_footnote_starred:,}
+%   We encapsulate the redefinition of |\footnote| to pass it to internal
+%   \myvarenv*{__@@_mini_page} environment used by the \mykey{mini-env}
+%   key in the \myenv*{enumext} and \myenv*{keyans} environments. We will
+%   run the redefinition when \emph{tagged} \texttt{PDF} is active or when
+%   the \mypkg{footnotehyper} package is not loaded.
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_renew_footnote_standar:
   {
@@ -6199,16 +6229,22 @@ Some text here
           }
       }
   }
+%    \end{macrocode}
+%   We encapsulate the redefinition of |\footnote| to pass it to the
+%   \myenv*{enumext*} and \myenv*{keyans*} environments. We will run the
+%   redefinition when \emph{tagged} \texttt{PDF} is active or when the
+%   \mypkg{footnotehyper} package is not loaded.
+%    \begin{macrocode}  
 \cs_new_protected:Nn \@@_renew_footnote_starred:
   {
     \IfDocumentMetadataTF
       {
-        \@@_renew_footnote:
+        \@@_renew_footnote_mini:
       }
       {
         \bool_if:NF \l_@@_footnotes_key_bool
           {
-            \@@_renew_footnote:
+            \@@_renew_footnote_mini:
           }
       }
   }
@@ -6216,14 +6252,22 @@ Some text here
   {
     \IfDocumentMetadataTF
       {
-        \@@_print_footnote:
+        \@@_print_footnote_mini:
       }
       {
         \bool_if:NF \l_@@_footnotes_key_bool
           {
-            \@@_print_footnote:
+            \@@_print_footnote_mini:
           }
       }
+  }
+\@@_after_env:nn { enumext* }
+  {
+    \@@_print_footnote_starred:
+  }
+\@@_after_env:nn { keyans* }
+  {
+    \@@_print_footnote_starred:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6239,13 +6283,14 @@ Some text here
 %   on \emph{\enquote{top}} in the first part and  |\skip_vertical:N \c_zero_skip|
 %   in the second part to allow spaces \emph{\enquote{below}}. This environment
 %   will be used internally by the \mykey{mini-env} key, it is NOT documented
-%   in the user interface and is for internal use only. This function is
-%   passed to the function \cs{@@_safe_exec:} in the \myenv*{enumext} environment
-%   definition (\S\ref{env:enumext}) and \cs{@@_safe_exec_vii:} in the
-%   \myenv*{enumext*} environment definition (\S\ref{env:starred})
-%
+%   in the user interface and is for internal use only. Within this environment
+%   we redefine |\footnote| to make them look the same as if they were
+%   elsewhere in the document. This function is passed to the function
+%   \cs{@@_safe_exec:} in the \myenv*{enumext} environment definition (\S\ref{env:enumext})
+%   and \cs{@@_safe_exec_vii:} in the \myenv*{enumext*} environment
+%   definition (\S\ref{env:starred})
 % \iffalse
-%% Function for define a internal |minipage| environment.
+%% Function for define a internal |minipage| environment with |\footnote| support.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_internal_mini_page:
@@ -6284,12 +6329,13 @@ Some text here
 %
 % \subsection{Definition of counters}\label{int:counters}
 %
-% \begin{macro}{\@@_define_counters:Nn, \@@_define_counters:cn}
-%    To create the necessary \emph{\enquote{counters}} we must first
-%    make sure that they are not already defined by the user or a
-%    package such as \mypkg{enumitem}, otherwise a error will be
-%    returned and the package loading will be aborted. The arguments
-%    taken by the function are:
+% \begin{macro}[int]{\@@_define_counters:Nn,enumXi, enumXii, enumXiii,
+%                    enumXiv, enumXv, enumXvi, enumXvii, enumXviii}
+%   To create the necessary \emph{\enquote{counters}} we must first
+%   make sure that they are not already defined by the user or a
+%   package such as \mypkg{enumitem}, otherwise a error will be
+%   returned and the package loading will be aborted. The arguments
+%   taken by the function are:
 %
 % \begin{arguments}
 %    \item A token list \myvarenv{l__@@_counter_X_tl} for \emph{\enquote{store}} the counter's name.
@@ -6310,15 +6356,12 @@ Some text here
       }
   }
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{enumXi, enumXii, enumXiii, enumXiv, enumXv, enumXvi, enumXvii, enumXviii}
-%    The counters created here are \icounter{enumXi}, \icounter{enumXii},
-%    \icounter{enumXiii} and \icounter{enumXiv} for \myenv*{enumext}
-%    environment, \icounter{enumXv} for \myenv*{keyans} environment,
-%    \icounter{enumXvi} for \myenv*{keyanspic} environment, \icounter{enumXvii} for
-%    \myenv*{enumext*} and \icounter{enumXviii} for the \myenv*{keyans*}
-%    environments.
+%   The counters created here are \icounter{enumXi}, \icounter{enumXii},
+%   \icounter{enumXiii} and \icounter{enumXiv} for \myenv*{enumext}
+%   environment, \icounter{enumXv} for \myenv*{keyans} environment,
+%   \icounter{enumXvi} for \myenv*{keyanspic} environment, \icounter{enumXvii} for
+%   \myenv*{enumext*} and \icounter{enumXviii} for the \myenv*{keyans*}
+%   environments.
 %    \begin{macrocode}
 \@@_define_counters:Nn \l_@@_counter_i_tl    { enumXi    }
 \@@_define_counters:Nn \l_@@_counter_ii_tl   { enumXii   }
@@ -6470,14 +6513,6 @@ Some text here
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{important}*
-%   In this point, the following are set \myvarenv{__@@_wrapper_label_X:n} which
-%   will be used by \cs{@@_make_label:} for the different levels of the
-%   \myenv*{enumext} environment and is set to \myvarenv{__@@_wrapper_label_v:n}
-%   which will be used by \cs{@@_keyans_make_label:} for \myenv*{keyans} and \myenv*{keyanspic}
-%   environments.
-% \end{important}
-%
 % \begin{macro}[int]{align}
 %   The \mykey{align} key is implemented differently for \emph{\enquote{starred}}
 %   and \emph{\enquote{non starred}} environments. For compatibility with
@@ -6522,9 +6557,6 @@ Some text here
   }
   { \@@_tmp:nn #1 }
 %    \end{macrocode}
-%
-% \smallskip
-%
 % \iffalse
 %% Add |align| key for |enummext*| and |keyans*| environments.
 % \fi
@@ -10330,7 +10362,8 @@ Some text here
 % \end{macro}
 %
 % \begin{macro}{anskey*, \@@_anskey_env_make:n, \@@_anskey_env_make:V,
-%              \@@_anskey_env_define_keys:, \@@_anskey_env_reset_keys:
+%              \@@_anskey_env_define_keys:, \@@_anskey_env_unknown:n,
+%              \@@_anskey_env_unknown:nn, \@@_anskey_env_reset_keys:,
 %              \@@_rescan_anskey_env:n,}
 %   The function \cs{@@_anskey_env_make:n} creates the environment
 %   \myenv*{anskey*} (\emph{custom version} of \myenv{scontents}
@@ -13915,7 +13948,7 @@ Some text here
 %   \smallskip
 %
 %    \begin{macrocode}
-      \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim  }
+      \@@_minipage:w [ t ]{ \l_@@_joined_width_vii_dim }
         \dim_set_eq:NN \parindent \l_@@_listparindent_vii_dim
         \skip_set_eq:NN \parskip \l_@@_parsep_vii_skip
         \@@_unskip_unkern:
@@ -13938,11 +13971,10 @@ Some text here
 %    \end{macrocode}
 %   Here we will reduce the \emph{warnings} a bit by setting the value
 %   of |\hbadness| to \mydim{10000}, print |\item| and \emph{\enquote{item content}}
-%   from the \emph{horizontal box} and \emph{footnotes}.
+%   from the \emph{horizontal box},.
 %    \begin{macrocode}
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_vii_box
-    \@@_print_footnote_starred:
 %    \end{macrocode}
 %   Finally apply the \emph{vertical space} between rows set by \mykey{itemsep}
 %   key passed to |\parsep| using |\par\noindent| and \emph{horizontal space}
@@ -14395,7 +14427,7 @@ Some text here
         + \l_@@_labelwidth_viii_dim
         + \l_@@_labelsep_viii_dim
       }
-      \@@_renew_footnote_standar:
+      \@@_renew_footnote_starred:
       \@@_start_list_tag:n {keyans*}
       \@@_fake_make_label_viii:n {#1}
       \@@_stop_start_list_tag:
@@ -14419,7 +14451,6 @@ Some text here
     \hbox_set_end:
     \int_set:Nn \hbadness { 10000 }
     \box_use_drop:N \l_@@_item_text_viii_box
-    \@@_print_footnote_standar:
     \int_compare:nNnTF
       { \l_@@_item_column_pos_viii_int } = { \l_@@_columns_viii_int }
       {
