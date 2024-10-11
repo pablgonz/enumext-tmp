@@ -1382,35 +1382,35 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{stored content}} by means of the key \mykey{save-ref}
 % (\S\ref{subsec:label-ref}) when the key \mykey{save-ans} (\S\ref{subsec:storage-keys}) is active.
 %
-%^^A \begin{important}*
-%^^A The implementation of  \ics{label} and \ics{ref} together with the
-%^^A \mykey{save-ref} key are compatible with the \mypkg{hyperref}\cite{hyperref}
-%^^A package.
-%^^A \end{important}
-%
 % \subsubsection{Support for \cs[no-index]{footnote}}\label{doc:footnote}
 %
 % This package provides an internal implementation for the |\footnote|
-% command which is compatible with the \mypkg{hyperref} package for the
-% \myenv*{enumext*} and \myenv*{keyans*} environments, but will not
-% produce the expected links, and if the \mykey{mini-env} key is used in
-% \myenv*{enumext} or \myenv*{keyans} environments the output will look
-% like the classic way they are displayed in the environment \myenv{minipage}.
+% command compatible with the \mypkg{hyperref} package, but if
+% \emph{tagged} \texttt{PDF} is NOT enabled it will not produce the
+% expected \emph{\enquote{links}} for the \myenv*{enumext*} and \myenv*{keyans*}
+% environments and if the \mykey{mini-env} key is used in the
+% \myenv*{enumext} or \myenv*{keyans} environments.
+%
 % \newpage
-% The best way to solve this is to use Jean-François Burnol
+%
+% This is because the internal implementation uses |\footnotetext|\myoarg{number}
+% and |\footnotemark|\myoarg{number}\mymarg{text} and support for these
+% is limited by the \mypkg{hyperref} package. The best way to solve this
+% if \emph{tagged} \texttt{PDF} is NOT enabled is to use Jean-François Burnol
 % \mypkg{footnotehyper}\cite{footnotehyper} package, it will support
-% keeping the links if \mypkg{hyperref} is loaded with the
-% |hyperfootnotes=true| option (default) and will show the output numbered at
-% the bottom of the page (as opposed to how it is displayed in the
-% \myenv{minipage} environment). The way to load it is as follows:
+% keeping the \emph{\enquote{links}} if \mypkg{hyperref} is loaded with
+% the |hyperfootnotes=true| option (default). Load it is as follows:
 %
 % \iffalse
 %<*example>
 % \fi
 \begin{examplecode}[frame=single]
-\usepackage{footnotehyper}
-\makesavenoteenv{enumext}
-\makesavenoteenv{enumext*}
+\IfDocumentMetadataTF{ }
+  {
+    \usepackage{footnotehyper}
+    \makesavenoteenv{enumext}
+    \makesavenoteenv{enumext*}
+  }
 \end{examplecode}
 % \iffalse
 %</example>
@@ -2301,6 +2301,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{Keys for \env{multicols}}\label{key:multi}
 %
 % \keyexamp{columns}{integer}{\mydim{1}}
+%
+% \smallskip
+%
 % Set the \emph{number of columns} to be used by the \myenv{multicols}
 % environment within the environment. The value must be a positive
 % integer less than or equal to \mydim{10}.
@@ -2308,34 +2311,21 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{columns-sep}{rigid length}{by level}
+%
+% \smallskip
+%
 % Set the \emph{space between} columns used by the \myenv{multicols}
 % environment within the environment. Internally sets the value of
 % \ics{columnsep}, by default its value is equal to the sum of the
 % values set in the keys \mykey{labelwidth} and \mykey{labelsep} of the
 % current level.
 %
-% \smallskip
-%
-% \begin{important}*
-%  The |\footnote|\mymarg{text} command in the nested levels of \myenv{multicols}
-%  will not work as expected, prefer the use of |\footnotemark|\myoarg{number}
-%  inside the environment and |\footnotetext|\myoarg{number}\mymarg{text}
-%  outside the environment or via the \mykey{after} key.
-% \end{important}
-%
-% \smallskip
-%
-% \begin{important}
-%  By default the \mypkg{hyperref} package does not provide support for
-%  |\footnotemark|\myoarg{number} and |\footnotetext|\myoarg{number}\mymarg{text},
-%  but when \emph{tagged} \texttt{PDF} is enabled and the package is loaded
-%  the |\footnotemark|\myoarg{number} and |\footnotetext|\myoarg{number}\mymarg{text}
-%  commands create links correctly.
-% \end{important}
-%
 % \subsection{Keys for \env{minipage}}\label{key:mini}
 %
 % \keyexamp{mini-env}{rigid length}{not used}
+%
+% \smallskip
+%
 % Sets the \emph{width} of the \myenv{minipage} environment on
 % the \emph{\enquote{right side}}. This value added to the value set by
 % the \mykey{mini-sep} key to determines the \emph{width} of the
@@ -2345,6 +2335,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \smallskip
 %
 % \keyexamp{mini-sep}{rigid length}{\mydim{0.3333}em}
+%
+% \smallskip
+%
 % Sets the \emph{space between} the \myenv{minipage} environment on the
 % \emph{\enquote{left side}} and the \myenv{minipage} environment on
 % the \emph{\enquote{right side}}. This separation is applied together
@@ -2355,8 +2348,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \vspace*{-1.0\baselineskip}
 % \begin{function}{\miniright}
 %   \begin{syntax}
-%     |\begin{enumext}[mini-env=|\mymeta{rigid length}|]| \mymeta[cf=gray]{item's before} |\item \miniright| \mymeta[cf=gray]{content} |\end{enumext}|\par
-%     |\begin{enumext}[mini-env=|\mymeta{rigid length}|]| \mymeta[cf=gray]{item's before} |\item \miniright*|\mymeta[cf=gray]{content} |\end{enumext}|
+%     |\begin{enumext}[mini-env=|\mymarg{rigid length}|]| \mymeta[cf=gray]{item's before} |\item \miniright| \mymeta[cf=gray]{content} |\end{enumext}|\par
+%     |\begin{enumext}[mini-env=|\mymarg{rigid length}|]| \mymeta[cf=gray]{item's before} |\item \miniright*|\mymeta[cf=gray]{content} |\end{enumext}|
 %   \end{syntax}
 % \end{function}
 %
@@ -2372,26 +2365,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % The \emph{starred argument} ‘|*|’ inhibits the use of |\centering|
 % command i.e. the usual \hologo{LaTeX} justification is maintained in
 % the \myenv{minipage} on the \emph{\enquote{right side}}.
-%
-% \smallskip
-%
-% \begin{important}*
-% The |\footnote|\mymarg{text} command in \myenv{minipage} environment will work as
-% usual. If you prefer the footnotes to be numbered (not lowercase) and
-% outside the environment, use |\footnotemark|\myoarg{number} inside the
-% environment and |\footnotetext|\myoarg{number}\mymarg{text} outside the environment
-% or via the \mykey{after} key (see \S\ref{doc:footnote} for full support).
-% \end{important}
-%
-% \smallskip
-%
-% \begin{important}
-%  By default the \mypkg{hyperref} package does not provide support for
-%  |\footnotemark|\myoarg{number} and |\footnotetext|\myoarg{number}\mymarg{text},
-%  but when \emph{tagged} \texttt{PDF} is enabled and the package is loaded
-%  the |\footnotemark|\myoarg{number} and |\footnotetext|\myoarg{number}\mymarg{text}
-%  commands create links correctly.
-% \end{important}
 %
 % \smallskip
 %
@@ -2487,9 +2460,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsection{Keys for storage system}\label{subsec:storage-keys}
 %
-% \smallskip
-%
-%^^A  \begin{important}*
 % The only \mymeta{keys} available for all levels of the \myenv*{enumext}
 % environment and the \myenv*{enumext*} environment are \mykey{no-store}
 % and \mykey{save-key}, the rest of the \mymeta{keys} described in this
@@ -2497,10 +2467,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \emph{\enquote{first level}} of the environment in which the key
 % \mykey{save-ans} is executed. The key \mykey{save-ans} should NOT be passed
 % with the command \ics*{setenumext}.
-%^^A  \end{important}
 %
-%^^A \smallskip
-% \newpage
+% \smallskip
 %
 % \keyexamp{save-ans}{store name}{not set}
 % Sets the \emph{name} of the \emph{sequence} and \emph{prop list} in
@@ -2633,16 +2601,22 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsubsection{Keys for debug and checking}
 %
 % \keyexamp{show-pos}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
+%
+% \smallskip
+%
 % Displays the \emph{position} occupied by the \emph{\enquote{stored content}} by
 % \ics*{anskey}, \myenv*{anskey*}, \ics*{item*} and \ics*{anspic}|*| in the
 % \emph{prop list} \mymarg{store name} set by \mykey{save-ans} key.
 % This position is used by the \ics*{getkeyans} command and by the |\ref|
 % command if the \mykey{save-ref} key is active.
 %
-%^^A \smallskip
+% \smallskip
 %
 % \keyexamp{check-ans}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
-% Enables the  \emph{checking answer} mechanism displaying an
+%
+% \smallskip
+%
+% Enables the \emph{checking answer} mechanism displaying an
 % appropriate message on the terminal. This key works under the logic
 % that each \ics*{item} or \ics*{item*} that does not open an
 % inner level or nested environment contains \emph{\enquote{only one
@@ -2650,11 +2624,14 @@ This work consists of the files enumext.dtx and enumext.sty.
 % or \myenv*{anskey*}. It is intended to be used in conjunction with the
 % \mykey{no-store} key.
 %
-%^^A \smallskip
+% \smallskip
 %
 % \keyexamp*{no-store}{value forbidden}{not used}
-% This is a \emph{meta-key} that does not receive an argument
-% and disables the structure stored in the \emph{sequence}
+%
+% \smallskip
+%
+% This is a \emph{switch-key} that does not receive an argument
+% and disables the \emph{\enquote{stored structure}} in the \emph{sequence}
 % \mymarg{store name} set by \mykey{save-ans} key at the entire level
 % or a nested environment in which it runs. This key
 % is intended for use in internal levels or nested \myenv*{enumext} or
@@ -2779,8 +2756,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \item Text containing our instructions or questions. \anskey{fourth answer}
 % \end{enumext}
 %
-% \medskip
-%
 % \subsection{The environment \env{anskey*}}
 %
 % \vspace*{-\baselineskip}
@@ -2789,38 +2764,30 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \begin{syntax}
 %     |\begin{anskey*}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \mymeta{body content} |\end{anskey*}|
 %   \end{syntax}
+%   The environment \myenv*{anskey*} takes a mandatory \mymarg{body content}
+%   and \emph{\enquote{stores it}} in the \emph{sequence} and \emph{prop
+%   list} \mymarg{store name} set by \mykey{save-ans} key. If \mykey{save-ref}
+%   key are active and the \mypkg{hyperref}\cite{hyperref} package is
+%   detected |\hyperlink| and |\hypertarget| will be used, otherwise the
+%   usual \emph{\enquote{label and ref}} system provided by \hologo{LaTeX} will be used.
+%   By design the environment cannot be nested but full supports \emph{\enquote{verbatim material}} in the
+%   body and it is assumed that each numbered|\item| or |\item*| within the
+%   environment in which it is active it has a \emph{\enquote{single
+%   execution}} unless |\item| or |\item*| open a nested level
+%   or use the \mykey{no-store} key.
+% \end{function}
 %
-%  The environment \myenv*{anskey*} takes a mandatory \mymarg{body content}
-%  and \emph{\enquote{stores}} it in the \emph{sequence} and \emph{prop
-%  list} \mymarg{store name} set by \mykey{save-ans} key.
-%  If \mykey{save-ref} key are active and the
-%  \mypkg{hyperref}\cite{hyperref} package is detected, |\hyperlink| and
-%  |\hypertarget| will be used, otherwise the usual \emph{\enquote{label
-%  and ref}} system provided by \hologo{LaTeX} will be used.
-%
-%  \smallskip
-%
-%  By design the environment cannot be nested but full supports \emph{\enquote{verbatim material}} in the
-%  body and it is assumed that each numbered|\item| or |\item*| within the
-%  environment in which it is active it has a \emph{\enquote{single
-%  execution}} unless |\item| or |\item*| open a nested level
-%  or use the \mykey{no-store} key.
-%
-%  \smallskip
-%
-%  The \myenv*{anskey*} environment is implemented using the
-%  \mypkg{scontents} package, for the correct operation
-%  |\begin{anskey*}| and |\end{anskey*}| must
-%  be in different lines, all \mymeta{keys} must be passed separated by
-%  commas and \enquote{without separation} of the start of the environment.
-%  Comments \enquote{\textcolor{gray}{\%}} or \enquote{any character}
-%  after |\begin{anskey*}| or \myoarg{key \textnormal{\textcolor{gray}{=}} val}
-%  on the same line are NOT supported, the package \mypkg{scontents} will return an
-%  \enquote{error} message if this happens. In a similar way comments
-%  \enquote{\textcolor{gray}{\%}} or \enquote{any character} after %
-%  |\end{anskey*}| on the same line the package \mypkg{scontents} will
-%  return a \enquote{warning} message.
-%  \end{function}
+% The \myenv*{anskey*} environment is implemented using the \mypkg{scontents}
+% package, for the correct operation |\begin{anskey*}| and |\end{anskey*}|
+% must be in different lines, all \mymeta{keys} must be passed separated by
+% commas and \enquote{without separation} of the start of the environment.
+% Comments \enquote{\textcolor{gray}{\%}} or \enquote{any character}
+% after |\begin{anskey*}| or \myoarg{key \textnormal{\textcolor{gray}{=}} val}
+% on the same line are NOT supported, the package \mypkg{scontents} will return an
+% \enquote{error} message if this happens. In a similar way comments
+% \enquote{\textcolor{gray}{\%}} or \enquote{any character} after %
+% |\end{anskey*}| on the same line the package \mypkg{scontents} will
+% return a \enquote{warning} message.
 %
 % \subsubsection{Keys for \texttt{anskey*}}
 %
@@ -2842,20 +2809,25 @@ This work consists of the files enumext.dtx and enumext.sty.
 % in the working directory, relative or absolute paths are not supported. If \mymeta{file.ext}
 % does not exist, it will be created or overwritten if the \mykey{overwrite} key is used.
 %
+% \smallskip
+%
 % \keyexampenv{overwrite}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
 % Sets whether the \mymeta{file.ext} generated by \mykey{write-env}
 % from the \myenv*{anskey*} environment will be rewritten.
 %
-%^^A \smallskip
+% \smallskip
 %
 % \keyexampenv{force-eol}{true \textnormal{\textcolor{lightgray}{\textbar}} false}{false}
+%
+% \smallskip
+%
 % Sets if the \emph{end of line} for the \mymeta{stored content} is hidden or not.
 % This key is necessary only if the last line is the closing of some
 % environment defined by the \mypkg{fancyvrb} package as |\end{|\myenv{Verbatim}|}|
 % or another environment that does not support a comments \enquote{\ttfamily\textcolor{gray}{\%}}
 % after closing |\end{|\myenv{Verbatim}|}%|.
 %
-%^^A \smallskip
+% \smallskip
 %
 % \begin{important}*
 %  For security reasons the keys |store-env|, |print-env| and |write-out|
@@ -2875,17 +2847,21 @@ This work consists of the files enumext.dtx and enumext.sty.
     \begin{anskey*}[item-star]
       `\mymeta{first answer}`
     \end{anskey*}
+
   \item Text containing our instructions or questions.
+
     \begin{enumext}
       \item Question.
         \begin{anskey*}
           `\mymeta{second answer}`
         \end{anskey*}
     \end{enumext}
+
   \item Text containing our instructions or questions.
     \begin{anskey*}
       `\mymeta{third answer}`
     \end{anskey*}
+
   \item Text containing our instructions or questions.
     \begin{anskey*}
       `\mymeta{fourth answer}`
@@ -2918,13 +2894,20 @@ This work consists of the files enumext.dtx and enumext.sty.
 %     |\begin{keyans}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg{custom} \ics*{item*} \ics*{item*}\myoarg{content} |\end{keyans}|\par
 %     |\begin{keyans*}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \ics*{item} \ics*{item}\myoarg{custom} \ics*{item*} \ics*{item*}\myoarg{content} |\end{keyans*}|
 %   \end{syntax}
-% The \myenv*{keyans} and \myenv*{keyans*} environments are
-% \emph{\enquote{enumerated list}} environments designed for
-% \emph{\enquote{multiple choice}} questions activated by the \mykey{save-ans} key.
-% This environments can NOT be nested and must always be at the
-% \emph{\enquote{first level}} of the \myenv*{enumext} environment, the
-% commands \ics*{item} and \ics*{item}\myoarg{custom} work in the usual
-% and the command |\item|\myparg{columns} is available for the \myenv*{keyans*} environment.
+%  The \myenv*{keyans} and \myenv*{keyans*} environments are
+%  \emph{\enquote{enumerated list}} environments designed for
+%  \emph{\enquote{multiple choice}} questions activated by the \mykey{save-ans} key.
+%  This environments can NOT be nested and must always be at the
+%  \emph{\enquote{first level}} of the \myenv*{enumext} environment, the
+%  commands \ics*{item} and \ics*{item}\myoarg{custom} work in the usual
+%  and the command |\item|\myparg{columns} is available for the \myenv*{keyans*} environment.
+%
+%  \smallskip
+%
+%   \begin{important}*
+%     The behavior of |\item*| in \myenv*{keyans} and \myenv*{keyans*} environments
+%     is NOT the same as in the \myenv*{enumext} or \myenv*{enumext*} environments.
+%   \end{important}
 % \end{function}
 %
 % \iffalse
@@ -2993,13 +2976,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 % does \enquote{NOT} support \emph{verbatim content}. By design it is
 % assumed that the |\item*| will only appear \emph{\enquote{once}}
 % within the environment.
-%
-% \smallskip
-%
-% \begin{important}*
-% The behavior of |\item*| in \myenv*{keyans} and \myenv*{keyans*} environments is NOT the same as in the
-% \myenv*{enumext} or \myenv*{enumext*} environments.
-% \end{important}
 %
 % \subsubsection*{Example}
 %
@@ -3070,15 +3046,22 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \begin{syntax}
 %     |\begin{keyanspic}|\myoarg{key \textnormal{\textcolor{gray}{=}} val} \ics*{anspic}|*|\myoarg{content}\mymarg{drawing or tabular} |\end{keyanspic}|
 %   \end{syntax}
-% The \myenv*{keyanspic} environment is an \emph{\enquote{enumerated
-% list}} environment activated by the \mykey{save-ans} key that has the
-% same configuration for \emph{\enquote{spacing}} and \mymeta{label}
-% as the \myenv*{keyans} environment that uses the |\anspic| command
-% instead of |\item|. It is intended for placing \emph{drawings or tabular}
-% with \mymeta{label} centered \emph{above} or \emph{below} in a \emph{single line}
-% or \emph{upper and lower} layout style.
-% A representation of the output can be seen in the figure \ref{fig:keyanspicdoc}.
+%  The \myenv*{keyanspic} environment is an \emph{\enquote{enumerated
+%  list}} environment activated by the \mykey{save-ans} key that has the
+%  same configuration for \emph{\enquote{spacing}} and \mymeta{label}
+%  as the \myenv*{keyans} environment that uses the |\anspic| command
+%  instead of |\item|. It is intended for placing \emph{drawings or tabular}
+%  with \mymeta{label} centered \emph{above} or \emph{below} in a \emph{single line}
+%  or \emph{upper and lower} layout style.
+%
+%  \smallskip
+%
+%  When the \myenv*{keyanspic} environment is used \emph{without keys}
+%  the \mymeta{labels} are centered \emph{below} the \emph{drawings
+%  or tabular} in a \emph{single line} layout style.
 % \end{function}
+%
+% A representation of the output can be seen in the figure \ref{fig:keyanspicdoc}.
 %
 % \begin{figure}[ht]
 %   \centering
@@ -3087,7 +3070,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %     \draw[color=white] (7.0,6.10) rectangle (17.5,6.5) node[pos=.5,text=black]%
 %       { \textcolor{lightgray}{\texttt{number of drawings or tabular above}} };
 %     \draw[color=white] (7.0,4.5) rectangle (17.5,4.9) node[pos=.5,text=black]%
-%       { \textcolor{optcolor}{\texttt{parsep }} }; %%%[+itemsep]
+%       { \textcolor{optcolor}{\texttt{layout-sep}} }; %%%[+itemsep]
 %     \draw[color=white] (7.0,2.9) rectangle (17.5,3.3) node[pos=.5,text=black]%
 %       { \textcolor{lightgray}{\texttt{number of drawings or tabular below}} };
 %     \draw[<->,color=gray] (2.0,7.0) --node[above,text=optcolor]{\vphantom{p}\texttt{labelwidth}} (5.0,7.0);
@@ -3143,10 +3126,6 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \caption{Representation of the \myenv*{keyanspic} environment with \mykey{layout-sty}=\mymarg{3, 2} in \mypkg*{enumext}.}
 %   \label{fig:keyanspicdoc}
 % \end{figure}
-%
-% When the \myenv*{keyanspic} environment is used \emph{without
-% keys} the \mymeta{labels} are centered \emph{below} the \emph{drawings
-% or tabular} in a \emph{single line} layout style.
 %
 % \smallskip
 %
@@ -3248,7 +3227,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 
   \item Question with images and labels above.
 
-    \begin{keyanspic}[label-pos=above, layout-sty={3,2}]
+    \begin{keyanspic}[label-pos=above, layout-sty={3,2},layout-sep=0.25cm]
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
       \anspic{\includegraphics[scale=0.15]{example-image-b}}
       \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3271,7 +3250,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %</example>
 % \fi
 %
-% \begin{enumext}[save-ans=test,show-ans=true,nosep, before= {\setenumext[keyans]{nosep,parsep=3mm} }]
+% \begin{enumext}[save-ans=test,show-ans=true,nosep, before={\setenumext[keyans]{nosep,parsep=5mm}}]
 % \item Question with images and labels below.
 %    \begin{keyanspic}[layout-sty={3,2}]
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3281,7 +3260,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %      \anspic*[note]{\includegraphics[scale=0.15]{example-image-a}}
 %    \end{keyanspic}
 % \item Question with images and labels above.
-%    \begin{keyanspic}[label-pos=above, layout-sty={3,2}]
+%    \begin{keyanspic}[label-pos=above, layout-sty={3,2},layout-sep=0.25cm]
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-b}}
 %      \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3353,32 +3332,55 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \label{sec:optcmdforeach}
 %
 % \keyexampcmd{sep}{code}{\{; \}}[foreachkeyans]
+%
+% \smallskip
+%
 % Establishes the \emph{separation} between \emph{\enquote{each}} \mymarg{content} stored in \emph{prop list} \mymarg{store name}.
 % For example, you can use \mykeycmd[foreachkeyans]{sep}|={\\[10pt]}| for vertical separation of stored
 % contents.
 %
+% \smallskip
+%
 % \keyexampcmd{step}{integer}{\mydim{1}}[foreachkeyans]
+%
+% \smallskip
+%
 % Sets the \emph{step} (increment) applied to the value set by key \mykeycmd[foreachkeyans]{start}
-% for each \mymarg{content} stored in \emph{prop list} \mymarg{store name}. The value must be a
+% for \emph{\enquote{each}} \mymarg{content} stored in \emph{prop list} \mymarg{store name}. The value must be a
 % \mymeta{positive integer}.
 %
 % \keyexampcmd{start}{integer}{\mydim{1}}[foreachkeyans]
+%
+% \smallskip
+%
 % Sets the \emph{position} of the \emph{prop list} \mymarg{store name} from which execution
 % will start. The value must be a \mymeta{positive integer}.
 %
 % \keyexampcmd{stop}{integer}{\mydim{0}}[foreachkeyans]
+%
+% \smallskip
+%
 % Sets the \emph{position} of the \emph{prop list} \mymarg{store name} from which execution
-% it will finish executing. The value must be a \mymeta{positive integer}.
+% will finish. The value must be a \mymeta{positive integer}.
 %
 % \keyexampcmd{before}{code}{empty}[foreachkeyans]
-% Sets the \mymarg[type=tt]{code} that will be executed \mymeta{before} each \mymarg{content} stored
+%
+% \smallskip
+%
+% Sets the \mymarg{code} that will be executed \mymeta{before} each \mymarg{content} stored
 % in \emph{prop list} \mymarg{store name}. The \mymarg[type=tt]{code} must be passed between braces.
 %
 % \keyexampcmd{after}{code}{empty}[foreachkeyans]
-% Sets the \mymarg[type=tt]{code} that will be executed \mymeta{after} each \mymarg{content} stored
+%
+% \smallskip
+%
+% Sets the \mymarg{code} that will be executed \mymeta{after} each \mymarg{content} stored
 % in \emph{prop list} \mymarg{store name}. The \mymarg{code} must be passed between braces.
 %
 % \keyexampcmd{wrapper}{code{} \space\usebox{\hashbox} more code}{empty}[foreachkeyans]
+%
+% \smallskip
+%
 % Wraps the \mymarg{content} stored in \emph{prop list} \mymarg{store name} referenced by |{#1}|.
 % The \mymarg{code} must be passed between braces. For example
 % |\foreachkeyans[wrapper={\makebox[1em][l]{#1}}]|\mymarg{store name}.
@@ -3395,8 +3397,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \end{syntax}
 %   The command \ics*{printkeyans} prints \emph{\enquote{all stored content}}
 %   in \emph{sequence} \mymarg{store name} defined by \mykey{save-ans}
-%   key placing this inside the \myenv*{enumext} environment by default or the
-%   \myenv*{enumext*} environment if the \emph{starred argument} ‘|*|’ is used.
+%   key placing this inside the \myenv*{enumext} or \myenv*{enumext*}
+%   environment if the \emph{starred argument} ‘|*|’ is used.
 %
 %   \smallskip
 %
