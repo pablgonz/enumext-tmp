@@ -494,7 +494,7 @@
     \__enumext_hypertarget:nn {#1} { }
     \__enumext_phantomsection:
   }
-%% Redefining \footnote.
+%% Redefining |\footnote| for key |mini-env| in |enumext| and |keyans| environments.
 \cs_new_protected:Nn \__enumext_footnotetext:nn
   {
     \footnotetext[#1]{#2}
@@ -513,7 +513,8 @@
           }
         \footnotemark [ \g__enumext_footnote_standar_int ]
         \seq_gput_right:Nn \g__enumext_footnote_standar_arg_seq { ##2 }
-        \seq_gput_right:NV \g__enumext_footnote_standar_int_seq \g__enumext_footnote_standar_int
+        \seq_gput_right:NV
+          \g__enumext_footnote_standar_int_seq \g__enumext_footnote_standar_int
       }
   }
 \cs_new_protected:Nn \__enumext_print_footnote:
@@ -528,6 +529,7 @@
     \seq_gclear:N \g__enumext_footnote_standar_arg_seq
     \seq_gclear:N \g__enumext_footnote_standar_int_seq
   }
+%% Redefining |\footnote| for |enumext*| and |keyans*| environments.
 \cs_new_protected:Nn \__enumext_renew_footnote_mini:
   {
     \RenewDocumentCommand \footnote { o +m }
@@ -542,7 +544,8 @@
           }
         \footnotemark [ \g__enumext_footnote_starred_int ]
         \seq_gput_right:Nn \g__enumext_footnote_starred_arg_seq { ##2 }
-        \seq_gput_right:NV \g__enumext_footnote_starred_int_seq \g__enumext_footnote_starred_int
+        \seq_gput_right:NV
+          \g__enumext_footnote_starred_int_seq \g__enumext_footnote_starred_int
       }
   }
 \cs_new_protected:Nn \__enumext_print_footnote_mini:
@@ -1755,10 +1758,13 @@
         \msg_error:nnn { enumext } { wrong-miniright-place }
       }
     % starred env
-    \bool_if:NT \l__enumext_starred_bool
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \g__enumext_starred_bool }
+      { \bool_not_p:n { \l__enumext_standar_bool } }
       {
         \msg_error:nnn { enumext } { wrong-miniright-starred }
       }
+    % exec
     \int_compare:nNnTF { \l__enumext_keyans_level_int } = { 1 }
       {
         \__enumext_keyans_mini_right_cmd:n {#1}

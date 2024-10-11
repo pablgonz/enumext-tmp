@@ -1470,9 +1470,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{The environment \texttt{enumext*}}
 %
 % The \myenv*{enumext*} is a \emph{horizontal list environment}
-% similar to the \myenv{enumerate}|*| environment provided by the
-% \mypkg{enumitem} package or \myenv{task} environment provided by the
-% \mypkg{task} package , \ics*{item} and \ics*{item}\myoarg{custom}
+% similar to the \myenv{shortenumerate} environment provided by the
+% \mypkg{shortlst}\cite{shortlst} package or \myenv{tasks} environment provided by the
+% \mypkg{tasks}\cite{tasks} package, \ics*{item} and \ics*{item}\myoarg{custom}
 % work as usual. The options can be configured globally using \ics*{setenumext}
 % command and locally using \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 % in the environment.
@@ -2630,7 +2630,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
-% This is a \emph{switch-key} that does not receive an argument
+% This is a \emph{\enquote{switch-key}} that does not receive an argument
 % and disables the \emph{\enquote{stored structure}} in the \emph{sequence}
 % \mymarg{store name} set by \mykey{save-ans} key at the entire level
 % or a nested environment in which it runs. This key
@@ -6116,14 +6116,20 @@ Some text here
 %
 % \subsection{Internal redefining \cs{footnote} command}\label{ltx:footnote}
 %
-% \begin{macro}[int]{\@@_footnotetext:nn, \@@_renew_footnote:,\@@_print_footnote:}
-%   To keep the correct numbering of \ics{footnote} and to make it work
-%   correctly in the \myenv*{enumext*} and \myenv*{keyans*} environments,
-%   and \mykey{mini-env} key it is necessary to redefine the |\footnote| command.
-%   This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
-%   in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
+% To keep the correct numbering of \ics{footnote} and to make it work
+% correctly in the \myenv*{enumext*} and \myenv*{keyans*} environments
+% and \mykey{mini-env} key it is necessary to redefine the |\footnote| command.
+% This implementation is adapted from the answer given by Clea F. Rees (\texttt{@cfr})
+% in \href{https://tex.stackexchange.com/a/700092}{footnotes in boxes compatible with hyperref}.
+%
+% \begin{macro}[int]{\@@_footnotetext:nn, \@@_renew_footnote:,
+%                    \@@_print_footnote:, \@@_renew_footnote_mini:,
+%                    \@@_print_footnote_mini:,}
+%   Redefinition of the |\footnote| command using |\footnotetext| and
+%   |\footnotemark| for the \mykey{mini-env} key in the \myenv*{enumext} and
+%   \myenv*{keyans} environments.
 % \iffalse
-%% Redefining \footnote.
+%% Redefining |\footnote| for key |mini-env| in |enumext| and |keyans| environments.
 % \fi
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_footnotetext:nn
@@ -6144,7 +6150,8 @@ Some text here
           }
         \footnotemark [ \g_@@_footnote_standar_int ]
         \seq_gput_right:Nn \g_@@_footnote_standar_arg_seq { ##2 }
-        \seq_gput_right:NV \g_@@_footnote_standar_int_seq \g_@@_footnote_standar_int
+        \seq_gput_right:NV
+          \g_@@_footnote_standar_int_seq \g_@@_footnote_standar_int
       }
   }
 \cs_new_protected:Nn \@@_print_footnote:
@@ -6159,6 +6166,14 @@ Some text here
     \seq_gclear:N \g_@@_footnote_standar_arg_seq
     \seq_gclear:N \g_@@_footnote_standar_int_seq
   }
+%    \end{macrocode}
+%   The \myenv*{enumext*} and \myenv*{keyans*} environments are implemented
+%   using \myenv{minipage} so we must also redefine |\footnote| to keep
+%   these numbering as if it were part of the document.
+% \iffalse
+%% Redefining |\footnote| for |enumext*| and |keyans*| environments.
+% \fi
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_renew_footnote_mini:
   {
     \RenewDocumentCommand \footnote { o +m }
@@ -6173,7 +6188,8 @@ Some text here
           }
         \footnotemark [ \g_@@_footnote_starred_int ]
         \seq_gput_right:Nn \g_@@_footnote_starred_arg_seq { ##2 }
-        \seq_gput_right:NV \g_@@_footnote_starred_int_seq \g_@@_footnote_starred_int
+        \seq_gput_right:NV
+          \g_@@_footnote_starred_int_seq \g_@@_footnote_starred_int
       }
   }
 \cs_new_protected:Nn \@@_print_footnote_mini:
@@ -6236,7 +6252,7 @@ Some text here
 %   \myenv*{enumext*} and \myenv*{keyans*} environments. We will run the
 %   redefinition when \emph{tagged} \texttt{PDF} is active or when the
 %   \mypkg{footnotehyper} package is not loaded.
-%    \begin{macrocode}  
+%    \begin{macrocode}
 \cs_new_protected:Nn \@@_renew_footnote_starred:
   {
     \IfDocumentMetadataTF
@@ -6263,6 +6279,11 @@ Some text here
           }
       }
   }
+%    \end{macrocode}
+%   In \myenv*{enumext*} and \myenv*{keyans*} environments we need to use
+%   \emph{\enquote{hooks}} to print |\footnote| with support for
+%   \emph{tagged} \texttt{PDF}.
+%    \begin{macrocode}
 \@@_after_env:nn { enumext* }
   {
     \@@_print_footnote_starred:
@@ -8218,10 +8239,13 @@ Some text here
         \msg_error:nnn { enumext } { wrong-miniright-place }
       }
     % starred env
-    \bool_if:NT \l_@@_starred_bool
+    \bool_lazy_and:nnT
+      { \bool_if_p:N \g_@@_starred_bool }
+      { \bool_not_p:n { \l_@@_standar_bool } }
       {
         \msg_error:nnn { enumext } { wrong-miniright-starred }
       }
+    % exec
     \int_compare:nNnTF { \l_@@_keyans_level_int } = { 1 }
       {
         \@@_keyans_mini_right_cmd:n {#1}
