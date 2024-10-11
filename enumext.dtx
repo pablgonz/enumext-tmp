@@ -873,8 +873,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 % with \hologo{LaTeX} tagging PDF for creating \emph{\enquote{simple
 % exercise sheets}} along with \emph{\enquote{multiple choice questions}},
 % storing the \emph{\enquote{answers}} to these in memory using \mypkg{multicol}
-% and \mypkg{scontents} packages and the \mypkg{l3seq} and \mypkg{l3prop}
-% modules.
+% and \mypkg{scontents} packages.
 % \end{abstract}
 %
 % \tableofcontents
@@ -927,6 +926,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \hologo{TeX} Live or \hologo{MiKTeX}. It has been tested with the standard
 % classes provided by \hologo{LaTeX}: \myclass{book}, \myclass{report},
 % \myclass{article} and \myclass{letter} on \mydim{10pt}, \mydim{11pt} and \mydim{12pt}.
+%
+% \smallskip
+%
+% \begin{important}*
+%  The minimum requirement is \hologo{LaTeX} release 2024-11-01.
+% \end{important}
 %
 % \pagestyle{myheader}
 %
@@ -1089,17 +1094,19 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \smallskip
 %
+% The \mypkg*{enumext} package was created and designed to meet these
+% small requirements in the creation of \emph{\enquote{simple
+% worksheets}} and \emph{\enquote{multiple choice questions}}.
+%
+% \smallskip
+%
+% \begin{important}*
 % These \emph{\enquote{simple worksheets}} or \emph{\enquote{multiple
 % choice questions}} appear to be easy to obtain using a combination of
 % the \myenv{enumerate}, \myenv{minipage} and \myenv{multicols}
 % environments, but like many things, what \emph{\enquote{looks
 % simple}} is not so simple.
-%
-% \smallskip
-%
-% The \mypkg*{enumext} package was created and designed to meet these
-% small requirements in the creation of \emph{\enquote{simple
-% worksheets}} and \emph{\enquote{multiple choice questions}}.
+% \end{important}
 %
 % \subsection{Description and usage}
 %
@@ -1116,6 +1123,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % nor replace the powerful \mypkg{enumitem}\cite{enumitem}, the approach
 % is intended to work without hindering either of them.
 % \end{important}
+%
+% \smallskip
 %
 % This package can be used with |xelatex|, |lualatex|, |pdflatex| and
 % the classical |latex>dvips>ps2pdf| and is present in \hologo{TeX} Live and \hologo{MiKTeX},
@@ -1157,9 +1166,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % |\itemindent|, \ics{labelwidth} and \ics{labelsep} plus an
 % \emph{\enquote{extra space}} that makes it difficult to obtain the
 % desired \emph{horizontal spaces} in a \myenv{list} environment.
-%
 % Usually we don't want the \myenv{list} to go beyond the left margin of the
 % page, but since these four values are related, that causes a problem.
+%
 % The \mypkg{enumitem}\cite{enumitem} package adds the |\labelindent| parameter to
 % solve some of these problems. A simplified representation of this in
 % the figure \ref{fig:one}.
@@ -1241,9 +1250,9 @@ This work consists of the files enumext.dtx and enumext.sty.
 % the command |\anskey| to \emph{\enquote{store content}} and the
 % environments |keyans|, |keyans*| and |keyanspic| for multiple choice.
 % It also provides the commands |\getkeyans| to print individual
-% \emph{stored content}, |\printkeyans| to print all \emph{stored
-% content}, |\miniright| for \myenv{minipage} and |\setenumext| to config
-% all \myoarg{key \textnormal{\textcolor{gray}{=}} val} options.
+% \emph{stored content}, |\printkeyans| and |\foreachkeyans| to print
+% all \emph{stored content}, |\miniright| for \myenv{minipage}, |\setenumext|
+% and |\setenumextmeta| to config \myoarg{key \textnormal{\textcolor{gray}{=}} val} options.
 %
 % \subsubsection{Internal counters}
 %
@@ -1254,6 +1263,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \icounter{enumXvi} counter for the \myenv*{keyanspic} environment,
 % the counter \icounter{enumXvii} for \myenv*{enumext*} environment and the counter
 % \icounter{enumXviii} for \myenv*{keyans*} environment.
+%
+% \smallskip
 %
 % \begin{important}*
 % If any package defines these counters or they are user-defined
@@ -1268,6 +1279,8 @@ This work consists of the files enumext.dtx and enumext.sty.
 % for internal use as such. The dimension |\itemwidth| is \emph{rigid length}
 % and contains the \emph{\enquote{width of the content}} of each |\item|
 % regardless of \mykey{labelwidth} and \mykey{labelsep}.
+%
+% \smallskip
 %
 % \begin{important}*
 % If any package defines |\itemwidth| or they are user-defined |\itemwidth|
@@ -1384,22 +1397,27 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \subsubsection{Support for \cs[no-index]{footnote}}\label{doc:footnote}
 %
-% This package provides an internal implementation for the |\footnote|
-% command compatible with the \mypkg{hyperref} package, but if
-% \emph{tagged} \texttt{PDF} is NOT enabled it will not produce the
-% expected \emph{\enquote{links}} for the \myenv*{enumext*} and \myenv*{keyans*}
-% environments and if the \mykey{mini-env} key is used in the
-% \myenv*{enumext} or \myenv*{keyans} environments.
+% The \myenv*{enumext*} and \myenv*{keyans*} environments and the
+% \mykey{mini-env} key use the \myenv{minipage} environment in their
+% implementation but in a transparent way for the user, i.e. it is only
+% used for typesetting and not directly. The \mypkg*{enumext} package provides an \emph{internal implementation} for the
+% command |\footnote| compatible with the \mypkg{hyperref} package to
+% work in the same way as if it were used anywhere in the document.
 %
 % \newpage
 %
-% This is because the internal implementation uses |\footnotetext|\myoarg{number}
-% and |\footnotemark|\myoarg{number}\mymarg{text} and support for these
-% is limited by the \mypkg{hyperref} package. The best way to solve this
-% if \emph{tagged} \texttt{PDF} is NOT enabled is to use Jean-François Burnol
-% \mypkg{footnotehyper}\cite{footnotehyper} package, it will support
-% keeping the \emph{\enquote{links}} if \mypkg{hyperref} is loaded with
-% the |hyperfootnotes=true| option (default). Load it is as follows:
+% Unfortunately, if \emph{tagging} \texttt{PDF}  is not enabled, it will
+% not produce the expected \emph{\enquote{links}} because the internal
+% implementation uses |\footnotetext|\myoarg{number} and |\footnotemark|\myoarg{number}\mymarg{text}
+% and support for these is limited by the \mypkg{hyperref} package.
+%
+% \smallskip
+%
+% The best way to solve this if \emph{tagged} \texttt{PDF} is NOT active
+% is to use Jean-François Burnol \mypkg{footnotehyper}\cite{footnotehyper}
+% package, it will support keeping the \emph{\enquote{links}} if
+% \mypkg{hyperref} is loaded with the |hyperfootnotes=true| option (default).
+% Load it is as follows:
 %
 % \iffalse
 %<*example>
@@ -1470,18 +1488,18 @@ This work consists of the files enumext.dtx and enumext.sty.
 % \subsection{The environment \texttt{enumext*}}
 %
 % The \myenv*{enumext*} is a \emph{horizontal list environment}
-% similar to the \myenv{shortenumerate} environment provided by the
-% \mypkg{shortlst}\cite{shortlst} package or \myenv{tasks} environment provided by the
-% \mypkg{tasks}\cite{tasks} package, \ics*{item} and \ics*{item}\myoarg{custom}
-% work as usual. The options can be configured globally using \ics*{setenumext}
-% command and locally using \myoarg{key \textnormal{\textcolor{gray}{=}} val}
+% similar to the \myenv{shortenumerate} or \myenv{tasks} environments
+% provided by the \mypkg{shortlst}\cite{shortlst} and \mypkg{tasks}\cite{tasks}
+% packages, \ics*{item} and \ics*{item}\myoarg{custom} work as usual.
+% The options can be configured globally using \ics*{setenumext} command
+% and locally using \myoarg{key \textnormal{\textcolor{gray}{=}} val}
 % in the environment.
 %
 % \smallskip
 %
 % Some considerations to take into account for this environment:
 %
-% \begin{itemize}[nosep]
+% \begin{itemize}[nosep,parsep=1pt,topsep=2pt]
 % \item The environment cannot be nested within itself or in the
 %   environment \myenv*{keyans*}, but it can be nested within
 %   \myenv*{enumext} and vice versa.
@@ -1493,7 +1511,7 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \item You cannot have floating environments like \myenv{figure} or
 %   \myenv{table} but \ics{footnote} with \mypkg{hyperref} support is
-%   supported if the \mypkg{footnotehyper} package is loaded.
+%   supported if the \mypkg{footnotehyper} package is loaded (see \S\ref{doc:footnote} for full support).
 %
 % \item You cannot have any standard list environments like \myenv{itemize},
 %   \myenv{enumerate}, \myenv{description}, \myenv{quote}, \myenv{quotation},
@@ -1517,16 +1535,12 @@ This work consists of the files enumext.dtx and enumext.sty.
 %
 % \begin{function}{\item*}
 %   \begin{syntax}
-%     \ics*{item*}
-%     \ics*{item*}\myoarg{symbol}
 %     \ics*{item*}\myoarg{symbol}\myoarg{offset}
 %   \end{syntax}
 %    The \ics*{item*}, \ics*{item*}\myoarg{symbol} and \ics*{item*}\myoarg{symbol}\myoarg{offset}
 %    works like the numbered |\item|, but placing a \mymeta{symbol} to
 %    the \emph{\enquote{left}} of the \mymeta{label} separated from it by
 %    the \mymeta{offset} set by the the \emph{second optional argument}.
-%    The default values for \mymeta{symbol} and \mymeta{offset} are |\textasteriskcentered| ‘\textasteriskcentered’
-%    and the value set by \mykey{labelsep} key.
 %
 %    \smallskip
 %
@@ -3068,11 +3082,11 @@ This work consists of the files enumext.dtx and enumext.sty.
 %   \begin{tikzpicture}[line cap=round,line join=round,x=0.8cm,y=0.8cm,every node/.style={font=\footnotesize}]
 %     % space above
 %     \draw[color=white] (7.0,6.10) rectangle (17.5,6.5) node[pos=.5,text=black]%
-%       { \textcolor{lightgray}{\texttt{number of drawings or tabular above}} };
+%       { \textcolor{lightgray}{\texttt{number of drawings or tabular upper}} };
 %     \draw[color=white] (7.0,4.5) rectangle (17.5,4.9) node[pos=.5,text=black]%
 %       { \textcolor{optcolor}{\texttt{layout-sep}} }; %%%[+itemsep]
 %     \draw[color=white] (7.0,2.9) rectangle (17.5,3.3) node[pos=.5,text=black]%
-%       { \textcolor{lightgray}{\texttt{number of drawings or tabular below}} };
+%       { \textcolor{lightgray}{\texttt{number of drawings or tabular lower}} };
 %     \draw[<->,color=gray] (2.0,7.0) --node[above,text=optcolor]{\vphantom{p}\texttt{labelwidth}} (5.0,7.0);
 %     \draw[<->,color=gray] (5.0,7.0) --node[above,text=optcolor]{\texttt{labelsep}} (7.0,7.0);
 %     \draw[color=lightgray,fill=lightgray,fill opacity=0.15] (2.0,6.5) rectangle (5.0,6.85);% labelwidth
@@ -4602,6 +4616,11 @@ Some text here
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-05.pdf}{\faFilePdf[regular]}}{}.%
 % \end{itemize}
 %
+% \begin{important}
+%  All examples have been checked using \texttt{veraPDF} together with
+% \texttt{ngpdf}.
+% \end{important}
+%
 % \section{The way of non-enumerated lists}
 %
 % It is possible to use (or abuse) the \myenv*{enumext} environment to
@@ -4934,6 +4953,18 @@ Some text here
 % columned lists}. Available from
 % \textsc{ctan}, \url{https://www.ctan.org/pkg/tasks}, 2022.
 %
+% \bibitem{tagpdf} \textsc{Fischer, Ulrike}. \enquote{\textsf{tagpdf} – \hologo{LaTeX}
+% kernel code for PDF tagging}. Available from
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/tagpdf}, 2024.
+%
+% \bibitem{latexlab} The \hologo{LaTeX} Project. \enquote{\textsf{latex-lab} – \hologo{LaTeX}
+% laboratory}. Available from
+% \textsc{ctan}, \url{https://www.ctan.org/pkg/latex-lab}, 2024.
+%
+% \bibitem{ltsockets} \textsc{Mittelbach, Frank}. \enquote{\hologo{LaTeX}’s
+% socket management}. Available from
+% \textsc{ctan}, \url{https://ctan.org/tex-archive/macros/latex/base}, 2024.
+%
 % \end{thebibliography}
 %
 % \let\section\stdsection
@@ -5049,7 +5080,7 @@ Some text here
 %    \begin{macrocode}
 \ProvidesExplPackage
   {enumext}
-  {2024-10-10}
+  {2024-10-11}
   {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
@@ -5965,7 +5996,7 @@ Some text here
 %  For compatibility with \emph{tagged} \texttt{PDF} we should use
 %  |\NewCommandCopy| and not |\cs_new_eq:NN| for |\item|. When
 %  \emph{tagged} \texttt{PDF} is active |\item| is redefined using
-%  \mypkg{ltcmd} (see \texttt{latex-lab-block}).
+%  \mypkg{ltcmd} (see \mypkg{latex-lab-block}\cite{latexlab}).
 % \end{important}
 %
 % \smallskip
@@ -6490,7 +6521,7 @@ Some text here
 %% Add |mode-box| key only on first level off |enumext| and |enumext*| environments.
 % \fi
 %    \begin{macrocode}
-\cs_set_protected:Npn \__enumext_tmp:n #1
+\cs_set_protected:Npn \@@_tmp:n #1
   {
     \keys_define:nn { enumext /  #1 }
       {
@@ -6499,7 +6530,7 @@ Some text here
         mode-box .value_forbidden:n = true,
       }
   }
-\clist_map_inline:nn { level-1, enumext* } { \__enumext_tmp:n {#1} }
+\clist_map_inline:nn { level-1, enumext* } { \@@_tmp:n {#1} }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -12404,9 +12435,10 @@ Some text here
 % \smallskip
 %
 % To maintain a correct \myenv{list} structure when |\DocumentMetadata| is
-% active, it is necessary to do some things manually. This implementation
-% is an adaptation of my answer thanks to Ulrike Fischer's comments in
-% \href{https://tex.stackexchange.com/a/725902}{How can I modify my \texttt{\textbackslash item} redefinition to be compatible with \texttt{tagging-pdf}}.
+% active, it is necessary to do some things manually using
+% \mypkg{tagpdf}\cite{tagpdf} and \mypkg{ltsockets}\cite{ltsockets}.
+% This implementation is an adaptation of my answer thanks to Ulrike Fischer's
+% comments in \href{https://tex.stackexchange.com/a/725902}{How can I modify my \texttt{\textbackslash item} redefinition to be compatible with \texttt{tagging-pdf}}.
 %
 % \subsubsection{Socket for tagging support in \env{enumext*} and \env{keyans*}}
 %
