@@ -3,6 +3,7 @@ l3build
 arara
 context
 tex
+latex
 luatex
 luatexbase
 xetex
