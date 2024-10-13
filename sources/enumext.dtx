@@ -12413,7 +12413,7 @@ Some text here
 \socket_new_plug:nnn {tagsupport/enumext/starred} {start-list-tags}
   {
     \tag_resume:n {#1}
-    %%\tag_mc_end_push:
+    \tag_mc_end_push:
     \tag_struct_begin:n {tag=LI}
     \tag_struct_begin:n {tag=Lbl}
     \tag_mc_begin:n {tag=Lbl}
@@ -12432,7 +12432,7 @@ Some text here
     \tag_struct_end:n {tag=text-unit}
     \tag_struct_end:n {tag=LBody}
     \tag_struct_end:n {tag=LI}
-    %%\tag_mc_begin_pop:n {}
+    \tag_mc_begin_pop:n {}
     \tag_suspend:n {#1}
   }
 %    \end{macrocode}
@@ -12484,7 +12484,7 @@ Some text here
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {start-list-tags}
   {
     \tag_resume:n {keyanspic}
-    %%\tag_mc_end_push:
+    \tag_mc_end_push:
     \tag_struct_begin:n {tag=LI}
     \tag_struct_begin:n {tag=Lbl}
     \tag_mc_begin:n {tag=Lbl}
@@ -12505,7 +12505,7 @@ Some text here
     \tag_struct_end:n {tag=text}
     \tag_struct_end:n {tag=LBody}
     \tag_struct_end:n {tag=LI}
-    %%\tag_mc_begin_pop:n {}
+    \tag_mc_begin_pop:n {}
     \tag_suspend:n {keyanspic}
   }
 %    \end{macrocode}
@@ -12809,7 +12809,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \tag_resume:n {keyanspic}
-        %%\tag_mc_end_push:
+        \tag_mc_end_push:
         \tag_struct_begin:n {tag=L,attribute=enumerate}
       } { }
 %    \end{macrocode}
@@ -12825,10 +12825,10 @@ Some text here
     \end{list}
     \IfDocumentMetadataTF
       {
-        \tag_struct_end:%%n {tag=L}
-        %%\tag_mc_begin_pop:n {}
-        \tag_struct_end:%%n {tag=L}
-        %%\tag_mc_begin_pop:n {}
+        \tag_struct_end:n {tag=L}
+        \tag_mc_begin_pop:n {}
+        \tag_struct_end:n {tag=L}
+        \tag_mc_begin_pop:n {}
       } { }
 %    \end{macrocode}
 %   Finally we check if \ics*{anspic*} has been used, set the counter |enumXvi|
