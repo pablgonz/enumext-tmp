@@ -1,0 +1,2 @@
+Changes in v1.0 2024-10-13:
+- Adapt detection of `l3keys2e` package (obsolete in june 2022 `LaTeX` release).
