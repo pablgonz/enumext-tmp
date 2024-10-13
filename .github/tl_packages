@@ -18,23 +18,6 @@ latex-lab
 tagpdf
 bookmark
 pdfmanagement-testphase
-# special testing for latex-lab
-#abraces
-#accents
-#braket
-#breqn
-#cases
-#extarrows
-#interval
-
-#mathdots
-#mathtools
-#mattens
-#pdfcol
-#tikz-cd
-#kantlipsum
-#natbib
-#
 # more
 xcolor
 microtype
