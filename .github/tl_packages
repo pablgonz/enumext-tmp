@@ -1,10 +1,10 @@
 # Required to build
 tikzducks
 l3build
-# latex-dev
-# latex-base
-# latex-bin
-# latex-tools-dev
+latex-dev
+latex-base
+latex-bin-dev
+latex-tools-dev
 latex-base-dev
 arara
 context
