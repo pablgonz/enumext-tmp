@@ -1,4 +1,4 @@
-name: Automated testing (TL 2020 - 2024)
+name: Automated testing for enumext package (TL2024)
 
 on:
   push:
@@ -24,12 +24,6 @@ jobs:
 
       - name: Run  github-actions-tune
         uses: abbbi/github-actions-tune@v1
-
-      - name: Update sources and install ghostscript-pygments
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: fonts-urw-base35 libgs9-common libijs-0.35 libjbig2dec0 libopenjp2-7 libgs9 ghostscript python3-pygments
-          version: 1.0
 
       - name: Setup TeX Live ${{ matrix.version }}
         uses: teatimeguest/setup-texlive-action@v3

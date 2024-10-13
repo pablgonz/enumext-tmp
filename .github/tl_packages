@@ -100,7 +100,7 @@ mflogo
 mflogo-font
 microtype
 minted
-ms
+# ms
 pdfescape
 pdftexcmds
 pgf
