@@ -322,33 +322,33 @@ if options["target"] == "examples" then
   ---  os_message("** Running: lualatex -draftmode -interaction=batchmode "..file..".dtx")
   --end
   -- Compiling sample files
-  --print("Compiling sample files in ./"..tmpdir.." using [arara]")
-  --for i, samples in ipairs(samples) do
-    --errorlevel = run(tmpdir, "arara "..samples..".tex > "..os_null)
-    --if errorlevel ~= 0 then
-      --local f = assert(io.open(tmpdir.."/"..samples..".log", "r"))
-      --err_log_file = f:read("*all")
-      --print(err_log_file)
-      --cp(samples..".tex", tmpdir, maindir)
-      --cp(samples..".log", tmpdir, maindir)
-      --error("** Error!!: arara "..samples..".tex")
-      --return errorlevel
-    --else
-      --os_message("** Running: arara "..samples..".tex")
-    --end
-  --end
-  ---- Copy generated .pdf files to maindir
-  --errorlevel = cp("*.pdf", tmpdir, maindir)
-  --if errorlevel ~= 0 then
-    --error("** Error!!: Can't copy generated pdf files to ./"..maindir)
-    --return errorlevel
-  --else
-    --os_message("Copy generated .pdf files to ./"..maindir)
-  --end
-  ---- If are OK then remove ./temp dir
-  --cleandir(tmpdir)
-  --lfs.rmdir(tmpdir)
-  --os_message("Remove temporary directory ./"..tmpdir)
+  print("Compiling sample files in ./"..tmpdir.." using [arara]")
+  for i, samples in ipairs(samples) do
+    errorlevel = run(tmpdir, "arara "..samples..".tex > "..os_null)
+    if errorlevel ~= 0 then
+      local f = assert(io.open(tmpdir.."/"..samples..".log", "r"))
+      err_log_file = f:read("*all")
+      print(err_log_file)
+      cp(samples..".tex", tmpdir, maindir)
+      cp(samples..".log", tmpdir, maindir)
+      error("** Error!!: arara "..samples..".tex")
+      return errorlevel
+    else
+      os_message("** Running: arara "..samples..".tex")
+    end
+  end
+  -- Copy generated .pdf files to maindir
+  errorlevel = cp("*.pdf", tmpdir, maindir)
+  if errorlevel ~= 0 then
+    error("** Error!!: Can't copy generated pdf files to ./"..maindir)
+    return errorlevel
+  else
+    os_message("Copy generated .pdf files to ./"..maindir)
+  end
+  -- If are OK then remove ./temp dir
+  cleandir(tmpdir)
+  lfs.rmdir(tmpdir)
+  os_message("Remove temporary directory ./"..tmpdir)
   os.exit(0)
 end
 
