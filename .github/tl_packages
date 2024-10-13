@@ -106,6 +106,7 @@ scontents
 siunitx
 amssymb
 tikzducks
+mwe
 # ms
 pdfescape
 pdftexcmds
