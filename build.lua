@@ -133,19 +133,20 @@ function docinit_hook()
   end
   return 0
 end
+-- -draftmode -interaction=batchmode 
 function typeset(file)
   local file = jobname(sourcefiledir.."/enumext.dtx")
   print("** Running: lualatex -draftmode -interaction=batchmode "..file..".dtx")
-  errorlevel = runcmd("lualatex -draftmode -interaction=batchmode "..file..".dtx >"..os_null, typesetdir, {"TEXINPUTS","LUAINPUTS"})
-  if errorlevel ~= 0 then
-    local f = assert(io.open(typesetdir.."/enumext.log", "r"))
-    err_log_file = f:read("*all")
-    print(err_log_file)
-    cp(file..".log", typesetdir, maindir)
-    cp(file..".dtx", typesetdir, maindir)
-    error("** Error!!: lualatex -draftmode -interaction=batchmode "..file..".dtx")
-    return errorlevel
-  end
+  errorlevel = runcmd("lualatex "..file..".dtx >"..os_null, typesetdir, {"TEXINPUTS","LUAINPUTS"})
+  --if errorlevel ~= 0 then
+    --local f = assert(io.open(typesetdir.."/enumext.log", "r"))
+    --err_log_file = f:read("*all")
+    --print(err_log_file)
+    --cp(file..".log", typesetdir, maindir)
+    --cp(file..".dtx", typesetdir, maindir)
+    --error("** Error!!: lualatex -draftmode -interaction=batchmode "..file..".dtx")
+    --return errorlevel
+  --end
   print("** Running: lualatex -shell-escape -interaction=batchmode "..file..".dtx")
   errorlevel = runcmd("lualatex -shell-escape -interaction=batchmode "..file..".dtx >"..os_null, typesetdir, {"TEXINPUTS","LUAINPUTS"})
   if errorlevel ~= 0 then

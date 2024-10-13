@@ -104,6 +104,7 @@ unicode-math
 # shellesc
 scontents
 siunitx
+tikz
 tikzducks
 mwe
 # ms
