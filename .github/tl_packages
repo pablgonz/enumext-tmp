@@ -105,6 +105,7 @@ shellesc
 scontents
 siunitx
 amssymb
+tikzducks
 # ms
 pdfescape
 pdftexcmds
