@@ -255,7 +255,7 @@ samples = {
     "enumext-02",
     "enumext-03",
     -- Error for now on linux (but not in win11...mmm?)
-    --"enumext-04",
+    "enumext-04",
     "enumext-05",
     "enumext-exa-1",
     "enumext-exa-2",
