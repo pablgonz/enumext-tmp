@@ -30,12 +30,11 @@ jobs:
           package-file: .github/tl_packages
           cache: true
 
-      #  run: l3build install
       - name: Install enumext package
-        run: lualatex-dev sample2e
+        run: l3build install
 
-      # - name: Run "l3build ${{ matrix.command }}" (TeX Live ${{ matrix.version }})
-      #  run: l3build ${{ matrix.command }}
+      - name: Run "l3build ${{ matrix.command }}" (TeX Live ${{ matrix.version }})
+        run: l3build ${{ matrix.command }}
 
       # If fail some test, upload test and log file
       - name: Upload error files
