@@ -51,6 +51,8 @@ kantlipsum
 natbib
 colorprofiles
 # more
+xcolor
+microtype
 arara
 context
 tex
