@@ -1,6 +1,7 @@
 # Required to build
 tikzducks
 l3build
+latex-dev
 latex-base
 latex-bin
 latex-tools-dev
