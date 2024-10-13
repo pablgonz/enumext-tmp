@@ -139,7 +139,7 @@ end
 function typeset(file)
   print("** Running: arara "..file..".dtx")
   local file = jobname(sourcefiledir.."/enumext.dtx")
-  local errorlevel = runcmd("arara "..file..".dtx", typesetdir, {"TEXINPUTS","LUAINPUTS"})
+  local errorlevel = runcmd("lualatex-dev -shell-escape "..file..".dtx", typesetdir, {"TEXINPUTS","LUAINPUTS"})
   if errorlevel ~= 0 then
     error("Error!!: Typesetting "..file..".tex")
     return errorlevel
