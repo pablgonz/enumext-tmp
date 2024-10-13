@@ -8,8 +8,8 @@ luatex
 xetex
 luatexbase
 lualibs
-latex-dev
-latex-base
+# latex-dev
+# latex-base
 latex-bin-dev
 latex-tools-dev
 latex-base-dev
@@ -180,4 +180,4 @@ url
 xcolor
 xkeyval
 xstring
-zapfding
+# zapfding
