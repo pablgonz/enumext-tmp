@@ -313,14 +313,14 @@ if options["target"] == "examples" then
   make_tmp_dir()
   local file = jobname(tmpdir.."/enumext.dtx")
   -- Unpack sample files
-  print("Unpack samples into ./"..tmpdir.." from file "..file..".dtx")
-  errorlevel = run(tmpdir, "lualatex "..file..".dtx > "..os_null)
-  if errorlevel ~= 0 then
-    error("** Error!!: lualatex -draftmode -interaction=batchmode "..file..".dtx")
-    return errorlevel
-  else
-    os_message("** Running: lualatex -draftmode -interaction=batchmode "..file..".dtx")
-  end
+  --print("Unpack samples into ./"..tmpdir.." from file "..file..".dtx")
+  --errorlevel = run(tmpdir, "lualatex "..file..".dtx > "..os_null)
+  --if errorlevel ~= 0 then
+  --  error("** Error!!: lualatex -draftmode -interaction=batchmode "..file..".dtx")
+  --  return errorlevel
+  --else
+  ---  os_message("** Running: lualatex -draftmode -interaction=batchmode "..file..".dtx")
+  --end
   -- Compiling sample files
   --print("Compiling sample files in ./"..tmpdir.." using [arara]")
   --for i, samples in ipairs(samples) do
