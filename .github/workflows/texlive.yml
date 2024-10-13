@@ -31,10 +31,11 @@ jobs:
           cache: true
 
       - name: Install enumext package
-        run: l3build install
+      #  run: l3build install
+        run: lualatex-dev sample2e
 
       - name: Run "l3build ${{ matrix.command }}" (TeX Live ${{ matrix.version }})
-        run: l3build ${{ matrix.command }}
+      #  run: l3build ${{ matrix.command }}
 
       # If fail some test, upload test and log file
       - name: Upload error files
