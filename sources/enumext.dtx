@@ -4435,7 +4435,7 @@ Some text here
 \end{filecontents*}
 \IfFileExists{enumext-04.pdf}{}
  {
-  %%%\ShellEscape{arara enumext-04.tex}
+  \ShellEscape{cat enumext-04.tex}
   \ShellEscape{lualatex-dev enumext-04.tex}
  }
 % \iffalse
