@@ -1,4 +1,5 @@
 # Required to build
+tikzducks
 l3build
 latex-base
 latex-bin
@@ -104,8 +105,6 @@ unicode-math
 # shellesc
 scontents
 siunitx
-tikz
-tikzducks
 mwe
 # ms
 pdfescape
