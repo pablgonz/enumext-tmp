@@ -3,7 +3,7 @@ l3build
 arara
 context
 tex
-luatex
+## luatex
 xetex
 lualibs
 firstaid
