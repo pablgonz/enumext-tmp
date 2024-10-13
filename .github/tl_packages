@@ -102,6 +102,7 @@ microtype
 minted
 unicode-math
 shellesc
+scontents
 # ms
 pdfescape
 pdftexcmds
