@@ -6,6 +6,7 @@ latex-base
 latex-bin-dev
 latex-tools-dev
 latex-base-dev
+latex-lab
 # special testing for firstaid
 bidi
 bigfoot
