@@ -45,9 +45,9 @@ unpackopts  = "--interaction=batchmode"
 unpackexe   = "luatex"
 
 -- Generating documentation
-typesetexe  = "lualatex-dev"
+--typesetexe  = "lualatex-dev"
 typesetfiles  = {"enumext.dtx"}
-typesetopts = "-interaction=batchmode -shell-escape"
+-- typesetopts = "-interaction=batchmode -shell-escape"
 
 -- Update package date and version
 tagfiles = {"sources/enumext.dtx", "sources/CTANREADME.md", "ctan.ann"}
@@ -128,7 +128,7 @@ end
 
 -- Typesetting enumext documentation step by step :)
 function docinit_hook()
-  errorlevel = (cp("*.tex", unpackdir, typesetdir) + cp("*.sty", unpackdir, typesetdir))
+  local errorlevel = (cp("*.tex", unpackdir, typesetdir) + cp("*.sty", unpackdir, typesetdir))
   if errorlevel ~= 0 then
     error("** Error!!: Can't copy .tex and .sty files from "..unpackdir.." to "..typesetdir)
     return errorlevel
