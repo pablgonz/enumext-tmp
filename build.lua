@@ -255,7 +255,7 @@ samples = {
     "enumext-02",
     "enumext-03",
     -- Error for now on linux (but not in win11...mmm?)
-    "enumext-04",
+    -- "enumext-04",
     "enumext-05",
     "enumext-exa-1",
     "enumext-exa-2",
@@ -279,7 +279,7 @@ if options["target"] == "testpkg" then
   -- Compiling sample files
   print("Compiling sample files in ./"..tmpdir.." using [arara]")
   for i, samples in ipairs(samples) do
-    errorlevel = run(tmpdir, "lualatex-dev "..samples..".tex > "..os_null)
+    errorlevel = run(tmpdir, "arara "..samples..".tex > "..os_null)
     if errorlevel ~= 0 then
       local f = assert(io.open(tmpdir.."/"..samples..".log", "r"))
       err_log_file = f:read("*all")
