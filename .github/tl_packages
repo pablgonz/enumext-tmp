@@ -11,10 +11,11 @@ tikzducks
 latex-bin-dev
 latex-tools-dev
 latex-base-dev
+latex-lab-dev
 #latex-lab
 tagpdf
 #bookmark
-#pdfmanagement-testphase
+pdfmanagement-testphase
 # special testing for latex-lab
 #abraces
 #accents
