@@ -3,7 +3,6 @@ l3build
 arara
 context
 tex
-# luatex
 luatexbase
 xetex
 lualibs
@@ -14,9 +13,6 @@ latex-tools-dev
 latex-base-dev
 latex-lab
 bookmark
-luamml
-# tagpdf
-# multicol
 pdfmanagement-testphase
 # special testing for latex-lab
 abraces
@@ -31,8 +27,6 @@ mathdots
 mathtools
 mattens
 pdfcol
-pdfmanagement-testphase
-tagpdf
 tikz-cd
 kantlipsum
 natbib
@@ -139,7 +133,6 @@ scontents
 siunitx
 mwe
 ragged2e
-# ms
 pdfescape
 pdftexcmds
 pgf

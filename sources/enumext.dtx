@@ -4432,7 +4432,11 @@ Some text here
 \printkeyans{test-2}
 \end{document}
 \end{filecontents*}
-\IfFileExists{enumext-04.pdf}{}{\ShellEscape{arara enumext-04.tex}}
+\IfFileExists{enumext-04.pdf}{}
+ {
+  %%%\ShellEscape{arara enumext-04.tex}
+  \ShellEscape{lualatex-dev enumext-04.tex}
+ }
 % \iffalse
 %</example>
 % \fi
