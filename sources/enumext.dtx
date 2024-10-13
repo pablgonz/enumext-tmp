@@ -4297,8 +4297,9 @@ Some text here
 % arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
-% arara: clean: { extensions: [ aux, log, out] }
-% arara: clean: { files: [ enumext-03-luamml-mathml.html ] }
+%! arara: clean: { extensions: [ aux, log, out] }
+%! arara: clean: { files: [ enumext-03-luamml-mathml.html ] }
+% arara: halt
 \DocumentMetadata
   {
     lang=en-US,
