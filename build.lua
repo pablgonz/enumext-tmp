@@ -139,7 +139,7 @@ end
 function typeset(file)
   print("** Running: arara "..file..".dtx")
   local file = jobname(sourcefiledir.."/enumext.dtx")
-  local errorlevel = runcmd("lualatex-dev -shell-escape "..file..".dtx", typesetdir, {"TEXINPUTS","LUAINPUTS"})
+  local errorlevel = runcmd("arara "..file..".dtx", typesetdir, {"TEXINPUTS","LUAINPUTS"})
   if errorlevel ~= 0 then
     error("Error!!: Typesetting "..file..".tex")
     return errorlevel
@@ -147,3 +147,198 @@ function typeset(file)
   return 0
 end
 
+-- Create check_marked_tags() function
+local function check_marked_tags()
+  local f = assert(io.open("sources/enumext.dtx", "r"))
+  marked_tags = f:read("*all")
+  f:close()
+  local m_pkgd = string.match(marked_tags, "\\ProvidesExplPackage %{enumext%} {(.-)}")
+  local m_pkgv = string.match(marked_tags, "\\ProvidesExplPackage %{enumext%} %{[^}]+%} {(.-)}")
+  if pkgversion == m_pkgv and pkgdate == m_pkgd then
+    os_message("Checking version and date in enumext.dtx")
+  else
+    print("** Warning: enumext.dtx is marked with version "..m_pkgv.." and date "..m_pkgd)
+    print("** Warning: build.lua is marked with version "..pkgversion.." and date "..pkgdate)
+    print("** Check version and date in build.lua then run l3build tag")
+  end
+end
+
+-- Create check_readme_tags() function
+local function check_readme_tags()
+  local pkgversion = "v"..pkgversion
+
+  local f = assert(io.open("sources/CTANREADME.md", "r"))
+  readme_tags = f:read("*all")
+  f:close()
+  local m_readmev, m_readmed = string.match(readme_tags, "Release (v%d+.%d+%a*) \\%[(%d%d%d%d%-%d%d%-%d%d)\\%]")
+
+  if pkgversion == m_readmev and pkgdate == m_readmed then
+    os_message("Checking version and date in README.md")
+  else
+    print("** Warning: README.md is marked with version "..m_readmev.." and date "..m_readmed)
+    print("** Warning: build.lua is marked with version "..pkgversion.." and date "..pkgdate)
+    print("** Check version and date in build.lua then run l3build tag")
+  end
+end
+
+-- Config tag_hook
+function tag_hook(tagname)
+  check_marked_tags()
+  check_readme_tags()
+end
+
+-- Add "tagged" target to l3build CLI
+if options["target"] == "tagged" then
+  check_marked_tags()
+  check_readme_tags()
+  os.exit(0)
+end
+
+
+-- Create make_tmp_dir() function
+local function make_tmp_dir()
+  -- Check version and date
+  check_marked_tags()
+  check_readme_tags()
+  -- Fix basename(path) in windows
+  local function basename(path)
+    return path:match("^.*[\\/]([^/\\]*)$")
+  end
+  local tmpname = os.tmpname()
+  tmpdir = basename(tmpname)
+  -- Create a tmp dir
+  local errorlevel = mkdir(tmpdir)
+  if errorlevel ~= 0 then
+    error("** Error!!: The ./"..tmpdir.." directory could not be created")
+    return errorlevel
+  else
+    os_message("Creating the temporary directory ./"..tmpdir)
+  end
+  -- Copy files
+  local errorlevel = (cp("*.dtx", sourcefiledir, tmpdir) + cp("*.ins", sourcefiledir, tmpdir))
+  if errorlevel ~= 0 then
+    error("** Error!!: Can't copy .dtx and .ins files from "..sourcefiledir.." to ./"..tmpdir)
+    return errorlevel
+  else
+    os_message("Copying enumext.dtx and enumext.ins from "..sourcefiledir.." to ./"..tmpdir)
+  end
+  -- Unpack files
+  print("Unpacks the source files into ./"..tmpdir)
+  local file = jobname(tmpdir.."/enumext.ins")
+  local errorlevel = run(tmpdir, "luatex -interaction=batchmode "..file..".ins > "..os_null)
+  if errorlevel ~= 0 then
+    local f = assert(io.open(tmpdir.."/"..file..".log", "r"))
+    err_log_file = f:read("*all")
+    print(err_log_file)
+    cp(file..".log", tmpdir, maindir)
+    cp(file..".ins", tmpdir, maindir)
+    error("** Error!!: luatex -interaction=batchmode "..file..".ins")
+    return errorlevel
+  else
+    os_message("** Running: luatex -interaction=batchmode "..file..".ins")
+    rm(tmpdir, file..".log")
+  end
+  return 0
+end
+
+-- List of sample files for "testpkg" and "example" target
+samples = {
+    "enumext-01",
+    "enumext-02",
+    "enumext-03",
+    "enumext-04",
+    "enumext-05",
+    "enumext-exa-1",
+    "enumext-exa-2",
+    "enumext-exa-3",
+    "enumext-exa-4",
+    "enumext-exa-5",
+  }
+
+-- We added a new target "testpkg" to run the tests files in test-pkg/
+if options["target"] == "testpkg" then
+  -- Create a tmp dir and unpack files
+  make_tmp_dir()
+  -- Copy test files
+  local errorlevel = cp("*.*", "sources/test-pkg", tmpdir)
+  if errorlevel ~= 0 then
+    error("** Error!!: Can't copy files from sources/test-pkg to ./"..tmpdir)
+    return errorlevel
+  else
+    os_message("** Copying files from sources/test-pkg to ./"..tmpdir)
+  end
+  -- Compiling sample files
+  print("Compiling sample files in ./"..tmpdir.." using [arara]")
+  for i, samples in ipairs(samples) do
+    local errorlevel = run(tmpdir, "arara "..samples..".tex > "..os_null)
+    if errorlevel ~= 0 then
+      local f = assert(io.open(tmpdir.."/"..samples..".log", "r"))
+      err_log_file = f:read("*all")
+      print(err_log_file)
+      cp(samples..".tex", tmpdir, maindir)
+      cp(samples..".log", tmpdir, maindir)
+      error("** Error!!: arara "..samples..".log")
+      return errorlevel
+    else
+      os_message("** Running: arara "..samples..".tex")
+    end
+  end
+  -- Copy generated .pdf files to maindir
+  local errorlevel = cp("*.pdf", tmpdir, maindir)
+  if errorlevel ~= 0 then
+    error("** Error!!: Can't copy generated pdf files to ./"..maindir)
+    return errorlevel
+  else
+    os_message("Copy generated .pdf files to ./"..maindir)
+  end
+  -- If are OK then remove ./temp dir
+  cleandir(tmpdir)
+  lfs.rmdir(tmpdir)
+  os_message("Remove temporary directory ./"..tmpdir)
+  os.exit(0)
+end
+
+-- We added a new target "examples" to run the tagged PDF examples files for enumext
+if options["target"] == "examples" then
+  -- Create a tmp dir and unpack files
+  make_tmp_dir()
+  local file = jobname(tmpdir.."/enumext.dtx")
+  -- Unpack sample files
+  print("Unpack samples into ./"..tmpdir.." from file "..file..".dtx")
+  local errorlevel = run(tmpdir, "lualatex "..file..".dtx > "..os_null)
+  if errorlevel ~= 0 then
+    error("** Error!!: lualatex -draftmode -interaction=batchmode "..file..".dtx")
+    return errorlevel
+  else
+    os_message("** Running: lualatex -draftmode -interaction=batchmode "..file..".dtx")
+  end
+  -- Compiling sample files
+  print("Compiling sample files in ./"..tmpdir.." using [arara]")
+  for i, samples in ipairs(samples) do
+    errorlevel = run(tmpdir, "arara "..samples..".tex > "..os_null)
+    if errorlevel ~= 0 then
+      local f = assert(io.open(tmpdir.."/"..samples..".log", "r"))
+      err_log_file = f:read("*all")
+      print(err_log_file)
+      cp(samples..".tex", tmpdir, maindir)
+      cp(samples..".log", tmpdir, maindir)
+      error("** Error!!: arara "..samples..".tex")
+      return errorlevel
+    else
+      os_message("** Running: arara "..samples..".tex")
+    end
+  end
+  -- Copy generated .pdf files to maindir
+  local errorlevel = cp("*.pdf", tmpdir, maindir)
+  if errorlevel ~= 0 then
+    error("** Error!!: Can't copy generated pdf files to ./"..maindir)
+    return errorlevel
+  else
+    os_message("Copy generated .pdf files to ./"..maindir)
+  end
+  -- If are OK then remove ./temp dir
+  cleandir(tmpdir)
+  lfs.rmdir(tmpdir)
+  os_message("Remove temporary directory ./"..tmpdir)
+  os.exit(0)
+end
