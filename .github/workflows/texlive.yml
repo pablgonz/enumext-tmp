@@ -41,7 +41,7 @@ jobs:
         run: l3build install
 
       - name: Run "l3build ${{ matrix.command }}" (TeX Live ${{ matrix.version }})
-        run: l3build doc
+        run: lualatex-dev enumext-04.tex
 
       # If fail some test, upload test and log file
       - name: Upload error files
