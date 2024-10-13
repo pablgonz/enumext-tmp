@@ -136,13 +136,7 @@ end
 
 function typeset(file)
   local file = jobname(sourcefiledir.."/enumext.dtx")
-  print("** Running: lualatex -draftmode -interaction=batchmode "..file..".dtx")
-  errorlevel = runcmd("lualatex -draftmode -interaction=batchmode "..file..".dtx >"..os_null, typesetdir, {"TEXINPUTS","LUAINPUTS"})
-  print("** Running: lualatex -shell-escape -interaction=batchmode "..file..".dtx")
-  errorlevel = runcmd("lualatex -shell-escape -interaction=batchmode "..file..".dtx >"..os_null, typesetdir, {"TEXINPUTS","LUAINPUTS"})
-  if errorlevel ~= 0 then
-    error("** Error!!: lualatex -shell-escape-interaction=batchmode "..file..".dtx")
-    return errorlevel
-  end
+  print("** Running: lualatex "..file..".dtx")
+  runcmd("lualatex "..file..".dtx >"..os_null, typesetdir, {"TEXINPUTS","LUAINPUTS"})
   return 0
 end
