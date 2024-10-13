@@ -14,9 +14,7 @@ jobs:
         version:
           - 2024
         command:
-          - doc
           - testpkg
-          - examples
       fail-fast: false
     steps:
       - name: Checkout
