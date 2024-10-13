@@ -255,7 +255,7 @@ samples = {
     "enumext-02",
     "enumext-03",
     -- Error for now on linux (but not in win11...mmm?)
-    -- "enumext-04",
+    "enumext-04",
     "enumext-05",
     "enumext-exa-1",
     "enumext-exa-2",
@@ -284,9 +284,9 @@ if options["target"] == "testpkg" then
       local f = assert(io.open(tmpdir.."/"..samples..".log", "r"))
       err_log_file = f:read("*all")
       print(err_log_file)
-      cp(samples..".tex", tmpdir, maindir)
+      --cp(samples..".tex", tmpdir, maindir)
       cp(samples..".log", tmpdir, maindir)
-      error("** Error!!: arara "..samples..".tex")
+      error("** Error!!: arara "..samples..".log")
       return errorlevel
     else
       os_message("** Running: arara "..samples..".tex")
