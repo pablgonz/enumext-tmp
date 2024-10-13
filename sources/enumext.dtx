@@ -12493,7 +12493,7 @@ Some text here
   }
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {stop-start-tags}
   {
-    \tag_mc_end:
+    %%\tag_mc_end:
     \tag_struct_end:n {tag=Lbl}
     \tag_struct_begin:n {tag=LBody}
     \tag_struct_begin:n {tag=text-unit}
@@ -12507,7 +12507,7 @@ Some text here
     \tag_struct_end:n {tag=text}
     \tag_struct_end:n {tag=LBody}
     \tag_struct_end:n {tag=LI}
-    \tag_mc_begin_pop:n {}
+    %%\tag_mc_begin_pop:n {}
     \tag_suspend:n {keyanspic}
   }
 %    \end{macrocode}
@@ -12827,9 +12827,9 @@ Some text here
     \end{list}
     \IfDocumentMetadataTF
       {
-        %%\tag_struct_end:%%n {tag=L}
+        \tag_struct_end:%%n {tag=L}
         %%\tag_mc_begin_pop:n {}
-        %%\tag_struct_end:%%n {tag=L}
+        \tag_struct_end:%%n {tag=L}
         %%\tag_mc_begin_pop:n {}
       } { }
 %    \end{macrocode}
