@@ -118,7 +118,6 @@ unicode-math
 # shellesc
 scontents
 siunitx
-amssymb
 mwe
 ragged2e
 pdfescape
