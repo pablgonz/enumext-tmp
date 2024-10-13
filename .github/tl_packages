@@ -5,7 +5,7 @@ l3build
 # latex-base
 # latex-bin
 # latex-tools-dev
-# latex-base-dev
+latex-base-dev
 arara
 context
 tex
