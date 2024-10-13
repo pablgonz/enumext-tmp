@@ -36,7 +36,7 @@
 %% ------------------------------------------------------------------------
 %% 
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
-\ProvidesExplPackage {enumext} {2024-10-12} {1.0} {Enumerate exercise sheets}
+\ProvidesExplPackage {enumext} {2024-10-13} {1.0} {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
   {
     \IfPackageLoadedTF { multicol }
@@ -4208,7 +4208,7 @@
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {start-list-tags}
   {
     \tag_resume:n {keyanspic}
-    %%\tag_mc_end_push:
+    \tag_mc_end_push:
     \tag_struct_begin:n {tag=LI}
     \tag_struct_begin:n {tag=Lbl}
     \tag_mc_begin:n {tag=Lbl}
@@ -4229,7 +4229,7 @@
     \tag_struct_end:n {tag=text}
     \tag_struct_end:n {tag=LBody}
     \tag_struct_end:n {tag=LI}
-    %%\tag_mc_begin_pop:n {}
+    \tag_mc_begin_pop:n {}
     \tag_suspend:n {keyanspic}
   }
 %% Wrap socket in conditional functions for tagging |keyanspic| environment.
@@ -4361,7 +4361,7 @@
     \IfDocumentMetadataTF
       {
         \tag_resume:n {keyanspic}
-        \tag_mc_end_push:
+        %%\tag_mc_end_push:
         \tag_struct_begin:n {tag=L,attribute=enumerate}
       } { }
     \__enumext_anspic_exec:
@@ -4374,8 +4374,8 @@
       {
         \tag_struct_end:%%n {tag=L}
         %%\tag_mc_begin_pop:n {}
-        %%\tag_struct_end:n {tag=L}
-        \tag_mc_begin_pop:%%n {}
+        \tag_struct_end:%%n {tag=L}
+        %%\tag_mc_begin_pop:n {}
       } { }
     \__enumext_check_starred_cmd:n { anspic }
     \setcounter { enumXvi } { 0 }
