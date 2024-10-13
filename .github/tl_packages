@@ -1,6 +1,13 @@
 # Required to build
 tikzducks
 l3build
+arara
+context
+tex
+luatex
+xetex
+luatexbase
+lualibs
 latex-dev
 latex-base
 latex-bin-dev
@@ -53,13 +60,6 @@ colorprofiles
 # more
 xcolor
 microtype
-arara
-context
-tex
-luatex
-xetex
-luatexbase
-lualibs
 manfnt-font
 metafont
 metapost
