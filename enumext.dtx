@@ -741,15 +741,16 @@ This work consists of the files enumext.dtx and enumext.sty.
 % Get file info
 \GetFileInfo{enumext.sty}
 % Config hyperref
-\hypersetup{
-   allcolors          = linkcolor,
-   colorlinks         = true,
-   linktoc            = all,
-   pdftitle           = {.:: The enumext package --- \fileinfo{} ::.},
-   pdfauthor          = {Pablo González L},
-   pdfsubject         = {Documentation for \fileversion{} [\filedate] },
-   pdfkeywords        = {worksheets, multiple choice, expl3, l3prop, l3seq, list, enumerate, store answers, tagged},
-   bookmarksopenlevel = 2,
+\hypersetup
+  {
+    allcolors          = linkcolor,
+    colorlinks         = true,
+    linktoc            = all,
+    pdftitle           = {.:: The enumext package --- \fileinfo{} ::.},
+    pdfauthor          = {Pablo González L},
+    pdfsubject         = {Documentation for \fileversion{} [\filedate] },
+    pdfkeywords        = {worksheets, multiple choice, expl3, l3prop, l3seq, list, enumerate, store answers, tagged},
+    bookmarksopenlevel = 2,
   }
 % Configuration titleps and titlesec
 \settitlemarks{section}
@@ -4143,9 +4144,11 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %<*example>
 % \fi
 \begin{filecontents*}[overwrite]{enumext-01.tex}
-% arara: lualatex: { branch: developer }
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
+% arara: clean: { files: [ enumext-01-luamml-mathml.html ] }
 \DocumentMetadata
   {
     lang=en-US,
@@ -4247,8 +4250,10 @@ Some refs here \ref{G} and \ref{H}
 %<*example>
 % \fi
 \begin{filecontents*}[overwrite]{enumext-02.tex}
+% arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
+% arara: clean: { files: [ enumext-02-luamml-mathml.html ] }
 \DocumentMetadata
   {
     lang=en-US,
@@ -4329,9 +4334,11 @@ Some text here
 %<*example>
 % \fi
 \begin{filecontents*}[overwrite]{enumext-03.tex}
-% arara: lualatex: { branch: developer }
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
+% arara: clean: { files: [ enumext-03-luamml-mathml.html ] }
 \DocumentMetadata
   {
     lang=en-US,
@@ -4403,9 +4410,11 @@ The answer to question \ref{dos} is \getkeyans{test:2}
 %<*example>
 % \fi
 \begin{filecontents*}[overwrite]{enumext-04.tex}
-% arara: lualatex: { branch: developer }
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
+% arara: clean: { files: [ enumext-04-luamml-mathml.html ] }
 \DocumentMetadata
   {
     lang=en-US,
@@ -4474,9 +4483,11 @@ Some text here
 %<*example>
 % \fi
 \begin{filecontents*}[overwrite]{enumext-05.tex}
-% arara: lualatex: { branch: developer }
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
+% arara: clean: { files: [ enumext-05-luamml-mathml.html ] }
 \DocumentMetadata{
     lang=en-US,
     pdfversion=2.0,
@@ -4617,8 +4628,8 @@ Some text here
 % \end{itemize}
 %
 % \begin{important}
-%  All examples have been checked using \texttt{veraPDF} together with
-% \texttt{ngpdf}.
+%  All examples have been checked using \href{https://dev.verapdf-rest.duallab.com}{\texttt{veraPDF}}
+%  together with \href{https://ngpdf.com}{\texttt{ngpdf}}.
 % \end{important}
 %
 % \section{The way of non-enumerated lists}
@@ -5078,10 +5089,7 @@ Some text here
 %    \end{macrocode}
 % Now declare the \mypkg*{enumext} package.
 %    \begin{macrocode}
-\ProvidesExplPackage
-  {enumext}
-  {2024-10-11}
-  {1.0}
+\ProvidesExplPackage {enumext} {2024-10-11} {1.0}
   {Enumerate exercise sheets}
 %    \end{macrocode}
 % Finally check if the \mypkg{multicol} and \mypkg{scontents} packages
@@ -11682,25 +11690,24 @@ Some text here
 % \end{figure}
 %
 % \begin{macro}{\@@_calc_hspace:NNNNNNN, \@@_calc_hspace:ccccccc}
+%  The function \cs{@@_calc_hspace:NNNNNNN} takes seven arguments to be
+%  able to determine horizontal spaces for all list environment:
 %
-%   The function \cs{@@_calc_hspace:NNNNNNN} takes seven arguments to be
-%   able to determine horizontal spaces for all list environment:
-%
-%   \begin{verbatim}
+%  \begin{verbatim}
 %     #1: \l__enumext_labelwidth_X_dim       #2: \l__enumext_labelsep_X_dim
 %     #3: \l__enumext_listoffset_X_dim       #4: \l__enumext_leftmargin_tmp_X_dim
 %     #5: \l__enumext_leftmargin_X_dim       #6: \l__enumext_itemindent_X_dim
 %     #7: \l__enumext_leftmargin_tmp_X_bool
-%   \end{verbatim}
+%  \end{verbatim}
 %
-%   And returns the \emph{\enquote{adjusted}} values of |\leftmargin|
-%   and |\itemindent|.
+%  And returns the \emph{\enquote{adjusted}} values of |\leftmargin|
+%  and |\itemindent|.
 %
-%   \smallskip
+%  \smallskip
 %
-%   This function is passed to \myvarenv{__@@_list_arg_two_X:} which
-%   is used in the definition of the \myenv*{enumext} and \myenv*{keyans}
-%   environments (\S\ref{ltx:second-arg}).
+%  This function is passed to \myvarenv{__@@_list_arg_two_X:} which
+%  is used in the definition of the \myenv*{enumext} and \myenv*{keyans}
+%  environments (\S\ref{ltx:second-arg}).
 % \iffalse
 %% Function to calc of horizontal length for all list environment.
 %% #1: \l__enumext_labelwidth_X_dim     #2: \l__enumext_labelsep_X_dim
@@ -11722,17 +11729,13 @@ Some text here
         \dim_set:Nn #2 { \dim_abs:n { #2 } }
       }
 %    \end{macrocode}
-%
-%    If no value has been passed to the \mykey{labelwidth} and \mykey{labelsep} keys we
-%    set the default values for \myvarenv{l__@@_leftmargin_tmp_X_dim}.
-%
+%   If no value has been passed to the \mykey{labelwidth} and \mykey{labelsep} keys we
+%   set the default values for \myvarenv{l__@@_leftmargin_tmp_X_dim}.
 %    \begin{macrocode}
     \bool_if:nF #7 { \dim_set:Nn #4 { #1 + #2} }
 %    \end{macrocode}
-%
-%    We now analyze the cases and set the values for \ics{leftmargin} and
-%    \ics{itemindent}.
-%
+%   We now analyze the cases and set the values for \ics{leftmargin} and
+%   \ics{itemindent}.
 %    \begin{macrocode}
     \dim_compare:nNnTF { #4 } < { \c_zero_dim }
       {
@@ -11760,9 +11763,9 @@ Some text here
 %
 % \begin{macro}{\@@_list_arg_two_i:,\@@_list_arg_two_ii:,\@@_list_arg_two_iii:,
 %               \@@_list_arg_two_iv:,\@@_list_arg_two_v:,}
-%    We will \enquote{not set} |\leftmargini|, |\leftmarginii|, |\leftmarginiii| or
-%    |\leftmarginiv|, in this case, we will directly set the parameters
-%    for vertical and horizontal list spacing per level.
+%   We will \enquote{not set} |\leftmargini|, |\leftmarginii|, |\leftmarginiii| or
+%   |\leftmarginiv|, in this case, we will directly set the parameters
+%   for vertical and horizontal list spacing per level.
 % \iffalse
 %% Define "second arg" of list for |enumext| and |keyans|.
 % \fi
@@ -12455,6 +12458,7 @@ Some text here
 \socket_new_plug:nnn {tagsupport/enumext/starred} {start-list-tags}
   {
     \tag_resume:n {#1}
+    \tag_mc_end_push:
     \tag_struct_begin:n {tag=LI}
     \tag_struct_begin:n {tag=Lbl}
     \tag_mc_begin:n {tag=Lbl}
@@ -12473,6 +12477,7 @@ Some text here
     \tag_struct_end:n {tag=text-unit}
     \tag_struct_end:n {tag=LBody}
     \tag_struct_end:n {tag=LI}
+    \tag_mc_begin_pop:n {}
     \tag_suspend:n {#1}
   }
 %    \end{macrocode}
@@ -12524,6 +12529,7 @@ Some text here
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {start-list-tags}
   {
     \tag_resume:n {keyanspic}
+    \tag_mc_end_push:
     \tag_struct_begin:n {tag=LI}
     \tag_struct_begin:n {tag=Lbl}
     \tag_mc_begin:n {tag=Lbl}
@@ -12544,6 +12550,7 @@ Some text here
     \tag_struct_end:n {tag=text}
     \tag_struct_end:n {tag=LBody}
     \tag_struct_end:n {tag=LI}
+    \tag_mc_begin_pop:n {}
     \tag_suspend:n {keyanspic}
   }
 %    \end{macrocode}
@@ -12847,6 +12854,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \tag_resume:n {keyanspic}
+        \tag_mc_end_push:
         \tag_struct_begin:n {tag=L,attribute=enumerate}
       } { }
 %    \end{macrocode}
@@ -12862,8 +12870,10 @@ Some text here
     \end{list}
     \IfDocumentMetadataTF
       {
-        \tag_struct_end:
-        \tag_struct_end:
+        \tag_struct_end:n {tag=L}
+        \tag_mc_begin_pop:n {}
+        \tag_struct_end:n {tag=L}
+        \tag_mc_begin_pop:n {}
       } { }
 %    \end{macrocode}
 %   Finally we check if \ics*{anspic*} has been used, set the counter |enumXvi|

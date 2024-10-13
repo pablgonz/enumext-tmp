@@ -61,7 +61,7 @@ The date format (`pkgdate`) is `YYYY-MM-DD`. If it is important to you
 that the files created have the correct version and date, you should run
 `l3build tag` before any other build-related task.
 
-`scontents` utilizes the `l3build` system. You can run:
+`enumext` utilizes the `l3build` system. You can run:
 
 - `l3build unpack` to extract the code files into the directory `build/unpacked/`.
 - `l3build doc` to build the documentation.
