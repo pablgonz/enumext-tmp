@@ -8,6 +8,7 @@ luatex
 xetex
 luatexbase
 lualibs
+firstaid
 # latex-dev
 # latex-base
 latex-bin-dev
