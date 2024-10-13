@@ -136,7 +136,7 @@ unicode-math
 scontents
 siunitx
 mwe
-ms
+# ms
 pdfescape
 pdftexcmds
 pgf
