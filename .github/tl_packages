@@ -119,6 +119,8 @@ unicode-math
 # shellesc
 scontents
 siunitx
+amssymb
+lmodern
 mwe
 ragged2e
 pdfescape
