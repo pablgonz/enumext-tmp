@@ -1,16 +1,13 @@
 # Required to build
-tikzducks
 l3build
 arara
 context
 tex
 luatex
 xetex
-luatexbase
 lualibs
 firstaid
-# latex-dev
-# latex-base
+tikzducks
 latex-bin-dev
 latex-tools-dev
 latex-base-dev
@@ -19,25 +16,6 @@ bookmark
 luamml
 tagpdf
 pdfmanagement-testphase
-# special testing for firstaid
-bidi
-bigfoot
-crop
-ncctools
-dinbrief
-everyshi
-filehook
-pgf
-pgfmorepages
-ulem
-unicode-math
-lualatex-math
-varwidth
-songs
-cleveref
-blindtext
-tugboat
-arydshln
 # special testing for latex-lab
 abraces
 accents
