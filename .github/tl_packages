@@ -11,7 +11,7 @@ tikzducks
 latex-bin-dev
 latex-tools-dev
 latex-base-dev
-latex-lab
+#latex-lab
 tagpdf
 #bookmark
 #pdfmanagement-testphase
