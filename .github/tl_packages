@@ -8,6 +8,7 @@ latex-tools-dev
 latex-base-dev
 latex-lab
 bookmark
+luamml
 tagpdf
 # special testing for firstaid
 bidi
