@@ -12,7 +12,9 @@ latex-bin-dev
 latex-tools-dev
 latex-base-dev
 latex-lab-dev
-#latex-lab
+l3experimental
+colorprofiles
+latex-lab
 tagpdf
 #bookmark
 pdfmanagement-testphase
@@ -24,7 +26,7 @@ pdfmanagement-testphase
 #cases
 #extarrows
 #interval
-#l3experimental
+
 #mathdots
 #mathtools
 #mattens
@@ -32,7 +34,7 @@ pdfmanagement-testphase
 #tikz-cd
 #kantlipsum
 #natbib
-#colorprofiles
+#
 # more
 xcolor
 microtype
