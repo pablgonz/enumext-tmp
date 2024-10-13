@@ -12486,14 +12486,14 @@ Some text here
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {start-list-tags}
   {
     \tag_resume:n {keyanspic}
-    \tag_mc_end_push:
+    %%\tag_mc_end_push:
     \tag_struct_begin:n {tag=LI}
     \tag_struct_begin:n {tag=Lbl}
     \tag_mc_begin:n {tag=Lbl}
   }
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {stop-start-tags}
   {
-    %%\tag_mc_end:
+    \tag_mc_end:
     \tag_struct_end:n {tag=Lbl}
     \tag_struct_begin:n {tag=LBody}
     \tag_struct_begin:n {tag=text-unit}
