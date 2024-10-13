@@ -137,6 +137,6 @@ end
 function typeset(file)
   local file = jobname(sourcefiledir.."/enumext.dtx")
   print("** Running: lualatex "..file..".dtx")
-  runcmd("lualatex "..file..".dtx >"..os_null, typesetdir, {"TEXINPUTS","LUAINPUTS"})
-  return 0
+  runcmd("lualatex "..file..".dtx", typesetdir)
+  --return 0
 end
