@@ -3,7 +3,7 @@ l3build
 arara
 context
 tex
-## luatex
+# luatex
 xetex
 lualibs
 firstaid
@@ -136,6 +136,7 @@ unicode-math
 scontents
 siunitx
 mwe
+ragged2e
 # ms
 pdfescape
 pdftexcmds
