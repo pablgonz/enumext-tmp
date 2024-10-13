@@ -1,0 +1,40 @@
+\DocumentMetadata{ lang=en-US, pdfversion=2.0, pdfstandard=ua-2, testphase={phase-III,math,table,title,firstaid}, uncompress }
+\documentclass{article}
+\usepackage{enumext,amsmath}
+\begin{document}
+
+\ExplSyntaxOn
+\coffin_new:N \l_myminipage_coffin
+\cs_new_eq:Nc \__myminipage_parboxrestore: { @parboxrestore }
+\NewDocumentEnvironment { myminipage } { +m }
+  {
+    \mode_leave_vertical:
+    \legacy_if_gset_true:n { @minipage }
+    \vcoffin_set:Nnw \l_myminipage_coffin {#1}
+      \__myminipage_parboxrestore:
+      \ignorespaces
+  }
+  {
+     \vcoffin_set_end:
+     \legacy_if_gset_false:n { @minipage }
+     % print
+     \coffin_typeset:Nnnnn \l_myminipage_coffin {l} {T} {0pt} {0pt}
+  }
+\hook_gput_code:nnn {env/myminipage/before} {myminipage} { \noindent }
+\ExplSyntaxOff
+
+\begin{myminipage}{0.6\linewidth}
+HOLA
+\end{myminipage}
+
+
+\begin{enumerate}
+    \item $\displaystyle a_n  = \frac{4n^3 - (-1)^nn^2}{5n + 2n^3}$
+    \item $\displaystyle b_n  = \frac{(n^3 - 5n)^4 - n^{12}}{n^{11}}$
+\end{enumerate}
+
+\begin{enumext*}
+    \item $\displaystyle a_n  = \frac{4n^3 - (-1)^nn^2}{5n + 2n^3}$
+    \item $\displaystyle b_n  = \frac{(n^3 - 5n)^4 - n^{12}}{n^{11}}$
+ \end{enumext*}
+\end{document}

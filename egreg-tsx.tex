@@ -1,0 +1,117 @@
+\DocumentMetadata{lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress}% pdfstandard=ua-2,
+\documentclass{article}
+\usepackage[top=1cm,bottom=2cm]{geometry} % smaller picture
+\usepackage{graphicx,tagpdf-debug}
+
+\ExplSyntaxOn
+
+\NewDocumentCommand{\Item}{som}
+ {
+  \seq_put_right:Nn \l_myfakelist_pictab_body_seq { \__myfakelist_pictab_item:nnn { #1 } { #2 } { #3 } }
+ }
+\SuspendTagging{myfakelist}
+\NewDocumentEnvironment{myfakelist}{o}
+ {
+  \par
+  \centering
+  \SuspendTagging{myfakelist}
+ }
+ {
+    %\tagpdfparaOff
+    \ResumeTagging{myfakelist}
+    \tag_tool:n {para/tagging=false}
+    \tag_start:
+    \tag_struct_begin:n {tag=L,attribute=enumerate}%
+  \IfNoValueTF { #1 }
+   {
+    \myfakelist_pictab_do:e { \seq_count:N \l_myfakelist_pictab_body_seq }
+   }
+   {
+    \myfakelist_pictab_do:n { #1 }
+   }
+    \tag_struct_end:
+    \tag_stop:
+  \par
+ }
+
+\seq_new:N \l_myfakelist_pictab_body_seq
+\dim_new:N \l_myfakelist_pictab_width_dim
+\int_new:N \l_myfakelist_pictab_label_int
+\int_new:N \l_myfakelist_pictab_counta_int
+\int_new:N \l_myfakelist_pictab_countb_int
+
+\cs_new_protected:Nn \myfakelist_pictab_do:n
+ {
+  \clist_map_function:nN { #1 } \__myfakelist_pictab_row:n
+ }
+\cs_generate_variant:Nn \myfakelist_pictab_do:n { e }
+
+\cs_new_protected:Nn \__myfakelist_pictab_row:n
+ {
+  \dim_set:Nn \l_myfakelist_pictab_width_dim { \linewidth/#1 }
+  \int_set:Nn \l_myfakelist_pictab_counta_int { \l_myfakelist_pictab_countb_int }
+  \int_set:Nn \l_myfakelist_pictab_countb_int { \l_myfakelist_pictab_counta_int + #1 }
+  \int_step_inline:nnn { \l_myfakelist_pictab_counta_int + 1 } { \l_myfakelist_pictab_countb_int }
+   {
+    \int_incr:N \l_myfakelist_pictab_label_int
+    \tag_stop:n {minipage}
+    \begin{minipage}[b]{\l_myfakelist_pictab_width_dim}
+    \centering
+    \seq_item:Nn \l_myfakelist_pictab_body_seq { ##1 }
+    \end{minipage}
+    \tag_start:n {minipage}
+   }
+  \par
+ }
+
+\cs_new_protected:Npn \__myfakelist_pictab_item:nnn #1 #2 #3
+ {
+  \tag_start:
+  \tag_struct_begin:n {tag=LI}
+  \tag_struct_begin:n {tag=Lbl}
+  \tag_mc_begin:n {tag=Lbl}
+  \tl_if_novalue:nF { #2 } { #2 \\ }
+  \bool_if:nT { #1 } { \makebox[0pt][r]{\textasteriskcentered\space} }
+  (\int_to_Alph:n { \l_myfakelist_pictab_label_int })
+  \tag_mc_end:
+  \tag_struct_end:n {tag=Lbl} %\tag_struct_end:n {tag=Lbl}
+  \tag_struct_begin:n {tag=LBody}
+  \tag_struct_begin:n {tag=text-unit}
+  \tag_struct_begin:n {tag=text}
+  \tag_mc_begin:n {tag=text}
+   \\ #3
+  \tag_mc_end:
+  \tag_struct_end:n {tag=text-unit}
+  \tag_struct_end:n {tag=text}
+  \tag_struct_end:n {tag=LBody}
+  \tag_struct_end:n {tag=LI}
+  \tag_stop:
+ }
+
+\ExplSyntaxOff
+\begin{document}
+
+Que honda
+
+ZZZ \par ZZZ
+
+% Common layout for images or tables
+\begin{enumerate}
+\item Type of questions (these need manual tuning for alternatives,
+      usually carrying pictures or tables)
+
+ \begin{myfakelist}
+   \Item[note]{AAA}
+   \Item{BBB}
+   \Item*{CCC}
+   \Item{\includegraphics[scale=0.15,alt=ZZZ]{example-image-a}}
+ \end{myfakelist}
+ 
+\end{enumerate}
+
+
+\end{document}
+
+        \tag_resume:n {keyanspic}
+        \tag_tool:n {para/tagging=false}
+        \tag_suspend:n {keyanspic}

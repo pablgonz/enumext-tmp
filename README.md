@@ -5,9 +5,10 @@
 
 ## Description
 
-This package provides enumerated list environments compatible with _tagging_ PDF for creating
-“simple exercise sheets” along with “multiple choice questions”, storing the “answers” to these in memory using
-`multicol` and `scontents` packages.
+This package provides enumerated list environments compatible with
+_tagging_ PDF for creating “simple exercise sheets” along with
+“multiple choice questions”, storing the “answers” to these in memory
+using `multicol` and `scontents` packages.
 
 
 ## Requirements
@@ -100,4 +101,4 @@ conditions of the [LaTeX Project Public License](https://www.latex-project.org/l
 
 ## Copyright
 
-Copyright 2024 by Pablo González L.
+Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>

@@ -1,0 +1,107 @@
+\DocumentMetadata{
+ lang=en,
+testphase={phase-III,math,table,title},
+ pdfversion=2.0,
+ pdfstandard=ua-2,
+ pdfstandard=a-4f,
+ uncompress
+}
+% arara: lualatex
+% arara: clean: { extensions: [ aux, log, out] }
+\documentclass{article}
+\usepackage{kantlipsum}
+\usepackage{hyperref}%,footnotehyper ,
+\usepackage{enumext,enumitem}
+%\usepackage[base]{babel}
+\setlength{\parindent}{20pt}
+%\usepackage[top=2cm,bottom=2cm,left=4cm,right=1cm]{geometry}% ,showframe
+%\usepackage{lua-visual-debug}
+\begin{document}
+\section{\texttt{listparindent=20pt, list-indent=10pt}}
+\begin{enumerate}[itemindent=\parindent, listparindent=\parindent, labelsep=0.5em]%,wrap-label={{#1\hspace{\dimeval{\parindent}}}}]%, wrap-label={\stylesat{#1}}]%
+\item* \marginpar{HOLA}\kant[1-2]
+
+\item \kant[3-4]
+\end{enumerate}
+\end{document}
+
+
+\section{\texttt{listparindent=20pt, list-indent=0pt}}
+\begin{enumext}[labelwidth=12pt,labelsep=5pt,listparindent=20pt,list-indent=0pt,show-length=true]%, wrap-label={\stylesat{#1}}]%
+\item \kant[1-2]
+
+\item \kant[3-4]
+\end{enumext}
+
+
+\section{Test:Default values}
+\begin{enumext}[labelwidth=12pt,labelsep=5pt,show-length=true]%, wrap-label={\stylesat{#1}}]%
+\item \kant[1-2]
+
+\item \kant[3-4]
+\end{enumext}
+
+\section{Test:\texttt{listparindent=20pt, list-indent=default}}
+\begin{enumext}[labelwidth=12pt,labelsep=5pt,listparindent=20pt,show-length=true]%, wrap-label={\stylesat{#1}}]%
+\item \kant[1-2]
+
+\item \kant[3-4]
+\end{enumext}
+
+\section{Test:\texttt{listparindent=-20pt, list-indent=default}}
+\begin{enumext}[labelwidth=12pt,labelsep=5pt,listparindent=-20pt,show-length=true]%, wrap-label={\stylesat{#1}}]%
+\item \kant[1-2]
+
+\item \kant[3-4]
+\end{enumext}
+
+\section{\texttt{listparindent=-20pt, list-indent=default, list-offset=10pt}}
+\begin{enumext}[labelwidth=12pt,labelsep=5pt,listparindent=-20pt,list-offset=10pt,show-length=true]%, wrap-label={\stylesat{#1}}]%
+\item \kant[1-2]
+
+\item \kant[3-4]
+\end{enumext}
+
+\section{\texttt{listparindent=-20pt, list-indent=default, list-offset=-10pt}}
+\begin{enumext}[labelwidth=12pt,labelsep=5pt,listparindent=-20pt,list-offset=-10pt,show-length=true]%, wrap-label={\stylesat{#1}}]%
+\item \kant[1-2]
+
+\item \kant[3-4]
+\end{enumext}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{enumerate}[label=\arabic*.,listparindent=1.5em,labelsep=2em,itemindent=1.5em]%, wrap-label={\stylesat{#1}}]%
+\item \kant[1-2]
+
+\item \kant[3-4]
+
+  %\item This line use \verb|\item*| A, This line use \verb|\item*| A,  aaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaa aaaaaaaa aaaaaaaaaaaaa aaaaaaa
+  %aaaaaa a aaaaaaaaa aaaaaaaa aaa aaaaaaaaa aaa aa a aaaaaaaa
+  %aaaaaaaaa aa aaaaaa aaaaaaaa aaaaaaaa a aaaaaaa aaaaaaaaaa aaaaaaaa
+  %aaaaaaaaaaaaaa.
+
+%\item B.\par
+
+  %aaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaa aaaaaaaa aaaaaaaaaaaaa aaaaaaa
+  %aaaaaa a aaaaaaaaa aaaaaaaa aaa aaaaaaaaa aaa aa a aaaaaaaa
+  %aaaaaaaaa aa aaaaaa aaaaaaaa aaaaaaaa a aaaaaaa aaaaaaaaaa aaaaaaaa
+  %aaaaaaaaaaaaaa.
+
+  %\item   This line use \verb|\item*| A, This line use \verb|\item*| A
+
+  %This line use \verb|\item*| A, This line use \verb|\item*| A,\par
+  %This line use \verb|\item*| A, This line use \verb|\item*| A
+  %\item This text is in the first level. E
+  %%% \item This text is in the first level.
+\end{enumerate}

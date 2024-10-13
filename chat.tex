@@ -1,0 +1,473 @@
+% arara: lualatex
+% arara: clean: { extensions: [ aux, log, out] }
+%%\DocumentMetadata{ lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress }% pdfstandard=ua-2,
+\documentclass{article}
+\usepackage[colorlinks]{hyperref}
+\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}% ,showframe
+\usepackage{enumext}
+\pagestyle{empty}
+%\show\makelabel
+\begin{document}
+%\show\makelabel
+%\end{document}
+% test
+%\begin{enumerate}
+%\item TEXT
+\noindent\begin{minipage}[t]{0.5\linewidth}
+\begin{enumerate}
+    \item ITEM
+\end{enumerate}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.5\linewidth}
+IMAGE
+\end{minipage}
+%\item TEXT
+%\end{enumerate}
+
+\begin{enumext*}[mini-env=0.6\linewidth, mini-right={HOLA},columns=2,noitemsep]
+    \item value \item value
+\end{enumext*}
+
+
+% \end{document}\newpage
+\setenumext[keyans]{label=\Alph*,nosep}
+\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
+\item Question with image on left side:
+\begin{minipage}[t]{0.5\linewidth}
+\begin{keyans}[columns=1,noitemsep]
+    \item*[other note] correct
+\end{keyans}
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+ZZZ
+\end{minipage}
+\item Question with image on left side:
+\end{enumext}
+
+\end{document}
+
+
+
+\DocumentMetadata{lang=en-US, pdfversion=2.0, testphase={phase-III,math,table,title,firstaid}, uncompress}
+\documentclass{article}
+\ExplSyntaxOn
+\tl_show:N \l_tmpa_tl % > \l_tmpa_tl={Span}{pdf}.
+\ExplSyntaxOff
+\begin{document}
+Duck :D
+\end{document}
+
+
+
+
+
+
+\documentclass[10pt]{article}
+\usepackage{lua-visual-debug}
+\usepackage{enumext}
+\begin{document}
+
+\begin{enumext}[topsep=0pt, partopsep=0pt, parsep=0pt, itemsep=0pt]
+\item F%irst item
+
+\begin{enumext}[topsep=0pt, partopsep=0pt,parsep=0pt,itemsep=0pt]
+\item N%ested item
+\end{enumext}
+
+\item S%econd item
+\begin{enumext}[mini-env=0.3\textwidth,topsep=0pt, partopsep=0pt,parsep=0pt,itemsep=0pt]
+\item ML%inipage
+\miniright
+(a) MR% \par More
+\end{enumext}
+\item L%ast item
+\end{enumext}
+\end{document}
+
+
+%%% whit multicols
+\documentclass[12pt]{article}
+\usepackage{lua-visual-debug}
+\usepackage{enumitem,multicol}
+\begin{document}
+\ExplSyntaxOn
+\NewDocumentEnvironment { myminipage } {s m }
+  {
+    \IfBooleanF {#1} % Esta parte quizas pueda ir fuera de minipage
+      {
+        \mode_if_vertical:TF
+          {
+            \typeout{TRUE}
+            \nopagebreak
+            \nointerlineskip
+          }
+          {
+            \typeout{FALSE}
+            \par\nopagebreak\nointerlineskip
+          }
+        \addvspace{ 0.5\ht\strutbox } % y esta quizas es ajustable a columns...no lo sé
+      }
+    \minipage[t]{#2}
+      \legacy_if_gset_false:n { @minipage }
+      \skip_vertical:N \c_zero_skip % ref point
+  }
+  {
+      \skip_vertical:N \c_zero_skip % space below
+    \endminipage
+    % Esto debe ir en el minipage de la derecha (parte de abajo) \minirigth
+    \IfBooleanT {#1}
+      {
+        \par\addvspace{ 0.5\dp\strutbox }
+      }
+  }
+\ExplSyntaxOff
+\showoutput
+\showboxdepth=\maxdimen
+\showboxbreadth=\maxdimen
+
+\begin{enumerate}[topsep=0pt, partopsep=0pt, parsep=0pt, itemsep=0pt]
+\item F%irst item
+
+\begin{enumerate}[left=0pt,topsep=10pt, partopsep=0pt,parsep=0pt,itemsep=0pt]
+\item N%ested item
+\end{enumerate}
+
+\item S%econd item
+
+\begin{myminipage}{0.7\textwidth}
+\multicolsep=0pt % ya está
+%\vspace{ -\ht\strutbox }
+\par\nopagebreak
+\vspace{ -0.7\dp\strutbox } % no está
+\par\addvspace{ 10pt }
+%\vspace{-1.5\ht\strutbox }
+\raggedcolumns
+\begin{multicols}{2}
+%\par\addvspace{ 10pt } % esto debo agregarlo
+\begin{enumerate}[left=0pt,topsep=10pt, partopsep=0pt,parsep=0pt,itemsep=0pt]
+\item ML%inipage
+\item ML%inipage
+\item ML%inipage
+\item ML%inipage
+\end{enumerate}
+\end{multicols}
+\end{myminipage}\hfill
+\begin{myminipage}*{0.2\textwidth}
+    \par\addvspace{ 10pt } %
+    \centering
+    (a) MR %\par More \par More
+\end{myminipage}
+\par\addvspace{ 10pt }
+\item L%ast item
+\end{enumerate}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\documentclass[a4paper]{article}
+\ExplSyntaxOn
+\NewDocumentCommand \Foo { m }
+  {
+    \exp_args:Ne \_dlf_low_aux:n
+      { \tl_to_str:e { \text_expand:n {#1} } }
+  }
+\cs_new_protected:Npn \_dlf_low_aux:n #1
+  {
+    \str_if_in:nnT {#1} { : }
+      {
+        \use:e
+          {
+            \cs_set:Npn \exp_not:N \_dlf_tmp:w ##1 \c_colon_str ##2 \scan_stop:
+              { {##1} {##2} }
+          }
+        \exp_after:wN \_dlf_low_parse_label:nn \_dlf_tmp:w #1 \scan_stop:
+      }
+  }
+\cs_new_protected:Npn \_dlf_low_parse_label:nn #1 #2
+  {
+    \typeout{Foo:~#1~<----}
+    \typeout{Foo:~#2~<----}
+  }
+
+\ExplSyntaxOff
+\begin{document}
+\Foo{aa:bb}
+%\Foo{aa/bb}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{xsim}
+\usepackage{enumext}
+ \tracingmacros=1
+\begin{document}
+
+\begin{enumext*}
+  \item normal Space after that\footnote{HOLA}
+  \item HUGE gap after
+    \begin{align*}
+     3
+    \end{align*}
+  \item works fine with blank in line \blank{a}
+  \item filler
+  \item messes with blank in separate line
+
+  \blank{line}
+  \item filler
+\end{enumext*}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\ExplSyntaxOn
+\coffin_new:N \l_myminipage_one_coffin
+\NewDocumentEnvironment { myminipage } { m }
+  {
+    %\fboxsep0pt
+    %\vcoffin_set:Nnw \l_myminipage_one_coffin { #1 } %% only for debug
+      \noindent
+      \minipage[t]{#1}
+        \int_set:cn { @mplistdepth } { 1 }
+        \legacy_if_gset_false:n { @minipage }
+        \skip_vertical:N \c_zero_skip
+  }
+  {%
+        \skip_vertical:N \c_zero_skip
+      \endminipage%
+    %\vcoffin_set_end:
+    %\fbox{\coffin_display_handles:Nn \l_myminipage_one_coffin { red }} %% only for debug
+    %\coffin_typeset:Nnnnn \l_myminipage_one_coffin {l}{H}{0pt}{0pt} %% only for debug
+  }
+\ExplSyntaxOff
+
+% The environment starts
+\begin{enumext}[partopsep=0pt,topsep=0pt, parsep=0pt, itemsep=0pt]
+
+\item Now a separation nested enumeration% with \verb+topsep=10pt, itemsep=0pt+.
+
+  \begin{enumext}[topsep=10pt,itemsep=0pt]
+    \item A The text separation above this line is correct \verb+topsep=10pt+.
+    \item B The text separation below this line is correct \verb+topsep=10pt+.
+  \end{enumext}
+
+\item Now a separation above this line is correct%% \verb+topsep=10pt+.
+
+  \begin{myminipage}{0.7\textwidth}
+    \vspace*{ -0.9\ht\strutbox }
+    \begin{enumext}[topsep=10pt,itemsep=0pt]
+      \item C The text separation above is correct?
+      \item D The text separation below incorrect.
+     \end{enumext}
+  \end{myminipage}\hfill
+  \begin{myminipage}{0.2\textwidth}
+    %\vspace{10pt}% here know the value off space
+    \centering
+    \fbox{Image here}
+  \end{myminipage}
+  %\par\addvspace{0.5\dp\strutbox} % manual add topsep fix the problem but only if partopsep=0pt
+
+\item Now a separation separation above incorrect% NOT equal to \verb+topsep=10pt+.
+
+    \begin{enumext}[topsep=10pt,itemsep=0pt, mini-sep=10pt,mini-env=0.2\linewidth]
+      \item C The text separation above is correct?
+      \item D The text separation below incorrect.
+      \miniright
+    Image here%\fbox{Image here}
+     \end{enumext}
+
+\end{enumext}
+
+\end{document}
+
+
+
+
+
+
+\documentclass{report}
+\usepackage{xparse}
+\usepackage{hyperref}
+
+\ExplSyntaxOn
+
+\newcounter{enumXi}
+\refstepcounter{enumXi}
+
+% estas variable ya existen
+\tl_new:N \l__enumext_counter_i_tl
+\tl_set:Nn \l__enumext_counter_i_tl { enumXi } % enumXii enumXiii enumXiv
+
+% Estas las debo crear
+\tl_const:Nn \c__enumext_counter_style_tl
+  { { arabic } { roman } { Roman } { alph } { Alph } }
+\tl_new:N \l__enumext_the_counter_i_tl
+\tl_set:Nn \l__enumext_the_counter_i_tl { \theenumXi }
+\tl_new:N \l__enumext_counter_style_for_ref_i_tl
+\tl_new:N \l__enumext_ref_key_arg_tl
+\tl_new:N \l__enumext_ref_aux_tl
+% Version 2:
+
+\cs_new_protected:Nn \__enumext_set_label_ref:n
+  {
+    \tl_set:Nn \l__enumext_ref_key_arg_tl {#1}
+    % [POR NIVEL] Ahora \l__enumext_ref_aux_tl será enumXi (el contador por nivel)
+    \tl_set_eq:Nc \l__enumext_ref_aux_tl { l__enumext_counter_i_tl }
+    % Reemplazamos \arabic* => \arabic{enumXi}
+    \tl_map_inline:Nn \c__enumext_counter_style_tl
+      { \regex_replace_once:nnN { \c{##1}\* } { \c{##1}\cB{\u{l_tmpa_tl}\cE} } \l__enumext_ref_key_arg_tl }
+    % [POR NIVEL] Ahora \l__enumext_ref_aux_tl será \theenumXi
+    \tl_set_eq:Nc \l__enumext_ref_aux_tl { l__enumext_the_counter_i_tl }
+    % [POR NIVEL] Y finalmente renovamos el comando para ref=my-label-ref
+    \tl_put_right:cx { l__enumext_counter_style_for_ref_i_tl }
+     {
+       \exp_not:N \renewcommand { \exp_not:V \l__enumext_ref_aux_tl }{ \exp_not:V \l__enumext_ref_key_arg_tl }
+     }
+   \tl_if_empty:cF { l__enumext_counter_style_for_ref_i_tl }
+     {
+        \tl_show:c { l__enumext_counter_style_for_ref_i_tl }
+     }
+  \renewcommand { \theenumXi }{ \l__enumext_ref_key_arg_tl }
+  }
+
+%https://tex.stackexchange.com/questions/584509/testing-for-foo-vs-foo
+
+\ExplSyntaxOff
+
+\begin{document}
+
+\ExplSyntaxOn
+
+%\refstepcounter{foo}
+
+\__enumext_set_label_ref:n { Hola-\emph{(\Roman*)}}
+%\erw_format:n {foo}
+
+\theenumXi
+\par
+
+%\__enumext_set_label_ref:n {\emph{\arabic*)}}
+%\erw_format:n {foo}
+
+\ExplSyntaxOff
+
+\end{document}
+
+
+
+
+
+
+
+
+\documentclass[full]{l3doc}
+\usepackage{kantlipsum}
+\begin{document}
+
+Deseo obtener algo así al ejecutar la clave "before"
+\begin{verbatim}
+ref= \renewcommand{\theenumXi}{A-\emph{\Roman{enumXi}}}
+
+\renewcommand{#1}{#2}
+#1= Es el contador por nivel (lo conozco y lo puedo detectar)
+#2=LO QUE SEA ....Debería reemplazar \arabic* => función para reemplazar = \arabic{enumXi} por nivel
+
+
+#1= LO QUE SEA
+\cs_new_protected:Npn \enumext_label_ref:n #1
+  {
+   % Si nivel1 = \theenumXi
+   % Si nivel2 = \theenumXii
+   % Si nivel3 = \theenumXii
+   % Si niveln = \theenumX \__enumext_level: _tl
+   % Así que sería
+   % \tl_use:c { theenumX \__enumext_level: _tl }
+   % Ahora el argumento #1 seŕia algo del tipo
+   \tl_map_inline:Nn \g__enumext_counter_styles_tl
+      {
+         %\tl_replace_all:Nne #1 { ##1* } { \exp_not:N ##1 {#2} }
+      \tl_replace_all:Nne #1 { ##1* } { \exp_not:N ##1 { \tl_use:c { l__enumext_counter_ \__enumext_level:} } }
+      }
+  # retorna
+   \renewcommand{ \tl_use:c { theenumX \__enumext_level: } }{#1}
+  }
+\cs_generate_variant:Nn \enumext_label_ref:n { c, v }
+
+
+\ExplSyntaxOn
+\tl_show:c { l__enumext_counter_i_tl }
+\ExplSyntaxOff
+
+
+\end{verbatim}
+
+  \begin{enumext}[listparindent=1.5em, labelsep=2em, itemindent=1.5em]
+    \item \kant[1-2]
+    \item \kant[3-4]
+  \end{enumext}
+\end{document}
+
+$ cat -n $(kpsewhich l3doc.cls) | grep '\\listparindent'
+   510	  { \__codedoc_oldlist:nn {#1} { #2 \dim_zero:N \listparindent } }
+```
