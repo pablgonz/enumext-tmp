@@ -138,7 +138,7 @@ function typeset(file)
   local file = jobname(sourcefiledir.."/enumext.dtx")
   print("** Running: lualatex -draftmode -interaction=batchmode "..file..".dtx")
   --errorlevel =
-  runcmd("lualatex "..file..".dtx >"..os_null, typesetdir, {"TEXINPUTS","LUAINPUTS"})
+  runcmd("lualatex "..file..".dtx "---..os_null, typesetdir, {"TEXINPUTS","LUAINPUTS"})
   --if errorlevel ~= 0 then
     --local f = assert(io.open(typesetdir.."/enumext.log", "r"))
     --err_log_file = f:read("*all")
@@ -155,7 +155,7 @@ function typeset(file)
     --error("** Error!!: lualatex -shell-escape-interaction=batchmode "..file..".dtx")
     --return errorlevel
   --end
-  return 0
+  --return 0
 end
 
 -- Create check_marked_tags() function
