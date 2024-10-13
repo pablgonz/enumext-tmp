@@ -137,13 +137,13 @@ function docinit_hook()
 end
 
 function typeset(file)
-  print("** Running: arara "..file..".dtx")
+  print("** Running: lualatex-dev "..file..".dtx")
   local file = jobname(sourcefiledir.."/enumext.dtx")
-  local errorlevel = runcmd("arara "..file..".dtx", typesetdir, {"TEXINPUTS","LUAINPUTS"})
+  local errorlevel = runcmd("lualatex-dev "..file..".dtx", typesetdir, {"TEXINPUTS","LUAINPUTS"})
   if errorlevel ~= 0 then
     error("Error!!: Typesetting "..file..".tex")
     return errorlevel
   end
-  return 0
+  --return 0
 end
 
