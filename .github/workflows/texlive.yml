@@ -35,7 +35,7 @@ jobs:
           version: ${{ matrix.version }}
           package-file: |
             .github/tl_packages
-          cache: false
+          cache: true
 
       - name: Install enumext package
         run: l3build install
