@@ -15,7 +15,7 @@ jobs:
           - 2024
         command:
           - doc
-          - example
+          - examples
           - testpkg
       fail-fast: false
     steps:
