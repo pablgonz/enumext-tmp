@@ -101,6 +101,7 @@ mflogo-font
 microtype
 minted
 unicode-math
+shellesc
 # ms
 pdfescape
 pdftexcmds
