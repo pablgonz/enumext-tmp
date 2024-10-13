@@ -314,7 +314,7 @@ if options["target"] == "examples" then
   local file = jobname(tmpdir.."/enumext.dtx")
   -- Unpack sample files
   print("Unpack samples into ./"..tmpdir.." from file "..file..".dtx")
-  errorlevel = run(tmpdir, "lualatex -draftmode -interaction=batchmode "..file..".dtx > "..os_null)
+  errorlevel = run(tmpdir, "lualatex "..file..".dtx > "..os_null)
   if errorlevel ~= 0 then
     error("** Error!!: lualatex -draftmode -interaction=batchmode "..file..".dtx")
     return errorlevel
