@@ -14,7 +14,7 @@ jobs:
         version:
           - 2024
         command:
-          - doc
+          - examples
       fail-fast: false
     steps:
       - name: Checkout
