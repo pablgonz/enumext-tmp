@@ -15,8 +15,8 @@ latex-base-dev
 latex-lab
 bookmark
 luamml
-tagpdf
-multicol
+# tagpdf
+# multicol
 pdfmanagement-testphase
 # special testing for latex-lab
 abraces
