@@ -1,5 +1,6 @@
 # Required to build
 l3build
+latex-base
 latex-bin
 latex-tools-dev
 latex-base-dev
@@ -65,7 +66,7 @@ framed
 fvextra
 geometry
 gettitlestring
-graphicx
+# graphicx
 grfext
 hologo
 hycolor
@@ -101,10 +102,9 @@ mflogo-font
 microtype
 minted
 unicode-math
-shellesc
+# shellesc
 scontents
 siunitx
-amssymb
 tikzducks
 mwe
 # ms
