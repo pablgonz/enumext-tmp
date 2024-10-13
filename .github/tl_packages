@@ -66,6 +66,7 @@ fvextra
 geometry
 gettitlestring
 graphics
+graphicx
 grfext
 hologo
 hycolor
