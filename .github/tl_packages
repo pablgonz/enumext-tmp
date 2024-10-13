@@ -4,7 +4,7 @@ latex-base
 latex-bin
 latex-tools-dev
 latex-base-dev
-luahbtex
+arara
 context
 tex
 xetex
@@ -20,7 +20,6 @@ dvips
 bibtex
 makeindex
 dvipdfmx
-arara
 # For the doc and test/examples
 accsupp
 adjustbox
