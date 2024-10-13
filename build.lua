@@ -45,7 +45,9 @@ unpackopts  = "--interaction=batchmode"
 unpackexe   = "luatex"
 
 -- Generating documentation
+typesetexe  = "lualatex-dev"
 typesetfiles  = {"enumext.dtx"}
+typesetopts = "-interaction=batchmode -shell-escape"
 
 -- Update package date and version
 tagfiles = {"sources/enumext.dtx", "sources/CTANREADME.md", "ctan.ann"}
@@ -135,8 +137,13 @@ function docinit_hook()
 end
 
 function typeset(file)
+  print("** Running: arara "..file..".dtx")
   local file = jobname(sourcefiledir.."/enumext.dtx")
-  print("** Running: lualatex "..file..".dtx")
-  runcmd("lualatex "..file..".dtx", typesetdir)
-  --return 0
+  local errorlevel = runcmd("arara "..file..".dtx", typesetdir, {"TEXINPUTS","LUAINPUTS"})
+  if errorlevel ~= 0 then
+    error("Error!!: Typesetting "..file..".tex")
+    return errorlevel
+  end
+  return 0
 end
+
