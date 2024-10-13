@@ -103,6 +103,8 @@ minted
 unicode-math
 shellesc
 scontents
+siunitx
+amssymb
 # ms
 pdfescape
 pdftexcmds
