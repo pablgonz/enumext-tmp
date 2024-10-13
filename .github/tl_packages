@@ -7,7 +7,6 @@ luatex
 luatexbase
 xetex
 lualibs
-#firstaid
 tikzducks
 latex-bin-dev
 latex-tools-dev
@@ -120,7 +119,6 @@ unicode-math
 scontents
 siunitx
 amssymb
-lmodern
 mwe
 ragged2e
 pdfescape
