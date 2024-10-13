@@ -4,6 +4,7 @@ arara
 context
 tex
 # luatex
+luatexbase
 xetex
 lualibs
 firstaid
