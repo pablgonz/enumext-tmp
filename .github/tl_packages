@@ -1,12 +1,13 @@
 # Required to build
-collection-latex
+# collection-latex
 l3build
 context
 tex
+pdftex
+xetex
 latex
 luatex
 lualibs
-pdftex
 luatexbase
 latex-bin-dev
 latex-tools-dev
