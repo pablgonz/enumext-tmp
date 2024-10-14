@@ -14,7 +14,7 @@ latex-base-dev
 latex-lab-dev
 l3experimental
 arara
-# xetex
+makeindex
 tikzducks
 colorprofiles
 latex-lab
@@ -30,10 +30,7 @@ metapost
 mfware
 amsmath
 tools
-dvips
 bibtex
-makeindex
-dvipdfmx
 # For doc and test/examples
 accsupp
 adjustbox
