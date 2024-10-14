@@ -1,5 +1,5 @@
 # Required to build
-# collection-latex
+## collection-basic
 l3build
 context
 tex
@@ -9,6 +9,7 @@ latex
 luatex
 lualibs
 luatexbase
+latex-bin
 latex-bin-dev
 latex-tools-dev
 latex-base-dev
