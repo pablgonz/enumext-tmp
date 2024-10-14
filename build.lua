@@ -298,8 +298,6 @@ if options["target"] == "examples" then
     return errorlevel
   else
     os_message("** Running: lualatex-dev -draftmode -interaction=batchmode "..file..".dtx")
-    run(tmpdir, "pdflatex --version")
-    run(tmpdir, "pdflatex enumext-exa-1.tex")
   end
   -- Compiling example files
   print("Compiling sample files in ./"..tmpdir.." using [arara]")

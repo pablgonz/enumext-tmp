@@ -1,7 +1,6 @@
 # Required to build
 l3build
 # context
-# tex
 pdftex
 # xetex
 luatex
@@ -25,8 +24,6 @@ pdfmanagement-testphase
 xcolor
 microtype
 manfnt-font
-# metafont
-# metapost
 mfware
 amsmath
 tools

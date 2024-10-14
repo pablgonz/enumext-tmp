@@ -33,9 +33,6 @@ jobs:
       - name: Install enumext package
         run: l3build install
 
-      - name: Test pdflatex
-        run: pdflatex --version
-
       - name: Run "l3build ${{ matrix.command }}" (TeX Live ${{ matrix.version }})
         run: l3build ${{ matrix.command }}
 
