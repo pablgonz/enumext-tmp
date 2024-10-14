@@ -20,7 +20,7 @@ The minimum requirement is `LaTeX` release 2024-11-01. Loads and depends on upda
 
 ## Installation
 
-The package `enumext` is present in `TeX Live` and `MiKTeX`, use the
+The package `enumext` is present in [TeX Live](https://www.tug.org/texlive/) and [MiKTeX](https://miktex.org/), use the
 package manager to install.
 
 For manual installation, download [enumext.zip](http://mirrors.ctan.org/macros/latex/contrib/enumext.zip) and unzip it,
@@ -44,7 +44,7 @@ then run `mktexlsr`. To produce the documentation with source code run `luatex e
 
 ## Examples
 
-The file <code>&lt;enumext.pdf&gt;</code> contains attached examples, which can be extracted
+The file `enumext.pdf` contains attached examples, which can be extracted
 from the PDF viewer or from the command line by running:
 
 ```
@@ -58,11 +58,11 @@ and then you can use the excellent `arara` tool to compile them.
 The version numbers and dates are guaranteed to be correct in
 the repository is in the `l3build` configuration file `build.lua`.
 
-The date format (`pkgdate`) is `YYYY-MM-DD`. If it is important to you
+The date format is `YYYY-MM-DD`. If it is important to you
 that the files created have the correct version and date, you should run
 `l3build tag` before any other build-related task.
 
-`enumext` utilizes the `l3build` system. You can run:
+You can run:
 
 - `l3build unpack` to extract the code files into the directory `build/unpacked/`.
 - `l3build doc` to build the documentation.
