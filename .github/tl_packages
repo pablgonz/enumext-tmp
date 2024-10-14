@@ -5,6 +5,7 @@ context
 tex
 latex
 luatex
+pdftex
 luatexbase
 xetex
 lualibs
