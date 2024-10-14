@@ -1,20 +1,20 @@
 # Required to build
 l3build
-arara
-# context
-# tex
+context
+tex
 latex
 luatex
+lualibs
 pdftex
 luatexbase
-# xetex
-lualibs
-tikzducks
 latex-bin-dev
 latex-tools-dev
 latex-base-dev
 latex-lab-dev
 l3experimental
+arara
+# xetex
+tikzducks
 colorprofiles
 latex-lab
 tagpdf
