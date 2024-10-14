@@ -192,7 +192,6 @@ if options["target"] == "tagged" then
   os.exit(0)
 end
 
-
 -- Create make_tmp_dir() function
 local function make_tmp_dir()
   -- Check version and date
@@ -326,5 +325,80 @@ if options["target"] == "examples" then
   cleandir(tmpdir)
   lfs.rmdir(tmpdir)
   os_message("Remove temporary directory ./"..tmpdir)
+  os.exit(0)
+end
+
+-- Clean repo
+if options["target"] == "clean" then
+  print("Clean files in repo")
+  os.execute("git clean -xdfq")
+  os_message("** Running: git clean -xdfq")
+end
+
+-- Capture os cmd for git
+local function os_capture(cmd, raw)
+  local f = assert(io.popen(cmd, 'r'))
+  local s = assert(f:read('*a'))
+  f:close()
+  if raw then return s end
+    s = string.gsub(s, '^%s+', '')
+    s = string.gsub(s, '%s+$', '')
+    s = string.gsub(s, '[\n\r]+', ' ')
+  return s
+end
+
+-- We added a new target "release" to do the final checks for git and ctan
+if options["target"] == "release" then
+  -- os.execute("git clean -xdfq")
+  local gitbranch = os_capture("git symbolic-ref --short HEAD")
+  local gitstatus = os_capture("git status --porcelain")
+  local tagongit  = os_capture('git for-each-ref refs/tags --sort=-taggerdate --format="%(refname:short)" --count=1')
+  local gitpush   = os_capture("git log --branches --not --remotes")
+
+  if gitbranch == "main" then
+    os_message("** Checking git branch '"..gitbranch.."': OK")
+  else
+    error("** Error!!: You must be on the 'main' branch")
+  end
+  local file = jobname(sourcefiledir.."/enumext.ins")
+  local errorlevel = run(sourcefiledir, "luatex --interaction=batchmode "..file..".ins > "..os_null)
+  if errorlevel ~= 0 then
+    error("** Error!!: luatex -interaction=batchmode "..file..".ins")
+    return errorlevel
+  else
+    os_message("** Running: luatex -interaction=batchmode "..file..".ins")
+  end
+  if gitstatus == "" then
+    os_message("** Checking status of the files: OK")
+  else
+    error("** Error!!: Files have been edited, please commit all changes")
+  end
+  if gitpush == "" then
+    os_message("** Checking pending commits: OK")
+  else
+    error("** Error!!: There are pending commits, please run git push")
+  end
+  check_marked_tags()
+  local pkgversion = "v"..pkgversion
+  os_message("** Checking last tag marked in GitHub "..tagongit..": OK")
+  local errorlevel = os.execute("git tag -a "..pkgversion.." -m 'Release "..pkgversion.." "..pkgdate.."'")
+  if errorlevel ~= 0 then
+    error("** Error!!: run git tag -d "..pkgversion.." && git push --delete origin "..pkgversion)
+    return errorlevel
+  else
+    os_message("** Running: git tag -a "..pkgversion.." -m 'Release "..pkgversion.." "..pkgdate.."'")
+  end
+  os_message("** Running: git push --tags --quiet")
+  os.execute("git push --tags --quiet")
+  if fileexists(ctanzip..".zip") then
+    os_message("** Checking "..ctanzip..".zip file to send to CTAN: OK")
+  else
+    os_message("** Creating "..ctanzip..".zip file to send to CTAN")
+    os.execute("l3build ctan > "..os_null)
+  end
+  os_message("** Running: l3build upload -F ctan.ann --debug")
+  os.execute("l3build upload -F ctan.ann --debug >"..os_null)
+  print("** Now check "..ctanzip..".curlopt file and add changes to ctan.ann")
+  print("** If everything is OK run (manually): l3build upload")
   os.exit(0)
 end
