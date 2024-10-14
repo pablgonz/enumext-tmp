@@ -1,4 +1,5 @@
 # Required to build
+scheme-basic
 l3build
 context
 tex
