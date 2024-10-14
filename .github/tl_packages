@@ -120,7 +120,6 @@ unicode-math
 scontents
 siunitx
 mwe
-fontenc
 ragged2e
 pdfescape
 pdftexcmds
@@ -143,4 +142,3 @@ url
 xcolor
 xkeyval
 xstring
-# zapfding

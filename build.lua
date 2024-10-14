@@ -214,7 +214,7 @@ local function make_tmp_dir()
   else
     os_message("Creating the temporary directory ./"..tmpdir)
   end
-  -- Copy files
+  -- Copy source files
   local errorlevel = (cp("*.dtx", sourcefiledir, tmpdir) + cp("*.ins", sourcefiledir, tmpdir))
   if errorlevel ~= 0 then
     error("** Error!!: Can't copy .dtx and .ins files from "..sourcefiledir.." to ./"..tmpdir)
@@ -241,25 +241,11 @@ local function make_tmp_dir()
   return 0
 end
 
--- List of sample files for "testpkg" and "example" target
-samples = {
-    "enumext-01",
-    "enumext-02",
-    "enumext-03",
-    "enumext-04",
-    "enumext-05",
-    "enumext-exa-1",
-    "enumext-exa-2",
-    "enumext-exa-3",
-    "enumext-exa-4",
-    "enumext-exa-5",
-  }
-
--- We added a new target "testpkg" to run the tests files in test-pkg/
+-- We added a new target "testpkg" to run the tests files in ./test-pkg
 if options["target"] == "testpkg" then
   -- Create a tmp dir and unpack files
   make_tmp_dir()
-  -- Copy test files
+  -- Copy test files from sources/test-pkg
   local errorlevel = cp("*.*", "sources/test-pkg", tmpdir)
   if errorlevel ~= 0 then
     error("** Error!!: Can't copy files from sources/test-pkg to ./"..tmpdir)
@@ -267,7 +253,8 @@ if options["target"] == "testpkg" then
   else
     os_message("** Copying files from sources/test-pkg to ./"..tmpdir)
   end
-  -- Compiling sample files
+  -- Compiling test files for "testpkg" target
+  local samples = {"enumext-01", "enumext-02", "enumext-03", "enumext-04", "enumext-05"}
   print("Compiling sample files in ./"..tmpdir.." using [arara]")
   for i, samples in ipairs(samples) do
     local errorlevel = run(tmpdir, "arara "..samples..".tex > "..os_null)
@@ -298,24 +285,25 @@ if options["target"] == "testpkg" then
   os.exit(0)
 end
 
--- We added a new target "examples" to run the tagged PDF examples files for enumext
+-- We added a new target "examples" to run examples files from enumext.dtx
 if options["target"] == "examples" then
   -- Create a tmp dir and unpack files
   make_tmp_dir()
   local file = jobname(tmpdir.."/enumext.dtx")
-  -- Unpack sample files
-  print("Unpack samples into ./"..tmpdir.." from file "..file..".dtx")
-  local errorlevel = run(tmpdir, "lualatex "..file..".dtx > "..os_null)
+  -- Unpack examples files from .dtx
+  print("Extract examples into ./"..tmpdir.." from file "..file..".dtx")
+  local errorlevel = run(tmpdir, "lualatex-dev "..file..".dtx > "..os_null)
   if errorlevel ~= 0 then
-    error("** Error!!: lualatex -draftmode -interaction=batchmode "..file..".dtx")
+    error("** Error!!: lualatex-dev -draftmode -interaction=batchmode "..file..".dtx")
     return errorlevel
   else
-    os_message("** Running: lualatex -draftmode -interaction=batchmode "..file..".dtx")
+    os_message("** Running: lualatex-dev -draftmode -interaction=batchmode "..file..".dtx")
   end
-  -- Compiling sample files
+  -- Compiling example files
   print("Compiling sample files in ./"..tmpdir.." using [arara]")
+  local samples = {"enumext-exa-1","enumext-exa-2","enumext-exa-3","enumext-exa-4","enumext-exa-5"}
   for i, samples in ipairs(samples) do
-    errorlevel = run(tmpdir, "arara "..samples..".tex > "..os_null)
+    local errorlevel = run(tmpdir, "arara "..samples..".tex > "..os_null)
     if errorlevel ~= 0 then
       local f = assert(io.open(tmpdir.."/"..samples..".log", "r"))
       err_log_file = f:read("*all")
