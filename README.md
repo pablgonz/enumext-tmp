@@ -15,8 +15,8 @@ using `multicol` and `scontents` packages.
 
 The minimum requirement is `LaTeX` release 2024-11-01. Loads and depends on updated versions of:
 
-- [expl3](https://ctan.org/pkg/expl3)
-- [latex-base](https://www.ctan.org/pkg/latex-base)
+- [scontents](https://ctan.org/pkg/scontents)
+- [multicol](https://ctan.org/pkg/multicol)
 
 ## Installation
 
