@@ -285,7 +285,7 @@ if options["target"] == "testpkg" then
   os.exit(0)
 end
 
--- We added a new target "examples" to run examples files from enumext.dtx
+-- We added a new target "examples" to run examples from enumext.dtx
 if options["target"] == "examples" then
   -- Create a tmp dir and unpack files
   make_tmp_dir()
@@ -299,6 +299,7 @@ if options["target"] == "examples" then
   else
     os_message("** Running: lualatex-dev -draftmode -interaction=batchmode "..file..".dtx")
     run(tmpdir, "ls -lh")
+    run(tmpdir, "arara enumext-exa-1.tex")
   end
   -- Compiling example files
   print("Compiling sample files in ./"..tmpdir.." using [arara]")
