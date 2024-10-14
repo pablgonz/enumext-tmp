@@ -33,10 +33,10 @@ $ luatex enumext.ins
 and move all files to appropriate locations:
 
 ```
-  enumext.sty      -> TDS:tex/latex/enumext/enumext.sty
-  enumext.pdf      -> TDS:doc/latex/enumext/enumext.pdf
-  enumext.dtx      -> TDS:source/latex/enumext/enumext.dtx
-  enumext.ins      -> TDS:source/latex/enumext/enumext.ins
+  enumext.sty   -> TDS:tex/latex/enumext/enumext.sty
+  enumext.pdf   -> TDS:doc/latex/enumext/enumext.pdf
+  enumext.dtx   -> TDS:source/latex/enumext/enumext.dtx
+  enumext.ins   -> TDS:source/latex/enumext/enumext.ins
 ```
 
 then run `mktexlsr`. To produce the documentation with source code run `luatex enumext.ins` and
@@ -84,19 +84,15 @@ conditions of the [LaTeX Project Public License](https://www.latex-project.org/l
 ├── ctan.ann
 └── sources
     ├── CTANREADME.md
-    ├── scontents-code.tex
-    ├── scontents.dtx
-    ├── scontents.ins
-    ├── scontents.sty
-    ├── scontents.tex
-    ├── t-scontents.mkiv
+    ├── enumext.dtx
+    ├── enumext.ins
+    ├── enumext.sty
     └── test-pkg
-        ├── test-format.context.tex
-        ├── test-format.latex.tex
-        ├── test-format.plain.tex
-        ├── test-nospace.tex
-        ├── test-pkg-current.tex
-        └── test-pkg-other.tex
+        ├── enumext-01.tex
+        ├── enumext-02.tex
+        ├── enumext-03.tex
+        ├── enumext-04.tex
+        ├── enumext-05.tex     
 ```
 
 ## Copyright

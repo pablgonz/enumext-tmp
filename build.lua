@@ -45,9 +45,7 @@ unpackopts  = "--interaction=batchmode"
 unpackexe   = "luatex"
 
 -- Generating documentation
---typesetexe  = "lualatex-dev"
 typesetfiles  = {"enumext.dtx"}
--- typesetopts = "-interaction=batchmode -shell-escape"
 
 -- Update package date and version
 tagfiles = {"sources/enumext.dtx", "sources/CTANREADME.md", "ctan.ann"}
