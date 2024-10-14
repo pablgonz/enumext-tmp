@@ -1,5 +1,5 @@
 # Required to build
-scheme-basic
+collection-latex
 l3build
 context
 tex
