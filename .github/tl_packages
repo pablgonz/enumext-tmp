@@ -1,11 +1,9 @@
 # Required to build
-## collection-basic
 l3build
-context
-tex
+# context
+# tex
 pdftex
-xetex
-latex
+# xetex
 luatex
 lualibs
 luatexbase
@@ -27,8 +25,8 @@ pdfmanagement-testphase
 xcolor
 microtype
 manfnt-font
-metafont
-metapost
+# metafont
+# metapost
 mfware
 amsmath
 tools
