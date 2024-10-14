@@ -298,7 +298,7 @@ if options["target"] == "examples" then
     return errorlevel
   else
     os_message("** Running: lualatex-dev -draftmode -interaction=batchmode "..file..".dtx")
-    run(tmpdir, "ls -lh")
+    run(tmpdir, "pdflatex --version")
     run(tmpdir, "pdflatex enumext-exa-1.tex")
   end
   -- Compiling example files

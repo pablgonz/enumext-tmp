@@ -1,13 +1,13 @@
 # Required to build
 l3build
 arara
-context
-tex
+# context
+# tex
 latex
 luatex
 pdftex
 luatexbase
-xetex
+# xetex
 lualibs
 tikzducks
 latex-bin-dev
@@ -33,7 +33,7 @@ dvips
 bibtex
 makeindex
 dvipdfmx
-# For the doc and test/examples
+# For doc and test/examples
 accsupp
 adjustbox
 alphalph
