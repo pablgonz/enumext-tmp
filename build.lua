@@ -23,12 +23,12 @@
 module     = "enumext"
 pkgversion = "1.0"
 pkgdate    = "2024-10-13"
+ltxrelease = "2024-06-01"
 
 -- Configuration of files for build and installation
 maindir       = "."
 sourcefiledir = "./sources"
 textfiledir   = "./sources"
---textfiles     = {textfiledir.."/CTANREADME.md"}
 sourcefiles   = {"**/*.dtx", "**/*.ins"}
 installfiles  = {"**/*.sty"}
 tdslocations  = {
@@ -72,6 +72,9 @@ function update_tag(file,content,tagname,tagdate)
     content = string.gsub(content,
                           "\\ProvidesExplPackage %{enumext%} %{[^}]+%} %{[^}]+%}",
                           "\\ProvidesExplPackage {enumext} {"..tagdate.."} {"..tagname.."}")
+    content = string.gsub(content,
+                          "\\NeedsTeXFormat%{LaTeX2e%}%[%d%d%d%d%-%d%d%-%d%d%]",
+                          "\\NeedsTeXFormat{LaTeX2e}["..ltxrelease.."]")
   end
   if string.match(file, "CTANREADME.md") then
     content = string.gsub(content,
@@ -194,7 +197,6 @@ end
 
 -- Create make_tmp_dir() function
 local function make_tmp_dir()
-  -- Check version and date
   check_marked_tags()
   check_readme_tags()
   -- Fix basename(path) in windows
@@ -203,7 +205,7 @@ local function make_tmp_dir()
   end
   local tmpname = os.tmpname()
   tmpdir = basename(tmpname)
-  -- Create a tmp dir
+  -- Create a ./tmp dir
   local errorlevel = mkdir(tmpdir)
   if errorlevel ~= 0 then
     error("** Error!!: The ./"..tmpdir.." directory could not be created")
@@ -240,9 +242,7 @@ end
 
 -- We added a new target "testpkg" to run the tests files in ./test-pkg
 if options["target"] == "testpkg" then
-  -- Create a tmp dir and unpack files
   make_tmp_dir()
-  -- Copy test files from sources/test-pkg
   local errorlevel = cp("*.*", "sources/test-pkg", tmpdir)
   if errorlevel ~= 0 then
     error("** Error!!: Can't copy files from sources/test-pkg to ./"..tmpdir)
@@ -252,7 +252,7 @@ if options["target"] == "testpkg" then
   end
   -- Compiling test files for "testpkg" target
   local samples = {"enumext-01", "enumext-02", "enumext-03", "enumext-04", "enumext-05"}
-  print("Compiling sample files in ./"..tmpdir.." using [arara]")
+  print("Compiling tagged PDF sample files in ./"..tmpdir.." using [arara]")
   for i, samples in ipairs(samples) do
     local errorlevel = run(tmpdir, "arara "..samples..".tex > "..os_null)
     if errorlevel ~= 0 then
