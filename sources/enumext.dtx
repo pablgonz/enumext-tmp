@@ -616,10 +616,12 @@
                     nosep,before,after,start, right, item-sym, item-sep, hyperfootnotes, item-star, %
                     scale,wrap-label,font,first,widest,mini-env,list-indent, no-store, save-key,%
                     store-env, print-env, write-out, force-eol, write-env, overwrite, unknown, %
-                    midsep, wrapper,label-pos,label-sep, layout-sty, layout-sep, layout-top, },%
+                    midsep, wrapper,label-pos,label-sep, layout-sty, layout-sep, layout-top, lang,%
+                    pdfversion, pdfstandard, testphase},%
 % Reserved words 7 (label values)
     keywordstyle  = [7]{\color{MediumOrchid}},%
-    keywords      = [7]{m,s,M,VIII,viii,v,E,t,l,A,XXIII,true, false,test,sample,above,below},%
+    keywords      = [7]{m,s,M,VIII,viii,v,E,t,l,A,XXIII,true, false,test,sample,above,below,ua-2,phase-III,%
+                    en-US, math, title, table, firstaid  },%
 % literate
     literate      =*{\{}{{{\color{gray}{\char`\{}}}}{1}
                     {\}}{{{\color{gray}{\char`\}}}}}{1}
@@ -4096,9 +4098,30 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %
 % To compile the tests with |lualatex-dev| the packages \mypkg{multicol},
 % \mypkg{scontents}, \mypkg{unicode-math}, \mypkg{geometry}, \mypkg{graphicx}
-% and \mypkg{hyperref} are required.
+% and \mypkg{hyperref} are required along with the line:
 %
 % \smallskip
+%
+% \iffalse
+%<*example>
+% \fi
+\begin{examplecode}[frame=single]
+\DocumentMetadata
+  {
+    lang = en-US, pdfversion = 2.0, pdfstandard = `\mydim{ua-2}`,
+    testphase = {phase-III, math, title, table, firstaid},
+  }
+\end{examplecode}
+% \iffalse
+%</example>
+% \fi
+%
+% \smallskip
+%
+% \begin{important}
+%  All examples have been checked using \href{https://dev.verapdf-rest.duallab.com}{\texttt{veraPDF}}
+%  together with \href{https://ngpdf.com}{\texttt{ngpdf}}.
+% \end{important}
 %
 % \iffalse
 %<*example>
@@ -4551,7 +4574,7 @@ Some text here
 %</example>
 % \fi
 %
-% \begin{itemize}[topsep=0pt,partopsep=0pt]
+% \begin{itemize}[topsep=1pt,partopsep=0pt,parsep=1pt,itemsep=1pt]
 % \item The file \myfile{enumext-01.tex} contains the basic tests for the
 %   \myenv*{enumext} and \myenv*{enumet*} environments and the nesting
 %   between them plus the use of the \mykey{label}, \mykey{labelwidth},
@@ -4586,11 +4609,6 @@ Some text here
 %   \IfFileExists{enumext-05.pdf}{Source file \textattachfile[color=red,print=false]{enumext-05.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-05.pdf}{\faFilePdf[regular]}}{}.%
 % \end{itemize}
-%
-% \begin{important}
-%  All examples have been checked using \href{https://dev.verapdf-rest.duallab.com}{\texttt{veraPDF}}
-%  together with \href{https://ngpdf.com}{\texttt{ngpdf}}.
-% \end{important}
 %
 % \section{The way of non-enumerated lists}
 %
@@ -5049,7 +5067,7 @@ Some text here
 %    \end{macrocode}
 % Now declare the \mypkg*{enumext} package.
 %    \begin{macrocode}
-\ProvidesExplPackage {enumext} {2024-10-13} {1.0} {Enumerate exercise sheets}
+\ProvidesExplPackage {enumext} {2024-10-15} {1.0} {Enumerate exercise sheets}
 %    \end{macrocode}
 % Finally check if the \mypkg{multicol} and \mypkg{scontents} packages
 % are loaded, if not we load it.
@@ -12503,8 +12521,8 @@ Some text here
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {stop-list-tags}
   {
     \tag_mc_end:
-    \tag_struct_end:n {tag=text-unit}
     \tag_struct_end:n {tag=text}
+    \tag_struct_end:n {tag=text-unit}
     \tag_struct_end:n {tag=LBody}
     \tag_struct_end:n {tag=LI}
     \tag_mc_begin_pop:n {}
