@@ -33,10 +33,10 @@ $ luatex enumext.ins
 and move all files to appropriate locations:
 
 ```
-  enumext.sty   -> TDS:tex/latex/enumext/enumext.sty
-  enumext.pdf   -> TDS:doc/latex/enumext/enumext.pdf
-  enumext.dtx   -> TDS:source/latex/enumext/enumext.dtx
-  enumext.ins   -> TDS:source/latex/enumext/enumext.ins
+  enumext.sty  ->  TDS:tex/latex/enumext/enumext.sty
+  enumext.pdf  ->  TDS:doc/latex/enumext/enumext.pdf
+  enumext.dtx  ->  TDS:source/latex/enumext/enumext.dtx
+  enumext.ins  ->  TDS:source/latex/enumext/enumext.ins
 ```
 
 then run `mktexlsr`. To produce the documentation with source code run `luatex enumext.ins` and
