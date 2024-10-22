@@ -36,7 +36,7 @@
 %% ------------------------------------------------------------------------
 %% 
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
-\ProvidesExplPackage {enumext} {2024-10-13} {1.0} {Enumerate exercise sheets}
+\ProvidesExplPackage {enumext} {2024-10-22} {1.0} {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
   {
     \IfPackageLoadedTF { multicol }
@@ -4157,24 +4157,24 @@
   {
     \tag_resume:n {#1}
     \tag_mc_end_push:
-    \tag_struct_begin:n {tag=LI}
-    \tag_struct_begin:n {tag=Lbl}
-    \tag_mc_begin:n {tag=Lbl}
+      \tag_struct_begin:n {tag=LI}
+        \tag_struct_begin:n {tag=Lbl}
+           \tag_mc_begin:n {tag=Lbl}
   }
 \socket_new_plug:nnn {tagsupport/enumext/starred} {stop-start-tags}
   {
-    \tag_mc_end:
-    \tag_struct_end:n {tag=Lbl}
-    \tag_struct_begin:n {tag=LBody}
-    \tag_struct_begin:n {tag=text-unit}
-    \tag_struct_begin:n {tag=text}
+           \tag_mc_end:
+        \tag_struct_end:n {tag=Lbl}
+        \tag_struct_begin:n {tag=LBody}
+          \tag_struct_begin:n {tag=text-unit}
+            \tag_struct_begin:n {tag=text}
   }
 \socket_new_plug:nnn {tagsupport/enumext/starred} {stop-list-tags}
   {
-    \tag_struct_end:n {tag=text}
-    \tag_struct_end:n {tag=text-unit}
-    \tag_struct_end:n {tag=LBody}
-    \tag_struct_end:n {tag=LI}
+            \tag_struct_end:n {tag=text}
+          \tag_struct_end:n {tag=text-unit}
+        \tag_struct_end:n {tag=LBody}
+      \tag_struct_end:n {tag=LI}
     \tag_mc_begin_pop:n {}
     \tag_suspend:n {#1}
   }
@@ -4209,26 +4209,26 @@
   {
     \tag_resume:n {keyanspic}
     \tag_mc_end_push:
-    \tag_struct_begin:n {tag=LI}
-    \tag_struct_begin:n {tag=Lbl}
-    \tag_mc_begin:n {tag=Lbl}
+      \tag_struct_begin:n {tag=LI}
+        \tag_struct_begin:n {tag=Lbl}
+          \tag_mc_begin:n {tag=Lbl}
   }
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {stop-start-tags}
   {
-    \tag_mc_end:
-    \tag_struct_end:n {tag=Lbl}
-    \tag_struct_begin:n {tag=LBody}
-    \tag_struct_begin:n {tag=text-unit}
-    \tag_struct_begin:n {tag=text}
-    \tag_mc_begin:n {tag=text}
+          \tag_mc_end:
+        \tag_struct_end:n {tag=Lbl}
+        \tag_struct_begin:n {tag=LBody}
+          \tag_struct_begin:n {tag=text-unit}
+            \tag_struct_begin:n {tag=text}
+              \tag_mc_begin:n {tag=text}
   }
 \socket_new_plug:nnn {tagsupport/enumext/keyanspic} {stop-list-tags}
   {
-    \tag_mc_end:
-    \tag_struct_end:n {tag=text}
-    \tag_struct_end:n {tag=text-unit}
-    \tag_struct_end:n {tag=LBody}
-    \tag_struct_end:n {tag=LI}
+              \tag_mc_end:
+            \tag_struct_end:n {tag=text}
+          \tag_struct_end:n {tag=text-unit}
+        \tag_struct_end:n {tag=LBody}
+      \tag_struct_end:n {tag=LI}
     \tag_mc_begin_pop:n {}
     \tag_suspend:n {keyanspic}
   }

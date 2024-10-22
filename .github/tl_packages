@@ -1,8 +1,6 @@
 # Required to build
 l3build
-# context
 pdftex
-# xetex
 luatex
 lualibs
 luatexbase
@@ -20,11 +18,8 @@ latex-lab
 tagpdf
 bookmark
 pdfmanagement-testphase
-# more
 xcolor
 microtype
-manfnt-font
-mfware
 amsmath
 tools
 bibtex
@@ -59,7 +54,7 @@ ec
 enctex
 enumitem
 environ
-epstopdf-pkg
+# epstopdf-pkg
 etexcmds
 etoolbox
 euenc
@@ -75,7 +70,6 @@ framed
 fvextra
 geometry
 gettitlestring
-# graphicx
 grfext
 hologo
 hycolor
@@ -101,18 +95,16 @@ libertinus-fonts
 libertinus-otf
 libertinus
 libertine
-lineno
 listings
 lm
 lm-math
 ltxcmds
 lualatex-math
-mflogo
-mflogo-font
+# mflogo
+# mflogo-font
 microtype
 minted
 unicode-math
-# shellesc
 scontents
 siunitx
 mwe

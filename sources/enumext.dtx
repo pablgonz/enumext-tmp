@@ -617,7 +617,7 @@
                     scale,wrap-label,font,first,widest,mini-env,list-indent, no-store, save-key,%
                     store-env, print-env, write-out, force-eol, write-env, overwrite, unknown, %
                     midsep, wrapper,label-pos,label-sep, layout-sty, layout-sep, layout-top, lang,%
-                    pdfversion, pdfstandard, testphase},%
+                    pdfversion, pdfstandard, testphase, alt},%
 % Reserved words 7 (label values)
     keywordstyle  = [7]{\color{MediumOrchid}},%
     keywords      = [7]{m,s,M,VIII,viii,v,E,t,l,A,XXIII,true, false,test,sample,above,below,ua-2,phase-III,%
@@ -2071,7 +2071,7 @@
 % \smallskip
 %
 % \begin{important}*
-%  The \myenv*{enumext*} and \myenv*{kenyans*} environments are
+%  The \myenv*{enumext*} and \myenv*{keyans*} environments are
 %  implemented using |\makebox| and \myenv{minipage} which causes
 %  \emph{\enquote{list indent}} to always be equal to the value passed to
 %  \mykey{labewdith} plus \mykey{labelsep}. Passing a value to this key is
@@ -2099,7 +2099,7 @@
 %  modifying the output. If you use \myenv*{enumext} or \myenv*{keyans}
 %  and want to get around the \emph{blank line} limitation or the |\par|
 %  command followed by |\item| you can modify \mykey{labelwidth} and
-%  \mykey{label-indent} and get the same effect.
+%  \mykey{list-indent} and get the same effect.
 % \end{important}
 %
 % \smallskip
@@ -3257,8 +3257,8 @@
 % \smallskip
 %
 % \begin{important}
-%  Preferably use \mykey{label-pos}|=above| when creating a \emph{tagged}
-%  PDF, this will preserve the reading order and navigation of the document.
+%  Remember to pass the |alt=|\mymarg{description} key to the |\includegraphics|
+%  command when creating a \emph{tagged} PDF.
 % \end{important}
 %
 % \subsection{Printing stored content}
@@ -4131,7 +4131,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
-% arara: clean: { files: [ enumext-01-luamml-mathml.html ] }
+% arara: move: { files: [ enumext-01-luamml-mathml.html ], target: 'enumext-01-mathml.html' }
 \DocumentMetadata
   {
     lang=en-US,
@@ -4236,7 +4236,7 @@ Some refs here \ref{G} and \ref{H}
 % arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
-% arara: clean: { files: [ enumext-02-luamml-mathml.html ] }
+% arara: move: { files: [ enumext-02-luamml-mathml.html ], target: 'enumext-02-mathml.html' }
 \DocumentMetadata
   {
     lang=en-US,
@@ -4321,8 +4321,7 @@ Some text here
 % arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
-% arara: clean: { files: [ enumext-03-luamml-mathml.html ] }
-% arara: halt
+% arara: move: { files: [ enumext-03-luamml-mathml.html ], target: 'enumext-03-mathml.html' }
 \DocumentMetadata
   {
     lang=en-US,
@@ -4397,7 +4396,7 @@ The answer to question \ref{dos} is \getkeyans{test:2}
 % arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
-% arara: clean: { files: [ enumext-04-luamml-mathml.html ] }
+% arara: move: { files: [ enumext-04-luamml-mathml.html ], target: 'enumext-04-mathml.html' }
 \listfiles
 \DocumentMetadata
   {
@@ -4470,7 +4469,7 @@ Some text here
 % arara: lualatex: { branch: developer, draft: true }
 % arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
-% arara: clean: { files: [ enumext-05-luamml-mathml.html ] }
+% arara: move: { files: [ enumext-05-luamml-mathml.html ], target: 'enumext-05-mathml.html' }
 \DocumentMetadata{
     lang=en-US,
     pdfversion=2.0,
@@ -4576,14 +4575,14 @@ Some text here
 %
 % \begin{itemize}[topsep=1pt,partopsep=0pt,parsep=1pt,itemsep=1pt]
 % \item The file \myfile{enumext-01.tex} contains the basic tests for the
-%   \myenv*{enumext} and \myenv*{enumet*} environments and the nesting
+%   \myenv*{enumext} and \myenv*{enumext*} environments and the nesting
 %   between them plus the use of the \mykey{label}, \mykey{labelwidth},
 %   \mykey{labelsep}, \mykey{ref}, \mykey{align} and \mykey{wrap-label} keys.
 %   \IfFileExists{enumext-01.pdf}{Source file \textattachfile[color=red,print=false]{enumext-01.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-01.pdf}{\faFilePdf[regular]}}{}.%
 %
 % \item The file \myfile{enumext-02.tex} contains the tests for the \myenv*{enumext}
-%   and \myenv*{enumet*} environments and the support for \myenv{minipage}
+%   and \myenv*{enumext*} environments and the support for \myenv{minipage}
 %   and \myenv{multicols} environments using the keys \mykey{columns},
 %   \mykey{columns-sep}, \mykey{mini-env}, \mykey{mini-right} and
 %   |\miniright| command. \IfFileExists{enumext-02.pdf}{Source file \textattachfile[color=red,print=false]{enumext-02.tex}{\faFile*[regular]}
@@ -5067,7 +5066,7 @@ Some text here
 %    \end{macrocode}
 % Now declare the \mypkg*{enumext} package.
 %    \begin{macrocode}
-\ProvidesExplPackage {enumext} {2024-10-18} {1.0} {Enumerate exercise sheets}
+\ProvidesExplPackage {enumext} {2024-10-22} {1.0} {Enumerate exercise sheets}
 %    \end{macrocode}
 % Finally check if the \mypkg{multicol} and \mypkg{scontents} packages
 % are loaded, if not we load it.
