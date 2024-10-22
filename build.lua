@@ -257,6 +257,8 @@ if options["target"] == "testpkg" then
     --local errorlevel =
   local errorlevel =  run(tmpdir, "arara "..samples..".tex")
     if errorlevel ~= 0 then
+      os_message("** Running: arara "..samples..".tex")
+    else
       local f = assert(io.open(tmpdir.."/"..samples..".log", "r"))
       err_log_file = f:read("*all")
       print(err_log_file)
@@ -264,8 +266,6 @@ if options["target"] == "testpkg" then
       cp(samples..".log", tmpdir, maindir)
       error("** Error!!: arara "..samples..".tex")
       return errorlevel
-    else
-      os_message("** Running: arara "..samples..".tex")
     end
   end
   -- Copy generated .pdf files to maindir
