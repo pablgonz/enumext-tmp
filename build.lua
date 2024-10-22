@@ -253,17 +253,16 @@ if options["target"] == "testpkg" then
   -- Compiling test files for "testpkg" target
   local samples = {"enumext-01", "enumext-02", "enumext-03", "enumext-04", "enumext-05"}
   print("Compiling tagged PDF sample files in ./"..tmpdir.." using [arara]")
-  --run(tmpdir, "ls -lh")
-  run(tmpdir, "arara enumext-01.tex")
+  --run(tmpdir, "arara enumext-01.tex")
   for i, samples in ipairs(samples) do
     local errorlevel = run(tmpdir, "arara "..samples..".tex > "..os_null)
     if errorlevel ~= 0 then
       local f = assert(io.open(tmpdir.."/"..samples..".log", "r"))
       err_log_file = f:read("*all")
       print(err_log_file)
-      --cp(samples..".tex", tmpdir, maindir)
-      --cp(samples..".log", tmpdir, maindir)
-      error("** Error!!: arara "..samples..".log")
+      cp(samples..".tex", tmpdir, maindir)
+      cp(samples..".log", tmpdir, maindir)
+      error("** Error!!: arara "..samples..".tex")
       return errorlevel
     else
       os_message("** Running: arara "..samples..".tex")
