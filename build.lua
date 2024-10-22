@@ -263,8 +263,6 @@ if options["target"] == "testpkg" then
       cp(samples..".log", tmpdir, maindir)
       error("** Error!!: arara "..samples..".tex")
       return errorlevel
-    else
-      os_message("** Running: arara "..samples..".tex")
     end
   end
   -- Copy generated .pdf files to maindir
