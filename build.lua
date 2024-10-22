@@ -255,7 +255,7 @@ if options["target"] == "testpkg" then
   local samples = {"enumext-01", "enumext-02", "enumext-03", "enumext-04", "enumext-05"}
   for i, samples in ipairs(samples) do
     --local errorlevel =
-    run(tmpdir, "arara "..samples..".tex")
+  local errorlevel =  run(tmpdir, "arara "..samples..".tex")
     --run(tmpdir, "arara "..samples..".tex > "..os_null)
     --if errorlevel ~= 0 then
       --local f = assert(io.open(tmpdir.."/"..samples..".log", "r"))
