@@ -256,6 +256,7 @@ if options["target"] == "testpkg" then
   for i, samples in ipairs(samples) do
     --local errorlevel =
   local errorlevel =  run(tmpdir, "arara -v "..samples..".tex")
+    run(tmpdir, "ls -lh")
     if errorlevel ~= 0 then
       os_message("** Running: arara "..samples..".tex")
     else
