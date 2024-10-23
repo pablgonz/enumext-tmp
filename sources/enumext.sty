@@ -36,7 +36,7 @@
 %% ------------------------------------------------------------------------
 %% 
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
-\ProvidesExplPackage {enumext} {2024-10-22} {1.0} {Enumerate exercise sheets}
+\ProvidesExplPackage {enumext} {2024-10-23} {1.0} {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
   {
     \IfPackageLoadedTF { multicol }
@@ -4345,7 +4345,6 @@
         \tag_suspend:n {list}
       }{}
     \item[] \scan_stop:
-    % paranoia
     \RenewDocumentCommand \item {}
       {
         \msg_error:nn { enumext } { keyanspic-item-cmd }
