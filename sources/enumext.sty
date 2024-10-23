@@ -3515,19 +3515,22 @@
   {
     \RenewDocumentCommand \makelabel { m }
       {
-        \makebox
-          [ \dim_use:c { l__enumext_labelwidth_ \__enumext_level: _dim } ]
-          [ \str_use:c { l__enumext_align_label_pos_ \__enumext_level: _str } ]
+        \strut\smash
           {
-            \tl_use:c { l__enumext_label_font_style_ \__enumext_level: _tl }
-            \bool_if:cTF { l__enumext_wrap_label_ \__enumext_level: _bool }
+            \makebox
+              [ \dim_use:c { l__enumext_labelwidth_ \__enumext_level: _dim } ]
+              [ \str_use:c { l__enumext_align_label_pos_ \__enumext_level: _str } ]
               {
-                \__enumext_item_star_exec:
-                \use:c { __enumext_wrapper_label_ \__enumext_level: :n } { ##1 }
+                \tl_use:c { l__enumext_label_font_style_ \__enumext_level: _tl }
+                \bool_if:cTF { l__enumext_wrap_label_ \__enumext_level: _bool }
+                  {
+                    \__enumext_item_star_exec:
+                    \use:c { __enumext_wrapper_label_ \__enumext_level: :n } { ##1 }
+                  }
+                  { ##1 }
+                \tl_gclear:N \g__enumext_item_symbol_aux_tl
               }
-              { ##1 }
-            \tl_gclear:N \g__enumext_item_symbol_aux_tl
-          }
+          } % close smash
       }
   }
 %% Add |item-sym*| and |item-sep*| keys.
@@ -3689,14 +3692,17 @@
   {
     \RenewDocumentCommand \makelabel { m }
       {
-        \makebox[ \l__enumext_labelwidth_v_dim ][ \l__enumext_align_label_pos_v_str ]
+        \strut\smash
           {
-            \tl_use:N \l__enumext_label_font_style_v_tl
-            \bool_if:NTF \l__enumext_wrap_label_v_bool
+            \makebox[ \l__enumext_labelwidth_v_dim ][ \l__enumext_align_label_pos_v_str ]
               {
-                \__enumext_wrapper_label_v:n { ##1 }
+                \tl_use:N \l__enumext_label_font_style_v_tl
+                \bool_if:NTF \l__enumext_wrap_label_v_bool
+                  {
+                    \__enumext_wrapper_label_v:n { ##1 }
+                  }
+                  { ##1 }
               }
-              { ##1 }
           }
       }
   }

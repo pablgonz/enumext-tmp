@@ -581,15 +581,15 @@
     commentstyle  = \ttfamily\small\color{lightgray},%
 % Important words 1
     keywordstyle  = [1]{\color{gray}},%
-    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,strut,smash, newlength, %
+    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,newlength, %
                         settowidth, dimeval, dimexpr, IfBooleanTF,footnotehyper, DocumentMetadata, %
-                        IfDocumentMetadataTF, RenewDocumentCommand, pt, em,%
+                        IfDocumentMetadataTF, RenewDocumentCommand, pt, em, SuspendTagging, ResumeTagging,%
                     },%
 % Other words 2
     keywordstyle  = [2]{\color{blue!75}},%
     keywords      = [2]{usepackage,section,documentclass,input,listparindent,linewidth, emph, textbf,makesavenoteenv, makelabel,%
                     columnseprule, footnote, footnotemark, footnotetext, raggedcolumns, hspace, parindent, removelastskip, %
-                    subsection, list,endlist,leftmargin, itemindent,bfseries,endminipage, minipage, parskip, raisebox,% ,
+                    subsection, list,endlist,leftmargin, itemindent,bfseries,endminipage, minipage, parskip, raisebox, strut,smash, % ,
                     labelwidth,labelsep,labelindent,label,ref,topsep,parsep,includegraphics, itemize, description, NewCommandCopy, %
                     multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, value, noindent, makebox,%
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, cs_new_eq, N, NN,%
@@ -805,6 +805,16 @@
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedright{#2}}}}%
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedleft{#2}}}}%
   }
+%%%\ExplSyntaxOn
+%%5\NewDocumentCommand \labelbx { s +m }
+%%  {
+%%   %% \tag_suspend:n {\parbox}
+%%    \IfBooleanTF{#1}
+%%      { \parbox[t]{\labelwidth}{\raggedright{#2}} }
+%%      { \parbox[t]{\labelwidth}{\raggedleft{#2}}  }
+%%   %% \tag_resume:n {\parbox}
+%%  }
+%%%\ExplSyntaxOff
 \begin{document}
   \DocInput{\jobname.dtx}
 \end{document}
@@ -4673,7 +4683,7 @@ Some text here
 %
 % \begin{enumext}[label={},list-indent=2.5em,font=\bfseries,noitemsep,topsep=3pt]
 %  \item[SomeThing] A short one-line description.
-%  \item This is an entry \emph{without} a label.
+%  \item[] This is an entry \emph{without} a label.
 %  \item[Something] A short \emph{one-line} description text.
 %  \item[Something long] A much \emph{longer} description text may take
 %    more than one line or more than one paragraph.
@@ -4686,7 +4696,7 @@ Some text here
 %
 % \begin{enumext}[label={},list-indent=0pt,font=\bfseries,noitemsep,topsep=3pt]
 %  \item[SomeThing] A short one-line description.
-%  \item This is an entry \emph{without} a label.
+%  \item[] This is an entry \emph{without} a label.
 %  \item[Something] A short \emph{one-line} description text.
 %  \item[Something long] A much \emph{longer} description text may take
 %    more than one line or more than one paragraph.
@@ -4724,7 +4734,7 @@ Some text here
 % \settowidth{\descitemwd}{\textbf{Something long}}
 % \begin{enumext}[label={},labelsep=4pt,labelwidth=\descitemwd,font=\bfseries,noitemsep,topsep=3pt]
 %  \item[SomeThing] A short one-line description.
-%  \item This is an entry \textit{without} a label.
+%  \item[] This is an entry \textit{without} a label.
 %  \item[Something] A short one-line description.
 %  \item[Something long] A much longer description. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
 %    Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis.
@@ -4779,16 +4789,18 @@ Some text here
 \begin{examplecode}[frame=none]
 \NewDocumentCommand \labelbx { s +m }
   {%
+    \SuspendTagging{\parbox}%
     \IfBooleanTF{#1}
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedright{#2}}}}%
       {\strut\smash{\parbox[t]{\labelwidth}{\raggedleft{#2}}}}%
+    \ResumeTagging{\parbox}%
   }
 \end{examplecode}
 % \iffalse
 %</example>
 % \fi
 %
-% Now we just need to set |wrap-label*={\labelbx{#1}}|.
+% Now we just need to set |wrap-label*={\labelbx{#1}}|.%^^A |mode-box| and 
 %
 % \begin{enumext}[label={},labelsep=4pt,labelwidth=\descitemwd,list-offset=-\dimeval{\descitemwd+4pt}, wrap-label*={\labelbx{#1}}, font=\bfseries,noitemsep,topsep=3pt]
 %  \item[SomeThing] A short one-line description.
@@ -11248,19 +11260,22 @@ Some text here
   {
     \RenewDocumentCommand \makelabel { m }
       {
-        \makebox
-          [ \dim_use:c { l_@@_labelwidth_ \@@_level: _dim } ]
-          [ \str_use:c { l_@@_align_label_pos_ \@@_level: _str } ]
+        \strut\smash
           {
-            \tl_use:c { l_@@_label_font_style_ \@@_level: _tl }
-            \bool_if:cTF { l_@@_wrap_label_ \@@_level: _bool }
+            \makebox
+              [ \dim_use:c { l_@@_labelwidth_ \@@_level: _dim } ]
+              [ \str_use:c { l_@@_align_label_pos_ \@@_level: _str } ]
               {
-                \@@_item_star_exec:
-                \use:c { @@_wrapper_label_ \@@_level: :n } { ##1 }
+                \tl_use:c { l_@@_label_font_style_ \@@_level: _tl }
+                \bool_if:cTF { l_@@_wrap_label_ \@@_level: _bool }
+                  {
+                    \@@_item_star_exec:
+                    \use:c { @@_wrapper_label_ \@@_level: :n } { ##1 }
+                  }
+                  { ##1 }
+                \tl_gclear:N \g_@@_item_symbol_aux_tl
               }
-              { ##1 }
-            \tl_gclear:N \g_@@_item_symbol_aux_tl
-          }
+          } % close smash
       }
   }
 %    \end{macrocode}
@@ -11558,14 +11573,17 @@ Some text here
   {
     \RenewDocumentCommand \makelabel { m }
       {
-        \makebox[ \l_@@_labelwidth_v_dim ][ \l_@@_align_label_pos_v_str ]
+        \strut\smash
           {
-            \tl_use:N \l_@@_label_font_style_v_tl
-            \bool_if:NTF \l_@@_wrap_label_v_bool
+            \makebox[ \l_@@_labelwidth_v_dim ][ \l_@@_align_label_pos_v_str ]
               {
-                \@@_wrapper_label_v:n { ##1 }
+                \tl_use:N \l_@@_label_font_style_v_tl
+                \bool_if:NTF \l_@@_wrap_label_v_bool
+                  {
+                    \@@_wrapper_label_v:n { ##1 }
+                  }
+                  { ##1 }
               }
-              { ##1 }
           }
       }
   }
