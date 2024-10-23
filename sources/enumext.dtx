@@ -12798,6 +12798,10 @@ Some text here
 %   Now we define the environment \myenv*{keyanspic}. For compatibility
 %   with \emph{tagged} \texttt{PDF} we must use the |\begin{|\myenv{list}|}|
 %   form and a lot of conditional code using |\IfDocumentMetadataTF|.
+%   We will first stop the code for automatic \emph{tagged} \texttt{PDF}
+%   for \myenv{list} environments, redefine |\item| so that it cannot be
+%   used, and stop the code for automatic \emph{tagged} \texttt{PDF} for
+%   the \myenv*{keyanspic} environment.
 % \iffalse
 %% Define |keyanspic| environment.
 % \fi
@@ -12812,7 +12816,6 @@ Some text here
         \tag_suspend:n {list}
       }{}
     \item[] \scan_stop:
-    % paranoia
     \RenewDocumentCommand \item {}
       {
         \msg_error:nn { enumext } { keyanspic-item-cmd }
@@ -12824,6 +12827,11 @@ Some text here
         \tag_suspend:n {keyanspic}
       } { }
   }
+%    \end{macrocode}
+%   In the second part of the environment definition we will manually place
+%   our code for \emph{tagged} \texttt{PDF} and execute the command
+%   |\anspic| using the \cs{@@_anspic_exec:} function.
+%    \begin{macrocode}
   {
     \IfDocumentMetadataTF
       {
@@ -12831,11 +12839,6 @@ Some text here
         \tag_mc_end_push:
         \tag_struct_begin:n {tag=L,attribute=enumerate}
       } { }
-%    \end{macrocode}
-%   Now we process the command |\anspic|, if the key \mykey{layout-sty}
-%   is not present, the number of times the \ics*{anspic} command appears will
-%   be counted from \cs{l_@@_anspic_args_seq} and placed a \emph{single line}.
-%    \begin{macrocode}
     \@@_anspic_exec:
     \IfDocumentMetadataTF
       {
