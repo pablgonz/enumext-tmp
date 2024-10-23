@@ -595,7 +595,7 @@
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, cs_new_eq, N, NN,%
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
                     textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_spaces, skip_horizontal, %
-                    triangleright, diamond, circ , star, centering, ast, hyperlink,hypertarget,IfHyperBoolean,newtheorem, %
+                    triangleright, diamond, circ, parleft, star, centering, ast, hyperlink,hypertarget,IfHyperBoolean,newtheorem, %
                     aux_i, aux_ii, aux_iii, w, n, N, if@noitemarg, if, if@hyper@item, hyper, noitemarg, skip_vertical, },%
 % Other words 3
     keywordstyle  = [3]{\color{optcolor!85}},%
@@ -603,7 +603,7 @@
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
     keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidth, enumextmeta, %
-                    setenumext,printkeyans,miniright,parleft,labelbx, descitemwd,theenumXi,theenumXii,theenumXiii,%
+                    setenumext,printkeyans,miniright,labelbx, descitemwd,theenumXi,theenumXii,theenumXiii,%
                     setenumextmeta, foreachkeyans, theenumXiv,theenumXv, theenumXvii, theenumXviii},%
 % Reserved words 5 (plain TeX or internal)
     keywordstyle  = [5]{\color{red}},%
@@ -4583,6 +4583,172 @@ Some text here
 %</example>
 % \fi
 %
+%
+% \iffalse
+%<*example>
+% \fi
+\begin{filecontents*}[overwrite]{enumext-06.tex}
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer }
+% arara: clean: { extensions: [ aux, log, out] }
+% arara: move: { files: [ enumext-06-luamml-mathml.html ], target: 'enumext-06-mathml.html' }
+\DocumentMetadata
+  {
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    testphase={phase-III,math,title,table,firstaid},
+    uncompress,
+  }
+\documentclass{article}
+\usepackage[top=2cm,bottom=2cm,left=3cm,right=3cm]{geometry}
+\usepackage{unicode-math,graphicx,hyperref,enumext}
+\hypersetup
+  {
+    colorlinks = true,
+    pdftitle   = {Test tagged PDF for enumext package},
+  }
+\newlength{\descitemwd}
+\NewDocumentCommand \labelbx { s +m }
+  {%
+    \SuspendTagging{\parbox}%
+    \IfBooleanTF{#1}%
+      {\strut\smash{\parbox[t]{\labelwidth}{\raggedright{#2}}}}%
+      {\strut\smash{\parbox[t]{\labelwidth}{\raggedleft{#2}}}}%
+    \ResumeTagging{\parbox}
+  }
+\begin{document}
+
+\section{Fake \texttt{itemize} environment}
+
+\noindent\begin{minipage}[t]{0.45\linewidth}
+\begin{enumext}[nosep, label=\textbullet]
+  \item First level item
+    \begin{enumext}[nosep,label=\normalfont\bfseries\textendash]
+      \item Second level item
+        \begin{enumext}[nosep,label=\textasteriskcentered]
+          \item Third level item
+            \begin{enumext}[nosep,label=\textperiodcentered]
+               \item Fourth level item
+            \end{enumext}
+        \end{enumext}
+    \end{enumext}
+  \item First level item
+\end{enumext}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.45\linewidth}
+\begin{enumext}[nosep, label=$\ast$]
+  \item First level item
+    \begin{enumext}[nosep,label=$\diamond$]
+      \item Second level item
+        \begin{enumext}[nosep,label=$\circ$]
+          \item Third level item
+            \begin{enumext}[nosep,label=$\star$]
+               \item Fourth level item
+            \end{enumext}
+        \end{enumext}
+    \end{enumext}
+  \item First level item
+\end{enumext}
+\end{minipage}
+
+\section{Fake \texttt{description} environment}
+
+\settowidth{\descitemwd}{\textbf{Something long}}
+\begin{enumext}[label={},labelwidth=\descitemwd,font=\bfseries,noitemsep,topsep=3pt]
+  \item[SomeThing] A short one-line description.
+  \item[] This is an entry \emph{without} a label.
+  \item[Something] A short \emph{one-line} description text.
+  \item[Something long] A much \emph{longer} description text may take
+    more than one line or more than one paragraph.
+
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua.
+\end{enumext}
+
+\begin{enumext*}[label={},labelwidth=\descitemwd,font=\bfseries,noitemsep,topsep=3pt]
+  \item[SomeThing] A short one-line description.
+  \item[] This is an entry \emph{without} a label.
+  \item[Something] A short \emph{one-line} description text.
+  \item[Something long] A much \emph{longer} description text may take
+    more than one line or more than one paragraph.
+
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua.
+\end{enumext*}
+
+\begin{enumext}[label={},labelwidth=\descitemwd,list-indent=0pt,font=\bfseries,noitemsep,topsep=3pt]
+  \item[SomeThing] A short one-line description.
+  \item[] This is an entry \emph{without} a label.
+  \item[Something] A short \emph{one-line} description text.
+  \item[Something long] A much \emph{longer} description text may take
+    more than one line or more than one paragraph.
+
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua.
+\end{enumext}
+
+\begin{enumext*}[label={},labelwidth=\descitemwd,list-indent=0pt,font=\bfseries,noitemsep,topsep=3pt]
+  \item[SomeThing] A short one-line description.
+  \item[] This is an entry \emph{without} a label.
+  \item[Something] A short \emph{one-line} description text.
+  \item[Something long] A much \emph{longer} description text may take
+    more than one line or more than one paragraph.
+
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua.
+\end{enumext*}
+
+\section{Fake \texttt{description} environment in margin}
+
+\begin{enumext}[align=right, label={},labelsep=4pt,labelwidth=\descitemwd,list-offset={-\descitemwd-4pt}, font=\bfseries,noitemsep,topsep=3pt]
+  \item[SomeThing] A short one-line description.
+  \item This is an entry \textit{without} a label.
+  \item[Something] A short one-line description.
+  \item[Something long] A much longer description. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+    Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis.
+    Curabitur dictum gravida mauris.
+\end{enumext}
+
+\begin{enumext*}[align=right, label={},labelsep=4pt,labelwidth=\descitemwd,list-offset={-\descitemwd-4pt}, font=\bfseries,noitemsep,topsep=3pt]
+  \item[SomeThing] A short one-line description.
+  \item This is an entry \textit{without} a label.
+  \item[Something] A short one-line description.
+  \item[Something long] A much longer description. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+    Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis.
+    Curabitur dictum gravida mauris.
+\end{enumext*}
+
+\section{Fake \texttt{description} with multi-line labels}
+
+\begin{enumext}[label={},labelsep=4pt,labelwidth=\descitemwd,list-offset=-\dimeval{\descitemwd+4pt}, wrap-label*={\labelbx{#1}}, font=\bfseries,noitemsep,topsep=3pt]
+  \item[SomeThing] A short one-line description.
+  \item This is an entry \textit{without} a label.
+  \item[Something] A short one-line description.
+  \item[Something \\ long] A much longer description. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+    Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis.
+    Curabitur dictum gravida mauris.
+
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+    Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis.
+    Curabitur dictum gravida mauris.
+
+  \item[SoMeThInG \\ LoNg] A much longer description. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+    Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis.
+    Curabitur dictum gravida mauris.
+
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+    Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis.
+    Curabitur dictum gravida mauris.
+\end{enumext}
+\end{document}
+\end{filecontents*}
+\IfFileExists{enumext-06.pdf}{}{\ShellEscape{arara enumext-06.tex}}
+% \iffalse
+%</example>
+% \fi
+%
 % \begin{itemize}[topsep=1pt,partopsep=0pt,parsep=1pt,itemsep=1pt]
 % \item The file \myfile{enumext-01.tex} contains the basic tests for the
 %   \myenv*{enumext} and \myenv*{enumext*} environments and the nesting
@@ -4617,24 +4783,29 @@ Some text here
 %   and the commands |\setenumext|, |\setenumextmeta|, |\printkeyans| and |\foreachkeyans|.
 %   \IfFileExists{enumext-05.pdf}{Source file \textattachfile[color=red,print=false]{enumext-05.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-05.pdf}{\faFilePdf[regular]}}{}.%
+%
+% \item The file \myfile{enumext-06.tex} contains the tests for the environments
+%   \myenv*{enumext} and \myenv*{enumext} for \emph{non-enumerated} lists.
+%   \IfFileExists{enumext-06.pdf}{Source file \textattachfile[color=red,print=false]{enumext-06.tex}{\faFile*[regular]}
+%   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-06.pdf}{\faFilePdf[regular]}}{}.%
 % \end{itemize}
 %
 % \section{The way of non-enumerated lists}
 %
-% It is possible to use (or abuse) the \myenv*{enumext} environment to
+% It is possible to use (or abuse) the \myenv*{enumext} and \myenv*{enumext*} environments to
 % mimic \emph{non-enumerated} list environments such as \myenv{itemize} and
 % \myenv{description}, clearly the \mymeta{keys} to \emph{\enquote{store answers}},
-% the \myenv*{keyans} and \myenv*{keyanspic} environments lose their
-% sense and it is not the focus of the main of this package, but, why not
+% the \myenv*{keyans}, \myenv*{keyans*} and \myenv*{keyanspic} environments lose their
+% sense and it is not the focus of \mypkg*{enumext} package, but, why not
 % to do it?.
 %
 % \smallskip
 %
 % Here I leave as an example other uses of the \myenv*{enumext}
-% environment that can be helpful for specific purposes. The
-% \emph{\enquote{trick}} to generate these \emph{fake environments} is
-% set \mykey{label}|={}| or \mykey{label}|=|\mymarg{some} and
-% play with the |list-indent|, |list-offset|, |font| and |wrap-label| keys.
+% environment that can be helpful for specific purposes. The \emph{trick}
+% to generate these \emph{\enquote{fake environments}} is set \mykey{label}|={}|
+% or \mykey{label}|=|\mymarg{some} and play with the |list-indent|, |list-offset|,
+% |font| and |wrap-label| keys.
 %
 % \subsection*{Fake \texttt{itemize} environment}
 %
@@ -4709,6 +4880,16 @@ Some text here
 % The small space at the beginning of the \emph{\enquote{unlabeled entry}} corresponds to
 % |\labelsep| and can be removed using |\hspace{-\labelsep}| at the
 % beginning of the line.
+% \end{important}
+%
+% \smallskip
+%
+% \begin{important}
+%  When \emph{tagged} PDF is active the default \myenv{description} style
+%  is NOT available due to the redefinition of |\makelabel| for the
+%  \mykey{align} key which uses |\makebox| in this case, meaning that
+%  |\item|\myoarg{content} will not extend beyond |\labelwidth| which
+%  causes overlaps,
 % \end{important}
 %
 % \subsection*{Description indented by label}
@@ -4802,7 +4983,7 @@ Some text here
 %
 % Now we just need to set |wrap-label*={\labelbx{#1}}|.%^^A |mode-box| and 
 %
-% \begin{enumext}[label={},labelsep=4pt,labelwidth=\descitemwd,list-offset=-\dimeval{\descitemwd+4pt}, wrap-label*={\labelbx{#1}}, font=\bfseries,noitemsep,topsep=3pt]
+% \begin{enumext}[mode-box,label={},labelsep=4pt,labelwidth=\descitemwd,list-offset=-\dimeval{\descitemwd+4pt}, wrap-label*={\labelbx{#1}}, font=\bfseries,noitemsep,topsep=3pt]
 %  \item[SomeThing] A short one-line description.
 %  \item This is an entry \textit{without} a label.
 %  \item[Something] A short one-line description.
@@ -11255,6 +11436,16 @@ Some text here
 %    \end{macrocode}
 %   Definition using |\makebox| when |\DocumentMetadata| is active or
 %   \mykey{mode-box} is active.
+%
+% \begin{important}
+%  Here it is necessary to use |\strut\smash| to maintain text \emph{alignment}
+%  in case the user wants to use |\labelbx| for example. In my experiments
+%  with \emph{mimicking} the \myenv{description} environment it was the only way
+%  out and it seems to have no adverse effects and may serve in the future
+%  as a basis for a more generic \myenv{list} environment package than
+%  \mypkg*{enumext}.
+% \end{important}
+%
 %    \begin{macrocode}
 \cs_new_protected:Nn \@@_make_label_box:
   {

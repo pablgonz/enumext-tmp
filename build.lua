@@ -252,7 +252,7 @@ if options["target"] == "testpkg" then
   end
   -- Compiling test files for "testpkg" target
   print("Compiling tagged PDF sample files in ./"..tmpdir.." using [arara]")
-  local samples = {"enumext-01", "enumext-02", "enumext-03", "enumext-04", "enumext-05"}
+  local samples = {"enumext-01", "enumext-02", "enumext-03", "enumext-04", "enumext-05", "enumext-06"}
   for i, samples in ipairs(samples) do
     local errorlevel = run(tmpdir, "arara "..samples..".tex")
     if errorlevel ~= 0 then
