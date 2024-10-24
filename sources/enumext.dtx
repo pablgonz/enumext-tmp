@@ -581,7 +581,7 @@
     commentstyle  = \ttfamily\small\color{lightgray},%
 % Important words 1
     keywordstyle  = [1]{\color{gray}},%
-    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,newlength, %
+    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,newlength, the, %
                         settowidth, dimeval, dimexpr, IfBooleanTF,footnotehyper, DocumentMetadata, %
                         IfDocumentMetadataTF, RenewDocumentCommand, pt, em, SuspendTagging, ResumeTagging,%
                     },%
@@ -1103,10 +1103,9 @@
 % the classical |latex>dvips>ps2pdf| and is present in \hologo{TeX} Live and \hologo{MiKTeX},
 % use the package manager to install. For manual installation, download
 % \href{http://mirrors.ctan.org/macros/latex/contrib/enumext.zip}{enumext.zip}
-% and unzip it, run \lstinline[language=enumext-doc,basicstyle=\ttfamily]+lualatex enumext.dtx+
+% and unzip it, run \lstinline[language=enumext-doc,basicstyle=\ttfamily]+luatex enumext.ins+
 % and move all files to appropriate locations, then run |mktexlsr|. To produce the documentation run
-% \lstinline[language=enumext-doc,basicstyle=\ttfamily]+lualatex enumext.dtx+
-% two times.
+% \lstinline[language=enumext-doc,basicstyle=\ttfamily]+arara enumext.dtx+.
 %
 % \iffalse
 %<*example>
@@ -1116,6 +1115,7 @@
   enumext.pdf  >  TDS:doc/latex/enumext/
   README.md    >  TDS:doc/latex/enumext/
   enumext.dtx  >  TDS:source/latex/enumext/
+  enumext.ins  >  TDS:source/latex/enumext/
 \end{examplecode}
 % \iffalse
 %</example>
@@ -4107,7 +4107,7 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 % \smallskip
 %
 % To compile the tests with |lualatex-dev| the packages \mypkg{multicol},
-% \mypkg{scontents}, \mypkg{unicode-math}, \mypkg{geometry}, \mypkg{graphicx}
+% \mypkg{scontents}, \mypkg{unicode-math}, \mypkg{geometry}, \mypkg{graphicx}, \mypkg{luamml}
 % and \mypkg{hyperref} are required along with the line:
 %
 % \smallskip
@@ -5259,7 +5259,7 @@ Some text here
 %    \end{macrocode}
 % Now declare the \mypkg*{enumext} package.
 %    \begin{macrocode}
-\ProvidesExplPackage {enumext} {2024-10-23} {1.0} {Enumerate exercise sheets}
+\ProvidesExplPackage {enumext} {2024-10-24} {1.0} {Enumerate exercise sheets}
 %    \end{macrocode}
 % Finally check if the \mypkg{multicol} and \mypkg{scontents} packages
 % are loaded, if not we load it.

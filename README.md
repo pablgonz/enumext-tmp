@@ -35,12 +35,12 @@ and move all files to appropriate locations:
 ```
   enumext.sty  ->  TDS:tex/latex/enumext/enumext.sty
   enumext.pdf  ->  TDS:doc/latex/enumext/enumext.pdf
+  README.md    ->  TDS:doc/latex/enumext/README.md
   enumext.dtx  ->  TDS:source/latex/enumext/enumext.dtx
   enumext.ins  ->  TDS:source/latex/enumext/enumext.ins
 ```
 
-then run `mktexlsr`. To produce the documentation with source code run `luatex enumext.ins` and
-`lualatex enumext.dtx` three times.
+then run `mktexlsr`. To produce the documentation with source code run `arara enumext.dtx`.
 
 ## Examples
 
@@ -92,7 +92,8 @@ conditions of the [LaTeX Project Public License](https://www.latex-project.org/l
         ├── enumext-02.tex
         ├── enumext-03.tex
         ├── enumext-04.tex
-        ├── enumext-05.tex     
+        ├── enumext-05.tex
+        ├── enumext-06.tex     
 ```
 
 ## Copyright

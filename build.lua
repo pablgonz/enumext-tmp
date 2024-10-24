@@ -22,7 +22,7 @@
 -- General package identification
 module     = "enumext"
 pkgversion = "1.0"
-pkgdate    = "2024-10-23"
+pkgdate    = "2024-10-24"
 ltxrelease = "2024-06-01"
 
 -- Configuration of files for build and installation
@@ -48,7 +48,7 @@ unpackexe   = "luatex"
 typesetfiles  = {"enumext.dtx"}
 
 -- Update package date and version
-tagfiles = {"sources/enumext.dtx", "sources/CTANREADME.md", "ctan.ann"}
+tagfiles = {"sources/enumext.dtx", "sources/enumext.sty", "sources/CTANREADME.md", "ctan.ann"}
 local mydate = os.date("!%Y-%m-%d")
 
 function update_tag(file,content,tagname,tagdate)
@@ -69,6 +69,14 @@ function update_tag(file,content,tagname,tagdate)
   end
 
   if string.match(file, "enumext.dtx") then
+    content = string.gsub(content,
+                          "\\ProvidesExplPackage %{enumext%} %{[^}]+%} %{[^}]+%}",
+                          "\\ProvidesExplPackage {enumext} {"..tagdate.."} {"..tagname.."}")
+    content = string.gsub(content,
+                          "\\NeedsTeXFormat%{LaTeX2e%}%[%d%d%d%d%-%d%d%-%d%d%]",
+                          "\\NeedsTeXFormat{LaTeX2e}["..ltxrelease.."]")
+  end
+  if string.match(file, "enumext.sty") then
     content = string.gsub(content,
                           "\\ProvidesExplPackage %{enumext%} %{[^}]+%} %{[^}]+%}",
                           "\\ProvidesExplPackage {enumext} {"..tagdate.."} {"..tagname.."}")
