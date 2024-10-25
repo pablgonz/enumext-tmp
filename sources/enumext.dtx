@@ -3535,56 +3535,52 @@ $ pdfdetach -saveall enumext.pdf
 %<*example>
 % \fi
 \begin{filecontents*}[overwrite]{enumext-exa-1.tex}
-% arara: pdflatex
+% arara: lualatex
 % arara: clean: { extensions: [ aux, log] }
 \documentclass{article}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage[italian]{babel}
-\usepackage{siunitx,amssymb}
+\usepackage{siunitx,amssymb,enumext}
 \sisetup{output-decimal-marker={,}}
 \DeclareSIUnit{\angstrom}{\textup{\AA}}
-\usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\fbox{\makebox[\height]{##1}}}}
-\begin{enumext}[columns=2,save-ans=sabastiano]
- \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
+\setenumext[keyans]{label=\Alph*,labelsep=10pt,font=\small,nosep,itemsep=2pt,wrap-label={\fbox{\makebox[\height]{##1}}}}
+\begin{enumext}[mode-box,columns=2,columns-sep=1cm,save-ans=sabastiano]
+ \item La velocità di \qty{1,00e2}{m/s} espressa in \unit{km/h} è:
    \begin{keyans}
-     \item \SI{36}{km/h}.
-     \item* \SI{360}{km/h}.
-     \item \SI{27,8}{km/h}.
-     \item \SI{3,60e8}{km/h}.
+     \item \qty{36}{km/h}.
+     \item* \qty{360}{km/h}.
+     \item \qty{27,8}{km/h}.
+     \item \qty{3,60e8}{km/h}.
    \end{keyans}
 
  \item In fisica nucleare si usa l'angstrom (simbolo:
- $\SI{1}{\angstrom} = \SI{1e-10}{m}$) e il fermi o femtometro
- ($\SI{1}{fm} = \SI{1e-15}{m}$). Qual è la relazione tra queste due
+ $\qty{1}{\angstrom} = \qty{1e-10}{m}$) e il fermi o femtometro
+ ($\qty{1}{fm} = \qty{1e-15}{m}$). Qual è la relazione tra queste due
  unità di misura?
    \begin{keyans}
-     \item* $\SI{1}{\angstrom}=\SI{1e5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-15}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e3}{fm}$.
+     \item* $\qty{1}{\angstrom}=\qty{1e5}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e-5}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e-15}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e3}{fm}$.
    \end{keyans}
 
- \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
+ \item La velocità di \qty{1,00e2}{m/s} espressa in \unit{km/h} è:
    \begin{keyans}
-     \item \SI{36}{km/h}.
-     \item* \SI{360}{km/h}.
-     \item \SI{27,8}{km/h}.
-     \item \SI{3,60e8}{km/h}.
+     \item \qty{36}{km/h}.
+     \item* \qty{360}{km/h}.
+     \item \qty{27,8}{km/h}.
+     \item \qty{3,60e8}{km/h}.
    \end{keyans}
 
  \item In fisica nucleare si usa l'angstrom (simbolo:
- $\SI{1}{\angstrom} = \SI{1e-10}{m}$) e il fermi o femtometro
- ($\SI{1}{fm} = \SI{1e-15}{m}$). Qual è la relazione tra queste due
+ $\qty{1}{\angstrom} = \qty{1e-10}{m}$) e il fermi o femtometro
+ ($\qty{1}{fm} = \qty{1e-15}{m}$). Qual è la relazione tra queste due
  unità di misura?
    \begin{keyans}
-     \item* $\SI{1}{\angstrom}=\SI{1e5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-15}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e3}{fm}$.
+     \item* $\qty{1}{\angstrom}=\qty{1e5}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e-5}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e-15}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e3}{fm}$.
    \end{keyans}
 \end{enumext}
 
@@ -3649,19 +3645,15 @@ $ pdfdetach -saveall enumext.pdf
 %<*example>
 % \fi
 \begin{filecontents*}[overwrite]{enumext-exa-2.tex}
-% arara: pdflatex
-% arara: pdflatex
+% arara: lualatex
+% arara: lualatex
 % arara: clean: { extensions: [ aux, log, out] }
 \documentclass{article}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage[italian]{babel}
-\usepackage{siunitx,amssymb,tikz}
+\usepackage[colorlinks]{hyperref}
+\usepackage{siunitx,amssymb,tikz,enumext}
 \usetikzlibrary{shapes.geometric}
 \sisetup{output-decimal-marker={,}}
 \DeclareSIUnit{\angstrom}{\textup{\AA}}
-\usepackage[colorlinks]{hyperref}
-\usepackage{enumext}
 \newcommand*{\mySquared}[1]{%
   \begin{tikzpicture}[baseline=(number.base),square/.style={regular polygon,regular polygon sides=4}]
     \node[square, rounded corners=1pt, inner sep=1pt, draw=none, fill=gray!40] (number) {\makebox[\height]{#1}};
@@ -3671,42 +3663,42 @@ $ pdfdetach -saveall enumext.pdf
 \begin{document}
 \setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\mySquared{##1}}}
 \begin{enumext}[columns=1,save-ans=sabastiano2,mark-pos=left,mark-ans=$\checkmark$,save-ref=true,show-ans=true,itemsep=0pt]
- \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
+ \item La velocità di \qty{1,00e2}{m/s} espressa in \unit{km/h} è:
    \begin{keyans}
-     \item \SI{36}{km/h}.
-     \item* \SI{360}{km/h}.
-     \item \SI{27,8}{km/h}.
-     \item \SI{3,60e8}{km/h}.
+     \item \qty{36}{km/h}.
+     \item* \qty{360}{km/h}.
+     \item \qty{27,8}{km/h}.
+     \item \qty{3,60e8}{km/h}.
    \end{keyans}
 
  \item In fisica nucleare si usa l'angstrom (simbolo:
- $\SI{1}{\angstrom} = \SI{1e-10}{m}$) e il fermi o femtometro
- ($\SI{1}{fm} = \SI{1e-15}{m}$). Qual è la relazione tra queste due
+ $\qty{1}{\angstrom} = \qty{1e-10}{m}$) e il fermi o femtometro
+ ($\qty{1}{fm} = \qty{1e-15}{m}$). Qual è la relazione tra queste due
  unità di misura?
    \begin{keyans}
-     \item* $\SI{1}{\angstrom}=\SI{1e5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-15}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e3}{fm}$.
+     \item* $\qty{1}{\angstrom}=\qty{1e5}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e-5}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e-15}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e3}{fm}$.
    \end{keyans}
 
- \item La velocità di \SI{1,00e2}{m/s} espressa in \si{km/h} è:
+ \item La velocità di \qty{1,00e2}{m/s} espressa in \unit{km/h} è:
    \begin{keyans}
-     \item \SI{36}{km/h}.
-     \item* \SI{360}{km/h}.
-     \item \SI{27,8}{km/h}.
-     \item \SI{3,60e8}{km/h}.
+     \item \qty{36}{km/h}.
+     \item* \qty{360}{km/h}.
+     \item \qty{27,8}{km/h}.
+     \item \qty{3,60e8}{km/h}.
    \end{keyans}
 
  \item In fisica nucleare si usa l'angstrom (simbolo:
- $\SI{1}{\angstrom} = \SI{1e-10}{m}$) e il fermi o femtometro
- ($\SI{1}{fm} = \SI{1e-15}{m}$). Qual è la relazione tra queste due
+ $\qty{1}{\angstrom} = \qty{1e-10}{m}$) e il fermi o femtometro
+ ($\qty{1}{fm} = \qty{1e-15}{m}$). Qual è la relazione tra queste due
  unità di misura?
    \begin{keyans}
-     \item* $\SI{1}{\angstrom}=\SI{1e5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-5}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e-15}{fm}$.
-     \item $\SI{1}{\angstrom}=\SI{1e3}{fm}$.
+     \item* $\qty{1}{\angstrom}=\qty{1e5}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e-5}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e-15}{fm}$.
+     \item $\qty{1}{\angstrom}=\qty{1e3}{fm}$.
    \end{keyans}
 \end{enumext}
 
@@ -3768,12 +3760,10 @@ $ pdfdetach -saveall enumext.pdf
 %<*example>
 % \fi
 \begin{filecontents*}[overwrite]{enumext-exa-3.tex}
-% arara: pdflatex
-% arara: pdflatex
+% arara: lualatex
+% arara: lualatex
 % arara: clean: { extensions: [ aux, log, out] }
 \documentclass{article}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
 \usepackage[margin=2cm]{geometry}
 \usepackage{tikz}
 \newcommand*{\myCircled}[1]{%
@@ -3785,17 +3775,20 @@ $ pdfdetach -saveall enumext.pdf
 \usepackage{enumext}
 \pagestyle{empty}
 \begin{document}
-\setenumext[keyans]{label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
-\begin{enumext}[save-ans=simplemc,columns=1,nosep,save-ref=true]
+\setenumext[keyans]{labelsep=8pt,label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
+\setenumext[keyans*]{labelsep=8pt,label=\Alph*,font=\small,nosep,wrap-label={\myCircled{##1}}}
+\setenumextmeta[enumext,2]{myroman}{no-store, label=\Roman*., noitemsep}
+\setenumextmeta[enumext,2]{myarabic}{no-store,list-offset=0.5cm,label=(\arabic*),noitemsep}
+\begin{enumext}[mode-box,save-ans=simplemc,columns=1,nosep,save-ref=true]
 \item First type of questions
-  \begin{keyans}[columns=1,noitemsep]
+  \begin{keyans*}[columns=1,noitemsep]
     \item value
     \item*[$x=5$] correct
     \item value
     \item value
-  \end{keyans}
+  \end{keyans*}
 \item Second type of questions
-  \begin{enumext}[no-store,label=\Roman*.,nosep]
+  \begin{enumext}[myroman]
     \item $2\alpha+2\delta=90^{\circ}$
     \item $\alpha=\delta$
     \item $\angle EDF=45^{\circ}$
@@ -3808,7 +3801,7 @@ $ pdfdetach -saveall enumext.pdf
     \item I, II, and III
   \end{keyans}
 \item Third type of questions
-    \begin{enumext}[no-store,list-offset=0.5cm,label=(\arabic*),nosep]
+    \begin{enumext}[myarabic]
         \item $2\alpha+2\delta=90^{\circ}$
         \item $\angle EDF=45^{\circ}$
     \end{enumext}
@@ -3821,7 +3814,7 @@ $ pdfdetach -saveall enumext.pdf
 \end{keyans}
 
 \item Question with image and label below:
-\begin{keyanspic}[layout-sty={3,2}]
+\begin{keyanspic}[layout-sty={3,2},label-sep=3pt]
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
 \anspic{\includegraphics[scale=0.15]{example-image-b}}
 \anspic{\includegraphics[scale=0.15]{example-image-a}}
@@ -3921,18 +3914,16 @@ Test keys
 %<*example>
 % \fi
 \begin{filecontents*}[overwrite]{enumext-exa-4.tex}
-% arara: pdflatex
-% arara: pdflatex
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer }
 % arara: clean: { extensions: [ aux, log, out] }
 \documentclass{article}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{tikzducks}
-\usepackage[colorlinks]{hyperref}
-\usepackage{enumext}
-\pagestyle{empty}
+\usepackage[top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}%
+\usepackage[osf]{libertinus}
+\usepackage{unicode-math,tikzducks,graphicx,hyperref,enumext}
 \begin{document}
-\begin{enumext}[save-ans=simplews,columns=2,check-ans=true,show-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
+\begin{enumext}[mode-box,save-ans=simplews,labelsep=10pt,columns=2,check-ans=true,show-ans=true,nosep,save-ref=true,wrap-label={\tikz[scale=0.25]\duck[signpost=\scalebox{0.6}{#1}];}]
   \item Factor $x^{2}-2x+1$ \anskey{$\left(x-1\right)^{2}$}
   \item Factor $3x+3y+3z$ \anskey{$3(x+y+z)$}
   \item True False
@@ -3998,25 +3989,38 @@ to \ref{simplews:3} is \getkeyans{simplews:3}.
 %<*example>
 % \fi
 \begin{filecontents*}[overwrite]{enumext-exa-5.tex}
-% arara: lualatex
-% arara: clean: { extensions: [ aux, log] }
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer, draft: true }
+% arara: lualatex: { branch: developer }
+% arara: clean: { extensions: [ aux, log, out] }
+% arara: move: { files: [ enumext-exa-5-luamml-mathml.html ], target: 'enumext-exa-5-mathml.html' }
+\DocumentMetadata{
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    testphase={phase-III,math,title,table,firstaid},
+  }
 \documentclass{article}
 \usepackage[top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}%
 \usepackage[osf]{libertinus}
-\usepackage{xcolor,microtype}% no tcolorbox here :D
-\usepackage{enumext}
+\usepackage{unicode-math,xcolor,graphicx,hyperref,enumext}
+\hypersetup
+  {
+    colorlinks = true,
+    pdftitle   = {Test tagged PDF for SAT style enumext package},
+  }
 \newsavebox{\satbox}
 \sbox\satbox{\small\textbf{67}}%
 \NewDocumentCommand \stylesat { m }
   {%
     \setlength{\fboxsep}{2pt}%
-    \raisebox{2\fboxsep}{%
+    \raisebox{7\fboxsep}{%
     \noindent\colorbox{black}{\textcolor{white}{\makebox[\dimeval{\labelwidth-2\fboxsep}][c]{\small\textbf{\vphantom{67}#1}}}}%
     \colorbox{lightgray}{\phantom{\rule[-\dp\satbox]{\dimeval{\linewidth-2\fboxsep}}{\dimeval{\dp\satbox+\ht\satbox}}}}}%
   }
 \begin{document}
-\setenumext[keyans]{label=\Alph*),nosep}
-\begin{enumext}[label=\arabic*,labelwidth=20pt,labelsep=0pt,columns=2,columns-sep=30pt,save-ans=stylesat, wrap-label={\stylesat{#1}}]
+\setenumext[keyans]{label=\Alph*),nosep,below*={0.3cm}}
+\begin{enumext}[mode-box,label=\arabic*,labelwidth=20pt,labelsep=0pt,columns=2,columns-sep=30pt,save-ans=stylesat, wrap-label={\stylesat{#1}}]
  \item Which choice best describes what happens in the passage?
    \begin{keyans}
     \item* One character argues with another character who intrudes on her home.
@@ -4785,7 +4789,7 @@ Some text here
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-05.pdf}{\faFilePdf[regular]}}{}.%
 %
 % \item The file \myfile{enumext-06.tex} contains the tests for the environments
-%   \myenv*{enumext} and \myenv*{enumext} for \emph{non-enumerated} lists.
+%   \myenv*{enumext} and \myenv*{enumext*} for \emph{fake} \myenv{itemize} and \myenv{description}.
 %   \IfFileExists{enumext-06.pdf}{Source file \textattachfile[color=red,print=false]{enumext-06.tex}{\faFile*[regular]}
 %   and \emph{tagged} \texttt{PDF} \textattachfile[color=red,print=false]{enumext-06.pdf}{\faFilePdf[regular]}}{}.%
 % \end{itemize}
@@ -4981,7 +4985,7 @@ Some text here
 %</example>
 % \fi
 %
-% Now we just need to set |wrap-label*={\labelbx{#1}}|.%^^A |mode-box| and 
+% Now we just need to set |wrap-label*={\labelbx{#1}}|.%^^A |mode-box| and
 %
 % \begin{enumext}[mode-box,label={},labelsep=4pt,labelwidth=\descitemwd,list-offset=-\dimeval{\descitemwd+4pt}, wrap-label*={\labelbx{#1}}, font=\bfseries,noitemsep,topsep=3pt]
 %  \item[SomeThing] A short one-line description.
@@ -5259,7 +5263,7 @@ Some text here
 %    \end{macrocode}
 % Now declare the \mypkg*{enumext} package.
 %    \begin{macrocode}
-\ProvidesExplPackage {enumext} {2024-10-24} {1.0} {Enumerate exercise sheets}
+\ProvidesExplPackage {enumext} {2024-10-25} {1.0} {Enumerate exercise sheets}
 %    \end{macrocode}
 % Finally check if the \mypkg{multicol} and \mypkg{scontents} packages
 % are loaded, if not we load it.
