@@ -4158,8 +4158,8 @@
     \__enumext_second_part_v:
   }
 %% Implement socket for tagging support in |enumext*| and |keyans*| environments.
-\socket_new:nn {tagsupport/enumext/starred}{ 1 }
-\socket_new_plug:nnn {tagsupport/enumext/starred} {start-list-tags}
+\socket_new:nn {tagsupport/__enumext/starred}{ 1 }
+\socket_new_plug:nnn {tagsupport/__enumext/starred} {start-list-tags}
   {
     \tag_resume:n {#1}
     \tag_mc_end_push:
@@ -4167,7 +4167,7 @@
         \tag_struct_begin:n {tag=Lbl}
            \tag_mc_begin:n {tag=Lbl}
   }
-\socket_new_plug:nnn {tagsupport/enumext/starred} {stop-start-tags}
+\socket_new_plug:nnn {tagsupport/__enumext/starred} {stop-start-tags}
   {
            \tag_mc_end:
         \tag_struct_end:n {tag=Lbl}
@@ -4175,7 +4175,7 @@
           \tag_struct_begin:n {tag=text-unit}
             \tag_struct_begin:n {tag=text}
   }
-\socket_new_plug:nnn {tagsupport/enumext/starred} {stop-list-tags}
+\socket_new_plug:nnn {tagsupport/__enumext/starred} {stop-list-tags}
   {
             \tag_struct_end:n {tag=text}
           \tag_struct_end:n {tag=text-unit}
@@ -4189,29 +4189,29 @@
   {
     \IfDocumentMetadataTF
       {
-        \socket_assign_plug:nn {tagsupport/enumext/starred} {start-list-tags}
-        \socket_use:n {tagsupport/enumext/starred} {#1}
+        \socket_assign_plug:nn {tagsupport/__enumext/starred} {start-list-tags}
+        \socket_use:n {tagsupport/__enumext/starred} {#1}
       } {}
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_start_list_tag:
   {
     \IfDocumentMetadataTF
       {
-        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-start-tags}
-        \socket_use:nn {tagsupport/enumext/starred} { }
+        \socket_assign_plug:nn {tagsupport/__enumext/starred} {stop-start-tags}
+        \socket_use:nn {tagsupport/__enumext/starred} { }
       } {}
    }
 \cs_new_protected_nopar:Npn \__enumext_stop_list_tag:n #1
   {
     \IfDocumentMetadataTF
       {
-        \socket_assign_plug:nn {tagsupport/enumext/starred} {stop-list-tags}
-        \socket_use:nn {tagsupport/enumext/starred} {#1}
+        \socket_assign_plug:nn {tagsupport/__enumext/starred} {stop-list-tags}
+        \socket_use:nn {tagsupport/__enumext/starred} {#1}
       } {}
    }
 %% Implement socket for tagging support in |keyanspic| environment.
-\socket_new:nn {tagsupport/enumext/keyanspic}{ 0 }
-\socket_new_plug:nnn {tagsupport/enumext/keyanspic} {start-list-tags}
+\socket_new:nn {tagsupport/__enumext/keyanspic}{ 0 }
+\socket_new_plug:nnn {tagsupport/__enumext/keyanspic} {start-list-tags}
   {
     \tag_resume:n {keyanspic}
     \tag_mc_end_push:
@@ -4219,7 +4219,7 @@
         \tag_struct_begin:n {tag=Lbl}
           \tag_mc_begin:n {tag=Lbl}
   }
-\socket_new_plug:nnn {tagsupport/enumext/keyanspic} {stop-start-tags}
+\socket_new_plug:nnn {tagsupport/__enumext/keyanspic} {stop-start-tags}
   {
           \tag_mc_end:
         \tag_struct_end:n {tag=Lbl}
@@ -4228,7 +4228,7 @@
             \tag_struct_begin:n {tag=text}
               \tag_mc_begin:n {tag=text}
   }
-\socket_new_plug:nnn {tagsupport/enumext/keyanspic} {stop-list-tags}
+\socket_new_plug:nnn {tagsupport/__enumext/keyanspic} {stop-list-tags}
   {
               \tag_mc_end:
             \tag_struct_end:n {tag=text}
@@ -4243,24 +4243,24 @@
   {
     \IfDocumentMetadataTF
       {
-        \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {start-list-tags}
-        \socket_use:n {tagsupport/enumext/keyanspic}
+        \socket_assign_plug:nn {tagsupport/__enumext/keyanspic} {start-list-tags}
+        \socket_use:n {tagsupport/__enumext/keyanspic}
       } {}
    }
 \cs_new_protected_nopar:Nn \__enumext_anspic_stop_start_list_tag:
   {
     \IfDocumentMetadataTF
       {
-        \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {stop-start-tags}
-        \socket_use:nn {tagsupport/enumext/keyanspic}
+        \socket_assign_plug:nn {tagsupport/__enumext/keyanspic} {stop-start-tags}
+        \socket_use:nn {tagsupport/__enumext/keyanspic}
       } {}
    }
 \cs_new_protected_nopar:Nn \__enumext_anspic_stop_list_tag:
   {
     \IfDocumentMetadataTF
       {
-        \socket_assign_plug:nn {tagsupport/enumext/keyanspic} {stop-list-tags}
-        \socket_use:nn {tagsupport/enumext/keyanspic}
+        \socket_assign_plug:nn {tagsupport/__enumext/keyanspic} {stop-list-tags}
+        \socket_use:nn {tagsupport/__enumext/keyanspic}
       } {}
    }
 %% Add keys for |keyanspic| environment.
