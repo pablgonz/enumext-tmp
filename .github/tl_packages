@@ -116,7 +116,7 @@ ragged2e
 pdfescape
 pdftexcmds
 pgf
-# psnfss
+psnfss
 refcount
 rerunfilecheck
 sourcecodepro
