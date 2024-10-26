@@ -111,7 +111,7 @@ microtype
 unicode-math
 scontents
 siunitx
-# mwe
+mwe
 ragged2e
 pdfescape
 pdftexcmds
