@@ -7,7 +7,7 @@ Release v1.0 \[2024-10-25\]
 This package provides enumerated list environments compatible with
 _tagging_ PDF for creating “simple exercise sheets” along with
 “multiple choice questions”, storing the “answers” to these in memory
-using `multicol` and `scontents` packages.
+using <code>&langle;multicol&rangle;</code> and <code>&langle;scontents&rangle;</code> packages.
 
 ## Requirements
 
@@ -19,7 +19,7 @@ on updated versions of:
 
 ## Installation
 
-The package `enumext` is present in TeX Live and MiKTeX, use the
+The package <code>&langle;enumext&rangle;</code> is present in TeX Live and MiKTeX, use the
 package manager to install.
 
 For manual installation, download [enumext.zip](http://mirrors.ctan.org/macros/latex/contrib/enumext.zip) and unzip it,
@@ -43,7 +43,7 @@ then run `mktexlsr`. To produce the documentation with source code run `arara en
 
 ## Examples
 
-The file `enumext.pdf` contains attached examples, which can be extracted
+The file <code>&langle;enumext.pdf&rangle;</code> contains attached examples, which can be extracted
 from the PDF viewer or from the command line by running:
 
 ```
@@ -54,16 +54,16 @@ and then you can use the excellent `arara` tool to compile them.
 
 ## License
 
-The `enumext` package may be modified and distributed under the terms and
+The package <code>&langle;enumext&rangle;</code> may be modified and distributed under the terms and
 conditions of the [LaTeX Project Public License](https://www.latex-project.org/lppl/), version 1.3c or greater.
 
 ## Contents
 
-- `README.md` (this file)
-- `enumext.pdf`  (documentation)
-- `enumext.dtx`  (master file that produced all files)
-- `enumext.ins`  (installer to extract all files)
+- &langle;`README.md`&rangle; \(this file\)
+- &langle;`enumext.pdf`&rangle; \(documentation\)
+- &langle;`enumext.dtx`&rangle; \(master file that produced all files\)
+- &langle;`enumext.ins`&rangle; \(installer to extract all files\)
 
 ## Author and copyright
 
-Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
+Copyright &#169; 2024 by Pablo González L <pablgonz@educarchile.cl>
