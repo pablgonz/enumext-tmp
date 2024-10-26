@@ -19,7 +19,6 @@ tagpdf
 bookmark
 pdfmanagement-testphase
 luamml
-# more
 xcolor
 microtype
 amsmath
@@ -55,7 +54,7 @@ ec
 enctex
 enumitem
 environ
-epstopdf-pkg
+# epstopdf-pkg
 etexcmds
 etoolbox
 euenc
@@ -66,7 +65,7 @@ filehook
 float
 fontawesome5
 fontspec
-fp
+# fp
 framed
 fvextra
 geometry
@@ -101,8 +100,6 @@ lm
 lm-math
 ltxcmds
 lualatex-math
-# mflogo
-# mflogo-font
 microtype
 unicode-math
 scontents
