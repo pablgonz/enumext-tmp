@@ -38,7 +38,7 @@ attachfile2
 atveryend
 auxhook
 babel
-# babel-english
+babel-english
 bigintcalc
 bitset
 booktabs
@@ -107,7 +107,7 @@ lualatex-math
 mflogo
 mflogo-font
 microtype
-fancyvrb
+minted
 unicode-math
 scontents
 siunitx
