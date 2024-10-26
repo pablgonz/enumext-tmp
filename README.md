@@ -8,7 +8,7 @@
 This package provides enumerated list environments compatible with
 _tagging_ PDF for creating “simple exercise sheets” along with
 “multiple choice questions”, storing the “answers” to these in memory
-using `multicol` and `scontents` packages.
+using <code>&langle;multicol&rangle;</code> and <code>&langle;scontents&rangle;</code> packages.
 
 
 ## Requirements
@@ -20,7 +20,7 @@ The minimum requirement is `LaTeX` release 2024-11-01. Loads and depends on upda
 
 ## Installation
 
-The package `enumext` is present in [TeX Live](https://www.tug.org/texlive/) and [MiKTeX](https://miktex.org/), use the
+The <code>&langle;enumext&rangle;</code> package is present in [TeX Live](https://www.tug.org/texlive/) and [MiKTeX](https://miktex.org/), use the
 package manager to install.
 
 For manual installation, download [enumext.zip](http://mirrors.ctan.org/macros/latex/contrib/enumext.zip) and unzip it,
@@ -44,7 +44,7 @@ then run `mktexlsr`. To produce the documentation with source code run `arara en
 
 ## Examples
 
-The file `enumext.pdf` contains attached examples, which can be extracted
+The file <code>&langle;enumext.pdf&rangle;</code> contains attached examples, which can be extracted
 from the PDF viewer or from the command line by running:
 
 ```
@@ -73,7 +73,7 @@ You can run:
 
 ## License
 
-The scontents package may be modified and distributed under the terms and
+The <code>&langle;enumext&rangle;</code> package may be modified and distributed under the terms and
 conditions of the [LaTeX Project Public License](https://www.latex-project.org/lppl/), version 1.3c or greater.
 
 ## Content of the repository
@@ -98,4 +98,4 @@ conditions of the [LaTeX Project Public License](https://www.latex-project.org/l
 
 ## Copyright
 
-Copyright (C) 2024 by Pablo González L <pablgonz@educarchile.cl>
+Copyright &#169; 2024 by Pablo González L <pablgonz@educarchile.cl>
