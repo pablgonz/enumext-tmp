@@ -107,20 +107,20 @@ lualatex-math
 mflogo
 mflogo-font
 microtype
-minted
+# minted
 unicode-math
 scontents
 siunitx
-mwe
+# mwe
 ragged2e
 pdfescape
 pdftexcmds
 pgf
-psnfss
+# psnfss
 refcount
 rerunfilecheck
 sourcecodepro
-stmaryrd
+# stmaryrd
 stringenc
 symbol
 tcolorbox
