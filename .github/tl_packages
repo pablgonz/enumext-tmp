@@ -38,8 +38,7 @@ attachfile2
 atveryend
 auxhook
 babel
-babel-english
-babel-italian
+# babel-english
 bigintcalc
 bitset
 booktabs
@@ -74,7 +73,6 @@ framed
 fvextra
 geometry
 gettitlestring
-# graphicx
 grfext
 hologo
 hycolor
@@ -109,9 +107,8 @@ lualatex-math
 mflogo
 mflogo-font
 microtype
-minted
+# minted
 unicode-math
-# shellesc
 scontents
 siunitx
 mwe
