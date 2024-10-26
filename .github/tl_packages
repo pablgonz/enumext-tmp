@@ -22,8 +22,8 @@ luamml
 # more
 xcolor
 microtype
-manfnt-font
-mfware
+# manfnt-font
+# mfware
 amsmath
 tools
 bibtex
@@ -107,7 +107,6 @@ lualatex-math
 mflogo
 mflogo-font
 microtype
-# minted
 unicode-math
 scontents
 siunitx
@@ -120,7 +119,6 @@ psnfss
 refcount
 rerunfilecheck
 sourcecodepro
-# stmaryrd
 stringenc
 symbol
 tcolorbox
