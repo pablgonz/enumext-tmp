@@ -22,8 +22,6 @@ luamml
 # more
 xcolor
 microtype
-# manfnt-font
-# mfware
 amsmath
 tools
 bibtex
@@ -127,7 +125,7 @@ underscore
 unicode-data
 uniquecounter
 upquote
-url
+# url
 xcolor
 xkeyval
 xstring
