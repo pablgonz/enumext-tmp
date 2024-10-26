@@ -19,7 +19,7 @@ on updated versions of:
 
 ## Installation
 
-The package <code>&langle;enumext&rangle;</code> is present in TeX Live and MiKTeX, use the
+The <code>&langle;enumext&rangle;</code> package is present in TeX Live and MiKTeX, use the
 package manager to install.
 
 For manual installation, download [enumext.zip](http://mirrors.ctan.org/macros/latex/contrib/enumext.zip) and unzip it,
@@ -54,7 +54,7 @@ and then you can use the excellent `arara` tool to compile them.
 
 ## License
 
-The package <code>&langle;enumext&rangle;</code> may be modified and distributed under the terms and
+The <code>&langle;enumext&rangle;</code> package may be modified and distributed under the terms and
 conditions of the [LaTeX Project Public License](https://www.latex-project.org/lppl/), version 1.3c or greater.
 
 ## Contents
