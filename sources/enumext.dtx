@@ -581,7 +581,7 @@
     commentstyle  = \ttfamily\small\color{lightgray},%
 % Important words 1
     keywordstyle  = [1]{\color{gray}},%
-    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,newlength, the, %
+    keywords      = [1]{begin,end,Verbatim,env,myseq,false,NewDocumentCommand,newlength, the, red, blue, gray,%
                         settowidth, dimeval, dimexpr, IfBooleanTF,footnotehyper, DocumentMetadata, %
                         IfDocumentMetadataTF, RenewDocumentCommand, pt, em, SuspendTagging, ResumeTagging,%
                     },%
@@ -591,7 +591,7 @@
                     columnseprule, footnote, footnotemark, footnotetext, raggedcolumns, hspace, parindent, removelastskip, %
                     subsection, list,endlist,leftmargin, itemindent,bfseries,endminipage, minipage, parskip, raisebox, strut,smash, % ,
                     labelwidth,labelsep,labelindent,label,ref,topsep,parsep,includegraphics, itemize, description, NewCommandCopy, %
-                    multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, value, noindent, makebox,%
+                    multicolsep,leftmargini,leftmarginii, hfill, small, vspace, par, parbox, value, noindent, makebox, textcolor, %
                     itemindent, labelwidth, leftmarginiii,leftmarginiv,itemindent, itemsep, strutbox, raggedright, cs_new_eq, N, NN,%
                     labelwidth, fbox, addvspace, Alph, alph, arabic, Roman, roman, partopsep, baselineskip, mode_leave_vertical,%
                     textbullet, textendash, textasteriskcentered, textperiodcentered, raggedleft, peek_remove_spaces, skip_horizontal, %
@@ -602,8 +602,8 @@
     keywords      = [3]{document,article,setlength,pagestyle,definecolor, chapter,},%,
 % Reserved words 4 (enumext pkg)
     keywordstyle  = [4]{\color{pkgcolor}},%
-    keywords      = [4]{enumext,keyans,keyanspic, getkeyans,anskey,anspic, item, anskey*, itemwidth, enumextmeta, %
-                    setenumext,printkeyans,miniright,labelbx, descitemwd,theenumXi,theenumXii,theenumXiii,%
+    keywords      = [4]{enumext,keyans,keyanspic, getkeyans, anskey, anspic, item, anskey*, itemwidth, enumextmeta, %
+                    setenumext,printkeyans,miniright,labelbx, mywrap, descitemwd,theenumXi,theenumXii,theenumXiii,%
                     setenumextmeta, foreachkeyans, theenumXiv,theenumXv, theenumXvii, theenumXviii},%
 % Reserved words 5 (plain TeX or internal)
     keywordstyle  = [5]{\color{red}},%
@@ -1827,18 +1827,18 @@
 %<*example>
 % \fi
 \begin{examplecode}[frame=none]
-\NewDocumentCommand \labelbx { s +m }
-  {%
+\NewDocumentCommand \mywrap { s m }
+  {
     \IfBooleanTF{#1}
-      {\strut\smash{\parbox[t]{\labelwidth}{\raggedright{#2}}}}%
-      {\strut\smash{\parbox[t]{\labelwidth}{\raggedleft{#2}}}}%
+      {\textcolor{red}{\textbf{Q}}\textcolor{blue}{\textbf{.}}\textcolor{gray}{#2}}
+      {\textcolor{blue}{\textbf{Q}}\textcolor{red}{\textbf{.}}\textcolor{gray}{#2}}
   }
 \end{examplecode}
 % \iffalse
 %</example>
 % \fi
 %
-% and then pass it through the key |wrap-label={\labelbx{#1}}| or |wrap-label={\labelbx*{#1}}|.
+% and then pass it through the key |wrap-label={\mywrap{#1}}| or |wrap-label={\mywrap*{#1}}|.
 %
 % \smallskip
 %
@@ -1996,6 +1996,16 @@
 % |\item| and the start of the environment for example |\item \begin{enumext}|
 % within the environment \myenv*{enumext*}. Internally sets the keys \mykey{topsep},
 % \mykey{above} and \mykey{above}|*| at \mydim{0pt}.
+%
+% \smallskip
+%
+% \begin{important}*
+%  This key is provided as a way to work around this minor issue, but you
+%  should be aware that if for some reason you have the \mykey{itemindent}
+%  key set in the \myenv*{enumext*} environment it will be lost and you
+%  will need to adjust it using the \mykey{list-offset} key in the
+%  \myenv*{enumext} environment.
+% \end{important}
 %
 % \newpage
 %
