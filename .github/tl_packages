@@ -96,7 +96,6 @@ libertinus-fonts
 libertinus-otf
 libertinus
 libertine
-# lineno
 listings
 lm
 lm-math
@@ -125,7 +124,6 @@ underscore
 unicode-data
 uniquecounter
 upquote
-# url
 xcolor
 xkeyval
 xstring
