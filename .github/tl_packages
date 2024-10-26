@@ -107,7 +107,7 @@ lualatex-math
 mflogo
 mflogo-font
 microtype
-# minted
+fancyvrb
 unicode-math
 scontents
 siunitx
