@@ -22,8 +22,8 @@ luamml
 # more
 xcolor
 microtype
-# manfnt-font
-# mfware
+manfnt-font
+mfware
 amsmath
 tools
 bibtex
@@ -38,8 +38,8 @@ attachfile2
 atveryend
 auxhook
 babel
-# babel-english
-# babel-italian
+babel-english
+babel-italian
 bigintcalc
 bitset
 booktabs
@@ -75,7 +75,7 @@ fvextra
 geometry
 gettitlestring
 # graphicx
-# grfext
+grfext
 hologo
 hycolor
 hypdoc
@@ -111,6 +111,7 @@ mflogo-font
 microtype
 minted
 unicode-math
+# shellesc
 scontents
 siunitx
 mwe
@@ -129,7 +130,6 @@ tcolorbox
 titlesec
 underscore
 unicode-data
-unicode-math
 uniquecounter
 upquote
 url
