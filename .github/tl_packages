@@ -64,7 +64,6 @@ filehook
 float
 fontawesome5
 fontspec
-# framed
 fvextra
 geometry
 gettitlestring
