@@ -54,7 +54,6 @@ ec
 enctex
 enumitem
 environ
-# epstopdf-pkg
 etexcmds
 etoolbox
 euenc
@@ -65,7 +64,6 @@ filehook
 float
 fontawesome5
 fontspec
-# fp
 framed
 fvextra
 geometry
