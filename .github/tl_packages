@@ -101,8 +101,8 @@ lm
 lm-math
 ltxcmds
 lualatex-math
-mflogo
-mflogo-font
+# mflogo
+# mflogo-font
 microtype
 unicode-math
 scontents
