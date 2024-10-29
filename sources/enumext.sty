@@ -36,7 +36,7 @@
 %% ------------------------------------------------------------------------
 %% 
 \NeedsTeXFormat{LaTeX2e}[2024-06-01]
-\ProvidesExplPackage {enumext} {2024-10-25} {1.0} {Enumerate exercise sheets}
+\ProvidesExplPackage {enumext} {2024-10-29} {1.0} {Enumerate exercise sheets}
 \hook_gput_code:nnn {begindocument} {enumext}
   {
     \IfPackageLoadedTF { multicol }
@@ -4190,7 +4190,7 @@
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/__enumext/starred} {start-list-tags}
-        \socket_use:nn {tagsupport/__enumext/starred} {#1}
+        \tag_socket_use:nn {__enumext/starred} {#1}
       } {}
    }
 \cs_new_protected_nopar:Nn \__enumext_stop_start_list_tag:
@@ -4198,7 +4198,7 @@
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/__enumext/starred} {stop-start-tags}
-        \socket_use:nn {tagsupport/__enumext/starred} { }
+        \tag_socket_use:nn {__enumext/starred} { }
       } {}
    }
 \cs_new_protected_nopar:Npn \__enumext_stop_list_tag:n #1
@@ -4206,7 +4206,7 @@
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/__enumext/starred} {stop-list-tags}
-        \socket_use:nn {tagsupport/__enumext/starred} {#1}
+        \tag_socket_use:nn {__enumext/starred} {#1}
       } {}
    }
 %% Implement socket for tagging support in |keyanspic| environment.
@@ -4244,7 +4244,7 @@
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/__enumext/keyanspic} {start-list-tags}
-        \socket_use:n {tagsupport/__enumext/keyanspic}
+        \tag_socket_use:n {__enumext/keyanspic}
       } {}
    }
 \cs_new_protected_nopar:Nn \__enumext_anspic_stop_start_list_tag:
@@ -4252,7 +4252,7 @@
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/__enumext/keyanspic} {stop-start-tags}
-        \socket_use:n {tagsupport/__enumext/keyanspic}
+        \tag_socket_use:n {__enumext/keyanspic}
       } {}
    }
 \cs_new_protected_nopar:Nn \__enumext_anspic_stop_list_tag:
@@ -4260,7 +4260,7 @@
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/__enumext/keyanspic} {stop-list-tags}
-        \socket_use:n {tagsupport/__enumext/keyanspic}
+        \tag_socket_use:n {__enumext/keyanspic}
       } {}
    }
 %% Add keys for |keyanspic| environment.

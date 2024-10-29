@@ -5273,7 +5273,7 @@ Some text here
 %    \end{macrocode}
 % Now declare the \mypkg*{enumext} package.
 %    \begin{macrocode}
-\ProvidesExplPackage {enumext} {2024-10-25} {1.0} {Enumerate exercise sheets}
+\ProvidesExplPackage {enumext} {2024-10-29} {1.0} {Enumerate exercise sheets}
 %    \end{macrocode}
 % Finally check if the \mypkg{multicol} and \mypkg{scontents} packages
 % are loaded, if not we load it.
@@ -12689,7 +12689,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/@@/starred} {start-list-tags}
-        \socket_use:nn {tagsupport/@@/starred} {#1}
+        \tag_socket_use:nn {@@/starred} {#1}
       } {}
    }
 \cs_new_protected_nopar:Nn \@@_stop_start_list_tag:
@@ -12697,7 +12697,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/@@/starred} {stop-start-tags}
-        \socket_use:nn {tagsupport/@@/starred} { }
+        \tag_socket_use:nn {@@/starred} { }
       } {}
    }
 \cs_new_protected_nopar:Npn \@@_stop_list_tag:n #1
@@ -12705,7 +12705,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/@@/starred} {stop-list-tags}
-        \socket_use:nn {tagsupport/@@/starred} {#1}
+        \tag_socket_use:nn {@@/starred} {#1}
       } {}
    }
 %    \end{macrocode}
@@ -12762,7 +12762,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/@@/keyanspic} {start-list-tags}
-        \socket_use:n {tagsupport/@@/keyanspic}
+        \tag_socket_use:n {@@/keyanspic}
       } {}
    }
 \cs_new_protected_nopar:Nn \@@_anspic_stop_start_list_tag:
@@ -12770,7 +12770,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/@@/keyanspic} {stop-start-tags}
-        \socket_use:n {tagsupport/@@/keyanspic}
+        \tag_socket_use:n {@@/keyanspic}
       } {}
    }
 \cs_new_protected_nopar:Nn \@@_anspic_stop_list_tag:
@@ -12778,7 +12778,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/@@/keyanspic} {stop-list-tags}
-        \socket_use:n {tagsupport/@@/keyanspic}
+        \tag_socket_use:n {@@/keyanspic}
       } {}
    }
 %    \end{macrocode}
