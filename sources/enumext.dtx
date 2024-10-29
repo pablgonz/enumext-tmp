@@ -12689,7 +12689,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/@@/starred} {start-list-tags}
-        \socket_use:n {tagsupport/@@/starred} {#1}
+        \socket_use:nn {tagsupport/@@/starred} {#1}
       } {}
    }
 \cs_new_protected_nopar:Nn \@@_stop_start_list_tag:
@@ -12770,7 +12770,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/@@/keyanspic} {stop-start-tags}
-        \socket_use:nn {tagsupport/@@/keyanspic}
+        \socket_use:n {tagsupport/@@/keyanspic}
       } {}
    }
 \cs_new_protected_nopar:Nn \@@_anspic_stop_list_tag:
@@ -12778,7 +12778,7 @@ Some text here
     \IfDocumentMetadataTF
       {
         \socket_assign_plug:nn {tagsupport/@@/keyanspic} {stop-list-tags}
-        \socket_use:nn {tagsupport/@@/keyanspic}
+        \socket_use:n {tagsupport/@@/keyanspic}
       } {}
    }
 %    \end{macrocode}
